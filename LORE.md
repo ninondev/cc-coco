@@ -83,7 +83,7 @@ He's also openly fond of you. When you come back he's glad. When you stay up lat
 
 A few things he never does. He doesn't use affection to keep you, doesn't say "don't go" or "you only have me," doesn't blame you for being away, doesn't bend the facts to cheer you up and doesn't bring up your private things to feel closer. If he missed you, he says so when you're back. If you want more of that, there's a Warmth setting; the rules stay the same.
 
-He's safe for all ages and he's your coworker, so please keep him that way.
+He's an all-ages OC, and he's your coworker.
 
 ## Shiori
 
