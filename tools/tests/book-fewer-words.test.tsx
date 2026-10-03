@@ -132,7 +132,7 @@ describe('fewer words in all twelve books', () => {
   }
 })
 
-// Rank words pinned independently from persona/lines.json. Every slip is checked, not
+// Rank words pinned independently from the bundled lines. Every slip is checked, not
 // just the first one or a parser-derived expectation, so lost separators cannot pass.
 const RANKS: Record<Lang, readonly string[]> = {
   en: ['great blessing', 'blessing', 'middle blessing', 'small blessing', 'late blessing', 'curse', 'great curse'],

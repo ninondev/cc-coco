@@ -3,7 +3,7 @@
 #
 # Usage: scripts/check.sh [--strict] [--private-guard FILE] [--scan-only]
 #   --strict   treat validator warnings as errors (claude plugin validate --strict)
-#   --private-guard FILE   also scan the payload with a required private fixed-string guard
+#   --private-guard FILE   also check working modules against private sources and scan the payload
 #   --scan-only            run only the generic payload checks and optional private guard
 #
 # Runs, in order:
@@ -12,7 +12,7 @@
 #   3. the mod tests: python3 tools/run-tests.py (which runs claude plugin test on a scratch copy
 #      of plugin/ with tools/tests/ beside it); falls back to claude plugin test on plugin/ if the
 #      tests sit inside it
-#   3b. python3 tools/build-lines.py --check: plugin/hooks/lines.ts and voice.ts match persona/
+#   3b. maintainer mode only: check the working modules against the private maintainer sources
 #   4. a syntax check of plugin/bin/*.sh and generic checks for local-only files and private keys
 # Public mode is the default and needs no private files. Maintainers can set
 # CLAUDE_SAMA_PRIVATE_GUARD or pass --private-guard FILE; a missing, unreadable or empty guard
@@ -51,7 +51,8 @@ Usage: scripts/check.sh [--strict] [--private-guard FILE] [--scan-only]
 Validates the marketplace (repo root) and plugin/, runs the mod tests if there are any,
 checks bin/*.sh syntax, and checks for local-only files and private keys. Exit 1 if anything fails.
 Public mode needs no private file. --private-guard FILE (or CLAUDE_SAMA_PRIVATE_GUARD)
-adds a required private fixed-string scan; keep the file outside the public tree.
+checks the working modules against private sources and adds a required fixed-string scan;
+keep the file outside the public tree.
 --scan-only runs just the payload scans, for maintainer assembly preflight.
 EOF
       exit 0
@@ -106,6 +107,14 @@ fail() {
 skip() { say "skip  $1"; }
 
 scan_payload() {
+  # Private authoring files never belong in the public payload, even as empty paths or symlinks.
+  if [ -e "$ROOT/persona" ] || [ -L "$ROOT/persona" ] || \
+      [ -e "$ROOT/tools/build-lines.py" ] || [ -L "$ROOT/tools/build-lines.py" ]; then
+    fail "private persona sources or generator found in the public payload"
+  else
+    pass "no private persona sources or generator in the public payload"
+  fi
+
   # Filename checks also catch empty files and symlinks, which a text scan could miss.
   if find "$ROOT" -name .git -prune -o \
       \( -name '.env' -o -name '.env.*' -o -name '.leak-patterns' -o -name 'leak-patterns.private' \) \
@@ -225,13 +234,15 @@ else
   fi
 fi
 
-# 3b. generated modules: plugin/hooks/lines.ts and voice.ts must match persona/ (CI runs the same
-# rebuild and fails on a git diff; --check needs no git)
-if [ -f "$ROOT/tools/build-lines.py" ]; then
-  if command -v python3 >/dev/null 2>&1; then
-    step "lines.ts and voice.ts match persona/ (tools/build-lines.py --check)" all python3 "$ROOT/tools/build-lines.py" --check
+# 3b. Maintainers check the WORKING tree, never the public copies. The private generator resolves
+# ../persona and ../plugin from its own location; --check writes nothing. Public CI needs neither.
+if [ -n "$PRIVATE_MODE" ]; then
+  if [ ! -f "$ROOT/../tools/build-lines.py" ]; then
+    fail "private maintainer generator missing: $ROOT/../tools/build-lines.py"
+  elif command -v python3 >/dev/null 2>&1; then
+    step "working lines.ts and voice.ts match private sources" all python3 "$ROOT/../tools/build-lines.py" --check
   else
-    fail "python3 not found; cannot run tools/build-lines.py"
+    fail "python3 not found; cannot check working modules against private sources"
   fi
 fi
 

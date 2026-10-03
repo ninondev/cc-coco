@@ -1,6 +1,6 @@
 // The small words the band and the commands use around his lines: his name label, the
 // stage directions under it, spinner verbs, command replies. His spoken lines are in
-// lines.ts (generated from persona/lines.json).
+// lines.ts (bundled with the plugin).
 //
 // One entry per language of the Claude client (plus Chinese (Singapore)). Case follows the
 // language: lowercase where it reads soft (en, fr, it, es, pt-BR, id), German keeps its

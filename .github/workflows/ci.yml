@@ -63,17 +63,6 @@ jobs:
             sh -n "$f"
           done
 
-      # lines.ts and voice.ts are generated from persona/. Rebuild them and fail if the committed
-      # copies differ (git diff only sees tracked files, so check that they are tracked first).
-      - name: Generated modules match persona/
-        run: |
-          python3 tools/build-lines.py
-          git ls-files --error-unmatch plugin/hooks/lines.ts plugin/hooks/voice.ts > /dev/null
-          git diff --exit-code -- plugin/hooks/lines.ts plugin/hooks/voice.ts || {
-            echo "::error::plugin/hooks/lines.ts or voice.ts differs from persona/. Run python3 tools/build-lines.py and commit the result."
-            exit 1
-          }
-
       - name: Run the mod tests
         run: python3 tools/run-tests.py
 
@@ -121,16 +110,6 @@ jobs:
           for f in plugin/bin/*.sh scripts/assemble.sh scripts/check.sh; do
             sh -n "$f"
           done
-
-      - name: Generated modules match persona/
-        shell: bash
-        run: |
-          python tools/build-lines.py
-          git ls-files --error-unmatch plugin/hooks/lines.ts plugin/hooks/voice.ts > /dev/null
-          git diff --exit-code -- plugin/hooks/lines.ts plugin/hooks/voice.ts || {
-            echo "::error::plugin/hooks/lines.ts or voice.ts differs from persona/. Run python tools/build-lines.py and commit the result."
-            exit 1
-          }
 
       - name: Run the mod tests
         run: python tools/run-tests.py

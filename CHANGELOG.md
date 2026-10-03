@@ -39,7 +39,7 @@ The first public release.
   session channel is available. A permission card lets him follow the window. It installs at
   `~/Applications/Claude-sama Companion.app`; **Bring him back** returns him after hiding or quitting.
 - Offline plugin validation and tests in CI on Ubuntu and macOS, with an experimental Windows
-  job. CI also checks that generated lines and voice match their sources in `persona/`.
+  job. His lines and voice ship inside the plugin.
 
 ### Persona changes
 
