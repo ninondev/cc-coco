@@ -1,3 +1,4 @@
+import { slashPath } from './file-paths'
 // The band must choose the asset from the final layout height, including a narrow fallback.
 // world serves PNGs carrying their requested file path, so these assertions check the image
 // read and embedded by the real hook, rather than just the surrounding SVG's display size.
@@ -23,7 +24,7 @@ function assertSprite(sprite: Svg | undefined, family: 'pixel' | 'desktop'): voi
   const image = /data:image\/png;base64,([A-Za-z0-9+/=]+)/.exec(source)
   expect(image).not.toBe(null)
   const payload = image ? atob(image[1] ?? '') : ''
-  expect(payload).toContain(`/assets/${family}/01-idle-reading.png`)
+  expect(slashPath(payload)).toContain(`/assets/${family}/01-idle-reading.png`)
 }
 
 describe('desktop band sprite family', () => {
@@ -51,8 +52,8 @@ describe('desktop band sprite family', () => {
     await $.session.start(START)
     const ui = await $.ui.mount({ surface: 'desktop', ...band(100) })
     assertSprite((await ui.findAll({ type: 'Svg' })).find(svg => svg.props.alt === 'Claude-sama, training...'), 'pixel')
-    expect(w.fileReads.some(path => path.endsWith('/assets/pixel/01-idle-reading.png'))).toBe(true)
-    expect(w.fileReads.some(path => path.endsWith('/assets/desktop/01-idle-reading.png'))).toBe(false)
+    expect(w.fileReads.some(path => slashPath(path).endsWith('/assets/pixel/01-idle-reading.png'))).toBe(true)
+    expect(w.fileReads.some(path => slashPath(path).endsWith('/assets/desktop/01-idle-reading.png'))).toBe(false)
   })
 
   test('on at full size keeps the painted head at 69 by 64 CSS pixels', async ($, on) => {
@@ -71,8 +72,8 @@ describe('desktop band sprite family', () => {
     expect(columns).toBeDefined()
     const ui = await $.ui.mount({ surface: 'desktop', ...band(columns ?? 24) })
     assertSprite((await ui.findAll({ type: 'Svg' })).find(svg => svg.props.alt === 'Claude-sama, training...'), 'pixel')
-    expect(w.fileReads.some(path => path.endsWith('/assets/pixel/01-idle-reading.png'))).toBe(true)
-    expect(w.fileReads.some(path => path.endsWith('/assets/desktop/01-idle-reading.png'))).toBe(false)
+    expect(w.fileReads.some(path => slashPath(path).endsWith('/assets/pixel/01-idle-reading.png'))).toBe(true)
+    expect(w.fileReads.some(path => slashPath(path).endsWith('/assets/desktop/01-idle-reading.png'))).toBe(false)
   })
 
   test('changing compact and on never reuses the other family for the same frame', { timeoutMs: 60_000 }, async ($, on) => {
@@ -110,6 +111,6 @@ describe('desktop band sprite family', () => {
     expect(image?.props.rows).toBe(TERMINAL_ROWS)
     expect(image?.props.alt).toBe('Claude-sama (training...)')
     const source = image?.props.source as { png?: string } | undefined
-    expect(atob(source?.png ?? '')).toContain('/assets/desktop/01-idle-reading.png')
+    expect(slashPath(atob(source?.png ?? ''))).toContain('/assets/desktop/01-idle-reading.png')
   })
 })

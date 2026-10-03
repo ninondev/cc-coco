@@ -1,3 +1,4 @@
+import { samePath } from './file-paths'
 // The activity feed is exercised through the mod's actual session/tool hooks.
 import { describe, expect, test } from 'claude-code/testing'
 import type { On } from 'claude-code'
@@ -16,8 +17,8 @@ function feed(on: On, root = '/tmp/project') {
   on('session.id', () => ({ value: 's1' }))
   on('session.root', () => { roots++; return { value: root } })
   on('session.surfaces', () => ({ value: ['desktop'] }))
-  on('fs.exists', ($, e) => ({ value: e.path === FOLDER || e.path === `${FOLDER}/requests.jsonl` }))
-  on('fs.write', ($, e) => { if (e.path === FEED) records.push(JSON.parse(e.text)); return { value: undefined } })
+  on('fs.exists', ($, e) => ({ value: samePath(e.path, '/System/Library/CoreServices/SystemVersion.plist') || samePath(e.path, '/usr/bin/tail') || samePath(e.path, FOLDER) || samePath(e.path, `${FOLDER}/requests.jsonl`) }))
+  on('fs.write', ($, e) => { if (samePath(e.path, FEED)) records.push(JSON.parse(e.text)); return { value: undefined } })
   on('process.spawn', async function* () { throw new Error('stream unavailable in activity fixture') })
   return { records, latest: () => records[records.length - 1]!, roots: () => roots }
 }

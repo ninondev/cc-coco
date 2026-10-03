@@ -1,6 +1,7 @@
 // One sleeping child per installed session. The request text is handed to Claude Code;
 // this module never executes it or changes the engine's permissions.
 import type { ProcessSpawnChunk, ProcessSpawnResult, HookStream } from 'claude-code'
+import { joinPath, windowsPath } from './paths'
 
 const LINE_BYTES = 8 * 1024
 function utf8Bytes(text: string): number {
@@ -50,12 +51,14 @@ export class CompanionChannel {
 
   async start(): Promise<void> {
     if (this.attempted || this.active) return
+    if (windowsPath(this.folder)) return
     if (!(await this.io.exists(this.folder))) return
     if (this.attempted || this.active) return // another push may have finished the existence read
     this.attempted = true
     if (typeof this.io.spawn !== 'function') return
     try {
-      const path = `${this.folder}/requests.jsonl`
+      if (!(await this.io.exists('/usr/bin/tail'))) return
+      const path = joinPath(this.folder, 'requests.jsonl')
       if (!(await this.io.exists(path))) await this.io.write(path, '')
       // A removal while creating the file must not start a child on a missing folder.
       if (!(await this.io.exists(this.folder))) return

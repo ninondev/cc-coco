@@ -52,6 +52,7 @@ export type BookData = {
   fortune: { line: string; rank: string; day: string } | undefined
   reading: number
   own: Own
+  iconSupported?: boolean
   icon?: IconBookData
   companion?: CompanionBookData
 }
@@ -269,7 +270,7 @@ export function pageBlocks(page: Page, w: BookWords, d: BookData, surface: 'desk
       picked ? undefined : fill(s.language.autoNow, { auto: s.language.auto, language: reading }),
     ),
     ...(d.reducedMotion ? [{ t: 'fact' as const, label: s.motion.label, text: s.motion.still }] : []),
-    { t: 'icon', data: d.icon ?? { state: 'unknown', unavailable: true, failed: false } },
+    ...(d.iconSupported === false ? [] : [{ t: 'icon' as const, data: d.icon ?? { state: 'unknown' as const, unavailable: true, failed: false } }]),
     ...(d.companion ? [{ t: 'companion' as const, data: d.companion }] : []),
   ]
 }

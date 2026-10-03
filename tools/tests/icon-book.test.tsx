@@ -1,3 +1,4 @@
+import { samePath } from './file-paths'
 // The icon script is always stubbed. These tests cannot reach a real app, native program or HOME.
 import { describe, expect, test } from 'claude-code/testing'
 import type { EngineInterface } from 'claude-code'
@@ -16,6 +17,7 @@ function fake(os: 'macos' | 'linux' | 'other' = 'macos') {
   let state: State = 'stock', exitCode = 0, unavailable = false, redraws = 0
   const engine = {
     plugin: { root: "/tmp/plugin's folder" },
+    env: { get: async () => undefined },
     fs: { exists: async (path: string) => path === '/System/Library/CoreServices/SystemVersion.plist' ? os === 'macos' : path === '/proc/sys/kernel/ostype' && os === 'linux' },
     process: { run: async (argv: readonly string[], options: unknown) => { calls.push({ argv, options }); if (unavailable) throw new Error('process missing'); return { exitCode, stdout: `icon: ${state}\n`, stderr: '' } } },
   } as unknown as EngineInterface
@@ -86,7 +88,7 @@ describe('icon status and button presses', () => {
     for (const state of ['own', 'stock', 'custom'] as const) test(`${surface}: ${state} status, warning, press and redraw`, async ($, on) => {
       let current: State = state
       const calls: string[][] = []
-      on('fs.exists', ($, e) => ({ value: e.path === '/System/Library/CoreServices/SystemVersion.plist' }))
+      on('fs.exists', ($, e) => ({ value: samePath(e.path, '/System/Library/CoreServices/SystemVersion.plist') }))
       on('process.run', ($, e) => { calls.push([...e.argv]); if (e.argv[2] === 'apply') current = 'own'; if (e.argv[2] === 'clear') current = 'stock'; return { value: { exitCode: 0, stdout: `icon: ${current}\n`, stderr: '', isStdoutTruncated: false, isStderrTruncated: false } } })
       const w = world(on, { store: RECENT })
       await $.session.start(START)
@@ -111,7 +113,7 @@ describe('icon status and button presses', () => {
       expect(calls.map(call => call[2])).toEqual(['status', 'apply', 'clear'])
     })
     test(`${surface}: thrown process shows command fallback and no pretend buttons`, async ($, on) => {
-      on('fs.exists', ($, e) => ({ value: e.path === '/System/Library/CoreServices/SystemVersion.plist' }))
+      on('fs.exists', ($, e) => ({ value: samePath(e.path, '/System/Library/CoreServices/SystemVersion.plist') }))
       on('process.run', () => { throw new Error('missing process') })
       world(on, { store: RECENT })
       await $.session.start(START)
@@ -122,7 +124,7 @@ describe('icon status and button presses', () => {
     })
   }
   test('all twelve languages label both actions and all three icon states natively', { timeoutMs: 60_000 }, async ($, on) => {
-    on('fs.exists', ($, e) => ({ value: e.path === '/System/Library/CoreServices/SystemVersion.plist' }))
+    on('fs.exists', ($, e) => ({ value: samePath(e.path, '/System/Library/CoreServices/SystemVersion.plist') }))
     on('process.run', () => ({ value: { exitCode: 0, stdout: 'icon: custom\n', stderr: '', isStdoutTruncated: false, isStderrTruncated: false } }))
     world(on, { store: RECENT })
     await $.session.start(START)

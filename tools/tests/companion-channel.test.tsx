@@ -1,3 +1,4 @@
+import { samePath } from './file-paths'
 // File-stream input is stubbed; every action still passes through register.tsx.
 import { describe, expect, mock, test } from 'claude-code/testing'
 import type { On, ProcessSpawnChunk } from 'claude-code'
@@ -50,10 +51,10 @@ function fixture(on: On, options: { installed?: boolean; missingFile?: boolean; 
   on('session.id', () => ({ value: 's1' }))
   on('session.root', () => ({ value: '/tmp/project' }))
   on('session.surfaces', () => ({ value: ['desktop'] }))
-  on('fs.exists', ($, e) => ({ value: installed && (e.path === FOLDER || (e.path === REQUESTS && !options.missingFile)) }))
+  on('fs.exists', ($, e) => ({ value: samePath(e.path, '/System/Library/CoreServices/SystemVersion.plist') || samePath(e.path, '/usr/bin/tail') || installed && (samePath(e.path, FOLDER) || (samePath(e.path, REQUESTS) && !options.missingFile)) }))
   on('fs.write', ($, e) => {
-    writes.push({ path: e.path, text: e.text })
-    if (e.path === FEED) records.push(JSON.parse(e.text))
+    writes.push({ path: samePath(e.path, REQUESTS) ? REQUESTS : samePath(e.path, FEED) ? FEED : e.path, text: e.text })
+    if (samePath(e.path, FEED)) records.push(JSON.parse(e.text))
     return { value: undefined }
   })
   on('prompt.submit', async ($, e) => { submitted.push({ text: e.text, ...(e.origin.kind === 'plugin' && e.origin.asUser ? { asUser: true } : {}) }); await options.actionGate; return { text: e.text } })
@@ -160,7 +161,7 @@ function ended(answer = 'Done.') { return { answer, durationMs: 1000, isAborted:
     expect(f.view()).toEqual(before)
     await f.drain()
     expect(f.spawns).toEqual([['/usr/bin/tail', '-f', '-n', '0', REQUESTS]])
-    expect(f.writes.filter(write => write.path === REQUESTS)).toEqual([{ path: REQUESTS, text: '' }])
+    expect(f.writes.filter(write => samePath(write.path, REQUESTS))).toEqual([{ path: REQUESTS, text: '' }])
     expect(f.latest().channel).toBe(true)
     await $.tool.call({ tool: 'Read', file_path: '/tmp/a' })
     expect(f.spawns.length).toBe(1)

@@ -31,6 +31,7 @@ import { replyExcerpt, taskForTool } from './tasks'
 import type { TaskDescription } from './tasks'
 import { registerBook } from './pages'
 import { DESKTOP_REST, pngPath, spriteCells, spriteSvg } from './pictures'
+import { homePath, isWindows, joinPath } from './paths'
 import { registerTranscript } from './transcript'
 import { gapBefore } from './typeset'
 import { VOICE } from './voice'
@@ -80,6 +81,7 @@ let companionSent = ''
 let companionWrite: Promise<void> = Promise.resolve()
 let companionHome: string | undefined
 let companionThere = false
+let companionSupported = false
 let companionLive = false
 let companionId = ''
 let companionChannel: CompanionChannel | undefined
@@ -130,8 +132,9 @@ async function push($: Engine): Promise<void> {
 }
 
 async function companionHere($: Engine): Promise<boolean> {
-  companionHome ??= await $.env.get('HOME')
-  companionThere = companionHome !== undefined && (await $.fs.exists(`${companionHome}/${COMPANION_DIR}`))
+  if (!companionSupported) return false
+  companionHome ??= homePath(await $.env.get('HOME'), await $.env.get('USERPROFILE'))
+  companionThere = companionHome !== undefined && (await $.fs.exists(joinPath(companionHome, COMPANION_DIR)))
   return companionThere
 }
 
@@ -139,14 +142,14 @@ async function feedCompanion($: Engine, text: string): Promise<boolean> {
   if (companionHome === undefined) return false
   // $.fs.write creates missing folders, so look again right before every write: a companion
   // uninstalled a moment ago must stay uninstalled.
-  if (!(await $.fs.exists(`${companionHome}/${COMPANION_DIR}`))) {
+  if (!(await $.fs.exists(joinPath(companionHome, COMPANION_DIR)))) {
     companionThere = false
     companionChannel?.stop()
     companionSent = ''
     return false
   }
   try {
-    await $.fs.write(`${companionHome}/${COMPANION_FEED}`, text)
+    await $.fs.write(joinPath(companionHome, COMPANION_FEED), text)
     return true
   } catch { return false }
 }
@@ -160,7 +163,7 @@ async function pngOf($: Engine, frame: FrameName, height = DESKTOP_REST): Promis
   const path = pngPath(frame, height)
   let png = pngs.get(path)
   if (png === undefined) {
-    png = (await $.fs.read(`${$.plugin.root}/${path}`, { as: 'bytes' })).base64
+    png = (await $.fs.read(joinPath($.plugin.root, path), { as: 'bytes' })).base64
     pngs.set(path, png)
   }
   return png
@@ -360,12 +363,14 @@ async function boot($: Engine, surface: string | null): Promise<void> {
   companionChannel?.stop()
   companionChannel = undefined
   companionSent = ''
-  companionLive = true
-  companionHome = await $.env.get('HOME')
+  const home = await $.env.get('HOME'), profile = await $.env.get('USERPROFILE')
+  companionSupported = !isWindows(await $.env.get('OS'), home, profile) && (await $.fs.exists('/System/Library/CoreServices/SystemVersion.plist').catch(() => false))
+  companionLive = companionSupported
+  companionHome = companionLive ? homePath(home, profile) : undefined
   companionId = await $.session.id().catch(() => '')
   companionSession(await $.session.root().catch(() => ''))
   currentTask = null
-  if (companionHome !== undefined) {
+  if (companionLive && companionHome !== undefined) {
     const channel = new CompanionChannel({
       exists: path => $.fs.exists(path),
       write: (path, text) => $.fs.write(path, text),
@@ -373,7 +378,7 @@ async function boot($: Engine, surface: string | null): Promise<void> {
       now: () => $.clock.now(),
       submit: text => $.prompt.submit({ text, asUser: true }),
       clear: () => $.command.run({ command: 'clear', args: '' }),
-    }, companionId, `${companionHome}/${COMPANION_DIR}`, {
+    }, companionId, joinPath(companionHome, COMPANION_DIR), {
       running: running => { if (companionChannel === channel) companionActivity({ channel: running }) },
       seen: upto => { if (companionChannel === channel) companionSeen(upto) },
       ack: async id => {

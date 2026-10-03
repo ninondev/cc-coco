@@ -7,6 +7,7 @@ import { mock } from 'claude-code/testing'
 import type { On } from 'claude-code'
 import type { ClaudesamaView } from '../types'
 import { BOOK_FILES } from './book-files'
+import { WINDOWS_ROOTS } from './test-system'
 
 export const MORNING = Date.UTC(2026, 9, 2, 9, 0) // 09:00 in the UTC zone the tests set
 export const RECENT = { lastActive: MORNING - 60_000 } // seen a minute ago: no greeting
@@ -15,6 +16,7 @@ export const P = { isFullscreen: false, columns: 100 }
 export const SUMMARY = { role: 'user' as const, text: 'Summary of the conversation so far.', toolUses: [] }
 
 export type World = {
+  sessionRoot?: string
   settings?: Record<string, unknown>
   store?: Record<string, unknown>
   env?: Record<string, string>
@@ -63,7 +65,9 @@ export function band(columns: number, isWorking = false, maxRows = 30) {
 export function world(on: On, w: World = {}) {
   const clock = mock.clock(on, { now: MORNING })
   mock.store(on, w.store ?? {})
-  mock.env(on, w.env ?? { LANG: 'en_US.UTF-8', TERM: 'xterm-256color' })
+  const env = w.env ?? { LANG: 'en_US.UTF-8', TERM: 'xterm-256color' }
+  mock.env(on, WINDOWS_ROOTS && !env.HOME ? { ...env, USERPROFILE: 'C:\\Users\\windows' } : env)
+  if (w.sessionRoot || WINDOWS_ROOTS) on('session.root', () => ({ value: w.sessionRoot ?? 'C:\\Users\\windows\\project' }))
   const cells = new Map<string, { value: unknown; version: number }>() // the plugin's state, by key
   const live: {
     percent: number | undefined
@@ -109,7 +113,7 @@ export function world(on: On, w: World = {}) {
   // swaps the file's own PNG in).
   on('fs.read', ($, e) => {
     fileReads.push(e.path)
-    const words = /\/book\/([\w-]+\.json)$/.exec(e.path)
+    const words = /[\\/]book[\\/]([\w-]+\.json)$/.exec(e.path)
     if (words) {
       const text = BOOK_FILES[words[1] ?? '']
       return text === undefined ? { deny: `no such file: ${e.path}` } : { value: text }

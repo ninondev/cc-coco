@@ -1,3 +1,4 @@
+import { samePath } from './file-paths'
 // The companion feed: written only while the companion is installed, only when his record changes.
 
 import { describe, expect, test } from 'claude-code/testing'
@@ -8,7 +9,7 @@ const FEED = '/tmp/x/Library/Application Support/Claude-sama/view.json'
 
 function companion(on: Parameters<typeof world>[0], installed: boolean): string[] {
   const writes: string[] = []
-  on('fs.exists', () => ({ value: installed }))
+  on('fs.exists', ($, e) => ({ value: samePath(e.path, '/System/Library/CoreServices/SystemVersion.plist') || samePath(e.path, '/usr/bin/tail') || installed }))
   on('fs.write', ($, e) => {
     writes.push(e.path)
     return { value: undefined }
@@ -29,14 +30,14 @@ describe('the companion feed', () => {
     expect(writes.length).toBe(before)
     await $.turn.start({ text: 'go', turnId: 't1' })
     expect(writes.length).toBeGreaterThan(before)
-    expect(writes.every(path => path === FEED)).toBe(true)
+    expect(writes.every(path => samePath(path, FEED))).toBe(true)
   })
 
   test('an uninstall in the middle of a session stays done: the folder is never written again', async ($, on) => {
     const w = world(on, { store: RECENT, env: { LANG: 'en_US.UTF-8', TERM: 'xterm-256color', HOME: '/tmp/x' } })
     let installed = true
     const after: string[] = []
-    on('fs.exists', () => ({ value: installed }))
+    on('fs.exists', ($, e) => ({ value: samePath(e.path, '/System/Library/CoreServices/SystemVersion.plist') || samePath(e.path, '/usr/bin/tail') || installed }))
     on('fs.write', ($, e) => {
       if (!installed) after.push(e.path)
       return { value: undefined }

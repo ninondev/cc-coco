@@ -80,10 +80,10 @@ describe('the review of his book and marks', () => {
     await $.session.start(START)
     await $.turn.start({ text: 'go', turnId: 't1' })
     await $.tool.call({ tool: 'Read', file_path: '/tmp/a' })
-    expect(w.fileReads.filter(path => path.includes('/book/'))).toEqual([])
+    expect(w.fileReads.filter(path => /[\\/]book[\\/]/.test(path))).toEqual([])
     await run($, 'claudesama')
     await $.ui.mount({ surface: 'desktop', ...PANE })
-    expect(w.fileReads.filter(path => path.includes('/book/'))).toEqual([expect.stringMatching(/\/book\/en\.json$/)])
+    expect(w.fileReads.filter(path => /[\\/]book[\\/]/.test(path))).toEqual([expect.stringMatching(/[\\/]book[\\/]en\.json$/)])
   })
 
   test('the book takes the keyboard when the person opens it, and the terminal tabs show their keys', async ($, on) => {

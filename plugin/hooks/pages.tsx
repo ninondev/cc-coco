@@ -28,6 +28,7 @@ import { MARKS_DEFAULT, latest, marksFrom } from './latest'
 import type { Marks } from './latest'
 import { fortunesFor, localDay } from './mood'
 import { pngPath, spriteSource } from './pictures'
+import { homePath, isWindows, joinPath } from './paths'
 import { VOICE } from './voice'
 import { WORDS } from './words'
 import type { Lang } from './words'
@@ -36,6 +37,16 @@ import type { ClaudesamaBook, ClaudesamaView } from '../types'
 type Engine = EngineInterface
 type Timer = { cancel: () => void }
 type Draw = { day: string; rank: string; index: number }
+
+async function windows($: Engine): Promise<boolean> {
+  const [os, home, profile] = await Promise.all([$.env.get('OS'), $.env.get('HOME'), $.env.get('USERPROFILE')])
+  return isWindows(os, home, profile)
+}
+
+async function homeOf($: Engine): Promise<string | undefined> {
+  const home = await $.env.get('HOME')
+  return homePath(home, home ? undefined : await $.env.get('USERPROFILE'))
+}
 
 export const BOOK_PANE = 'claudesama-book'
 const BOOK = { plugin: 'claudesama', key: 'book' } as const
@@ -123,7 +134,7 @@ async function wordsFor($: Engine, lang: string): Promise<BookWords> {
   if (held) return held
   const read = async (code: string): Promise<unknown> => {
     try {
-      return JSON.parse(await $.fs.read(`${$.plugin.root}/book/${code}.json`))
+      return JSON.parse(await $.fs.read(joinPath($.plugin.root, 'book', `${code}.json`)))
     } catch {
       return undefined
     }
@@ -146,7 +157,7 @@ async function portraitOf($: Engine, frame: FrameName, height: number): Promise<
   if (source === undefined) {
     let png = pngs.get(frame)
     if (png === undefined) {
-      png = (await $.fs.read(`${$.plugin.root}/${pngPath(frame)}`, { as: 'bytes' })).base64
+      png = (await $.fs.read(joinPath($.plugin.root, pngPath(frame)), { as: 'bytes' })).base64
       pngs.set(frame, png)
     }
     source = spriteSource(height, png)
@@ -238,6 +249,7 @@ async function dataFor($: Engine, held: ClaudesamaBook, view: ClaudesamaView | u
 
 async function iconPlatform($: Engine, c: IconBook): Promise<'macos' | 'linux' | undefined> {
   return c.platform ??= (async () => {
+    if (await windows($)) return undefined
     if (await $.fs.exists('/System/Library/CoreServices/SystemVersion.plist').catch(() => false)) return 'macos'
     if (await $.fs.exists('/proc/sys/kernel/ostype').catch(() => false)) return 'linux'
     return undefined
@@ -253,7 +265,7 @@ export async function runIcon($: Engine, c: IconBook, action: 'status' | IconAct
     const os = await iconPlatform($, c)
     if (generation !== c.generation) return
     if (!os) { c.unavailable = true; c.state = 'unknown'; return }
-    const argv = ['sh', `${$.plugin.root}/bin/icon-${os}.sh`, action, '--report']
+    const argv = ['sh', joinPath($.plugin.root, 'bin', `icon-${os}.sh`), action, '--report']
     if (os === 'linux' && action !== 'status') argv.push('--replace-custom')
     const result = await $.process.run(argv, { timeoutMs: 30_000 })
     if (generation !== c.generation) return
@@ -272,26 +284,29 @@ export async function runIcon($: Engine, c: IconBook, action: 'status' | IconAct
 }
 
 export async function companionIsMac($: Engine, c: CompanionBook): Promise<boolean> {
-  return c.mac ??= $.fs.exists('/System/Library/CoreServices/SystemVersion.plist').catch(() => false)
+  return c.mac ??= (async () => {
+    if (await windows($)) return false
+    return $.fs.exists('/System/Library/CoreServices/SystemVersion.plist').catch(() => false)
+  })()
 }
 
 function companionVersion($: Engine, c: CompanionBook): Promise<string | undefined> {
-  return c.pluginVersion ??= $.fs.read(`${$.plugin.root}/.claude-plugin/plugin.json`).then(text => {
+  return c.pluginVersion ??= $.fs.read(joinPath($.plugin.root, '.claude-plugin', 'plugin.json')).then(text => {
     try { const v = JSON.parse(text).version; return typeof v === 'string' ? v : undefined } catch { return undefined }
   }, () => undefined)
 }
 
 export async function companionSnapshot($: Engine, c: CompanionBook): Promise<CompanionSnapshot> {
-  const home = await $.env.get('HOME')
+  const home = await homeOf($)
   const version = await companionVersion($, c)
   if (!home) return { folder: false, app: false, login: false, info: {}, version }
-  const folder = await $.fs.exists(`${home}/${COMPANION_DIR}`).catch(() => false)
-  const app = await $.fs.exists(`${home}/${COMPANION_APP}`).catch(() => false)
-  const login = await $.fs.exists(`${home}/${COMPANION_PLIST}`).catch(() => false)
+  const folder = await $.fs.exists(joinPath(home, COMPANION_DIR)).catch(() => false)
+  const app = await $.fs.exists(joinPath(home, COMPANION_APP)).catch(() => false)
+  const login = await $.fs.exists(joinPath(home, COMPANION_PLIST)).catch(() => false)
   let info: CompanionInfo = {}
   if (folder) {
     try {
-      const text = await $.fs.read(`${home}/${COMPANION_DIR}/companion.json`)
+      const text = await $.fs.read(joinPath(home, COMPANION_DIR, 'companion.json'))
       const raw: unknown = text.length <= 2048 ? JSON.parse(text) : undefined
       if (raw && typeof raw === 'object' && !Array.isArray(raw)) {
         const r = raw as Record<string, unknown>
@@ -320,16 +335,16 @@ export async function companionData($: Engine, c: CompanionBook, desktop: boolea
     const stage: CompanionStage = state === 'waiting' ? 'corner' : ['stopped', 'hidden', 'corner', 'following'].includes(state) ? state as CompanionStage : 'absent'
     if (c.stage?.state !== stage) {
       const path = STAGE_PNG[stage]
-      const png = path ? (await $.fs.read(`${$.plugin.root}/${path}`, { as: 'bytes' })).base64 : ''
+      const png = path ? (await $.fs.read(joinPath($.plugin.root, path), { as: 'bytes' })).base64 : ''
       if (generation !== c.generation) return data
       c.stage = { state: stage, source: companionStageSvg(stage, png) }
     }
     data.stage = { source: c.stage.source, altState: stage }
     if (['hidden', 'waiting', 'corner', 'following'].includes(state)) {
       if (!c.figures) {
-        const pixel = (await $.fs.read(`${$.plugin.root}/assets/pixel/01-idle-reading.png`, { as: 'bytes' })).base64
+        const pixel = (await $.fs.read(joinPath($.plugin.root, 'assets/pixel/01-idle-reading.png'), { as: 'bytes' })).base64
         if (generation !== c.generation) return data
-        const painted = (await $.fs.read(`${$.plugin.root}/assets/desktop/01-idle-reading.png`, { as: 'bytes' })).base64
+        const painted = (await $.fs.read(joinPath($.plugin.root, 'assets/desktop/01-idle-reading.png'), { as: 'bytes' })).base64
         if (generation !== c.generation) return data
         c.figures = Object.fromEntries(COMPANION_SIZES.map(size => [size, companionSizeSvg(size, size === 'tiny' || size === 'small' ? pixel : painted)]))
       }
@@ -356,12 +371,13 @@ export async function companionRun($: Engine, c: CompanionBook, argv: readonly s
 }
 
 export async function writeCompanionRequest($: Engine, c: CompanionBook, view: ClaudesamaView, request: CompanionRequest): Promise<boolean> {
-  const home = await $.env.get('HOME')
-  if (!home || !(await $.fs.exists(`${home}/${COMPANION_DIR}`))) return false
+  if (await windows($)) return false
+  const home = await homeOf($)
+  if (!home || !(await $.fs.exists(joinPath(home, COMPANION_DIR)))) return false
   const now = await $.clock.now(), session = await $.session.id(), desktop = (await $.session.surfaces()).includes('desktop')
-  if (!(await $.fs.exists(`${home}/${COMPANION_DIR}`))) return false
+  if (!(await $.fs.exists(joinPath(home, COMPANION_DIR)))) return false
   try {
-    await $.fs.write(`${home}/${COMPANION_FEED}`, companionRequestText(view, session, desktop, now, request))
+    await $.fs.write(joinPath(home, COMPANION_FEED), companionRequestText(view, session, desktop, now, request))
     return true
   } catch { return false }
 }
@@ -395,6 +411,7 @@ async function companionChecks($: Engine, c: CompanionBook, active: () => boolea
 }
 
 export async function pressCompanion($: Engine, c: CompanionBook, action: CompanionAction, view: ClaudesamaView, redraw: () => void, active: () => boolean): Promise<void> {
+  if (await windows($)) return
   const group = ['install', 'retry', 'updateButton'].includes(action) ? 'install' : action
   if (c.busy.has(group) || c.progress) return
   if (action === 'remove' || action === 'keep') { c.confirmed = action === 'remove'; redraw(); return }
@@ -412,7 +429,7 @@ export async function pressCompanion($: Engine, c: CompanionBook, action: Compan
   try {
     if (group === 'install' || action === 'trash') {
       c.progress = group as 'install' | 'trash'; redraw()
-      const r = await companionRun($, c, ['sh', `${$.plugin.root}/bin/companion-macos.sh`, group === 'install' ? 'install' : 'uninstall', '--report'], group === 'install' ? 'Install Claude-sama Companion' : 'Move Claude-sama Companion to the Trash', 600_000)
+      const r = await companionRun($, c, ['sh', joinPath($.plugin.root, 'bin/companion-macos.sh'), group === 'install' ? 'install' : 'uninstall', '--report'], group === 'install' ? 'Install Claude-sama Companion' : 'Move Claude-sama Companion to the Trash', 600_000)
       if (r.kind === 'ran') {
         const lines = r.stdout.trim().split(/\r?\n/)
         const report = /^result: (ok|no-tools|old-tools|failed|not-mac)$/.exec(lines[lines.length - 1] ?? '')?.[1]
@@ -587,8 +604,11 @@ export function registerBook(on: On): void {
       marks: marks => void setMarks($, marks),
     }
     if (held.page === 'settings') {
-      data.icon = iconBook.data()
-      press.icon = action => runIcon($, iconBook, action, () => redrawSoon($))
+      data.iconSupported = !(await windows($))
+      if (data.iconSupported) {
+        data.icon = iconBook.data()
+        press.icon = action => runIcon($, iconBook, action, () => redrawSoon($))
+      }
     }
     const columns = e.props.bodyColumns
     if (held.page === 'settings' && (e.surface === 'desktop' || e.surface === 'terminal') && (await companionIsMac($, companionBook))) {

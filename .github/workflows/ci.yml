@@ -64,7 +64,9 @@ jobs:
           done
 
       - name: Run the mod tests
-        run: python3 tools/run-tests.py
+        run: |
+          python3 tools/run-tests.py
+          python3 tools/run-tests.py --windows-roots
 
   windows:
     name: check (Windows, experimental)
@@ -112,4 +114,7 @@ jobs:
           done
 
       - name: Run the mod tests
-        run: python tools/run-tests.py
+        run: |
+          python tools/run-tests.py
+          if ($LASTEXITCODE -ne 0) { exit $LASTEXITCODE }
+          python tools/run-tests.py --windows-roots

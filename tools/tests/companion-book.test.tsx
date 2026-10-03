@@ -1,3 +1,4 @@
+import { samePath, pathPattern, slashPath } from './file-paths'
 // His companion controls, mounted on both surfaces; program/permission/clock behavior also
 // checked with a small injected engine so no test can touch a real Mac or its HOME.
 import { describe, expect, test } from 'claude-code/testing'
@@ -20,19 +21,19 @@ function fixture(on: On, options: { mac?: boolean; folder?: boolean; app?: boole
   const state = { folder: options.folder ?? true, app: options.app ?? true, login: options.login ?? false, info: options.info ?? { running: true, accessibility: true, size: 'medium', version: '1' }, report: options.report ?? 'ok' }
   const records: Record<string, unknown>[] = [], commands: string[][] = [], reads: string[] = []
   let requestFileExists = false
-  on('fs.exists', ($, e) => ({ value: e.path === '/System/Library/CoreServices/SystemVersion.plist' ? options.mac !== false : e.path === FOLDER ? state.folder : e.path === APP ? state.app : e.path === PLIST ? state.login : e.path === `${FOLDER}/requests.jsonl` ? requestFileExists : false }))
-  on('fs.read', { path: INFO }, ($, e) => { reads.push(e.path); return options.missingRecord ? { deny: 'no companion record yet' } : { value: JSON.stringify(state.info) } })
-  on('fs.read', { path: /\/\.claude-plugin\/plugin\.json$/ }, () => ({ value: '{"version":"1"}' }))
+  on('fs.exists', ($, e) => ({ value: samePath(e.path, '/System/Library/CoreServices/SystemVersion.plist') ? options.mac !== false : samePath(e.path, '/usr/bin/tail') ? true : samePath(e.path, FOLDER) ? state.folder : samePath(e.path, APP) ? state.app : samePath(e.path, PLIST) ? state.login : samePath(e.path, `${FOLDER}/requests.jsonl`) ? requestFileExists : false }))
+  on('fs.read', { path: pathPattern(INFO) }, ($, e) => { reads.push(e.path); return options.missingRecord ? { deny: 'no companion record yet' } : { value: JSON.stringify(state.info) } })
+  on('fs.read', { path: /[\\/]\.claude-plugin[\\/]plugin\.json$/ }, () => ({ value: '{"version":"1"}' }))
   on('fs.write', ($, e) => {
-    if (e.path === `${FOLDER}/requests.jsonl`) {
+    if (samePath(e.path, `${FOLDER}/requests.jsonl`)) {
       expect(requestFileExists).toBe(false); expect(e.text).toBe(''); requestFileExists = true
       return { value: undefined }
     }
-    expect(e.path).toBe(FEED); records.push(JSON.parse(e.text)); return { value: undefined }
+    expect(samePath(e.path, FEED)).toBe(true); records.push(JSON.parse(e.text)); return { value: undefined }
   })
   on('session.id', () => ({ value: 's1' }))
   on('session.surfaces', () => ({ value: ['desktop'] }))
-  on('process.run', async ($, e) => { if (e.argv[1]?.includes('/bin/icon-')) return { value: { exitCode: 0, stdout: 'icon: stock\n', stderr: '', isStdoutTruncated: false, isStderrTruncated: false } }; commands.push([...e.argv]); await options.hold?.(); if (options.processThrows) throw new Error('direct process unavailable'); return { value: { exitCode: state.report === 'ok' ? 0 : 1, stdout: `build message\nresult: ${state.report}\n`, stderr: '', isStdoutTruncated: false, isStderrTruncated: false } } })
+  on('process.run', async ($, e) => { if (slashPath(e.argv[1] ?? '').includes('/bin/icon-')) return { value: { exitCode: 0, stdout: 'icon: stock\n', stderr: '', isStdoutTruncated: false, isStderrTruncated: false } }; commands.push([...e.argv]); await options.hold?.(); if (options.processThrows) throw new Error('direct process unavailable'); return { value: { exitCode: state.report === 'ok' ? 0 : 1, stdout: `build message\nresult: ${state.report}\n`, stderr: '', isStdoutTruncated: false, isStderrTruncated: false } } })
   const w = world(on, { store: RECENT, env: { LANG: 'en_US.UTF-8', TERM: 'xterm-256color', HOME } })
   return { w, state, records, commands, reads }
 }
