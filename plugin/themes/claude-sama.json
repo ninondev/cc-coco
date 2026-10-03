@@ -1,0 +1,23 @@
+{
+  "name": "Claude-sama",
+  "base": "dark",
+  "overrides": {
+    "claude": "#E68F6F",
+    "claudeShimmer": "#F4C1B2",
+    "text": "#FAEEE9",
+    "inactive": "#B4A29C",
+    "inactiveShimmer": "#DCCFCA",
+    "subtle": "#6B5550",
+    "suggestion": "#F0A992",
+    "promptBorder": "#CC7556",
+    "promptBorderShimmer": "#E68F6F",
+    "userMessageBackground": "#2B2220",
+    "userMessageBackgroundHover": "#382C29",
+    "bashMessageBackgroundColor": "#33292A",
+    "selectionBg": "#5C3426",
+    "briefLabelClaude": "#E68F6F",
+    "rate_limit_fill": "#E68F6F",
+    "rate_limit_empty": "#4A3430",
+    "clawd_body": "#E68F6F"
+  }
+}

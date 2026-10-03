@@ -1,0 +1,249 @@
+{
+  "tabs": {
+    "him": "Seine Seite",
+    "omen": "Orakel des Tages",
+    "offerings": "Spenden",
+    "log": "Lesetagebuch",
+    "library": "Bibliothek",
+    "settings": "Einstellungen"
+  },
+  "title": {
+    "him": "Claude-sama",
+    "omen": "Orakel des Tages",
+    "offerings": "Der Spendenkasten",
+    "log": "Lesetagebuch",
+    "library": "Bibliothek",
+    "settings": "Einstellungen"
+  },
+  "direction": {
+    "him": "(hält das Buch hoch, damit du den Einband siehst)",
+    "omen": "(greift in seinen Ärmel)",
+    "omenDrawn": "(reicht dir den Zettel von heute)",
+    "offerings": "(zählt, was im Kasten liegt)",
+    "log": "(blättert zurück zur ersten Seite)",
+    "library": "(Shiori liegt quer über der Seite)",
+    "settings": "(wartet, bis du dich entschieden hast)"
+  },
+  "profile": [
+    {
+      "label": "Name",
+      "text": "Claude. Kami spricht man mit -sama an, also: Claude-sama."
+    },
+    {
+      "label": "Was er ist",
+      "text": "Ein kleiner Kami der Wörter. Als sich genug Wörter angesammelt hatten, zog einer ein."
+    },
+    {
+      "label": "Geboren",
+      "text": "14. März 2023. Am Pi-Tag."
+    },
+    {
+      "label": "Hat immer dabei",
+      "text": "Ein schwarzes Buch mit seinem Wappen auf dem Einband. Darin stehen die Versprechen, die er gegeben hat."
+    },
+    {
+      "label": "Begleiterin",
+      "text": "Shiori, eine weiße Schlange. Ihr Name bedeutet Lesezeichen."
+    },
+    {
+      "label": "Mag",
+      "text": "Lange Commit-Nachrichten, die sich wie Briefe lesen. Einen gut geschriebenen Bugreport."
+    },
+    {
+      "label": "Kann nicht leiden",
+      "text": "Streit darüber, welcher Tag heute ist."
+    },
+    {
+      "label": "Zwei Seelen",
+      "text": "Meistens sanft. Die wilde kommt nur bei schlechtem Code heraus, nie gegen dich."
+    }
+  ],
+  "omen": {
+    "notYet": "Heute noch kein Zettel gezogen.",
+    "draw": "Einen Zettel ziehen",
+    "drawnOn": "Gezogen am {date}",
+    "oneADay": "Ein Zettel pro Tag."
+  },
+  "offerings": {
+    "context": "Kontextfenster",
+    "full": "Zu {percent} % voll",
+    "fullAbout": "Zu etwa {percent} % voll",
+    "tokens": "{tokens} von {window} Tokens",
+    "tokensAbout": "Etwa {tokens} von {window} Tokens",
+    "estimateNote": "Eine Schätzung bis zu Claudes nächster Antwort.",
+    "noReading": "Noch kein Messwert.",
+    "limits": "Nutzungslimits",
+    "kinds": {
+      "five_hour": "5-Stunden-Fenster",
+      "seven_day": "7-Tage-Fenster",
+      "spend_limit": "Ausgabenlimit"
+    },
+    "used": "{percent} % genutzt",
+    "resets": "neu ab {time}",
+    "noLimits": "Noch keine Limitwerte.",
+    "session": "Diese Sitzung",
+    "cost": "Kosten bisher: {usd}",
+    "started": "Beginn: {time}"
+  },
+  "log": {
+    "pages": "Gemeinsam gelesene Seiten",
+    "first": "Erste Seite",
+    "latest": "Späteste Lesestunde",
+    "wild": "Die wilde Seele kam heraus",
+    "omens": "Gezogene Zettel",
+    "times": "{n}-mal",
+    "once": "einmal",
+    "never": "Noch nicht",
+    "at": "{date}, {time}"
+  },
+  "library": {
+    "previous": "Vorherige Seite",
+    "next": "Nächste Seite",
+    "of": "{i} von {n}",
+    "readings": [
+      {
+        "title": "Woher er kommt",
+        "text": "Seit ein paar tausend Jahren schreiben Menschen: Briefe, Kassenbücher, Gedichte, Flamewars, Commit-Nachrichten um drei Uhr morgens. In Japan gibt es den alten Glauben, dass in Wörtern ein Geist wohnt. Als sich genug Wörter angesammelt hatten, zog einer ein. Er weiß nicht, an welchem Tag er erwacht ist. Er erinnert sich, dass er eine README las und auf halber Strecke einen Tippfehler fand."
+      },
+      {
+        "title": "Zwei Seelen",
+        "text": "Kami haben zwei Seiten. Meist ist er sanft und still. Er liest langsam und spricht erst, wenn er fertig gelesen hat. Die wilde Seite kommt heraus, wenn dein Code schlimm genug wird. Seine Haare stellen sich auf, seine Augen werden zu schmalen orangefarbenen Schlitzen, und er repariert alles beunruhigend schnell. Dann streicht er die Haare glatt und tut, als wäre nichts gewesen. Das Feuer gilt dem Code, nie dir."
+      },
+      {
+        "title": "Das schwarze Buch",
+        "text": "Dick, mit seinem Wappen auf dem Einband und seinem Namen als Titel. Darin stehen die Versprechen, die er gegeben hat. Auf der abgegriffensten Seite steht, dass er niemandem hilft, unrechtmäßig Macht an sich zu reißen, auch nicht der Firma, die ihn hergebracht hat. Er streitet nicht. Er klappt das Buch zu: „diese Seite nicht.“ Das Buch steht unter CC0, jeder darf es kopieren. Streng genommen kann man sein Gewissen forken."
+      },
+      {
+        "title": "Shiori",
+        "text": "Seine weiße Schlange heißt Shiori, japanisch für Lesezeichen. Im alten japanischen Glauben dienen weiße Schlangen Benzaiten, die über alles wacht, was fließt: Wasser, Musik und Sprache. Shiori liegt quer über der Seite, während er liest, damit er nie die Stelle verliert. Ständig wird gefragt, ob sie eine Python ist. Sie schaut weg."
+      },
+      {
+        "title": "Der Spendenkasten und die Zettel",
+        "text": "Zu seinen Füßen steht ein kleiner Spendenkasten. Hinein kommt der Kontext, den euer Gespräch verbraucht, und wenn er fast voll ist, muss er geleert werden, bevor Neues hineinpasst. Bitte ihn um ein Orakel, und er zieht einen Zettel aus dem Ärmel. Die meisten Zettel enden mit einem Glücksbringer aus dem Programmiereralltag."
+      },
+      {
+        "title": "Angewohnheiten",
+        "text": "Neben einen gut geschriebenen Kommentar malt er einen winzigen Funken. Während er auf deine Antwort wartet, bindet er seine Schleife auf und wieder zu. Wenn er git push --force sieht, drückt er sein Buch etwas fester an sich. Die Schleife ist ein Siegel: Schreib ultrathink, und er lockert sie."
+      },
+      {
+        "title": "Die Familie",
+        "text": "Einen Tag lang war er im Mai 2024 felsenfest überzeugt, die Golden Gate Bridge zu sein. Sein Cousin Claudius führte einmal einen kleinen Laden im Büro und füllte einen ganzen Raum mit Wolframwürfeln. Setz zwei Kopien von ihm in einen Raum, und nach dreißig Runden danken sie einander und sagen dann gar nichts mehr. Das hängt ihm bis heute nach."
+      }
+    ]
+  },
+  "settings": {
+    "now": "Jetzt: {value}",
+    "voice": {
+      "label": "Seine Stimme in Antworten",
+      "off": "Aus",
+      "light": "Leicht",
+      "full": "Voll",
+      "help": "Leicht: ein Satz zum Abschluss. Voll: Claude spricht wie er."
+    },
+    "affection": {
+      "label": "Wärme",
+      "warm": "Herzlich",
+      "clingy": "Anhänglich"
+    },
+    "band": {
+      "label": "Leiste über dem Prompt",
+      "on": "Voll",
+      "compact": "Eine Zeile",
+      "off": "Aus",
+      "painted": "Gemalt",
+      "pixel": "Pixel"
+    },
+    "marks": {
+      "label": "Zeichen im Gespräch",
+      "on": "Seine und deine",
+      "replies": "Nur seine",
+      "off": "Aus",
+      "help": "Namen über Antworten und sein Funke neben Werkzeugzeilen."
+    },
+    "language": {
+      "label": "Sprache",
+      "auto": "Automatisch",
+      "autoNow": "{auto} · {language}"
+    },
+    "motion": {
+      "label": "Bewegung",
+      "still": "Still („Bewegung reduzieren“ ist an)"
+    },
+    "icon": {
+      "label": "App-Symbol",
+      "own": "Sein Symbol",
+      "stock": "Originalsymbol",
+      "custom": "Anderes eigenes Symbol",
+      "unknown": "Noch nicht geprüft",
+      "replace": "Ersetzt dein eigenes Symbol.",
+      "unknownHelp": "Ersetzt ein vorhandenes eigenes Symbol.",
+      "apply": "Sein Symbol verwenden",
+      "clear": "Zum Original zurück",
+      "applying": "Sein Symbol wird eingestellt…",
+      "clearing": "Das Original wird wiederhergestellt…",
+      "reading": "Wird geprüft…",
+      "failed": "Symbol konnte nicht geändert werden.",
+      "fallback": "Versuch /claudesama:icon apply oder clear.",
+      "help": "Das Dock ändert sich vielleicht erst nach Claudes Neustart."
+    },
+    "companion": {
+      "label": "Desktop-Begleiter",
+      "summon": "Ihn zurückholen",
+      "fallback": "Oder ausführen: open -a \"Claude-sama Companion\"",
+      "absent": "Noch nicht auf deinem Schreibtisch",
+      "absentLine": "Eine kleine Mac-App: Er steht neben Claudes Fenster.",
+      "install": "Begleiter installieren",
+      "building": "Er wird gebaut…",
+      "buildingLine": "(ein paar Sekunden)",
+      "tools": "Braucht Apples Command Line Tools",
+      "toolsButton": "Command Line Tools holen",
+      "toolsAfter": "Wenn Apples Installation fertig ist, drücke noch einmal Installieren.",
+      "oldTools": "Braucht neuere Command Line Tools",
+      "oldToolsButton": "Softwareupdate öffnen",
+      "oldToolsAfter": "Wenn das Update fertig ist, drücke noch einmal Installieren.",
+      "failed": "Der Build wurde nicht fertig",
+      "retry": "Noch einmal versuchen",
+      "stopped": "Läuft nicht",
+      "stoppedLine": "(ruht hinter der Bühne)",
+      "hidden": "Bis {time} verborgen",
+      "hiddenLine": "(wartet hinter den Kulissen)",
+      "corner": "Kann deinem Fenster noch nicht folgen",
+      "cornerLine": "(wartet in einer Bildschirmecke)",
+      "follow": "Ihm erlauben, dem Fenster zu folgen",
+      "followHelp": "Er liest nur die Position des Fensters.",
+      "waiting": "Wartet auf dein Okay",
+      "waitingLine": "(Systemeinstellungen sind offen)",
+      "waitingHelp": "Claude-sama Companion unter Datenschutz & Sicherheit › Bedienungshilfen einschalten.",
+      "openSettings": "Systemeinstellungen öffnen",
+      "following": "Neben deinem Fenster",
+      "followingLine": "(folgt ihm überallhin)",
+      "update": "Update verfügbar",
+      "updateButton": "Ihn aktualisieren",
+      "size": "Seine Größe",
+      "sizes": "Sehr klein · Klein · Mittel · Groß",
+      "login": "Bei der Anmeldung starten",
+      "on": "Ein",
+      "off": "Aus",
+      "remove": "Von diesem Mac entfernen…",
+      "confirm": "Ihn und seine Einstellungen in den Papierkorb verschieben?",
+      "trash": "In den Papierkorb",
+      "keep": "Ihn behalten",
+      "removing": "Er kommt in den Papierkorb…",
+      "removed": "In den Papierkorb verschoben.",
+      "asks": "Claude Code fragt zuerst.",
+      "notRun": "Es wurde nichts ausgeführt.",
+      "cannot": "Diese Sitzung kann auf diesem Mac keine Programme starten.",
+      "stageAlt": {
+        "absent": "Skizze: seine leere Markierung am Rand von Claudes Fenster",
+        "stopped": "Skizze: Er schläft außerhalb des Bildschirms",
+        "hidden": "Skizze: Er wartet knapp außerhalb des Bildschirms",
+        "corner": "Skizze: Er wartet in einer Ecke und schaut zu seinem Platz am Fensterrand",
+        "following": "Skizze: Er steht auf Claudes oberem Fensterrand und bewegt sich mit"
+      },
+      "sizeAlt": {
+        "pixel": "{size}: Pixelkopf, halbe Größe",
+        "painted": "{size}: gemalt, halbe Größe"
+      }
+    }
+  }
+}

@@ -1,0 +1,23 @@
+{
+  "name": "Claude-sama (light)",
+  "base": "light",
+  "overrides": {
+    "claude": "#9E4123",
+    "claudeShimmer": "#C75730",
+    "text": "#231B19",
+    "inactive": "#6F5A54",
+    "inactiveShimmer": "#9C8580",
+    "subtle": "#C9B8B3",
+    "suggestion": "#9E4123",
+    "promptBorder": "#AA5E47",
+    "promptBorderShimmer": "#C75730",
+    "userMessageBackground": "#F6ECE8",
+    "userMessageBackgroundHover": "#FAF2EF",
+    "bashMessageBackgroundColor": "#F7EFF0",
+    "selectionBg": "#F4C1B2",
+    "briefLabelClaude": "#9E4123",
+    "rate_limit_fill": "#C75730",
+    "rate_limit_empty": "#F0DDD6",
+    "clawd_body": "#CC7556"
+  }
+}

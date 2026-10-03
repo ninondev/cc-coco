@@ -1,0 +1,31 @@
+# macOS and editors
+.DS_Store
+*.swp
+*~
+
+# logs, scratch and test output
+*.log
+*.tmp
+*.bak
+node_modules/
+__pycache__/
+plugin/tests/out/
+plugin/tests/tmp/
+plugin/tests/.tmp/
+plugin/tests/scratch/
+plugin/tests/.scratch/
+plugin/tests/output/
+plugin/tests/*.actual.*
+# written by tools/run-tests.py in its scratch copy only
+tools/tests/book-files.ts
+
+# written by Claude Code into a plugin it loads from a folder (regenerated per version)
+plugin/.claude-plugin/types/
+plugin/tsconfig.json
+
+# local-only maintainer files (never public)
+.env
+.env.*
+
+# README pictures live on the `media` branch (raw URLs), so plugin installs stay small
+/media/

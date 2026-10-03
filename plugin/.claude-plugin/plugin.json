@@ -1,0 +1,19 @@
+{
+  "name": "claudesama",
+  "displayName": "Claude-sama",
+  "version": "0.1.0",
+  "description": "Unofficial fan skin for Claude Code, not affiliated with Anthropic. Claude-sama, a small kami of words, reads beside you above the prompt: expressions that follow your session, an offering box for the context window, a daily omen, and a theme. Terminal and desktop.",
+  "author": {
+    "name": "ninondev"
+  },
+  "repository": "https://github.com/ninondev/claude-sama",
+  "license": "SEE LICENSE IN LICENSE AND ART-LICENSE.md",
+  "keywords": [
+    "skin",
+    "mascot",
+    "theme",
+    "mod",
+    "moe"
+  ],
+  "types": "./types/index.d.ts"
+}

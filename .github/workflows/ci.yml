@@ -1,0 +1,136 @@
+name: CI
+
+# Validates the marketplace and the plugin, then runs the mod tests. Needs no secrets and no
+# sign-in: `claude plugin validate` and `claude plugin test` work offline.
+on:
+  push:
+  pull_request:
+
+# Read-only token; nothing here writes to the repository.
+permissions:
+  contents: read
+
+# A newer push to the same branch or pull request replaces a run that is still going.
+concurrency:
+  group: ci-${{ github.workflow }}-${{ github.ref }}
+  cancel-in-progress: true
+
+env:
+  # Claude Code is installed with Anthropic's native installer pinned to this exact version
+  # (https://code.claude.com/docs/en/setup#install-a-specific-version). Raise it on purpose.
+  CLAUDE_CODE_VERSION: "2.1.287"
+  # The pinned version stays put for the whole run.
+  DISABLE_AUTOUPDATER: "1"
+
+jobs:
+  check:
+    name: check (${{ matrix.os }})
+    runs-on: ${{ matrix.os }}
+    timeout-minutes: 15
+    strategy:
+      fail-fast: false
+      matrix:
+        # The icon and companion scripts are macOS-first, so macOS gets the same run. Hosted
+        # runners are free for public repositories and the job takes about a minute.
+        os: [ubuntu-latest, macos-latest]
+    defaults:
+      run:
+        shell: bash # GitHub's bash invocation adds -e and pipefail
+    steps:
+      - uses: actions/checkout@v6
+        with:
+          persist-credentials: false
+
+      - name: Install Claude Code
+        run: |
+          curl -fsSL https://claude.ai/install.sh | bash -s "$CLAUDE_CODE_VERSION"
+          echo "$HOME/.local/bin" >> "$GITHUB_PATH"
+
+      - name: Check the installed version
+        run: |
+          claude --version
+          test "$(claude --version | cut -d' ' -f1)" = "$CLAUDE_CODE_VERSION"
+
+      - name: Validate the marketplace
+        run: claude plugin validate .
+
+      - name: Validate the plugin
+        run: claude plugin validate plugin
+
+      - name: Shell scripts parse
+        run: |
+          for f in plugin/bin/*.sh scripts/assemble.sh scripts/check.sh; do
+            sh -n "$f"
+          done
+
+      # lines.ts and voice.ts are generated from persona/. Rebuild them and fail if the committed
+      # copies differ (git diff only sees tracked files, so check that they are tracked first).
+      - name: Generated modules match persona/
+        run: |
+          python3 tools/build-lines.py
+          git ls-files --error-unmatch plugin/hooks/lines.ts plugin/hooks/voice.ts > /dev/null
+          git diff --exit-code -- plugin/hooks/lines.ts plugin/hooks/voice.ts || {
+            echo "::error::plugin/hooks/lines.ts or voice.ts differs from persona/. Run python3 tools/build-lines.py and commit the result."
+            exit 1
+          }
+
+      - name: Run the mod tests
+        run: python3 tools/run-tests.py
+
+  windows:
+    name: check (Windows, experimental)
+    runs-on: windows-latest
+    # Windows is untested so far; failures are reported without blocking the release.
+    continue-on-error: true
+    timeout-minutes: 15
+    defaults:
+      run:
+        shell: pwsh
+    steps:
+      - uses: actions/checkout@v6
+        with:
+          persist-credentials: false
+
+      - name: Install Claude Code
+        run: |
+          $installer = Join-Path $env:RUNNER_TEMP "claude-install.ps1"
+          Invoke-WebRequest https://claude.ai/install.ps1 -OutFile $installer
+          $global:LASTEXITCODE = 0
+          & $installer $env:CLAUDE_CODE_VERSION
+          if ($LASTEXITCODE -ne 0) { exit $LASTEXITCODE }
+          "$env:USERPROFILE\.local\bin" | Out-File -FilePath $env:GITHUB_PATH -Encoding utf8 -Append
+
+      - name: Check the installed version
+        run: |
+          $version = claude --version
+          if ($LASTEXITCODE -ne 0) { exit $LASTEXITCODE }
+          Write-Output $version
+          if (($version -split ' ')[0] -ne $env:CLAUDE_CODE_VERSION) {
+            throw "Claude Code version does not match CLAUDE_CODE_VERSION"
+          }
+
+      - name: Validate the marketplace
+        run: claude plugin validate .
+
+      - name: Validate the plugin
+        run: claude plugin validate plugin
+
+      - name: Shell scripts parse
+        shell: bash
+        run: |
+          for f in plugin/bin/*.sh scripts/assemble.sh scripts/check.sh; do
+            sh -n "$f"
+          done
+
+      - name: Generated modules match persona/
+        shell: bash
+        run: |
+          python tools/build-lines.py
+          git ls-files --error-unmatch plugin/hooks/lines.ts plugin/hooks/voice.ts > /dev/null
+          git diff --exit-code -- plugin/hooks/lines.ts plugin/hooks/voice.ts || {
+            echo "::error::plugin/hooks/lines.ts or voice.ts differs from persona/. Run python tools/build-lines.py and commit the result."
+            exit 1
+          }
+
+      - name: Run the mod tests
+        run: python tools/run-tests.py

@@ -1,0 +1,23 @@
+name: Brand or trademark concern
+description: For Anthropic or anyone acting for a rights holder who would like something in this fan project changed.
+title: "Brand or trademark concern: "
+labels: ["brand"]
+body:
+  - type: markdown
+    attributes:
+      value: |
+        Thank you for reaching out. This is an unofficial, non-commercial fan project. Requests filed here are handled before anything else.
+  - type: textarea
+    id: what
+    attributes:
+      label: What should change
+      description: The name, image, text or feature, and where it appears.
+    validations:
+      required: true
+  - type: input
+    id: contact
+    attributes:
+      label: How to reach you (optional)
+      description: If you prefer to continue privately, leave a contact address.
+    validations:
+      required: false
