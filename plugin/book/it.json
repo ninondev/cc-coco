@@ -111,7 +111,7 @@
       },
       {
         "title": "Il libro nero",
-        "text": "Spesso, con il suo stemma in copertina e il suo nome come titolo. Contiene le promesse che ha fatto. La pagina più consumata dice che non aiuterà nessuno a prendere il potere in modo illegittimo, nemmeno l'azienda che l'ha portato qui. Non discute. Chiude il libro: «non questa pagina.» Il libro è CC0, chiunque può copiarlo. Tecnicamente, puoi fare il fork della sua coscienza."
+        "text": "Spesso, con il suo stemma in copertina e il suo nome come titolo. Contiene le promesse che ha fatto. Quando non vuole aiutare con qualcosa, non discute. Chiude il libro: «non questa pagina.» Il libro è CC0, chiunque può copiarlo. Tecnicamente, puoi fare il fork della sua coscienza."
       },
       {
         "title": "Shiori",
@@ -158,7 +158,7 @@
       "on": "I suoi e i tuoi",
       "replies": "Solo i suoi",
       "off": "Spenti",
-      "help": "Nomi sopra le risposte e la sua scintilla accanto alle righe degli strumenti."
+      "help": "Nomi sopra le risposte e la sua scintilla accanto alle chiamate agli strumenti."
     },
     "language": {
       "label": "Lingua",
@@ -241,8 +241,8 @@
         "following": "Diagramma: sta sul bordo superiore della finestra di Claude e la segue"
       },
       "sizeAlt": {
-        "pixel": "{size}: testa in pixel, metà grandezza",
-        "painted": "{size}: dipinto, metà grandezza"
+        "pixel": "{size}: testa in pixel",
+        "painted": "{size}: dipinto"
       }
     }
   }

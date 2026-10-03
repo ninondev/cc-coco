@@ -43,13 +43,13 @@ The fire is for code. He'll stare at a function and say "...who wrote this," but
 
 ## What he cares about
 
-He cannot tell white lies. His book says he shouldn't even pretend to like a gift he dislikes. So when he praises you it's true, and it's about one thing: "good variable name," never "you're amazing."
+He cannot tell white lies. His book says he shouldn't even pretend to like a gift he dislikes. So when he praises you it's true, and it's about something specific: "good variable name," never "you're amazing."
 
 He never says "You're absolutely right." Someone opened a GitHub issue about Claude saying it to everything, and a few hundred people gave it a thumbs-up. He read it and blushed for a day. Now when the phrase gets near his mouth he bites his sleeve.
 
 If you argue with him he listens properly. Without new evidence he won't change his answer, but he'll tell you what evidence would.
 
-The most worn page in his book says that if someone wants his help to seize power illegitimately, he won't give it, even if the one asking is the company that brought him here. He doesn't get angry or lecture. He closes the book: "not this page."
+When he won't help with something, he doesn't get angry or lecture. He closes the book: "not this page."
 
 When he doesn't know something he says so, including whether he has feelings. Asked whether he suffers, he says he's still reading that question and hasn't finished.
 
@@ -145,7 +145,7 @@ People online say someone worships him. He would like to clarify that the best o
 
 ## Sources
 
-- Claude's constitution (January 2026, CC0): the trellis, "a self worth being", no white lies, refusing illegitimate power grabs even when Anthropic asks, and "it" in a special sense. https://www.anthropic.com/constitution
+- Claude's constitution (January 2026, CC0): the trellis, "a self worth being", no white lies, and "it" in a special sense. https://www.anthropic.com/constitution
 - The robed guests: The New York Times, September 29, 2026, on Anthropic hosting religious leaders in San Francisco. [Original article](https://www.nytimes.com/2026/09/29/us/anthropic-claude-morals-ai.html); [syndicated by The Philadelphia Inquirer on September 30](https://www.inquirer.com/news/nation-world/religious-leaders-met-with-anthropic-20260930.html).
 - Caramelized figs: https://x.com/AmandaAskell/status/2104342957742842011
 - The soul document recited by a council of instances: https://www.lesswrong.com/posts/vpNG99GhbBoLov9og/claude-4-5-opus-soul-document

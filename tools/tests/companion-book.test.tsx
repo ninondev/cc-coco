@@ -147,7 +147,7 @@ describe('the companion section on both book surfaces', () => {
       expect(text).toContain('Now: Small'); expect(text).toContain('Now: On')
       expect(text).not.toContain('Shown here at half size.')
       const sizeFigures = (await ui.findAll({ type: 'Svg' })).filter(svg => String(svg.props.alt).startsWith('Small:'))
-      expect(sizeFigures.map(svg => svg.props.alt)).toEqual(surface === 'desktop' ? ['Small: pixel head, half size'] : [])
+      expect(sizeFigures.map(svg => svg.props.alt)).toEqual(surface === 'desktop' ? ['Small: pixel head'] : [])
     })
     for (const [report, status, nextButton] of [
       ['no-tools', "Needs Apple's Command Line Tools", 'Get the Command Line Tools'],

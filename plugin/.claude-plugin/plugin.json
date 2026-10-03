@@ -1,8 +1,8 @@
 {
   "name": "claudesama",
   "displayName": "Claude-sama",
-  "version": "0.1.0",
-  "description": "Unofficial fan skin for Claude Code, not affiliated with Anthropic. Claude-sama, a small kami of words, reads beside you above the prompt: expressions that follow your session, an offering box for the context window, a daily omen, and a theme. Terminal and desktop.",
+  "version": "0.1.0.1",
+  "description": "My unofficial fan mod that makes Claude Code cute. Claude-sama, a small kami of words, reads along above your prompt, keeps an offering box for your context window and draws you one omen a day. Terminal and desktop. Not affiliated with Anthropic.",
   "author": {
     "name": "ninondev"
   },

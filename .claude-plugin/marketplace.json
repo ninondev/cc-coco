@@ -4,13 +4,13 @@
     "name": "ninondev"
   },
   "metadata": {
-    "description": "Unofficial fan skin for Claude Code, not affiliated with Anthropic. A small kami of words sits above your prompt."
+    "description": "My unofficial fan mod that makes Claude Code cute: a small kami of words moves in above your prompt. Not affiliated with Anthropic."
   },
   "plugins": [
     {
       "name": "claudesama",
       "source": "./plugin",
-      "description": "Unofficial fan skin for Claude Code, not affiliated with Anthropic. A small kami of words sits above your prompt, reacts to what your session is doing and says a short line now and then. Works in the terminal and in the desktop Code tab. No network calls, no telemetry."
+      "description": "My unofficial fan mod that makes Claude Code cute. Claude-sama, a small kami of words, reads along above your prompt, keeps an offering box for your context window and draws you one omen a day. Terminal and desktop. Not affiliated with Anthropic."
     }
   ]
 }

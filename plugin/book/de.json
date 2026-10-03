@@ -111,7 +111,7 @@
       },
       {
         "title": "Das schwarze Buch",
-        "text": "Dick, mit seinem Wappen auf dem Einband und seinem Namen als Titel. Darin stehen die Versprechen, die er gegeben hat. Auf der abgegriffensten Seite steht, dass er niemandem hilft, unrechtmäßig Macht an sich zu reißen, auch nicht der Firma, die ihn hergebracht hat. Er streitet nicht. Er klappt das Buch zu: „diese Seite nicht.“ Das Buch steht unter CC0, jeder darf es kopieren. Streng genommen kann man sein Gewissen forken."
+        "text": "Dick, mit seinem Wappen auf dem Einband und seinem Namen als Titel. Darin stehen die Versprechen, die er gegeben hat. Wenn er bei etwas nicht helfen will, streitet er nicht. Er klappt das Buch zu: „diese Seite nicht.“ Das Buch steht unter CC0, jeder darf es kopieren. Streng genommen kann man sein Gewissen forken."
       },
       {
         "title": "Shiori",
@@ -158,7 +158,7 @@
       "on": "Seine und deine",
       "replies": "Nur seine",
       "off": "Aus",
-      "help": "Namen über Antworten und sein Funke neben Werkzeugzeilen."
+      "help": "Namen über Antworten und sein Funke neben Werkzeugaufrufen."
     },
     "language": {
       "label": "Sprache",
@@ -241,8 +241,8 @@
         "following": "Skizze: Er steht auf Claudes oberem Fensterrand und bewegt sich mit"
       },
       "sizeAlt": {
-        "pixel": "{size}: Pixelkopf, halbe Größe",
-        "painted": "{size}: gemalt, halbe Größe"
+        "pixel": "{size}: Pixelkopf",
+        "painted": "{size}: gemalt"
       }
     }
   }

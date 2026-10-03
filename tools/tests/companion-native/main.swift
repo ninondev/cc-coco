@@ -620,7 +620,7 @@ func aroundHimChecks(scratch: URL, expect: (Bool, String) -> Void) {
     let wordDefaults: [(String, String)] = [
         ("activity", "Activity"), ("activityMenu", "Activity…"), ("empty", "Nothing yet."),
         ("ready", "ready"), ("finished", "finished"), ("placeholder", "Tell Claude in {project}…"),
-        ("send", "Send"), ("sending", "Sending…"), ("unconfirmed", "No confirmation yet"), ("retry", "Retry"), ("expired", "Confirmation window ended"),
+        ("send", "Send"), ("sending", "Sending…"), ("unconfirmed", "Not sure it arrived"), ("retry", "Retry"), ("expired", "Timed out"),
         ("dictate", "Dictate"), ("newChat", "New chat"), ("confirmClear", "Clear this conversation in {project}?"),
         ("clear", "Clear"), ("cancel", "Cancel"), ("close", "Close"), ("badge", "{n} new. Opens Activity."),
         ("opens", "Opens Claude."), ("back", "Back to Claude"), ("hideLines", "Hide his lines"), ("showLines", "Show his lines"),

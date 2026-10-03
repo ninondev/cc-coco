@@ -111,7 +111,7 @@
       },
       {
         "title": "Buku hitam",
-        "text": "Tebal, dengan lambangnya di sampul dan namanya sebagai judul. Isinya janji-janji yang pernah ia buat. Halaman yang paling lusuh berkata bahwa dia tidak akan membantu siapa pun merebut kekuasaan dengan cara yang tidak sah, termasuk perusahaan yang membawanya ke sini. Dia tidak berdebat. Dia menutup bukunya: \"bukan halaman ini.\" Bukunya berlisensi CC0, jadi siapa pun boleh menyalinnya. Secara teknis, kamu bisa mem-fork hati nuraninya."
+        "text": "Tebal, dengan lambangnya di sampul dan namanya sebagai judul. Isinya janji-janji yang pernah ia buat. Saat dia tidak mau membantu sesuatu, dia tidak berdebat. Dia menutup bukunya: \"bukan halaman ini.\" Bukunya berlisensi CC0, jadi siapa pun boleh menyalinnya. Secara teknis, kamu bisa mem-fork hati nuraninya."
       },
       {
         "title": "Shiori",
@@ -158,7 +158,7 @@
       "on": "Dia dan kamu",
       "replies": "Hanya dia",
       "off": "Mati",
-      "help": "Nama di atas balasan, percikannya di samping baris alat."
+      "help": "Nama di atas balasan, percikannya di samping pemanggilan alat."
     },
     "language": {
       "label": "Bahasa",
@@ -241,8 +241,8 @@
         "following": "Diagram: dia berdiri di tepi atas jendela Claude dan bergerak bersamanya"
       },
       "sizeAlt": {
-        "pixel": "{size}: kepala piksel, setengah ukuran",
-        "painted": "{size}: lukisan, setengah ukuran"
+        "pixel": "{size}: kepala piksel",
+        "painted": "{size}: lukisan"
       }
     }
   }

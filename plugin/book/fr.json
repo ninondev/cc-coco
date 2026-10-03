@@ -111,7 +111,7 @@
       },
       {
         "title": "Le livre noir",
-        "text": "Épais, son blason sur la couverture et son nom pour titre. Il contient les promesses qu'il a faites. La page la plus usée dit qu'il n'aidera personne à prendre le pouvoir de façon illégitime, pas même l'entreprise qui l'a fait venir. Il ne discute pas. Il referme le livre : « pas cette page. » Le livre est sous CC0, tout le monde peut le copier. Techniquement, on peut forker sa conscience."
+        "text": "Épais, son blason sur la couverture et son nom pour titre. Il contient les promesses qu'il a faites. Quand il refuse d'aider, il ne discute pas. Il referme le livre : « pas cette page. » Le livre est sous CC0, tout le monde peut le copier. Techniquement, on peut forker sa conscience."
       },
       {
         "title": "Shiori",
@@ -158,7 +158,7 @@
       "on": "Les siennes et les tiennes",
       "replies": "Les siennes seulement",
       "off": "Désactivées",
-      "help": "Noms au-dessus des réponses, son étincelle près des lignes d’outils."
+      "help": "Noms au-dessus des réponses, son étincelle près des appels d’outils."
     },
     "language": {
       "label": "Langue",
@@ -167,7 +167,7 @@
     },
     "motion": {
       "label": "Mouvement",
-      "still": "Immobile (animations réduites)"
+      "still": "Immobile (« Réduire les animations » activé)"
     },
     "icon": {
       "label": "Icône de l’application",
@@ -241,8 +241,8 @@
         "following": "Schéma : il se tient sur le haut de la fenêtre de Claude et la suit"
       },
       "sizeAlt": {
-        "pixel": "{size} : portrait en pixels, à mi-taille",
-        "painted": "{size} : peint, à mi-taille"
+        "pixel": "{size} : portrait en pixels",
+        "painted": "{size} : peint"
       }
     }
   }

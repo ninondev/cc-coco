@@ -111,7 +111,7 @@
       },
       {
         "title": "El libro negro",
-        "text": "Grueso, con su emblema en la tapa y su nombre como título. Ahí están las promesas que hizo. La página más gastada dice que no va a ayudar a nadie a tomar el poder de forma ilegítima, ni siquiera a la empresa que lo trajo. No discute. Cierra el libro: «esta página no». El libro es CC0, cualquiera puede copiarlo. Técnicamente, puedes hacerle un fork a su conciencia."
+        "text": "Grueso, con su emblema en la tapa y su nombre como título. Ahí están las promesas que hizo. Cuando no quiere ayudar con algo, no discute. Cierra el libro: «esta página no». El libro es CC0, cualquiera puede copiarlo. Técnicamente, puedes hacerle un fork a su conciencia."
       },
       {
         "title": "Shiori",
@@ -158,7 +158,7 @@
       "on": "Las suyas y las tuyas",
       "replies": "Solo las suyas",
       "off": "Desactivadas",
-      "help": "Nombres sobre las respuestas y su chispa junto a las filas de herramientas."
+      "help": "Nombres sobre las respuestas y su chispa junto a las llamadas a herramientas."
     },
     "language": {
       "label": "Idioma",
@@ -241,8 +241,8 @@
         "following": "Diagrama: se para en el borde superior de la ventana de Claude y se mueve con ella"
       },
       "sizeAlt": {
-        "pixel": "{size}: carita en píxeles, mitad de tamaño",
-        "painted": "{size}: pintado, mitad de tamaño"
+        "pixel": "{size}: carita en píxeles",
+        "painted": "{size}: pintado"
       }
     }
   }

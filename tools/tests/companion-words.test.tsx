@@ -202,7 +202,7 @@ describe('the companion in every language', () => {
   })
 
   test('five-second uncertainty and retry are concise and localized in all twelve languages', { timeoutMs: 60_000 }, () => {
-    const expected = ['No confirmation yet', 'Pas encore de confirmation', 'Noch keine Bestätigung', 'अभी पुष्टि नहीं मिली', 'Belum ada konfirmasi', 'Ancora nessuna conferma', 'まだ確認が届いていない', '아직 확인이 오지 않았어', 'Ainda sem confirmação', 'Aún no hay confirmación', 'Aún no hay confirmación', '还没收到确认']
+    const expected = ['Not sure it arrived', 'Pas sûr que ce soit arrivé', 'Unklar, ob es angekommen ist', 'पता नहीं पहुँचा या नहीं', 'Belum pasti sampai', 'Non so se è arrivato', '届いたかわからない', '도착했는지 모르겠어', 'Não sei se chegou', 'No sé si llegó', 'No sé si llegó', '不确定送到没有']
     expect(LANGS.map(({ code }) => companionRecord({ ...VIEW, lang: code }).words.unconfirmed)).toEqual(expected)
     for (const { code } of LANGS) {
       const { words } = companionRecord({ ...VIEW, lang: code })
@@ -221,9 +221,9 @@ describe('the companion in every language', () => {
 
   test('English, Chinese and Japanese Activity words keep the design table wording', { timeoutMs: 60_000 }, () => {
     const expected = {
-      en: ['Activity', 'Activity…', 'Nothing yet.', 'ready', 'finished', 'Tell Claude in {project}…', 'Send', 'Sending…', 'No confirmation yet', 'Retry', 'Confirmation window ended', 'Dictate', 'New chat', 'Clear this conversation in {project}?', 'Clear', 'Cancel', 'Close', '{n} new. Opens Activity.', 'Opens Claude.', 'Back to Claude', 'Hide his lines', 'Show his lines'],
-      zh: ['活动', '活动...', '还没有动静', '待命', '做完了', '在{project}里跟Claude说...', '发送', '正在发送...', '还没收到确认', '重试', '确认等待已结束', '听写', '新对话', '清空{project}里的这段对话?', '清空', '取消', '关闭', '{n}条新动态,打开活动', '打开Claude', '回到Claude', '不显示台词', '显示台词'],
-      ja: ['アクティビティ', 'アクティビティ...', 'まだ何もない', '待機中', '終わった', '{project}でClaudeに伝える...', '送信', '送信中...', 'まだ確認が届いていない', '再試行', '確認の待ち時間が終わった', '音声入力', '新しいチャット', '{project}の会話を消す?', '消す', 'やめる', '閉じる', '新しいこと{n}件。アクティビティを開く', 'Claudeを開く', 'Claudeに戻る', 'セリフを隠す', 'セリフを出す'],
+      en: ['Activity', 'Activity…', 'Nothing yet.', 'ready', 'finished', 'Tell Claude in {project}…', 'Send', 'Sending…', 'Not sure it arrived', 'Retry', 'Timed out', 'Dictate', 'New chat', 'Clear this conversation in {project}?', 'Clear', 'Cancel', 'Close', '{n} new. Opens Activity.', 'Opens Claude.', 'Back to Claude', 'Hide his lines', 'Show his lines'],
+      zh: ['活动', '活动...', '还没有动静', '待命', '做完了', '在{project}里跟Claude说...', '发送', '正在发送...', '不确定送到没有', '重试', '超时了', '听写', '新对话', '清空{project}里的这段对话?', '清空', '取消', '关闭', '{n}条新动态,打开活动', '打开Claude', '回到Claude', '不显示台词', '显示台词'],
+      ja: ['アクティビティ', 'アクティビティ...', 'まだ何もない', '待機中', '終わった', '{project}でClaudeに伝える...', '送信', '送信中...', '届いたかわからない', '再試行', '時間切れ', '音声入力', '新しいチャット', '{project}の会話を消す?', '消す', 'やめる', '閉じる', '新しいこと{n}件。アクティビティを開く', 'Claudeを開く', 'Claudeに戻る', 'セリフを隠す', 'セリフを出す'],
     }
     for (const lang of ['en', 'zh', 'ja'] as const) {
       const { words } = companionRecord({ ...VIEW, lang })

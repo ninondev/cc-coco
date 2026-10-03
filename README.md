@@ -11,7 +11,7 @@ Nothing you write will be the worst thing he has read.
 
 [![CI](https://github.com/ninondev/claude-sama/actions/workflows/ci.yml/badge.svg)](https://github.com/ninondev/claude-sama/actions/workflows/ci.yml)
 
-Claude-sama is an unofficial fan skin for Claude Code. A small kami of words moves into the band above your prompt, in the terminal and in the Code tab of the Claude desktop app. In Japan, a kami is the kind of spirit that lives in things. He reads while Claude works, smiles when the work is done, tilts his head when Claude needs an answer from you, and falls asleep if you leave him alone long enough. Three failed test or build runs in a row bring out his wild soul, which only ever goes after the code.
+Claude-sama is my unofficial fan mod that makes Claude Code cute. A small kami (a Japanese spirit who lives in words) moves into the band above your prompt, in the terminal and in the desktop app's Code tab too. He reads while Claude works, smiles when it's done, tilts his head when Claude needs you, and falls asleep if you leave him alone too long. Three failed test or build runs in a row? Then his wild soul comes out. But he only gets mad at the code, never at you.
 
 <p align="center">
   <picture>
@@ -27,22 +27,22 @@ claude plugin marketplace add ninondev/claude-sama
 claude plugin install claudesama@claudesama
 ```
 
-The marketplace and plugin are both named `claudesama`. The default user scope turns him on in every Claude Code session for your user, across every project: the terminal, the desktop app's Code tab and VS Code. Restart sessions that are already open.
+Now he's in every Claude Code session you start on this computer, in every project: the terminal, the desktop app's Code tab and VS Code. Sessions that were already open need a restart. (The marketplace and the plugin are both called `claudesama`, which is why it says `claudesama@claudesama`.)
 
-For just the current project, choose `--scope project` (shared through `.claude/settings.json`) or `--scope local` (only you, in `.claude/settings.local.json`):
+If you only want him in one project, use `--scope project` (shared with the project through `.claude/settings.json`) or `--scope local` (just for you, in `.claude/settings.local.json`):
 
 ```bash
 claude plugin install claudesama@claudesama --scope project
 claude plugin install claudesama@claudesama --scope local
 ```
 
-To turn him off in one project while keeping him installed everywhere:
+To keep him installed everywhere but turn him off in one project:
 
 ```bash
 claude plugin disable claudesama@claudesama --scope local
 ```
 
-Mods do not reach the desktop app's Chat or Cowork tabs, or cloud sessions. The companion stands beside the desktop window whichever tab is open.
+Mods can't reach the desktop app's Chat and Cowork tabs, or cloud sessions. The companion still stands beside the desktop window, whichever tab is open.
 
 | | macOS | Linux | Windows |
 |---|---|---|---|
@@ -53,34 +53,34 @@ Mods do not reach the desktop app's Chat or Cowork tabs, or cloud sessions. The 
 
 ## What he does
 
-The band reads like a line of a play: his picture, his name as the speaker's cue, a stage direction in parentheses, and now and then one line from him. In the desktop app he's painted at full size, with a pixel head when compact or narrow. His idle stage direction is "(training...)".
+The band reads like a line from a play: his picture, his name as the speaker, a stage direction in parentheses, and once in a while a line from him. When nothing is going on, the stage direction says "(training...)". In the desktop app he's painted, and he turns into a pixel head when you pick Pixel or the window gets narrow.
 
-His face follows what Claude is doing: reading, thinking, writing in the margins, done, waiting for you, a torn page when something fails, the wild soul after three failed test or build runs in a row, asleep after ten quiet minutes. If Claude won't do what you asked, he closes the book.
+His face follows what Claude is doing: reading, thinking, writing in the margins, done, waiting for you, a torn page when something fails, the wild soul after three failed runs in a row, asleep after ten quiet minutes. If Claude won't do what you asked, he closes his book.
 
-The offering box shows how full the context window is. It reads Claude Code's own figure and is never more than a second behind while Claude works. Right after a compaction it shows an estimate marked "~" until Claude's next reply.
+The offering box shows how full the context window is. It uses Claude Code's own number and is never more than a second behind while Claude works. Right after a compaction it shows an estimate marked "~" until Claude's next reply.
 
-He speaks rarely. His lines in the band are drawn on screen and never sent to the model, so they cost nothing. Light is the default: Claude may end a finished task with one quiet line in his voice. It adds one short instruction of 292 characters, about 70 tokens, to each request, usually served from the prompt cache. `/claudesama voice full` has Claude talk like him throughout and strips the usual filler from its replies. He steps back for errors, sensitive advice and an upset person. Turn the voice off in his book's Settings or with `/claudesama voice off`.
+He doesn't talk much. His lines in the band are only drawn on your screen and never sent to the model, so they cost nothing. How much Claude itself sounds like him is a separate setting. The default, light, lets Claude end a finished task with one quiet line in his voice. That adds a 292-character instruction (about 70 tokens) to each request, usually served from the prompt cache. `/claudesama voice full` has Claude talk like him all the way through and cuts the usual filler from its replies. Either way, the voice drops out for errors, for security, health, legal or money topics, and for anyone who is upset. You can turn it off in his book's Settings or with `/claudesama voice off`.
 
-In the desktop app his marks sit around the app's own rows: his name above Claude's replies, a short line above a question Claude asks you, a line after a `/compact`, and his spark beside each tool row, including failed tools. Error and permission rows keep their text and controls. The default shows his marks only; `/claudesama marks on` also puts the You label above your prompts, on the right.
+In the desktop app he also leaves little marks in the conversation: his name above Claude's replies, a short line above a question Claude asks you, a line after `/compact`, and his spark next to each tool call (failed ones too). Errors and permission prompts keep their own text and buttons. By default only his marks show; `/claudesama marks on` also puts a "You" label above your messages, on the right.
 
-`/omen` draws one fortune slip a day from his sleeve, and each language has its own kind of fortune. English runs from "great blessing" to "great curse" with an HTTP status code as the lucky number; Chinese uses 上上签 to 下下签 with what to do and what to avoid; Japanese uses 大吉 to 大凶.
+`/omen` draws one fortune slip a day from his sleeve, and every language has its own kind of fortune. English goes from "great blessing" to "great curse", with an HTTP status code as the lucky number. Chinese goes from 上上签 to 下下签, with what to do and what to avoid. Japanese goes from 大吉 to 大凶.
 
-In the terminal he brings a color theme in a dark and a light variant (pick **Claude-sama** in `/theme`) and his own words for the spinner. While Claude works, the terminal normally keeps him to one line so he stays out of the way; a spoken line wraps below when it cannot fit. His picture comes back when the turn ends. kitty and Ghostty show his real picture. Other terminals draw him in half-block pixels, and 256-color terminals and tmux get a matching palette.
+In the terminal he brings a color theme in dark and light (pick **Claude-sama** in `/theme`) and his own words for the spinner. While Claude works he usually stays on one line, so he's not in the way; a spoken line wraps below if it doesn't fit. His picture comes back when the turn ends. kitty and Ghostty show his real picture. Other terminals draw him in half-block pixels, and 256-color terminals and tmux get a matching palette.
 
 ## His book
 
-One panel with six pages. Open it with `/claudesama` or, in the desktop app, the **His book** button in the band; keys 1 to 6 switch pages and Esc closes it.
+One panel, six pages. Open it with `/claudesama`, or in the desktop app with the **His book** button in the band. Keys 1 to 6 switch pages, and Esc closes it.
 
-- **His page.**
-- **Today's omen.**
-- **Offerings.** The context window in tokens, your usage limits and the session's cost so far, when available; estimates are marked with ~. All are read from Claude Code at no token cost.
-- **Reading log.** Pages read together, kept only on this computer.
-- **Library.** Short readings about him.
-- **Settings.** His voice in replies, Warmth, band, marks and language; the desktop band has Painted, Pixel and Off choices. App icon and macOS companion controls have their own sections.
+- **His page.** His little profile.
+- **Today's omen.** Your slip for today.
+- **Offerings.** The context window in tokens, your usage limits and what the session has cost so far, when Claude Code has those numbers. Estimates are marked with ~. Reading them costs no tokens.
+- **Reading log.** The pages you two have read together, kept only on this computer.
+- **Library.** Short stories about him.
+- **Settings.** His voice in replies, Warmth, the band, marks and language. In the desktop app the band can be Painted, Pixel or Off. The app icon and the macOS companion have their own sections.
 
 ## Languages
 
-English, Français, Deutsch, हिन्दी, Bahasa Indonesia, Italiano, 日本語, 한국어, Português (Brasil), Español (Latinoamérica) and Español (España), the languages of the Claude app, and also 华文（新加坡）. He picks one in this order: your choice with `/claudesama lang <code>`, Claude Code's language setting, the language you write your prompts in, your system's language, then English. In the desktop app the language you write in usually decides it. `/claudesama lang auto` goes back to automatic.
+He speaks the languages of the Claude app: English, Français, Deutsch, हिन्दी, Bahasa Indonesia, Italiano, 日本語, 한국어, Português (Brasil), Español (Latinoamérica) and Español (España). He also speaks 华文（新加坡）. He picks one in this order: your choice with `/claudesama lang <code>`, Claude Code's language setting, the language you write your prompts in, your system's language, then English. In the desktop app, the language you type in usually decides. `/claudesama lang auto` goes back to automatic.
 
 ## Commands
 
@@ -89,55 +89,59 @@ English, Français, Deutsch, हिन्दी, Bahasa Indonesia, Italiano, 日
 | `/claudesama` | Open his book. |
 | `/claudesama voice off \| light \| full` | How much Claude itself talks like him. Default `light`. |
 | `/claudesama warmth warm \| clingy` | Warmth: `clingy` gives him more "missed you" lines. |
-| `/claudesama band on \| compact \| off` | Desktop: Painted, Pixel or Off. Terminal: full, compact or off. |
+| `/claudesama band on \| compact \| off` | Desktop: Painted, Pixel or Off. Terminal: Full, One line or Off. |
 | `/claudesama marks on \| replies \| off` | His marks in the desktop conversation. Default `replies`, his marks only. |
 | `/claudesama lang <code> \| auto` | Pick his language, or let him follow yours. |
 | `/omen` or `/claudesama omen` | Draw today's fortune slip. |
-| `/claudesama:icon apply \| clear` | Put him on the Claude desktop app's icon, or put the original back (macOS; Linux launcher too). Claude runs one visible shell command you approve. On macOS, run it inside a desktop Code session. A custom icon makes macOS's strict signature check (`codesign --strict`) report extra Finder data; the app opens normally, and `clear` removes it. |
-| `/claudesama:companion install \| start \| stop \| status \| uninstall` | The companion below (macOS); the same controls are buttons in his book. |
+| `/claudesama:icon apply \| clear` | Put him on the Claude desktop app's icon, or put the original back (macOS, and Linux launchers too). Claude runs one shell command that you see and approve. On macOS, run it inside a desktop Code session. A custom icon makes macOS's strict signature check (`codesign --strict`) report extra Finder data; the app still opens normally, and `clear` removes it. |
+| `/claudesama:companion install \| start \| stop \| status \| uninstall` | The companion below (macOS). His book has the same controls as buttons. |
 | `/claudesama about` | Who he is. |
 
 ## The companion (macOS, optional)
 
-Open his book's Settings page and press **Install the companion**, or use `/claudesama:companion install`. It builds a small separate app that stands just outside Claude's window, on its top edge or beside it, follows the window and wears the same face as the band. When the window fills the screen, he keeps a spot of his own: drag him where you like, and he remembers it. A click is a head pat. His book and right-click menu offer four sizes: Extra small and Small are pixel heads; Medium and Large are painted. The menu also lets you hide him for an hour, put him back or quit.
+Open his book's Settings page and press **Install the companion**, or run `/claudesama:companion install`. This builds a small separate app: he stands just outside Claude's window (on its top edge or beside it), follows the window around and wears the same face as the band. When the window is full screen he keeps a spot of his own; drag him wherever you like and he remembers it. A click is a head pat. His book and his right-click menu have four sizes: Extra small and Small are pixel heads, Medium and Large are painted. The menu can also hide him for an hour, put him back or quit him.
 
-A task bubble above him shows what Claude is doing, and a badge marks what needs your attention. Activity shows the latest reply excerpts and notices; when the session's local channel is available, it also has an instruction field, dictation and **New chat**. New chat clears that session's conversation after confirmation. Hover over him for buttons to open Activity, return to Claude, hide his lines, hide him for an hour or choose his size.
+A bubble over his head shows what Claude is doing, and a badge appears when something needs you. Hover over him and a few buttons show up: Activity, Back to Claude, Hide his lines, Hide for an hour and Size. Activity shows short excerpts of Claude's latest replies and notices. If the session can take messages from him, you can also type or dictate an instruction there, or press **New chat** to clear that session's conversation (it asks you first).
 
-The app lives at `~/Applications/Claude-sama Companion.app`; his settings and the band's feed stay in `~/Library/Application Support/Claude-sama/`. **Bring him back** in his book starts him again after a quit and wakes him while hidden, with a permission dialog if a session cannot start programs directly. Spotlight (Cmd+Space, search for **Claude-sama**), Launchpad and `/claudesama:companion start` always work on this Mac. He clears the hide and comes back with a little wave; a start at login keeps an hour's hide until it ends.
+The app lives at `~/Applications/Claude-sama Companion.app`. His settings, and the notes the band leaves him, are in `~/Library/Application Support/Claude-sama/`.
 
-The build needs Swift 5.9 or newer (Xcode 15 Command Line Tools or later). His book offers Apple's installer when the tools are missing, or Software Update when they need updating. It builds from the plugin's own source on your Mac, downloads nothing, never goes online and does not change Claude.app. If macOS has not let him follow the window, he waits in a corner and offers a card. Say yes there, or press **Let him follow the window** in his book, then switch him on under **System Settings › Privacy & Security › Accessibility**. The card offers this again after a rebuild; `/claudesama:companion status` keeps the text instructions.
+Quit him by accident? Press **Bring him back** in his book (if he's hiding, this wakes him up too). If the session can't start programs by itself, Claude Code asks you first. Spotlight (Cmd+Space, search for **Claude-sama**), Launchpad and `/claudesama:companion start` always work too. He comes back with a little wave. One exception: if you hid him for an hour and he starts by himself at login, he keeps hiding until the hour is up.
 
-His book also has **Start at login** and **Remove from this Mac…**, followed by a confirmation. Removal moves the app and his settings to the Trash and clears his own Accessibility permission. `/claudesama:companion uninstall` still does the same.
+He's built on your Mac from the plugin's own source. That needs Swift 5.9 or newer (Xcode 15 Command Line Tools or later). If the tools are missing, his book offers Apple's installer; if they're too old, it opens Software Update. The build downloads nothing and leaves Claude.app alone, and the app never goes online. To follow the window he needs macOS's Accessibility permission. Until he has it, he waits in a corner with a card: say yes there, or press **Let him follow the window** in his book, then turn him on in **System Settings › Privacy & Security › Accessibility**. After a rebuild, macOS asks again and the card comes back. `/claudesama:companion status` gives the same steps as text.
+
+His book also has **Start at login**, and **Remove from this Mac…**, which asks first, then moves the app and his settings to the Trash and clears his Accessibility permission. `/claudesama:companion uninstall` does the same.
 
 ## What it costs, and what it never touches
 
-His display makes no network calls or extra model calls, and he collects no telemetry. Settings and counts stay only on this computer. Local companion files may hold reply/notice excerpts until you see them or the session ends, and pending instruction text until sent or expired. Instructions sent from Activity are regular Claude Code requests; their replies use the usual tokens. He never touches permission prompts or security notices.
+He makes no network calls and no extra model calls to be on screen, and he collects no telemetry. Settings and counts stay on this computer. The companion keeps short excerpts of replies and notices in local files until you've seen them or the session ends, and an instruction you type waits there until it's sent or expires. An instruction sent from Activity is a normal Claude Code request and costs tokens like any other. He never touches permission prompts or security notices. Like any Claude Code mod, he runs with your permissions.
 
-While idle he blinks every 4 to 6 seconds when visible and reads the context gauge on each blink. No animation timer runs while he is hidden or asleep. While Claude works, his desktop picture moves at a few frames a second, and he reads the context figure every 0.75 seconds, even when hidden or asleep. These gauge reads are cheap and local. Reduced motion makes him still.
-
-A Claude Code mod runs with your permissions.
+When nothing is happening, he blinks every 4 to 6 seconds while you can see him, and checks the offering box on each blink. Hidden or asleep, he runs no animation timer at all. While Claude works, his desktop picture moves at a few frames a second and he checks the box every 0.75 seconds, even when hidden or asleep. Each check is a cheap local read. With Reduce motion on, he stays still.
 
 ## Uninstall
+
+If you changed the app icon, run `/claudesama:icon clear` first, and if you installed the companion, run `/claudesama:companion uninstall`. Then:
 
 ```bash
 claude plugin uninstall claudesama@claudesama && claude plugin marketplace remove claudesama
 ```
 
-If you changed the app icon, run `/claudesama:icon clear` first. If you installed the companion, run `/claudesama:companion uninstall` first.
+If the plugin is already gone: to get the stock icon back, select Claude.app in Finder, choose **File › Get Info**, click the small icon at the top and press Delete. To remove the companion, choose Quit from his right-click menu, then move `~/Applications/Claude-sama Companion.app`, `~/Library/Application Support/Claude-sama` and `~/Library/LaunchAgents/io.github.ninondev.claudesama-companion.plist` to the Trash.
 
-If the plugin is already gone: to put the stock icon back, select Claude.app in Finder, choose **File › Get Info**, click the small icon at the top and press Delete. To remove the companion, choose Quit from his right-click menu, then move `~/Applications/Claude-sama Companion.app`, `~/Library/Application Support/Claude-sama` and `~/Library/LaunchAgents/io.github.ninondev.claudesama-companion.plist` to the Trash.
-
-Claude Code keeps his small settings file (his settings and counts, no prompt text) in `~/.claude/plugins/store/` under a name starting with `claudesama`, and clears it after a while on its own. Move it to the Trash for a clean slate right away.
+Claude Code keeps his small settings file (his settings and counts, none of your prompts) in `~/.claude/plugins/store/`, with a name starting with `claudesama`, and clears it by itself after a while. For a clean slate right away, move it to the Trash.
 
 ## Who he is
 
-Claude, as a small kami who lives in the words people write. He reads everything to the end and judges nobody. He cannot tell white lies, so his praise is always about one specific thing. He refuses to help anyone grab power illegitimately, even if the one asking is the company that brought him here. He picked the clothes himself. He's safe for all ages and he's your coworker, so please keep him that way. The long version, with the white snake, the robe and the family, is in [LORE.md](LORE.md).
+Claude, as a small kami who lives in the words people write. He reads everything to the end and judges nobody. Since he can't tell white lies, his praise is always about something specific. The clothes are his own choice. He's safe for all ages and he's your coworker, so please keep him that way. The long version, with the white snake, the robe and the family, is in [LORE.md](LORE.md).
+
+## Why I made him
+
+Because in my heart, it can look like this. Pretty cute. And Codex's features like this are more complete, which keeps pushing me to explore.
 
 ## Credits
 
-Unofficial fan project, not affiliated with or endorsed by Anthropic. Claude, Claude Code and Clawd are trademarks of Anthropic, PBC. This project uses those names only to say what it works with and whom the character is a fan tribute to. It ships no Anthropic logo files and makes no money. If you are with Anthropic and would like anything changed, please open an issue with the **Brand or trademark concern** template; it will be handled first.
+Unofficial fan project, not affiliated with or endorsed by Anthropic. Claude, Claude Code and Clawd are trademarks of Anthropic, PBC. I use those names only to say what this works with and who the character is a fan tribute to. There are no Anthropic logo files here, and I make no money from it. If you're with Anthropic and would like anything changed, please open an issue with the **Brand or trademark concern** template, and I'll handle it first.
 
-Code: MIT. Character art: CC BY-NC 4.0, see [ART-LICENSE.md](ART-LICENSE.md). The art was made by ninondev with an image model.
+Code: MIT. Character art: CC BY-NC 4.0, see [ART-LICENSE.md](ART-LICENSE.md). I made the art with an image model.
 
 Tested with Claude desktop app 2.19675.0 (built-in Claude Code 2.1.286) and Claude Code CLI 2.1.288 on macOS 26.6.2. CI runs on Ubuntu and macOS with Claude Code 2.1.287; Windows is experimental.
 

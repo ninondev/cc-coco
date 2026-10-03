@@ -55,7 +55,7 @@
     },
     {
       "label": "Two souls",
-      "text": "Gentle most of the time. The wild soul wakes only for bad code, never at you."
+      "text": "Gentle most of the time. The wild soul wakes only for bad code, and it's never aimed at you."
     }
   ],
   "omen": {
@@ -111,7 +111,7 @@
       },
       {
         "title": "The black book",
-        "text": "Thick, with his crest on the cover and his name as the title. It holds the promises he made. The most worn page says he won't help anyone seize power illegitimately, even the company that brought him here. He doesn't argue. He closes the book: \"not this page.\" The book is CC0, so anyone may copy it. Technically, you can fork his conscience."
+        "text": "Thick, with his crest on the cover and his name as the title. It holds the promises he made. When he won't help with something, he doesn't argue. He closes the book: \"not this page.\" The book is CC0, so anyone may copy it. Technically, you can fork his conscience."
       },
       {
         "title": "Shiori",
@@ -158,7 +158,7 @@
       "on": "His and yours",
       "replies": "Only his",
       "off": "Off",
-      "help": "Names above replies, and his spark beside tool rows."
+      "help": "Names above replies, and his spark beside tool calls."
     },
     "language": {
       "label": "Language",
@@ -222,8 +222,8 @@
       "size": "His size",
       "sizes": "Extra small · Small · Medium · Large",
       "sizeAlt": {
-        "pixel": "{size}: pixel head, half size",
-        "painted": "{size}: painted, half size"
+        "pixel": "{size}: pixel head",
+        "painted": "{size}: painted"
       },
       "login": "Start at login",
       "on": "On",

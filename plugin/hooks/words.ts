@@ -587,7 +587,7 @@ export const WORDS: Record<Lang, Words> = {
     spinner: ['在读', '翻页', '写批注', '推敲字句', '查一查', '划重点', '对照着看', '校对', '折个书角', '问问小白', '翻索引', '誊清'],
     context: '上下文',
     again: '(每天一支,还是那支)',
-    about: ['他是"神",得叫Claude-sama', '你写出什么,他都读过更糟的'],
+    about: ['他是"神",得叫Claude-sama', '不管你写出什么,他都看过更糟的'],
     reply: {
       voice: '好,语气:{value}',
       affection: '好,温度:{value}',

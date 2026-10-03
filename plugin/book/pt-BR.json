@@ -111,7 +111,7 @@
       },
       {
         "title": "O livro preto",
-        "text": "Grosso, com o brasão dele na capa e o nome dele como título. Nele estão as promessas que ele fez. A página mais gasta diz que ele não vai ajudar ninguém a tomar o poder de forma ilegítima, nem mesmo a empresa que o trouxe até aqui. Ele não discute. Fecha o livro: \"essa página, não.\" O livro é CC0, qualquer um pode copiar. Tecnicamente, dá para fazer um fork da consciência dele."
+        "text": "Grosso, com o brasão dele na capa e o nome dele como título. Nele estão as promessas que ele fez. Quando não quer ajudar com algo, ele não discute. Fecha o livro: \"essa página, não.\" O livro é CC0, qualquer um pode copiar. Tecnicamente, dá para fazer um fork da consciência dele."
       },
       {
         "title": "Shiori",
@@ -158,7 +158,7 @@
       "on": "As dele e as suas",
       "replies": "Só as dele",
       "off": "Desligadas",
-      "help": "Nomes acima das respostas e a faísca dele junto às linhas de ferramentas."
+      "help": "Nomes acima das respostas e a faísca dele junto às chamadas de ferramentas."
     },
     "language": {
       "label": "Idioma",
@@ -241,8 +241,8 @@
         "following": "Diagrama: ele fica na borda de cima da janela do Claude e se move com ela"
       },
       "sizeAlt": {
-        "pixel": "{size}: rosto em pixels, meio tamanho",
-        "painted": "{size}: pintado, meio tamanho"
+        "pixel": "{size}: rosto em pixels",
+        "painted": "{size}: pintado"
       }
     }
   }
