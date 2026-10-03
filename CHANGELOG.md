@@ -12,6 +12,17 @@ old behavior back.
 
 ## [Unreleased]
 
+### Changed
+
+- Windows: the repo keeps Unix line endings now, so his command files can be read there too.
+  Windows is still untested.
+
+### Persona changes
+
+- Two of his Chinese lines are reworded: the good-morning one starts with (哈欠)哇... instead
+  of 哈欠..., and the one for starting work is 撸起袖子,开工～ instead of 挽起袖子,开工.
+  Rollback: 0.1.0.1.
+
 ## [0.1.0.1] - 2026-10-03
 
 Small fixes, mostly words. Nothing new to learn.
