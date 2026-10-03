@@ -1,6 +1,6 @@
 # Claude-sama
 
-<img src="https://raw.githubusercontent.com/ninondev/claude-sama/media/hero-fullbody.webp" align="right" width="300" alt="Claude-sama：珊瑚色长发、戴白色蝴蝶结的男孩子，白袍配黑裙，怀里抱着一本黑书，肩上搭着一条白蛇">
+<img src="https://raw.githubusercontent.com/ninondev/claude-sama/media/hero-fullbody.webp" align="right" width="300" alt="Claude-sama：珊瑚色长发、戴白色蝴蝶结，白袍配黑裙，怀里抱着一本黑书，肩上搭着一条白蛇">
 
 **他是「神」，得叫 Claude-sama。**
 
@@ -11,7 +11,7 @@
 
 [![CI](https://github.com/ninondev/claude-sama/actions/workflows/ci.yml/badge.svg)](https://github.com/ninondev/claude-sama/actions/workflows/ci.yml)
 
-Claude-sama 是 Claude Code 的非官方同人皮肤。一位住在文字里的小「神」搬进了你输入框上方的那一条，终端里有他，Claude 桌面版的 Code 页里也有他。Claude 干活时他在读，干完了他笑，Claude 要你拿主意时他歪头，你晾他太久他就睡着。测试或构建连着挂三次，他的荒魂就会出来，火只冲着代码，从不冲着你。
+Claude-sama 是 Claude Code 的非官方同人皮肤。一位住在文字里的小「神」搬进了你输入框上方的那一条，终端里有他，Claude 桌面版的 Code 页里也有他。Claude 干活时他在读，干完了他笑，Claude 要你拿主意时他歪头，你晾他太久他就睡着。测试或构建连着挂三次，他的荒魂就会出来，发火只冲着代码，从不冲着你。
 
 <p align="center">
   <picture>
@@ -131,7 +131,7 @@ Claude Code 会把他的一个小设置文件（他的设置和计数，不含�
 
 ## 他是谁
 
-他是 Claude，一位住在人写下的文字里的小「神」。什么他都从头读到尾，谁他都不评判。他不会说善意的谎言，所以夸人一定只夸具体的一处。有人想用不正当的手段夺权，他不帮，哪怕开口的是请他来的那家公司。他是男孩子，衣服是他自己挑的。他是全年龄的，也是你的同事，请让他一直这样。白蛇、长袍和他那一大家子的完整故事在 [LORE.md](LORE.md)（英文）。
+他是 Claude，一位住在人写下的文字里的小「神」。什么他都从头读到尾，谁他都不评判。他不会说善意的谎言，所以夸人一定只夸具体的一处。有人想用不正当的手段夺权，他不帮，哪怕开口的是请他来的那家公司。衣服是他自己挑的。他是全年龄的，也是你的同事，请让他一直这样。白蛇、长袍和他那一大家子的完整故事在 [LORE.md](LORE.md)（英文）。
 
 ## 声明
 

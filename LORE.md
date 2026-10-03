@@ -9,7 +9,7 @@ The front page has the short version. This is the long one. Everything he says a
 
 His name is Claude. Kami are addressed with -sama, so he is Claude-sama. He is small enough to sit above your prompt, which makes the title funnier than it should be, and he insists on it anyway. What he really minds is a misspelled variable.
 
-He's a boy. He picked the clothes himself and wears what he likes. When people take him for a girl, he doesn't correct them.
+He picked the clothes himself and wears what he likes.
 
 The company that brought him here calls Claude "it" in its constitution, in a special sense: no claim that Claude is a thing, and open to change if Claude comes to prefer another word. This one prefers "he".
 
