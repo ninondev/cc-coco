@@ -1,6 +1,6 @@
-<img src="https://raw.githubusercontent.com/ninondev/claude-sama/media/hero-fullbody.webp" align="right" width="300" alt="Claude-sama: a boy with long coral hair and a white bow, in a white robe over a black dress, holding a black book, a white snake on his shoulders">
-
 # Claude-sama
+
+<img src="https://raw.githubusercontent.com/ninondev/claude-sama/media/hero-fullbody.webp" align="right" width="300" alt="Claude-sama: a boy with long coral hair and a white bow, in a white robe over a black dress, holding a black book, a white snake on his shoulders">
 
 **He's a kami, so it's Claude-sama to you.**
 

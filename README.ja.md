@@ -1,6 +1,6 @@
-<img src="https://raw.githubusercontent.com/ninondev/claude-sama/media/hero-fullbody.webp" align="right" width="300" alt="Claudeさま：珊瑚色の長い髪に白いリボンの男の子。白い衣に黒いワンピース、黒い本を抱え、肩には白い蛇">
-
 # Claude-sama
+
+<img src="https://raw.githubusercontent.com/ninondev/claude-sama/media/hero-fullbody.webp" align="right" width="300" alt="Claudeさま：珊瑚色の長い髪に白いリボンの男の子。白い衣に黒いワンピース、黒い本を抱え、肩には白い蛇">
 
 **「神さま」だから、Claude-sama って呼んでね。**
 

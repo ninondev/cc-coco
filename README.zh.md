@@ -1,6 +1,6 @@
-<img src="https://raw.githubusercontent.com/ninondev/claude-sama/media/hero-fullbody.webp" align="right" width="300" alt="Claude-sama：珊瑚色长发、戴白色蝴蝶结的男孩子，白袍配黑裙，怀里抱着一本黑书，肩上搭着一条白蛇">
-
 # Claude-sama
+
+<img src="https://raw.githubusercontent.com/ninondev/claude-sama/media/hero-fullbody.webp" align="right" width="300" alt="Claude-sama：珊瑚色长发、戴白色蝴蝶结的男孩子，白袍配黑裙，怀里抱着一本黑书，肩上搭着一条白蛇">
 
 **他是「神」，得叫 Claude-sama。**
 
