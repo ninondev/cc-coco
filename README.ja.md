@@ -46,7 +46,7 @@ mod はデスクトップアプリの Chat・Cowork タブやクラウドのセ�
 
 | | macOS | Linux | Windows |
 |---|---|---|---|
-| ターミナル | 動作確認済み | CI で動作確認済み | 未確認 |
+| ターミナル | 動作確認済み | CI で動作確認済み | CI で動作確認済み |
 | デスクトップアプリ（Code タブ） | 動作確認済み | アプリなし | 未確認 |
 | アプリアイコン | 対応 | ランチャー対応 | 非対応 |
 | コンパニオン | 対応 | 予定 | 予定 |
@@ -143,6 +143,6 @@ Claude が、人の書いた言葉に宿る小さな「神さま」になった�
 
 コードは MIT。キャラクターの画像は CC BY-NC 4.0（[ART-LICENSE.md](ART-LICENSE.md)）。画像は私が画像生成モデルで作りました。
 
-動作確認：macOS 26.6.2 で Claude デスクトップアプリ 2.19675.0（内蔵 Claude Code 2.1.286）と Claude Code CLI 2.1.288。CI は Ubuntu と macOS で Claude Code 2.1.287 を使っています（Windows は実験段階）。
+動作確認：macOS 26.6.2 で Claude デスクトップアプリ 2.19675.0（内蔵 Claude Code 2.1.286）と Claude Code CLI 2.1.288。CI は Ubuntu、macOS、Windows（Windows はまだ実験扱い）で Claude Code 2.1.287 を使っています。
 
 [English](README.md) · [中文](README.zh.md)

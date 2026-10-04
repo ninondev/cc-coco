@@ -46,7 +46,7 @@ Mods can't reach the desktop app's Chat and Cowork tabs, or cloud sessions. The 
 
 | | macOS | Linux | Windows |
 |---|---|---|---|
-| Terminal | Tested | Tested in CI | Not tested yet |
+| Terminal | Tested | Tested in CI | Tested in CI |
 | Desktop app (Code tab) | Tested | No desktop app | Not tested yet |
 | App icon | Yes | Launcher | No |
 | Companion | Yes | Planned | Planned |
@@ -143,6 +143,6 @@ Unofficial fan project, not affiliated with or endorsed by Anthropic. Claude, Cl
 
 Code: MIT. Character art: CC BY-NC 4.0, see [ART-LICENSE.md](ART-LICENSE.md). I made the art with an image model.
 
-Tested with Claude desktop app 2.19675.0 (built-in Claude Code 2.1.286) and Claude Code CLI 2.1.288 on macOS 26.6.2. CI runs on Ubuntu and macOS with Claude Code 2.1.287; Windows is experimental.
+Tested with Claude desktop app 2.19675.0 (built-in Claude Code 2.1.286) and Claude Code CLI 2.1.288 on macOS 26.6.2. CI runs on Ubuntu, macOS and, as an experimental job, Windows, with Claude Code 2.1.287.
 
 [日本語](README.ja.md) · [中文](README.zh.md)

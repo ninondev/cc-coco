@@ -46,7 +46,7 @@ mod 进不了桌面版的 Chat、Cowork 页，云端会话也进不去。不过�
 
 | | macOS | Linux | Windows |
 |---|---|---|---|
-| 终端 | 已测试 | CI 已测试 | 还没测 |
+| 终端 | 已测试 | CI 已测试 | CI 已测试 |
 | 桌面版（Code 页） | 已测试 | 没有桌面版 | 还没测 |
 | 应用图标 | 支持 | 启动器 | 不支持 |
 | 桌面伙伴 | 支持 | 计划中 | 计划中 |
@@ -143,6 +143,6 @@ Claude Code 会把他的一个小设置文件（他的设置和计数，不含�
 
 代码采用 MIT 协议。角色画作采用 CC BY-NC 4.0，见 [ART-LICENSE.md](ART-LICENSE.md)。画是我用图像模型做的。
 
-已测试：macOS 26.6.2 上的 Claude 桌面版 2.19675.0（内置 Claude Code 2.1.286）和 Claude Code CLI 2.1.288。CI 在 Ubuntu 和 macOS 上跑，用的是 Claude Code 2.1.287；Windows 还是实验性的。
+已测试：macOS 26.6.2 上的 Claude 桌面版 2.19675.0（内置 Claude Code 2.1.286）和 Claude Code CLI 2.1.288。CI 在 Ubuntu、macOS 和 Windows 上跑（Windows 那项还算实验项），用的是 Claude Code 2.1.287。
 
 [English](README.md) · [日本語](README.ja.md)

@@ -12,17 +12,6 @@ old behavior back.
 
 ## [Unreleased]
 
-### Changed
-
-- Windows: the repo keeps Unix line endings now, so his command files can be read there too.
-  Windows is still untested.
-
-### Persona changes
-
-- Two of his Chinese lines are reworded: the good-morning one starts with (哈欠)哇... instead
-  of 哈欠..., and the one for starting work is 撸起袖子,开工～ instead of 挽起袖子,开工.
-  Rollback: 0.1.0.1.
-
 ## [0.1.0.1] - 2026-10-03
 
 Small fixes, mostly words. Nothing new to learn.
@@ -41,10 +30,17 @@ Small fixes, mostly words. Nothing new to learn.
 - Reduce motion goes by macOS's own name now in Japanese (視差効果を減らす), French and
   Hindi.
 - The plugin and marketplace descriptions are in my words now.
+- README and LORE call him an all-ages OC now.
+- Windows: the repo keeps Unix line endings, file paths work with either separator, and the
+  macOS-only parts (the companion, its request channel and the app icon) stay off there, with
+  their buttons hidden in his book. The Windows CI job passes now and stays experimental, and
+  the README's platform table says Tested in CI for the Windows terminal.
 
 ### Persona changes
 
-- None. He talks and acts the same as in 0.1.0.
+- Two of his Chinese lines are reworded: the good-morning one starts with (哈欠)哇... instead
+  of 哈欠..., and the one for starting work is 撸起袖子,开工～ instead of 挽起袖子,开工.
+  Rollback: 0.1.0.
 
 ### Notes
 
