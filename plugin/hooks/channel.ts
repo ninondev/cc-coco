@@ -14,7 +14,7 @@ function utf8Bytes(text: string): number {
 }
 
 type Request = { v: 1; id: string; session: string; at: number; kind: 'submit' | 'clear' | 'seen'; text?: string; upto?: number }
-type Callbacks = { running: (running: boolean) => void; seen: (upto: number) => void; ack: (id: string) => Promise<void>; changed: () => Promise<void> }
+type Callbacks = { running: (running: boolean) => void; seen: (upto: number) => void; ack: (id: string) => Promise<void>; changed: () => Promise<void>; companionState?: (info: Record<string, unknown>) => Promise<void>; error?: (error: unknown) => void }
 
 export async function notifyChannelEnded(changed: () => Promise<void>): Promise<void> {
   try {
@@ -29,7 +29,9 @@ export async function notifyChannelEnded(changed: () => Promise<void>): Promise<
 
 export type ChannelIO = {
   exists: (path: string) => Promise<boolean>
-  write: (path: string, text: string) => Promise<void>
+  write?: (path: string, text: string) => Promise<void>
+  /** Create the stream without truncating a request another session just appended. */
+  ensureRequests?: (path: string) => Promise<void>
   spawn?: (argv: string[]) => HookStream<ProcessSpawnChunk, ProcessSpawnResult>
   now: () => Promise<number>
   submit: (text: string) => Promise<unknown>
@@ -52,24 +54,33 @@ export class CompanionChannel {
   async start(): Promise<void> {
     if (this.attempted || this.active) return
     if (windowsPath(this.folder)) return
-    if (!(await this.io.exists(this.folder))) return
-    if (this.attempted || this.active) return // another push may have finished the existence read
-    this.attempted = true
-    if (typeof this.io.spawn !== 'function') return
     try {
+      if (!(await this.io.exists(this.folder))) return
+      if (this.attempted || this.active) return // another push may have finished the existence read
+      this.attempted = true
+      if (typeof this.io.spawn !== 'function') return
       if (!(await this.io.exists('/usr/bin/tail'))) return
       const path = joinPath(this.folder, 'requests.jsonl')
-      if (!(await this.io.exists(path))) await this.io.write(path, '')
+      if (this.io.ensureRequests) await this.io.ensureRequests(path)
+      else if (!(await this.io.exists(path))) return // no safe creator: remain optional
       // A removal while creating the file must not start a child on a missing folder.
       if (!(await this.io.exists(this.folder))) return
       this.child = this.io.spawn(['/usr/bin/tail', '-f', '-n', '0', path])
       this.ended = new Promise(resolve => { this.end = resolve })
       this.active = true
       this.callbacks.running(true)
-      void this.read()
-    } catch {
+      void this.read().catch(error => this.report(error))
+    } catch (error) {
+      this.report(error)
       this.stop()
     }
+  }
+
+  get isRunning(): boolean { return this.active }
+
+  private report(error: unknown): void {
+    // Diagnostics must never turn an optional request channel into a rejected setup.
+    try { this.callbacks.error?.(error) } catch { /* logging is best effort */ }
   }
 
   stop(): void {
@@ -107,13 +118,14 @@ export class CompanionChannel {
           }
         }
       }
-    } catch {
+    } catch (error) {
+      this.report(error)
       // Unsupported spawn, a failed first pull or a failed child never arms a retry.
     } finally {
       this.stop()
       // The engine kills the child on return(). Do not wait on a suspended test generator.
-      void child.return({ code: null, signal: null }).catch(() => undefined)
-      await notifyChannelEnded(this.callbacks.changed)
+      void child.return({ code: null, signal: null }).catch(error => this.report(error))
+      try { await notifyChannelEnded(this.callbacks.changed) } catch (error) { this.report(error) }
     }
   }
 
@@ -121,6 +133,20 @@ export class CompanionChannel {
     let input: unknown
     try { input = JSON.parse(line) } catch { return }
     if (!input || typeof input !== 'object' || Array.isArray(input)) return
+    const event = input as Record<string, unknown>
+    if (event.v === 1 && event.kind === 'companion-state') {
+      const now = await this.io.now()
+      if (!this.active || typeof event.at !== 'number' || !Number.isFinite(event.at) || Math.abs(now - event.at) > 60_000) return
+      if (!event.info || typeof event.info !== 'object' || Array.isArray(event.info)) return
+      const info: Record<string, unknown> = {}, raw = event.info as Record<string, unknown>
+      for (const key of ['running', 'accessibility', 'login']) if (typeof raw[key] === 'boolean') info[key] = raw[key]
+      for (const key of ['answered', 'sizeAt', 'loginAt', 'followAt']) if (typeof raw[key] === 'number' && Number.isFinite(raw[key])) info[key] = raw[key]
+      if (typeof raw.hiddenUntil === 'number' && Number.isFinite(raw.hiddenUntil * 1000) && Math.abs(raw.hiddenUntil * 1000) <= 8.64e15) info.hiddenUntil = raw.hiddenUntil * 1000
+      if (typeof raw.version === 'string' && raw.version.length <= 64) info.version = raw.version
+      if (['tiny', 'small', 'medium', 'large'].includes(String(raw.size))) info.size = raw.size
+      try { await this.callbacks.companionState?.(info) } catch (error) { this.report(error) }
+      return
+    }
     const request = input as Request
     const now = await this.io.now()
     if (request.v !== 1 || !['submit', 'clear', 'seen'].includes(request.kind)
@@ -145,7 +171,7 @@ export class CompanionChannel {
       // An unchanged retry recovers a lost confirmation, including New chat. A thrown
       // engine action has an uncertain outcome and must never be executed again.
       if (previous.identity === identity && previous.completed) {
-        try { await this.callbacks.ack(request.id) } catch { /* another retry can recover the ack */ }
+        try { await this.callbacks.ack(request.id) } catch (error) { this.report(error) /* another retry can recover the ack */ }
       }
       return
     }
@@ -168,7 +194,8 @@ export class CompanionChannel {
       }
       handled.completed = true
       await this.callbacks.ack(request.id)
-    } catch {
+    } catch (error) {
+      this.report(error)
       // No acknowledgement if an engine call threw before handling the request.
     }
   }

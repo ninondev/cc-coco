@@ -53,11 +53,11 @@ Mods can't reach the desktop app's Chat and Cowork tabs, or cloud sessions. The 
 
 ## What he does
 
-The band reads like a line from a play: his picture, his name as the speaker, a stage direction in parentheses, and once in a while a line from him. When nothing is going on, the stage direction says "(training...)". In the desktop app he's painted, and he turns into a pixel head when you pick Pixel or the window gets narrow.
+The band reads like a line from a play: his picture, his name as the speaker, a stage direction in parentheses, and once in a while a line from him. When nothing is going on, the stage direction says "(training...)". In the desktop app he's painted unless you pick Pixel, and in a narrow window he just gets smaller. You can poke him there, too.
 
-His face follows what Claude is doing: reading, thinking, writing in the margins, done, waiting for you, a torn page when something fails, the wild soul after three failed runs in a row, asleep after ten quiet minutes. If Claude won't do what you asked, he closes his book.
+His face follows what Claude is doing: reading, thinking, writing in the margins, done, waiting for you, a torn page when something fails, the wild soul after three failed runs in a row, asleep after four quiet minutes. If Claude won't do what you asked, he closes his book.
 
-The offering box shows how full the context window is. It uses Claude Code's own number and is never more than a second behind while Claude works. Right after a compaction it shows an estimate marked "~" until Claude's next reply.
+The offering box shows how full the context window is. It uses Claude Code's own number and updates the moment a reply lands. Right after a compaction it shows an estimate marked "~" until Claude's next reply.
 
 He doesn't talk much. His lines in the band are only drawn on your screen and never sent to the model, so they cost nothing. How much Claude itself sounds like him is a separate setting. The default, light, lets Claude end a finished task with one quiet line in his voice. That adds a 292-character instruction (about 70 tokens) to each request, usually served from the prompt cache. `/claudesama voice full` has Claude talk like him all the way through and cuts the usual filler from its replies. Either way, the voice drops out for errors, for security, health, legal or money topics, and for anyone who is upset. You can turn it off in his book's Settings or with `/claudesama voice off`.
 
@@ -76,7 +76,7 @@ One panel, six pages. Open it with `/claudesama`, or in the desktop app with the
 - **Offerings.** The context window in tokens, your usage limits and what the session has cost so far, when Claude Code has those numbers. Estimates are marked with ~. Reading them costs no tokens.
 - **Reading log.** The pages you two have read together, kept only on this computer.
 - **Library.** Short stories about him.
-- **Settings.** His voice in replies, Warmth, the band, marks and language. In the desktop app the band can be Painted, Pixel or Off. The app icon and the macOS companion have their own sections.
+- **Settings.** His voice in replies, Warmth, the band, marks and language. In the desktop app the band can be Painted, Pixel or Off, and you choose whether he gets smaller while Claude works. Off leaves him napping at the edge of the band; press **Wake him** to bring it back. The app icon and the macOS companion have their own sections.
 
 ## Languages
 
@@ -115,7 +115,7 @@ His book also has **Start at login**, and **Remove from this Mac…**, which ask
 
 He makes no network calls and no extra model calls to be on screen, and he collects no telemetry. Settings and counts stay on this computer. The companion keeps short excerpts of replies and notices in local files until you've seen them or the session ends, and an instruction you type waits there until it's sent or expires. An instruction sent from Activity is a normal Claude Code request and costs tokens like any other. He never touches permission prompts or security notices. Like any Claude Code mod, he runs with your permissions.
 
-When nothing is happening, he blinks every 4 to 6 seconds while you can see him, and checks the offering box on each blink. Hidden or asleep, he runs no animation timer at all. While Claude works, his desktop picture moves at a few frames a second and he checks the box every 0.75 seconds, even when hidden or asleep. Each check is a cheap local read. With Reduce motion on, he stays still.
+When nothing is happening, he blinks now and then, about every five seconds and never on a beat, the way a person reading does, and only while you can see him. Hidden or asleep, he runs no animation timer at all. While Claude works, his desktop picture moves at a person's pace. The offering box updates when a reply lands, so nothing polls for it. With Reduce motion on, he stays still.
 
 ## Uninstall
 

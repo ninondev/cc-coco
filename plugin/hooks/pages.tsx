@@ -1,3 +1,4 @@
+import { ATOMIC_WRITE } from './shared-files'
 // His book: the pane /claudesama (or the band's "His book" button) opens. Six pages built from
 // what the plugin and Claude Code already hold: no tokens, no network, no timer of its own. It
 // draws only while open. Its words (plugin/book/<lang>.json, English and his language), its
@@ -20,14 +21,15 @@ import { CompanionBook, companionState, companionCommand, COMPANION_APP, COMPANI
 import type { CompanionSnapshot, CompanionBookData, CompanionAction, CompanionRun, CompanionInfo } from './companion-book'
 import { COMPANION_SIZES, STAGE_PNG, companionStageSvg, companionSizeSvg } from './companion-art'
 import type { CompanionStage, CompanionSize } from './companion-art'
-import { COMPANION_DIR, COMPANION_FEED, companionRequestText } from './companion'
+import { COMPANION_DIR, companionRequestText } from './companion'
 import type { CompanionRequest } from './companion'
 import { fill, overEnglish } from './book-words'
+import { BOOK_TEXT, PLUGIN_VERSION } from './book-text'
 import type { BookWords, Page } from './book-words'
 import { MARKS_DEFAULT, latest, marksFrom } from './latest'
 import type { Marks } from './latest'
 import { fortunesFor, localDay } from './mood'
-import { pngPath, spriteSource } from './pictures'
+import { bundledPng, spriteSource } from './pictures'
 import { homePath, isWindows, joinPath } from './paths'
 import { VOICE } from './voice'
 import { WORDS } from './words'
@@ -59,7 +61,7 @@ const WATCH: Record<Page, readonly string[]> = {
   offerings: [],
   log: ['turns', 'firstMet', 'latestNight', 'wilds', 'omens'],
   library: [],
-  settings: ['voice', 'affection', 'band', 'marks', 'lang'],
+  settings: ['voice', 'affection', 'band', 'workSize', 'marks', 'lang'],
 }
 
 // `/claudesama <word>` opens the book at a page; anything else goes on to the other commands.
@@ -73,6 +75,7 @@ const ALIASES: Record<string, Page> = {
   settings: 'settings',
 }
 
+let bookPublishFailed = false
 let book: ClaudesamaBook = { page: 'him', reading: 0, rev: 0 }
 let open = false
 let usage: SessionUsage | undefined
@@ -132,20 +135,14 @@ function clockOf(now: number): { hour: number; minute: number } {
 async function wordsFor($: Engine, lang: string): Promise<BookWords> {
   const held = words.get(lang)
   if (held) return held
-  const read = async (code: string): Promise<unknown> => {
-    try {
-      return JSON.parse(await $.fs.read(joinPath($.plugin.root, 'book', `${code}.json`)))
-    } catch {
-      return undefined
-    }
-  }
+  const read = (code: string): unknown => BOOK_TEXT[code as keyof typeof BOOK_TEXT]
   let en = words.get('en')
   if (!en) {
-    en = (await read('en')) as BookWords // shipped with the plugin; the tests read every file
+    en = read('en') as BookWords // shipped with the plugin; the tests read every file
     words.set('en', en)
   }
   if (lang === 'en') return en
-  const own = overEnglish(en, await read(lang))
+  const own = overEnglish(en, read(lang))
   for (const key of words.keys()) if (key !== 'en') words.delete(key)
   words.set(lang, own)
   return own
@@ -157,7 +154,7 @@ async function portraitOf($: Engine, frame: FrameName, height: number): Promise<
   if (source === undefined) {
     let png = pngs.get(frame)
     if (png === undefined) {
-      png = (await $.fs.read(joinPath($.plugin.root, pngPath(frame)), { as: 'bytes' })).base64
+      png = bundledPng(frame)
       pngs.set(frame, png)
     }
     source = spriteSource(height, png)
@@ -169,31 +166,43 @@ async function portraitOf($: Engine, frame: FrameName, height: number): Promise<
 async function show($: Engine, page: Page, reading = book.reading): Promise<void> {
   if (page !== 'settings') { companionBook.forget(); iconBook.forget() }
   book = { page, reading, rev: book.rev + 1 }
-  await $.state.set(BOOK, book)
+  try { bookPublishFailed = !(await $.state.set(BOOK, book)).isSet } catch { bookPublishFailed = true }
+  $.ui.invalidate('ui.render')
 }
 
 // One redraw of the open book just after whatever moved: never from inside a drawing (which may
 // not write state), and any number of moves in one beat fold into one.
 function redrawSoon($: Engine): void {
-  if (!open || redraw) return
-  redraw = $.clock.after(0, () => {
-    redraw = undefined
-    void show($, book.page)
-  })
+  if (open) $.ui.invalidate('ui.render')
 }
+
+// Settings acknowledgements arrive with the companion's event-driven request stream. The
+// current book consumes the payload, so a reaction never waits for another file read.
+let companionEvent: CompanionSnapshot | undefined
+let companionStatusRevision = 0
+export function companionChanged(info: CompanionInfo): void {
+  companionStatusRevision += 1
+  companionEvent = { folder: true, app: true, login: info.login === true, info }
+  companionBook.macReady = true
+  companionBook.mac = Promise.resolve(true)
+  companionBook.snapshot = companionEvent
+  companionBook.busy.clear()
+  companionBook.unanswered = false
+}
+
 
 // Always at the person's asking (a command or a press), so it asks for the keyboard: the tabs'
 // keys 1 to 6 work at once. The engine refuses the focus over text in the composer, rightly.
 async function openBook($: Engine, page: Page): Promise<void> {
+  await show($, page) // request the event's redraw before detached optional status can start
   try {
     usage = await $.session.usage()
   } catch {
     // the page says there is no reading yet
   }
-  if (page === 'settings') await runIcon($, iconBook, 'status', () => redrawSoon($))
-  await show($, page)
   const opened = await $.ui.open({ id: BOOK_PANE, title: 'Claude-sama', closeOnEscape: true, focus: true })
   open = opened.isPlaced
+  if (open && page === 'settings') void runIcon($, iconBook, 'status', () => redrawSoon($))
 }
 
 async function countUp($: Engine, key: string): Promise<void> {
@@ -217,7 +226,8 @@ async function turnFinished($: Engine): Promise<void> {
 // His marks on the engine's rows (transcript.tsx), all behind this one setting.
 async function setMarks($: Engine, marks: Marks): Promise<void> {
   latest.marks = marks
-  await $.store.set('marks', marks)
+  $.ui.invalidate('ui.render')
+  try { await $.store.set('marks', marks) } catch { /* the applied choice remains visible */ }
   $.ui.invalidate('ui.render') // the transcript's rows draw again, once
 }
 
@@ -290,16 +300,15 @@ export async function companionIsMac($: Engine, c: CompanionBook): Promise<boole
   })()
 }
 
-function companionVersion($: Engine, c: CompanionBook): Promise<string | undefined> {
-  return c.pluginVersion ??= $.fs.read(joinPath($.plugin.root, '.claude-plugin', 'plugin.json')).then(text => {
-    try { const v = JSON.parse(text).version; return typeof v === 'string' ? v : undefined } catch { return undefined }
-  }, () => undefined)
-}
-
 export async function companionSnapshot($: Engine, c: CompanionBook): Promise<CompanionSnapshot> {
+  const generation = c.generation, revision = companionStatusRevision
   const home = await homeOf($)
-  const version = await companionVersion($, c)
-  if (!home) return { folder: false, app: false, login: false, info: {}, version }
+  const version = PLUGIN_VERSION
+  if (!home) {
+    const snapshot = { folder: false, app: false, login: false, info: {}, version }
+    if (generation === c.generation && revision === companionStatusRevision) c.snapshot = snapshot
+    return snapshot
+  }
   const folder = await $.fs.exists(joinPath(home, COMPANION_DIR)).catch(() => false)
   const app = await $.fs.exists(joinPath(home, COMPANION_APP)).catch(() => false)
   const login = await $.fs.exists(joinPath(home, COMPANION_PLIST)).catch(() => false)
@@ -320,12 +329,33 @@ export async function companionSnapshot($: Engine, c: CompanionBook): Promise<Co
       }
     } catch { /* a half-written or older record has no assumed fields */ }
   }
-  return { folder, app, login, info, version }
+  const snapshot = { folder, app, login, info, version }
+  if (generation === c.generation && revision === companionStatusRevision) c.snapshot = snapshot
+  return snapshot
+}
+
+// Optional status warms once per generation, separately from the first Settings drawing.
+export function warmCompanion($: Engine, c: CompanionBook, changed: () => void): void {
+  if (companionEvent) { c.macReady = true; c.snapshot = companionEvent; return }
+  if (c.macReady === false || c.snapshot || c.warmGeneration === c.generation) return
+  const generation = c.generation, revision = companionStatusRevision
+  c.warmGeneration = generation
+  c.warming = (async () => {
+    const mac = await companionIsMac($, c)
+    if (generation !== c.generation || revision !== companionStatusRevision) return
+    c.macReady = mac
+    if (mac) await companionSnapshot($, c)
+    if (generation === c.generation && revision === companionStatusRevision) changed()
+  })().catch(() => { /* unknown stays unknown; an optional probe never blocks drawing */ })
 }
 
 export async function companionData($: Engine, c: CompanionBook, desktop: boolean, now: number): Promise<CompanionBookData> {
+  const s = companionEvent ? { ...companionEvent, version: PLUGIN_VERSION } : await companionSnapshot($, c)
+  return companionDataFromSnapshot(c, s, desktop, now)
+}
+
+export function companionDataFromSnapshot(c: CompanionBook, s: CompanionSnapshot, desktop: boolean, now: number): CompanionBookData {
   const generation = c.generation
-  const s = await companionSnapshot($, c)
   if ((s.info.answered ?? 0) >= c.summonAt) c.unanswered = false
   const state = companionState(s, now, { busy: c.progress, issue: c.issue, unanswered: c.unanswered, followed: c.followed })
   const notRun = c.notRun
@@ -335,16 +365,16 @@ export async function companionData($: Engine, c: CompanionBook, desktop: boolea
     const stage: CompanionStage = state === 'waiting' ? 'corner' : ['stopped', 'hidden', 'corner', 'following'].includes(state) ? state as CompanionStage : 'absent'
     if (c.stage?.state !== stage) {
       const path = STAGE_PNG[stage]
-      const png = path ? (await $.fs.read(joinPath($.plugin.root, path), { as: 'bytes' })).base64 : ''
+      const png = path ? bundledPng(path.replace(/^.*[\/][0-9]+-/, '').replace(/\.png$/, '') as FrameName, true) : ''
       if (generation !== c.generation) return data
       c.stage = { state: stage, source: companionStageSvg(stage, png) }
     }
     data.stage = { source: c.stage.source, altState: stage }
     if (['hidden', 'waiting', 'corner', 'following'].includes(state)) {
       if (!c.figures) {
-        const pixel = (await $.fs.read(joinPath($.plugin.root, 'assets/pixel/01-idle-reading.png'), { as: 'bytes' })).base64
+        const pixel = bundledPng('idle-reading', true)
         if (generation !== c.generation) return data
-        const painted = (await $.fs.read(joinPath($.plugin.root, 'assets/desktop/01-idle-reading.png'), { as: 'bytes' })).base64
+        const painted = bundledPng('idle-reading', false)
         if (generation !== c.generation) return data
         c.figures = Object.fromEntries(COMPANION_SIZES.map(size => [size, companionSizeSvg(size, size === 'tiny' || size === 'small' ? pixel : painted)]))
       }
@@ -371,43 +401,15 @@ export async function companionRun($: Engine, c: CompanionBook, argv: readonly s
 }
 
 export async function writeCompanionRequest($: Engine, c: CompanionBook, view: ClaudesamaView, request: CompanionRequest): Promise<boolean> {
-  if (await windows($)) return false
-  const home = await homeOf($)
-  if (!home || !(await $.fs.exists(joinPath(home, COMPANION_DIR)))) return false
-  const now = await $.clock.now(), session = await $.session.id(), desktop = (await $.session.surfaces()).includes('desktop')
-  if (!(await $.fs.exists(joinPath(home, COMPANION_DIR)))) return false
   try {
-    await $.fs.write(joinPath(home, COMPANION_FEED), companionRequestText(view, session, desktop, now, request))
-    return true
+    if (await windows($)) return false
+    const home = await homeOf($)
+    if (!home || !(await $.fs.exists(joinPath(home, COMPANION_DIR)))) return false
+    const now = await $.clock.now(), session = await $.session.id(), desktop = (await $.session.surfaces()).includes('desktop')
+    if (!(await $.fs.exists(joinPath(home, COMPANION_DIR)))) return false
+    const written = await $.process.run(['/bin/sh', '-c', ATOMIC_WRITE, 'claudesama', joinPath(home, COMPANION_DIR), 'view.json'], { stdin: companionRequestText(view, session, desktop, now, request), timeoutMs: 2000 })
+    return written.exitCode === 0
   } catch { return false }
-}
-
-async function companionChecks($: Engine, c: CompanionBook, active: () => boolean, redraw: () => void, goal: (s: CompanionSnapshot) => boolean, began: number, initial: CompanionSnapshot): Promise<void> {
-  c.timer?.cancel()
-  const generation = ++c.generation
-  let last = JSON.stringify(initial), step = 0, elapsedNow = await $.clock.now()
-  if (elapsedNow - began >= 300_000) return
-  const waits = [1000, 1000, 2000, 4000, 8000] // absolute offsets: 1, 2, 4, 8, 16 seconds
-  const schedule = () => {
-    if (!active() || generation !== c.generation) return
-    const delay = waits[step++] ?? 30_000
-    c.timer = $.clock.after(Math.min(delay, Math.max(0, 300_000 - (elapsedNow - began))), async () => {
-      c.timer = undefined
-      if (!active() || generation !== c.generation) return
-      const now = await $.clock.now()
-      elapsedNow = now
-      if (now - began >= 300_000) return
-      const s = await companionSnapshot($, c)
-      if (!active() || generation !== c.generation) return
-      const key = JSON.stringify(s)
-      if (last !== key) { last = key; redraw() }
-      if (goal(s)) {
-        c.answerTimer?.cancel(); c.answerTimer = undefined
-        c.busy.delete('summon')
-      } else schedule()
-    })
-  }
-  schedule()
 }
 
 export async function pressCompanion($: Engine, c: CompanionBook, action: CompanionAction, view: ClaudesamaView, redraw: () => void, active: () => boolean): Promise<void> {
@@ -415,26 +417,28 @@ export async function pressCompanion($: Engine, c: CompanionBook, action: Compan
   const group = ['install', 'retry', 'updateButton'].includes(action) ? 'install' : action
   if (c.busy.has(group) || c.progress) return
   if (action === 'remove' || action === 'keep') { c.confirmed = action === 'remove'; redraw(); return }
+  companionEvent = undefined
   c.stop() // a new press owns the one chain and any delayed summon
   c.busy.add(group)
-  const initial = await companionSnapshot($, c)
-  // Install is the only action that may create an absent companion. Other presses cannot
-  // resurrect his deleted folder, including a press on a stale rendered control.
-  if (!['install', 'toolsButton', 'oldToolsButton'].includes(group) && (!initial.folder || !initial.app)) { c.busy.delete(group); return }
-  if (action === 'trash' && !c.confirmed) { c.busy.delete(group); return }
-  const now = await $.clock.now()
-  const at = Math.max(Math.round(now), c.lastAt + 1); c.lastAt = at
+  if (group === 'install' || action === 'trash') c.progress = group as 'install' | 'trash'
+  redraw() // the press is visible before optional status validation or program/file work
   let goal = (_s: CompanionSnapshot) => true
-  let deferred = false
   try {
+    const initial = await companionSnapshot($, c)
+    // Install is the only action that may create an absent companion. Other presses cannot
+    // resurrect his deleted folder, including a press on a stale rendered control.
+    if (!['install', 'toolsButton', 'oldToolsButton'].includes(group) && (!initial.folder || !initial.app)) return
+    if (action === 'trash' && !c.confirmed) return
+    const now = await $.clock.now()
+    const at = Math.max(Math.round(now), c.lastAt + 1); c.lastAt = at
     if (group === 'install' || action === 'trash') {
-      c.progress = group as 'install' | 'trash'; redraw()
       const r = await companionRun($, c, ['sh', joinPath($.plugin.root, 'bin/companion-macos.sh'), group === 'install' ? 'install' : 'uninstall', '--report'], group === 'install' ? 'Install Claude-sama Companion' : 'Move Claude-sama Companion to the Trash', 600_000)
       if (r.kind === 'ran') {
         const lines = r.stdout.trim().split(/\r?\n/)
         const report = /^result: (ok|no-tools|old-tools|failed|not-mac)$/.exec(lines[lines.length - 1] ?? '')?.[1]
         if (report === 'ok' && r.exitCode === 0) {
           c.issue = undefined; c.afterTools = false
+          c.snapshot = undefined; c.warmGeneration = -1
           if (action === 'trash') { c.removed = true; c.confirmed = false; goal = s => !s.folder || !s.app }
           else { c.removed = false; await writeCompanionRequest($, c, latest.view ?? view, {}); goal = s => s.folder && s.app && s.info.running === true && s.info.version === s.version }
         } else {
@@ -454,25 +458,7 @@ export async function pressCompanion($: Engine, c: CompanionBook, action: Compan
       if (!(await writeCompanionRequest($, c, view, { summon: at }))) return
       goal = s => (s.info.answered ?? 0) >= at
       redraw()
-      if (initial.info.running === true) {
-        // Do not hold a ui.press dispatch open for a clock wait. This one-shot is cancelled
-        // with the check chain and cannot start him after his book closes.
-        deferred = true
-        c.answerTimer?.cancel()
-        c.answerTimer = $.clock.after(1500, async () => {
-          c.answerTimer = undefined
-          if (!active()) { c.busy.delete(group); return }
-          const answerGeneration = c.generation
-          try {
-            const s = await companionSnapshot($, c)
-            if (!active() || answerGeneration !== c.generation) return
-            if ((s.info.answered ?? 0) < at && s.folder && s.app) {
-              c.unanswered = true
-              await companionRun($, c, COMPANION_OPEN, 'Bring Claude-sama Companion back')
-            }
-          } finally { c.busy.delete(group); redraw() }
-        })
-      } else await companionRun($, c, COMPANION_OPEN, 'Bring Claude-sama Companion back')
+      await companionRun($, c, COMPANION_OPEN, 'Bring Claude-sama Companion back')
     } else {
       let request: CompanionRequest
       if (action === 'follow') { request = { follow: at }; goal = s => s.info.accessibility === true }
@@ -485,9 +471,8 @@ export async function pressCompanion($: Engine, c: CompanionBook, action: Compan
     }
   } finally {
     c.progress = undefined
-    if (!deferred) c.busy.delete(group)
+    c.busy.delete(group)
     redraw()
-    await companionChecks($, c, active, redraw, goal, now, initial)
   }
 }
 
@@ -524,6 +509,7 @@ export function registerBook(on: On): void {
   // The closed book keeps none.
   on('session.usage', async ($, e, next) => {
     const read = await next(e)
+    warmCompanion($, companionBook, () => redrawSoon($))
     if (!open || !('value' in read)) return read
     const moved = !sameUsage(usage, read.value)
     usage = read.value
@@ -585,7 +571,7 @@ export function registerBook(on: On): void {
   })
 
   on('ui.render', { component: 'Pane', requestId: BOOK_PANE }, async ($, e, next) => {
-    const held = (await $.state.get(BOOK)).value ?? book
+    const held = bookPublishFailed ? book : (await $.state.get(BOOK)).value ?? book
     open = true
     const settings = await $.settings.read()
     timeZone = typeof settings.timeZone === 'string' ? settings.timeZone : undefined
@@ -611,11 +597,15 @@ export function registerBook(on: On): void {
       }
     }
     const columns = e.props.bodyColumns
-    if (held.page === 'settings' && (e.surface === 'desktop' || e.surface === 'terminal') && (await companionIsMac($, companionBook))) {
-      data.companion = await companionData($, companionBook, e.surface === 'desktop', data.now)
-      press.companion = async action => {
-        const current = latest.view ?? view
-        if (current) await pressCompanion($, companionBook, action, current, () => redrawSoon($), () => open && book.page === 'settings')
+    if (held.page === 'settings' && (e.surface === 'desktop' || e.surface === 'terminal')) {
+      warmCompanion($, companionBook, () => redrawSoon($))
+      const snapshot = companionEvent ? { ...companionEvent, version: PLUGIN_VERSION } : companionBook.snapshot
+      if (companionBook.macReady === true && snapshot) {
+        data.companion = companionDataFromSnapshot(companionBook, snapshot, e.surface === 'desktop', data.now)
+        press.companion = async action => {
+          const current = latest.view ?? view
+          if (current) await pressCompanion($, companionBook, action, current, () => redrawSoon($), () => open && book.page === 'settings')
+        }
       }
     }
     if (e.surface === 'desktop') {

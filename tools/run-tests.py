@@ -68,6 +68,32 @@ def source_files(copy):
         out.write('export const PLUGIN_SOURCES: Record<string, string> = ' + json.dumps(files, ensure_ascii=False) + '\n')
 
 
+def review_texts(copy):
+    """Make the shipping Chinese README available to the sandboxed localization guard."""
+    path = os.path.join(ROOT, 'README.zh.md')
+    if not os.path.isfile(path):
+        path = os.path.join(ROOT, 'claude-sama', 'README.zh.md')
+    with open(path, encoding='utf-8') as source:
+        text = source.read()
+    with open(os.path.join(copy, 'tests', 'review-texts.ts'), 'w', encoding='utf-8') as out:
+        out.write('// Written by the test runner; the shipping README is read only.\n')
+        out.write('export const CHINESE_README = ' + json.dumps(text, ensure_ascii=False) + '\n')
+
+
+def seed_runtime_motion(copy):
+    """Seed the scratch runtime after inventorying the unchanged shipping source."""
+    path = os.path.join(copy, 'hooks', 'motion.ts')
+    if not os.path.isfile(path):
+        return  # original-source regression receipts predate the shared model
+    with open(path, encoding='utf-8') as source:
+        text = source.read()
+    declaration = 'export const runtimeRandom: Random = Math.random'
+    if text.count(declaration) != 1:
+        raise RuntimeError('motion runtime RNG declaration must occur exactly once')
+    with open(path, 'w', encoding='utf-8') as source:
+        source.write(text.replace(declaration, 'export const runtimeRandom: Random = seededRandom(0x4c415544)'))
+
+
 def windows_roots(copy, enabled):
     """Only the throwaway copy substitutes a root: the kit has no plugin-root mock."""
     tests = os.path.join(copy, 'tests')
@@ -76,7 +102,9 @@ def windows_roots(copy, enabled):
     if not enabled:
         return
     selected = {'windows-roots.test.tsx', 'paths.test.tsx', 'book.test.tsx', 'book-review.test.tsx',
-                'band.test.tsx', 'desktop-sprite.test.tsx'}
+                'band.test.tsx', 'desktop-sprite.test.tsx', 'startup.test.tsx',
+                'channel-startup.test.tsx', 'shared-files.test.tsx', 'reaction.test.tsx',
+                'localization.test.tsx'}
     for name in os.listdir(tests):
         if name.endswith('.test.tsx') and name not in selected:
             os.unlink(os.path.join(tests, name))
@@ -124,6 +152,8 @@ def main():
     parser = argparse.ArgumentParser(description="Run the plugin's tests in a scratch copy.")
     parser.add_argument('--windows-roots', action='store_true', help='run representative tests with simulated Windows engine roots')
     parser.add_argument('--plugin-source', help=argparse.SUPPRESS)
+    parser.add_argument('--tests-source', help=argparse.SUPPRESS)
+    parser.add_argument('--test-file', action='append', help='run only this named engine test file (repeatable; scratch copy only)')
     parser.add_argument('--keep', action='store_true', help='keep the scratch folder and print its path')
     parser.add_argument('--claude', help='path to the claude binary')
     args = parser.parse_args()
@@ -134,12 +164,24 @@ def main():
     if preflight.returncode != 0:
         return preflight.returncode
 
+    motion_checks = os.path.join(ROOT, 'tools', 'tests', 'motion-sync.test.py')
+    if os.path.isfile(motion_checks):
+        motion = subprocess.run([sys.executable, motion_checks], cwd=ROOT, timeout=30)
+        if motion.returncode != 0:
+            return motion.returncode
+
+    shared_checks = os.path.join(ROOT, 'tools', 'tests', 'shared-files.test.py')
+    if os.path.isfile(shared_checks):
+        shared = subprocess.run([sys.executable, shared_checks], cwd=ROOT, timeout=30)
+        if shared.returncode != 0:
+            return shared.returncode
+
     claude = find_claude(args.claude)
     if not claude:
         sys.stderr.write('run-tests.py: claude CLI not found (set CLAUDE_BIN or --claude, or install Claude Code)\n')
         return 2
     plugin = os.path.abspath(args.plugin_source) if args.plugin_source else os.path.join(ROOT, 'plugin')
-    tests = os.path.join(ROOT, 'tools', 'tests')
+    tests = os.path.abspath(args.tests_source) if args.tests_source else os.path.join(ROOT, 'tools', 'tests')
     for folder in (plugin, tests):
         if not os.path.isdir(folder):
             sys.stderr.write('run-tests.py: missing folder %s\n' % folder)
@@ -152,7 +194,19 @@ def main():
         shutil.copytree(tests, os.path.join(copy, 'tests'), ignore=shutil.ignore_patterns('.DS_Store', '__pycache__', 'book-files.ts'))
         book_files(copy)
         source_files(copy)
+        review_texts(copy)
+        seed_runtime_motion(copy)
         windows_roots(copy, args.windows_roots)
+        if args.test_file:
+            selected = set(args.test_file)
+            available = set(os.listdir(os.path.join(copy, 'tests')))
+            missing = selected - available
+            if missing:
+                sys.stderr.write('run-tests.py: missing test files: %s\n' % ', '.join(sorted(missing)))
+                return 2
+            for name in available:
+                if name.endswith('.test.tsx') and name not in selected:
+                    os.unlink(os.path.join(copy, 'tests', name))
 
         home = os.path.join(scratch, 'home')
         os.makedirs(home)

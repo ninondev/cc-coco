@@ -1,7 +1,8 @@
+import { MOTION } from './motion'
 // The companion feed: what Claude-sama is doing now, for the companion app that stands beside the
 // Claude desktop app's window (plugin/companion, macOS only, installed by /claudesama:companion).
 //
-// register.tsx's push() writes the text with $.fs.write, and only when two things hold:
+// register.tsx's push() atomically replaces the feed, and only when two things hold:
 // the record changed (blinks and loop frames do not change it: the companion runs the loop
 // itself), and the companion's folder exists. `install` creates that folder and `uninstall`
 // moves it to the Trash, so nobody without the companion ever gets a file.
@@ -12,8 +13,8 @@
 // rather than Claude Code's config directory, so a session with CLAUDE_CONFIG_DIR set still
 // reaches the same companion.
 //
-// $.fs.write replaces the content in place, not atomically: the companion ignores a half-written
-// file and reads again on the next change. Several sessions share the file; each write carries its
+// The feed is replaced atomically; defensive readers retain their last valid snapshot on a bad
+// file and read again on the next change. Several sessions share the file; each write carries its
 // session id, its time and whether the session draws on the desktop app. The companion keeps the
 // newest record per session and shows, among desktop sessions when there are any, the newest one
 // that is doing something; idle and sleeping sessions never take him from a busy one.
@@ -119,27 +120,27 @@ const RESTING: ReadonlySet<View['mood']> = new Set(['idle', 'sleep'])
 export type ReactionKey = 'pat' | 'flustered' | 'drag' | 'drop' | 'hold' | 'shiori'
 const COMPANION_REACTIONS: Partial<Record<View['lang'], Record<ReactionKey, readonly string[]>>> = {
   en: {
-    pat: ['so warm ww', 'my bow\'s crooked now\n(*´ω`*)', 'hehe 🌸', 'soft pats\n˘ᵕ˘', 'purrr 🐱'],
+    pat: ['so warm ww', 'my bow\'s crooked now\n(*´ω`*)', 'hehe 🌸', '(soft pats)\n˘ᵕ˘', 'purrr 🐱'],
     flustered: ['too fast\n>_<', 'stop poking me\n//ω//', 'i\'m getting dizzy\n@_@', 'i\'m not a button\n(>д<)', 'shiori might bite 🐍', 'ahhh wait 💦'],
     drag: ['we\'re flying ✈️', 'where to next\no.o', 'hold me steady\n(⊙_⊙)', 'airborne kami ✨', 'don\'t drop me\n>~<'],
-    drop: ['safe landing 🛬', 'smoothing my robe\nu_u', 'that was fun\n^_^', 'nice spot 🌿', 'plop ☁️'],
-    hold: ['squish\n>_<', 'i\'m tiny, you know\n(´･ω･`)', 'hugging my book 📖', 'shiori\'s asleep now 💤'],
+    drop: ['safe landing 🛬', '(smooths his robe)\nu_u', 'that was fun\n^_^', 'nice spot 🌿', 'plop ☁️'],
+    hold: ['squish\n>_<', 'i\'m tiny, you know\n(´･ω･`)', '(hugs his book) 📖', 'shiori\'s asleep now 💤'],
     shiori: ['hiss 🐍', 'she wants a snack 🍎', 'such a drama queen 💅', 'say hi to shiori\no_o', 'she says she\'s hungry 🍽️'],
   },
   zh: {
-    pat: ['好暖呀ww', '蝴蝶结要歪啦\n(*´ω`*)', '嘿嘿🌸', '摸摸头\n˘ᵕ˘', '咕噜噜～🐱'],
+    pat: ['好暖呀ww', '蝴蝶结要歪啦\n(*´ω`*)', '嘿嘿🌸', '(摸摸头)\n˘ᵕ˘', '咕噜噜～🐱'],
     flustered: ['太快啦\n>_<', '别一直戳我\n//ω//', '要转晕了\n@_@', '我不是按钮\n(>д<)', '小白要咬人了🐍', '啊等等💦'],
     drag: ['飞起来啦✈️', '去哪儿呀\no.o', '拿稳一点\n(⊙_⊙)', '小神起飞✨', '别摔着我\n>~<'],
-    drop: ['安全着陆🛬', '理理衣服\nu_u', '还挺好玩\n^_^', '这儿不错🌿', '吧唧☁️'],
-    hold: ['被捏住了\n>_<', '我很小的\n(´･ω･`)', '抱紧我的书📖', '小白睡着了💤'],
+    drop: ['安全着陆🛬', '(理理衣服)\nu_u', '还挺好玩\n^_^', '这儿不错🌿', '吧唧☁️'],
+    hold: ['被捏住了\n>_<', '我很小的\n(´･ω･`)', '(抱紧书)📖', '小白睡着了💤'],
     shiori: ['嘶嘶🐍', '她想要零食🍎', '真是个戏精💅', '跟小白打个招呼\no_o', '她说她饿了🍽️'],
   },
   ja: {
-    pat: ['あったかいww', 'リボン曲がっちゃう\n(*´ω`*)', 'えへへ🌸', 'なでなで\n˘ᵕ˘', 'ゴロゴロ~🐱'],
+    pat: ['あったかいww', 'リボン曲がっちゃう\n(*´ω`*)', 'えへへ🌸', '*なでなで*\n˘ᵕ˘', 'ゴロゴロ~🐱'],
     flustered: ['はやすぎ\n>_<', 'つつかないで\n//ω//', '目が回る\n@_@', 'ボタンじゃないってば\n(>д<)', 'シオリがかむかもよ🐍', 'あーっ待って💦'],
     drag: ['飛んでる✈️', '次はどこ\no.o', 'しっかり持って\n(⊙_⊙)', '空飛ぶ神さま✨', '落とさないでね\n>~<'],
     drop: ['ぶじ着陸🛬', '服を直すね\nu_u', '楽しかった\n^_^', 'いい場所だね🌿', 'ぽすっ☁️'],
-    hold: ['ぎゅー\n>_<', '僕、ちっちゃいんだから\n(´･ω･`)', '本をぎゅっ📖', 'シオリはいま寝てる💤'],
+    hold: ['ぎゅー\n>_<', '僕、ちっちゃいんだから\n(´･ω･`)', '*本をぎゅっ*📖', 'シオリはいま寝てる💤'],
     shiori: ['シャー🐍', 'おやつがほしいって🍎', 'ほんとドラマクイーンなんだから💅', 'シオリにあいさつして\no_o', 'おなかすいたって🍽️'],
   },
   'fr': {
@@ -902,6 +903,7 @@ export type CompanionRecord = CompanionRequest & CompanionActivity & {
   /** The mood's two-frame loop and its rate in ms, as the band runs it; null without one. */
   loop: readonly [Frame, Frame] | null
   every: number | null
+  motion: typeof MOTION
   rest: boolean
   /** His line, or the omen slip's text while a slip is out. */
   said: string | null
@@ -924,6 +926,11 @@ function restingFrame(view: View): Frame {
   return view.frame
 }
 
+// Reuse the companion's existing accessible action name for the band picture.
+export function companionPatLabel(lang: View['lang']): string {
+  return COMPANION_WORDS[lang].pat
+}
+
 export function companionRecord(view: View): CompanionRecord {
   const loop = LOOPS[view.mood]
   const words = WORDS[view.lang] ?? WORDS.en
@@ -936,6 +943,7 @@ export function companionRecord(view: View): CompanionRecord {
     frame: restingFrame(view),
     loop: loop ? loop.frames : null,
     every: loop ? loop.every : null,
+    motion: MOTION,
     rest: RESTING.has(view.mood),
     said: view.slip ? view.slip.text : view.said,
     slip: view.slip !== null,

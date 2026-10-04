@@ -34,7 +34,7 @@ import CoreText
 //
 // Motion: two-frame turn loops and an occasional idle blink run in the window server, only while
 // he is on screen and not covered, with Reduce Motion off. The idle blink adds no timer to this
-// process: four 140 ms blinks in a 16-second contents animation. Reactions replace it.
+// process: a three-minute randomized contents sequence. Reactions replace it.
 // The pat squash, the flustered shake and the sway also stop with Reduce Motion. Timers are reusable
 // one-shots for live lines and reactions; the blink never arms one.
 
@@ -96,12 +96,6 @@ enum Size: String, CaseIterable {
 
 /// The idle animation's whole schedule and eligibility, independent of windows and clocks.
 enum IdleBlink {
-    static let duration = 16.0
-    static let shuts = [3.8, 8.9, 9.22, 13.6]
-    static let shutFor = 0.14
-    static let times = [0.0, 3.8, 3.94, 8.9, 9.04, 9.22, 9.36, 13.6, 13.74, 16.0]
-    static let closed = [false, true, false, true, false, true, false, true, false]
-
     static func wanted(mood: String, frame: String, hasLoop: Bool, reacting: Bool,
                        visible: Bool, unoccluded: Bool, reduceMotion: Bool) -> Bool {
         mood == "idle" && frame == "idle-reading" && !hasLoop && !reacting
@@ -109,14 +103,7 @@ enum IdleBlink {
     }
 
     static func animation(open: CGImage, shut: CGImage) -> CAKeyframeAnimation {
-        let animation = CAKeyframeAnimation(keyPath: "contents")
-        animation.values = closed.map { $0 ? shut : open }
-        animation.keyTimes = times.map { NSNumber(value: $0 / duration) }
-        animation.calculationMode = .discrete
-        animation.duration = duration
-        animation.repeatCount = .infinity
-        animation.isRemovedOnCompletion = false
-        return animation
+        MotionModel.standard.idle(open: open, shut: shut, gaze: false)
     }
 }
 
@@ -163,8 +150,6 @@ final class Pet: NSObject {
     private var unseen = 0
     private var activityPresented = false
     private var retainedTarget: Place.Target?
-    private lazy var hoverRest = OneShot { [unowned self] in advanceHover() }
-    private lazy var hoverLeave = OneShot { [unowned self] in advanceHover() }
     var requestActivity: () -> Void = {}
     private var card: Card?
     private var cardWaiting = false
@@ -180,6 +165,7 @@ final class Pet: NSObject {
     private var orderedTo: CGWindowID?
     private var scale: CGFloat = 2
     private var loopKey: String?
+    private var gazeBlink = true
     private var recheckAt: Double?
     private var lastShown: NSRect?
     private var reactor = Reactor()
@@ -192,6 +178,7 @@ final class Pet: NSObject {
         draw()
     }
     private lazy var reactionEnd: OneShot = OneShot { [unowned self] in
+        if record.mood == "idle" { gazeBlink = true; loopKey = nil }
         draw()
         place(reorder: false)
         armReactionEnd()
@@ -220,7 +207,7 @@ final class Pet: NSObject {
         NSWorkspace.shared.notificationCenter.addObserver(
             self, selector: #selector(displayOptionsMoved), name: NSWorkspace.accessibilityDisplayOptionsDidChangeNotification, object: nil
         )
-        if snoozed { snoozeEnd.fire(after: store.hiddenUntil - Date().timeIntervalSince1970 + 0.05) }
+        if snoozed { snoozeEnd.fire(after: store.hiddenUntil - Date().timeIntervalSince1970) }
     }
 
     private var reduceMotion: Bool { !Self.ignoreReduceMotion && NSWorkspace.shared.accessibilityDisplayShouldReduceMotion }
@@ -231,6 +218,7 @@ final class Pet: NSObject {
     // ------------------------------------------------------------ inputs
 
     func show(_ record: Record) {
+        if record.motion != self.record.motion || record.mood == "idle" && (self.record.mood != "idle" || record.said != self.record.said) { loopKey = nil; gazeBlink = true }
         self.record = record
         updateActions()
         draw()
@@ -240,7 +228,6 @@ final class Pet: NSObject {
     /// His hello changes only the frame: no new line, and the hour's hide is cleared on disk too.
     func comeBack() {
         store.hiddenUntil = 0
-        store.save()
         snoozeEnd.cancel()
         reaction = ("wave", now + 1_500)
         lookView.picture.removeAnimation(forKey: "loop")
@@ -248,6 +235,7 @@ final class Pet: NSObject {
         draw()
         place(reorder: true)
         armReactionEnd()
+        store.save()
     }
 
     func follow(_ sighting: Claude.Sighting, reorder: Bool) {
@@ -352,7 +340,7 @@ final class Pet: NSObject {
         speech.orderOut(nil)
         card?.panel.orderOut(nil)
         bubble.orderOut(nil); badge?.orderOut(nil); hideHoverRow()
-        hover.blocked(carried: true, card: false); hoverRest.cancel(); hoverLeave.cancel()
+        hover.blocked(carried: true, card: false)
         orderedTo = nil
         mode = nil
         updateLoop()
@@ -439,7 +427,7 @@ final class Pet: NSObject {
            hit.isVisible, look.occlusionState.contains(.visible) || Self.offscreen {
             want = "\(loop[0])|\(loop[1])|\(every)|\(height)|\(scale)"
             // A turn that stopped writing for ten minutes keeps its face but stops moving.
-            scheduleRecheck(at: record.at + 10 * 60_000 + 50)
+            scheduleRecheck(at: record.at + 10 * 60_000)
         } else if blink {
             want = "idle-blink|\(store.size.rawValue)|\(height)|\(scale)"
         }
@@ -449,18 +437,13 @@ final class Pet: NSObject {
         if blink {
             guard let open = frames.image("idle-reading", size: store.size, scale: scale),
                   let shut = frames.image("idle-blink", size: store.size, scale: scale) else { return }
-            animation = IdleBlink.animation(open: open, shut: shut)
+            animation = record.motion.idle(open: open, shut: shut, gaze: gazeBlink)
+            gazeBlink = false
         } else {
-            guard let loop = record.loop, let every = record.every,
+            guard let loop = record.loop,
                   let first = frames.image(loop[0], size: store.size, scale: scale),
                   let second = frames.image(loop[1], size: store.size, scale: scale) else { return }
-            animation = CAKeyframeAnimation(keyPath: "contents")
-            animation.values = [first, second]
-            animation.keyTimes = [0, 0.5, 1] // discrete: one more key time than values
-            animation.calculationMode = .discrete
-            animation.duration = 2 * every / 1000
-            animation.repeatCount = .infinity
-            animation.isRemovedOnCompletion = false
+            animation = record.motion.loop(first: first, second: second, kind: record.mood)
         }
         picture.add(animation, forKey: "loop")
         loopKey = want
@@ -528,15 +511,17 @@ final class Pet: NSObject {
 
     private func placeCard(_ target: Place.Target) {
         let visible = hit.isVisible && target.active && press?.moved != true && !activityPresented && !Self.offscreen
+        var persistOffer = false
+        defer { if persistOffer { store.save() } }
         if trustReady, !cardWanted, CardOffer.shouldOffer(trusted: store.trusted, offered: store.offered,
                                                        build: Store.build, visible: visible) {
             cardWanted = true
             cardWaiting = false
             store.offered = Store.build
-            store.save()
+            persistOffer = true
         }
         guard cardWanted, visible, !store.trusted else { card?.panel.orderOut(nil); return }
-        if store.offered != Store.build { store.offered = Store.build; store.save() }
+        if store.offered != Store.build { store.offered = Store.build; persistOffer = true }
         if card == nil {
             let made = Card()
             made.view.primary.pressed = { [weak self] in
@@ -581,20 +566,18 @@ final class Pet: NSObject {
     @objc func openActivity() { requestActivity() }
     @objc func backToClaude() { Activity.backToClaude() }
     @objc func toggleLines() {
-        store.linesHidden.toggle(); store.save(); updateActions(); draw(); place(reorder: false)
+        store.linesHidden.toggle(); updateActions(); draw(); place(reorder: false); store.save()
     }
     func pointer(_ surface: HoverState.Surface, inside: Bool) {
         guard press?.moved != true, card?.panel.isVisible != true, !activityPresented else { return }
-        hover.pointer(surface, inside: inside, at: now / 1000)
-        armHover()
-    }
-    private func armHover() {
-        if let deadline = hover.showAt { hoverRest.fire(after: deadline - now / 1000) } else { hoverRest.cancel() }
-        if let deadline = hover.hideAt { hoverLeave.fire(after: deadline - now / 1000) } else { hoverLeave.cancel() }
-    }
-    private func advanceHover() {
-        hover.advance(at: now / 1000, carried: press?.moved == true, card: card?.panel.isVisible == true || activityPresented)
-        armHover(); place(reorder: false)
+        // Exit can arrive before the sibling panel's enter. Read geometry in the same event;
+        // crossing between the two does not need a grace timer.
+        let point = NSEvent.mouseLocation
+        let onSprite = surface == .sprite ? inside : hit.isVisible && hit.frame.contains(point)
+        let onPill = surface == .pill ? inside : hoverPanel?.isVisible == true && hoverPanel!.frame.contains(point)
+        hover.pointer(.sprite, inside: onSprite, at: now / 1000)
+        hover.pointer(.pill, inside: onPill, at: now / 1000)
+        place(reorder: false)
     }
     private func attach(_ panel: Panel, at frame: NSRect) {
         var frame = aligned(frame)
@@ -616,7 +599,6 @@ final class Pet: NSObject {
     private func placeAround(_ target: Place.Target) {
         let blocked = press?.moved == true || card?.panel.isVisible == true
         hover.blocked(carried: press?.moved == true, card: card?.panel.isVisible == true || activityPresented)
-        if blocked { hoverRest.cancel(); hoverLeave.cancel() }
         if hover.visible && !blocked && !activityPresented {
             if hoverPanel == nil {
                 let panel = Panel(clickable: true, shadow: true), view = HoverView()
@@ -708,7 +690,7 @@ final class Pet: NSObject {
             longPress.cancel()
             card?.panel.orderOut(nil)
             bubble.orderOut(nil); hideHoverRow(); badge?.orderOut(nil)
-            hover.blocked(carried: true, card: false); hoverRest.cancel(); hoverLeave.cancel()
+            hover.blocked(carried: true, card: false)
             // Picked up: above everything while carried.
             for panel in [hit, look, speech] where panel.level != .floating { panel.level = .floating }
             hit.orderFrontRegardless()
@@ -733,12 +715,12 @@ final class Pet: NSObject {
                     let window: CGRect? = if case let .window(frame, _, _, _, _, _) = sighting { frame } else { nil }
                     store.manual = Place.manual(forDrop: target.frame, window: window, visible: target.visible, screen: target.screen)
                 }
-                store.save()
                 trace.say("pet: dropped, \(windowFillsScreen ? "full-screen spot" : String(describing: store.manual!))")
             }
             dragOrigin = nil
             react(.drop)
             place(reorder: true)
+            store.save()
             return
         }
         if current.held { return } // the long press already had its reaction
@@ -768,7 +750,7 @@ final class Pet: NSObject {
             reactionEnd.cancel()
             return
         }
-        reactionEnd.fire(after: (next - now) / 1000 + 0.02)
+        reactionEnd.fire(after: (next - now) / 1000)
     }
 
     private func animate(_ key: String) {
@@ -853,27 +835,27 @@ final class Pet: NSObject {
     func setSize(_ size: Size, at: Double) {
         store.sizeAt = at
         store.size = size
-        store.save()
         frames.keep(size, scale: scale) // the other sizes' pictures are not needed now
         loopKey = nil
         draw()
         place(reorder: true)
+        store.save()
         trace.say("pet: size \(size.rawValue)")
     }
 
     @objc private func hideForAnHour() {
         store.hiddenUntil = Date().timeIntervalSince1970 + 3600
-        store.save()
-        snoozeEnd.fire(after: 3600.05)
         place(reorder: true)
+        snoozeEnd.fire(after: 3600)
+        store.save()
     }
 
     /// Back to the automatic places (or, while a window fills the screen, forget the spot there).
     @objc private func putBack() {
         if mode == .free { store.full = nil } else { store.manual = nil }
         lastShown = nil
-        store.save()
         place(reorder: true)
+        store.save()
     }
 
     @objc private func quit() {

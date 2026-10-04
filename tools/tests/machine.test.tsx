@@ -4,7 +4,8 @@ import { describe, expect, test } from 'claude-code/testing'
 import { LINES } from '../hooks/lines'
 import { VOICE } from '../hooks/voice'
 import { WORDS } from '../hooks/words'
-import { P, PERSON, RECENT, band, world } from './world'
+import { PAINTED_FRAMES } from '../hooks/painted-frames'
+import { P, PERSON, RECENT, band, desktopPicture, world } from './world'
 
 const EN = LINES.en
 const START = { cwd: '/tmp/project', surface: 'terminal' as const, isInteractive: true }
@@ -40,22 +41,22 @@ describe('greeting and idle', () => {
     expect(w.view().mood).toBe('wave')
   })
 
-  test('blinks every 4 to 6 s while a sprite is on screen, and only then', async ($, on) => {
+  test('seeded living blinks run only while a sprite is on screen', async ($, on) => {
     const w = world(on, { store: RECENT })
     await $.session.start(START)
     await w.clock.advance(20_000)
     expect(w.blits.length).toBe(0) // nothing mounted: no timer did anything
     await $.ui.mount({ surface: 'terminal', ...band(100) })
     await w.clock.advance(60_000)
-    // each blink is two blits (close, open); 60 s at one blink per 4 to 6 s
-    expect(w.blits.length).toBeGreaterThanOrEqual(20)
-    expect(w.blits.length).toBeLessThanOrEqual(30)
+    console.log(`seeded visible idle blink blits in 60000ms: ${w.blits.length}`)
+    // A minute of the scratch runner's fixed seed has complete natural blinks.
+    expect(w.blits.length).toBe(26) // thirteen complete blinks for seed 0x4c415544
   })
 
   test('with reduced motion: no blink, no loops', { timeoutMs: 60_000 }, async ($, on) => {
     const w = world(on, { settings: { prefersReducedMotion: true }, store: RECENT })
     await $.session.start(START)
-    await $.ui.mount({ surface: 'desktop', ...band(90) })
+    const ui = await $.ui.mount({ surface: 'desktop', ...band(90) })
     const frames = new Set<string>()
     for (let t = 0; t < 8000; t += 100) {
       await w.clock.advance(100)
@@ -63,6 +64,7 @@ describe('greeting and idle', () => {
     }
     expect([...frames]).toEqual(['idle-reading'])
     await $.turn.start({ text: 'fix it', turnId: 't1' })
+    await ui.redraw(band(90, true).props)
     frames.clear()
     for (let t = 0; t < 4000; t += 100) {
       await w.clock.advance(100)
@@ -71,11 +73,13 @@ describe('greeting and idle', () => {
     expect([...frames]).toEqual(['think-a'])
   })
 
-  test('falls asleep after ten quiet minutes, static, and wakes on the next prompt', { timeoutMs: 60_000 }, async ($, on) => {
-    const w = world(on)
+  test('falls asleep at exactly four quiet minutes, static, and wakes on the next prompt', { timeoutMs: 60_000 }, async ($, on) => {
+    const w = world(on, { store: RECENT })
     await $.session.start(START)
     await $.ui.mount({ surface: 'terminal', ...band(100) })
-    await w.clock.advance(10 * 60_000 + 500)
+    await w.clock.advance(239999)
+    expect(w.view().mood).toBe('idle')
+    await w.clock.advance(1)
     expect(w.view().mood).toBe('sleep')
     expect(EN.sleep).toContain(w.view().said)
     const blits = w.blits.length
@@ -84,6 +88,22 @@ describe('greeting and idle', () => {
     await $.prompt.submit({ text: 'hi', wait: false, origin: PERSON })
     expect(w.view().mood).toBe('idle')
     expect(EN.wake).toContain(w.view().said)
+  })
+
+  test('clingy speaks at 150 quiet seconds, once, then sleeps at four minutes', async ($, on) => {
+    const w = world(on, { store: { ...RECENT, affection: 'clingy' } })
+    await $.session.start(START)
+    await w.clock.advance(149999)
+    expect(w.view().said).toBe(null)
+    await w.clock.advance(1)
+    expect(EN.clingy.idle).toContain(w.view().said)
+    await w.clock.advance(14001)
+    expect(w.view().said).toBe(null)
+    await w.clock.advance(75998)
+    expect(w.view().mood).toBe('idle')
+    expect(w.view().said).toBe(null)
+    await w.clock.advance(1)
+    expect(w.view().mood).toBe('sleep')
   })
 
   test('back after two hours away, in the clingy voice when chosen', async ($, on) => {
@@ -106,20 +126,25 @@ describe('turns', () => {
   test('thinks, writes, and smiles when the answer lands', async ($, on) => {
     const w = world(on, { store: RECENT })
     await $.session.start(START)
-    await $.ui.mount({ surface: 'desktop', ...band(90) })
+    const ui = await $.ui.mount({ surface: 'desktop', ...band(90) })
     await $.prompt.submit({ text: 'add a test', wait: false, origin: PERSON })
     await $.turn.start({ text: 'add a test', turnId: 't1' })
+    await ui.redraw(band(90, true).props) // the engine's props change when the turn starts
     expect(w.view().mood).toBe('think')
     expect(EN.start).toContain(w.view().said)
     const frames = new Set<string>()
-    for (let t = 0; t < 2000; t += 200) {
+    for (let t = 0; t < 5200; t += 200) {
       await w.clock.advance(200)
-      frames.add(w.view().frame)
+      const sprite = await desktopPicture(ui)
+      const source = String(sprite?.props.source)
+      if (source.includes(PAINTED_FRAMES['think-a'])) frames.add('think-a')
+      if (source.includes(PAINTED_FRAMES['think-b'])) frames.add('think-b')
     }
-    expect(frames.has('think-a') && frames.has('think-b')).toBe(true)
+    expect([...frames].sort()).toEqual(['think-a', 'think-b'])
     await $.tool.call({ tool: 'Read', file_path: '/tmp/project/a.ts' })
     expect(w.view().mood).toBe('work')
     await $.turn.complete(turnEnd(10_000))
+    await ui.redraw(band(90, false).props)
     expect(w.view().mood).toBe('happy')
     await w.clock.advance(3100)
     expect(w.view().mood).toBe('idle')

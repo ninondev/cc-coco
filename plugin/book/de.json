@@ -153,6 +153,11 @@
       "painted": "Gemalt",
       "pixel": "Pixel"
     },
+    "workSize": {
+      "label": "Während Claude arbeitet",
+      "same": "Gleiche Größe",
+      "smaller": "Kleiner"
+    },
     "marks": {
       "label": "Zeichen im Gespräch",
       "on": "Seine und deine",

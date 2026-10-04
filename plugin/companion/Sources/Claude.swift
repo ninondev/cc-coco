@@ -44,7 +44,6 @@ final class Claude {
         trusted: { [weak self] in self?.allowAX != true || Self.isTrusted(prompt: false) },
         run: FollowPermission.runReset,
         prompt: { _ = Self.isTrusted(prompt: true) },
-        later: { seconds, action in DispatchQueue.main.asyncAfter(deadline: .now() + seconds) { action() } },
         open: { NSWorkspace.shared.open($0) }
     ))
 
@@ -61,13 +60,6 @@ final class Claude {
     private var windowNumber: CGWindowID?
     private var fullScreen = false
     private var lastFrame: CGRect?
-    private var trustChecks = 0
-    private lazy var settle: OneShot = OneShot { [unowned self] in look(full: false, reorder: true) }
-    private lazy var trustCheck: OneShot = OneShot { [unowned self] in
-        recheckTrust()
-        trustChecks -= 1
-        if trustChecks > 0 { trustCheck.fire(after: 1.2) } // TCC can take a moment longer
-    }
     private var exitWatch: DispatchSourceProcess? // the app's exit, by kqueue: no polling
 
     init(trace: Trace, allowAX: Bool) {
@@ -166,9 +158,6 @@ final class Claude {
             }
             trace.say("claude: \(note.name.rawValue.replacingOccurrences(of: "NSWorkspace", with: ""))")
             look(full: true, reorder: true)
-            // Claude raises its window a moment after it says it is active: put him back next to it
-            // once more when that has happened.
-            settle.fire(after: 0.25)
         }
     }
 
@@ -177,11 +166,7 @@ final class Claude {
         look(full: true, reorder: true)
     }
 
-    // TCC records the change a moment after this notice: look a beat later, and once more after that.
-    @objc private func permissionsMoved() {
-        trustChecks = 2
-        trustCheck.fire(after: 0.3)
-    }
+    @objc private func permissionsMoved() { recheckTrust() }
 
     private func recheckTrust() {
         let now = allowAX && Self.isTrusted(prompt: false)
@@ -441,7 +426,6 @@ final class FollowPermission {
         var trusted: () -> Bool
         var run: (_ executable: String, _ arguments: [String], _ timeout: Double, _ done: @escaping () -> Void) -> Void
         var prompt: () -> Void
-        var later: (_ seconds: Double, _ action: @escaping () -> Void) -> Void
         var open: (URL) -> Bool
     }
     private let effects: Effects
@@ -462,11 +446,8 @@ final class FollowPermission {
             guard let self else { return }
             // Trust may have arrived while the reset process was finishing.
             if !self.effects.trusted() { self.effects.prompt() }
-            self.effects.later(0.4) { [weak self] in
-                guard let self else { return }
-                self.busy = false
-                self.openSettings()
-            }
+            self.busy = false
+            self.openSettings()
         }
     }
 

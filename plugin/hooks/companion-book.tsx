@@ -10,7 +10,7 @@ import type { CompanionSize, CompanionStage } from './companion-art'
 type Timer = { cancel: () => void }
 export type CompanionState = 'building' | 'removing' | 'tools' | 'oldTools' | 'failed' | 'absent' | 'stopped' | 'hidden' | 'waiting' | 'corner' | 'following'
 export type CompanionInfo = {
-  running?: boolean; accessibility?: boolean; hiddenUntil?: number; answered?: number;
+  running?: boolean; accessibility?: boolean; login?: boolean; hiddenUntil?: number; answered?: number;
   version?: string; size?: CompanionSize; sizeAt?: number; loginAt?: number; followAt?: number
 }
 export type CompanionSnapshot = {
@@ -45,6 +45,10 @@ export function companionCommand(argv: readonly string[]): string {
 export type CompanionRun = { kind: 'ran'; stdout: string; stderr: string; exitCode: number } | { kind: 'denied' | 'cannot' }
 export class CompanionBook {
   mac?: Promise<boolean>
+  macReady?: boolean
+  snapshot?: CompanionSnapshot
+  warming?: Promise<void>
+  warmGeneration = -1
   pluginVersion?: Promise<string | undefined>
   busy = new Set<string>()
   progress?: 'install' | 'trash'
@@ -68,11 +72,12 @@ export class CompanionBook {
 
   stop(): void {
     this.generation += 1
+    this.warming = undefined; this.warmGeneration = -1
     this.timer?.cancel(); this.timer = undefined
     this.answerTimer?.cancel(); this.answerTimer = undefined
     this.busy.delete('summon')
   }
-  forget(): void { this.stop(); this.stage = undefined; this.figures = undefined }
+  forget(): void { this.stop(); this.snapshot = undefined; this.stage = undefined; this.figures = undefined }
 }
 
 // One shared block drawing keeps the two surfaces in the same order. Pictures are desktop

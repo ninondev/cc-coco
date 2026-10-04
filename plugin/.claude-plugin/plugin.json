@@ -1,7 +1,7 @@
 {
   "name": "claudesama",
   "displayName": "Claude-sama",
-  "version": "0.1.0.1",
+  "version": "0.1.1",
   "description": "My unofficial fan mod that makes Claude Code cute. Claude-sama, a small kami of words, reads along above your prompt, keeps an offering box for your context window and draws you one omen a day. Terminal and desktop. Not affiliated with Anthropic.",
   "author": {
     "name": "ninondev"

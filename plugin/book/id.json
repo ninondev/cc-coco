@@ -153,6 +153,11 @@
       "painted": "Lukisan",
       "pixel": "Piksel"
     },
+    "workSize": {
+      "label": "Saat Claude bekerja",
+      "same": "Ukuran tetap",
+      "smaller": "Lebih kecil"
+    },
     "marks": {
       "label": "Tanda dalam percakapan",
       "on": "Dia dan kamu",

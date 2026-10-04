@@ -1,9 +1,11 @@
+import { drainFeed } from './feed-drain'
 import { samePath } from './file-paths'
 // File-stream input is stubbed; every action still passes through register.tsx.
 import { describe, expect, mock, test } from 'claude-code/testing'
 import type { On, ProcessSpawnChunk } from 'claude-code'
 import { CompanionChannel, notifyChannelEnded } from '../hooks/channel'
 import { MORNING, RECENT, stubPng } from './world'
+import { atomicFeed, PROCESS_OK } from './shared-world'
 
 const START = { cwd: '/tmp/project', surface: 'terminal' as const, isInteractive: true }
 const HOME = '/tmp/channel-test'
@@ -56,6 +58,18 @@ function fixture(on: On, options: { installed?: boolean; missingFile?: boolean; 
     writes.push({ path: samePath(e.path, REQUESTS) ? REQUESTS : samePath(e.path, FEED) ? FEED : e.path, text: e.text })
     if (samePath(e.path, FEED)) records.push(JSON.parse(e.text))
     return { value: undefined }
+  })
+  let requestExists = !options.missingFile
+  on('process.run', ($, e) => {
+    const feed = atomicFeed(e.argv, e.init?.stdin)
+    if (feed) {
+      writes.push({ path: feed.path, text: feed.text })
+      if (samePath(feed.path, FEED)) records.push(JSON.parse(feed.text))
+    } else if (e.argv[0] === '/usr/bin/touch' && samePath(e.argv[1] ?? '', REQUESTS) && !requestExists) {
+      writes.push({ path: REQUESTS, text: '' })
+      requestExists = true
+    }
+    return { value: PROCESS_OK }
   })
   on('prompt.submit', async ($, e) => { submitted.push({ text: e.text, ...(e.origin.kind === 'plugin' && e.origin.asUser ? { asUser: true } : {}) }); await options.actionGate; return { text: e.text } })
   on('command.run', async ($, e) => { if (e.command === 'clear') { cleared.push({ command: e.command, args: e.args }); await options.actionGate }; return { text: '' } })
@@ -151,6 +165,7 @@ function ended(answer = 'Done.') { return { answer, durationMs: 1000, isAborted:
   test('no child without the folder; the first unchanged push after installation starts one', async ($, on) => {
     const f = fixture(on, { installed: false, missingFile: true })
     await $.session.start(START)
+    await drainFeed($)
     await f.drain()
     expect(f.spawns.length).toBe(0)
     expect(f.writes.length).toBe(0)
@@ -164,6 +179,7 @@ function ended(answer = 'Done.') { return { answer, durationMs: 1000, isAborted:
     expect(f.writes.filter(write => samePath(write.path, REQUESTS))).toEqual([{ path: REQUESTS, text: '' }])
     expect(f.latest().channel).toBe(true)
     await $.tool.call({ tool: 'Read', file_path: '/tmp/a' })
+    await drainFeed($)
     expect(f.spawns.length).toBe(1)
     await f.finish()
     expect(f.closed()).toBe(true)
@@ -172,6 +188,7 @@ function ended(answer = 'Done.') { return { answer, durationMs: 1000, isAborted:
   test('chunks form lines; submit, clear and seen act in the own session and acknowledge', async ($, on) => {
     const f = fixture(on)
     await $.session.start(START)
+    await drainFeed($)
     await f.drain()
     expect(f.latest().channel).toBe(true)
     const line = `${JSON.stringify(request(1, 'submit', { text: '  Please read this.\n  ' }))}\n`
@@ -184,8 +201,11 @@ function ended(answer = 'Done.') { return { answer, durationMs: 1000, isAborted:
     expect(f.cleared).toEqual([{ command: 'clear', args: '' }])
     expect(f.latest().ack).toBe(request(2, 'clear').id)
     await $.turn.start({ text: 'go', turnId: 't1' })
+    await drainFeed($)
     await $.turn.complete(ended('A reply.'))
+    await drainFeed($)
     await $.classic.Notification({ message: 'A notice.', notification_type: 'idle_prompt' })
+    await drainFeed($)
     await f.send(request(3, 'seen', { upto: MORNING - 1 }))
     expect(f.latest().reply?.text).toBe('A reply.')
     expect(f.latest().notice?.text).toBe('A notice.')
@@ -194,6 +214,7 @@ function ended(answer = 'Done.') { return { answer, durationMs: 1000, isAborted:
     expect(f.latest().notice).toBe(null)
     expect(f.latest().ack).toBe(request(4, 'seen').id)
     await $.turn.start({ text: 'go', turnId: 't2' })
+    await drainFeed($)
     expect(f.latest().ack).toBe(request(4, 'seen').id)
     await f.finish()
     expect(f.closed()).toBe(true)
@@ -202,6 +223,7 @@ function ended(answer = 'Done.') { return { answer, durationMs: 1000, isAborted:
   test('invalid lines are silent and do not consume a valid request id', async ($, on) => {
     const f = fixture(on)
     await $.session.start(START)
+    await drainFeed($)
     await f.drain()
     const invalid = [
       '{broken json',
@@ -232,6 +254,7 @@ function ended(answer = 'Done.') { return { answer, durationMs: 1000, isAborted:
   test('submit and clear spacing are independent and enforce their exact boundaries', async ($, on) => {
     const f = fixture(on)
     await $.session.start(START)
+    await drainFeed($)
     await f.drain()
     await f.send(request(1, 'submit', { text: 'first' }))
     await f.send(request(2, 'submit', { text: 'too soon' }))
@@ -259,6 +282,7 @@ function ended(answer = 'Done.') { return { answer, durationMs: 1000, isAborted:
   test('thirty submits in a rolling hour; every still-fresh identity is remembered', { timeoutMs: 60_000 }, async ($, on) => {
     const f = fixture(on)
     await $.session.start(START)
+    await drainFeed($)
     await f.drain()
     for (let n = 1; n <= 30; n++) {
       if (n > 1) await f.w.clock.advance(2000)
@@ -285,6 +309,7 @@ function ended(answer = 'Done.') { return { answer, durationMs: 1000, isAborted:
   test('identical submit and New chat retries republish confirmation without another action', async ($, on) => {
     const f = fixture(on)
     await $.session.start(START)
+    await drainFeed($)
     await f.drain()
     for (const kind of ['submit', 'clear']) {
       const original = request(kind === 'submit' ? 101 : 102, kind, { text: kind === 'submit' ? 'once only' : undefined })
@@ -305,6 +330,7 @@ function ended(answer = 'Done.') { return { answer, durationMs: 1000, isAborted:
     const actionGate = new Promise<void>(resolve => { finish = resolve })
     const f = fixture(on, { actionGate })
     await $.session.start(START)
+    await drainFeed($)
     await f.drain()
     const original = request(101, 'submit', { text: 'slow engine' })
     const first = f.send(original)
@@ -325,6 +351,7 @@ function ended(answer = 'Done.') { return { answer, durationMs: 1000, isAborted:
   test('more than thirty-two seen markers never evict a live submit or New chat identity', { timeoutMs: 60_000 }, async ($, on) => {
     const f = fixture(on)
     await $.session.start(START)
+    await drainFeed($)
     await f.drain()
     const submit = request(101, 'submit', { text: 'keep my identity' })
     const clear = request(102, 'clear')
@@ -413,10 +440,12 @@ function ended(answer = 'Done.') { return { answer, durationMs: 1000, isAborted:
   test('folder removal ends the child on the next push and rejects further input', async ($, on) => {
     const f = fixture(on)
     await $.session.start(START)
+    await drainFeed($)
     await f.drain()
     f.installed(false)
     const before = f.writes.length
     await $.turn.start({ text: 'go', turnId: 't1' })
+    await drainFeed($)
     // Wake a blocked pull: leaving the watcher must release its stream too.
     await f.emit(`${JSON.stringify(request(1, 'submit', { text: 'after uninstall' }))}\n`)
     expect(f.closed()).toBe(true)
@@ -427,12 +456,14 @@ function ended(answer = 'Done.') { return { answer, durationMs: 1000, isAborted:
   test('a child ending naturally writes channel false and never restarts', async ($, on) => {
     const f = fixture(on)
     await $.session.start(START)
+    await drainFeed($)
     await f.drain()
     expect(f.latest().channel).toBe(true)
     await f.finish()
     expect(f.closed()).toBe(true)
     expect(f.latest().channel).toBe(false)
     await $.turn.start({ text: 'go', turnId: 't1' })
+    await drainFeed($)
     await f.drain()
     expect(f.spawns.length).toBe(1)
     expect(f.latest().channel).toBe(false)
@@ -441,6 +472,7 @@ function ended(answer = 'Done.') { return { answer, durationMs: 1000, isAborted:
   test('unloading the module with an open tail leaves no unhandled completion rejection', async ($, on) => {
     const f = fixture(on)
     await $.session.start(START)
+    await drainFeed($)
     await f.drain()
     expect(f.latest().channel).toBe(true)
     expect(f.closed()).toBe(false)
@@ -452,10 +484,13 @@ function ended(answer = 'Done.') { return { answer, durationMs: 1000, isAborted:
   test('a spawn failure stays false with no retry on later pushes', async ($, on) => {
     const f = fixture(on, { failSpawn: true })
     await $.session.start(START)
+    await drainFeed($)
     await f.drain()
     expect(f.latest().channel).toBe(false)
     await $.turn.start({ text: 'go', turnId: 't1' })
+    await drainFeed($)
     await $.tool.call({ tool: 'Read', file_path: '/tmp/a' })
+    await drainFeed($)
     await f.drain()
     expect(f.latest().channel).toBe(false)
     expect(f.spawns.length).toBe(1)

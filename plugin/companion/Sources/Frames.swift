@@ -28,20 +28,26 @@ final class Frames {
     private let pixelFolder: URL
     private var made: [String: CGImage] = [:]
 
-    // Every pixel frame shares one canvas, whose dimensions come from the first PNG.
-    private lazy var pixelCanvas: (width: Int, height: Int)? = {
-        let url = pixelFolder.appendingPathComponent("01-idle-reading.png")
-        guard let source = CGImageSourceCreateWithURL(url as CFURL, nil),
-              let properties = CGImageSourceCopyPropertiesAtIndex(source, 0, nil) as? [String: Any],
-              let width = properties[kCGImagePropertyPixelWidth as String] as? Int,
-              let height = properties[kCGImagePropertyPixelHeight as String] as? Int,
-              width > 0, height > 0 else { return nil }
-        return (width, height)
-    }()
+    private let originals: [String: CGImage]
+    private let pixelCanvas: (width: Int, height: Int)?
 
+    // All disk access is before the first draw. Mood, feed, size and scale events use memory.
     init(folder: URL, pixelFolder: URL) {
         self.folder = folder
         self.pixelFolder = pixelFolder
+        var originals: [String: CGImage] = [:]
+        for (index, name) in Self.names.enumerated() {
+            for (kind, base) in [("pixel/", pixelFolder), ("desktop/", folder)] {
+                let url = base.appendingPathComponent(String(format: "%02d-%@.png", index + 1, name))
+                if let source = CGImageSourceCreateWithURL(url as CFURL, nil),
+                   let picture = CGImageSourceCreateImageAtIndex(source, 0, [kCGImageSourceShouldCacheImmediately: true] as CFDictionary) {
+                    originals[kind + name] = picture
+                }
+            }
+        }
+        self.originals = originals
+        if let pixel = originals["pixel/idle-reading"] { pixelCanvas = (pixel.width, pixel.height) }
+        else { pixelCanvas = nil }
     }
 
     private static func kind(_ size: Size) -> String { size.pixelArt ? "pixel/" : "desktop/" }
@@ -69,10 +75,7 @@ final class Frames {
         guard let pixels = deviceHeight(size, scale: scale) else { return nil }
         let key = "\(Self.kind(size))\(name)@\(pixels)"
         if let hit = made[key] { return hit }
-        guard let index = Self.names.firstIndex(of: name) else { return nil }
-        let url = (size.pixelArt ? pixelFolder : folder).appendingPathComponent(String(format: "%02d-%@.png", index + 1, name))
-        guard let source = CGImageSourceCreateWithURL(url as CFURL, nil),
-              let picture = CGImageSourceCreateImageAtIndex(source, 0, nil),
+        guard let picture = originals[Self.kind(size) + name],
               let out = Self.resample(picture, height: pixels) else { return nil }
         made[key] = out
         return out

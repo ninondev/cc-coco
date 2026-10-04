@@ -153,6 +153,11 @@
       "painted": "手描き",
       "pixel": "ドット絵"
     },
+    "workSize": {
+      "label": "Claudeの作業中",
+      "same": "そのまま",
+      "smaller": "小さく"
+    },
     "marks": {
       "label": "会話の印",
       "on": "かれときみ",

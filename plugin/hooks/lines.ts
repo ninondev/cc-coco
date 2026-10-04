@@ -13,7 +13,7 @@ export const LINES = {
         "morning. shiori wants your coffee.",
         "you're up. my bow was getting wrinkled.",
         "early commits. the best kind of offering.",
-        "yawn... i'm awake. mostly."
+        "(yawns) mm... i'm awake. mostly."
       ],
       "day": [
         "sun's up. so are the bugs.",
@@ -34,7 +34,7 @@ export const LINES = {
     },
     "start": [
       "let me read.",
-      "rolling up my sleeves.",
+      "(rolls up his sleeves)",
       "shiori, let's go."
     ],
     "thinking_long": [
@@ -43,8 +43,8 @@ export const LINES = {
       "a big knot. untangling it slowly."
     ],
     "working": [
-      "fetching all the shiny tools.",
-      "running back and forth.",
+      "(fetches all the shiny tools)",
+      "(runs back and forth)",
       "we're very busy right now."
     ],
     "done": [
@@ -60,7 +60,7 @@ export const LINES = {
     ],
     "waiting": [
       "this page is yours to turn.",
-      "tapping my little foot.",
+      "(taps his little foot)",
       "just waiting on a permission."
     ],
     "question": [
@@ -81,7 +81,7 @@ export const LINES = {
       "shiori, bite this awful loop."
     ],
     "wild_after": [
-      "ahem. my sleeves got messy.",
+      "(clears his throat) my sleeves got messy.",
       "shiori made me say that.",
       "i'm composed again. mostly."
     ],
@@ -90,17 +90,17 @@ export const LINES = {
       "shiori is shaking her head."
     ],
     "aborted": [
-      "putting my tools away.",
+      "(puts his tools away)",
       "stopped. we'll stay right here."
     ],
     "sleep": [
       "just resting my eyes.",
       "shiori makes a good pillow.",
-      "drifting into standby mode."
+      "(drifts into standby mode)"
     ],
     "wake": [
-      "blink. i was definitely awake.",
-      "fixing my bow. let's go."
+      "(blinks) i was definitely awake!",
+      "(fixes his bow) let's go."
     ],
     "back": [
       "you're back. i kept your page.",
@@ -114,12 +114,12 @@ export const LINES = {
     ],
     "praised": [
       "which part? be specific.",
-      "hiding in my sleeves now.",
+      "(hides in his sleeves)",
       "my cheeks are warm.",
       "obviously. we make a good team."
     ],
     "ultrathink": [
-      "...okay. loosening the bow.",
+      "...okay. (loosens the bow)",
       "bow's loose. this one gets everything."
     ],
     "force_push": [
@@ -154,7 +154,17 @@ export const LINES = {
         "take your time. no rush.",
         "we're cozy in this corner."
       ]
-    }
+    },
+    "poke": [
+      "(flinches) hm?",
+      "not the bow. it'll go crooked.",
+      "i was reading. okay, go on.",
+      "(puffs his cheeks)",
+      "shiori, someone's poking me."
+    ],
+    "poke_many": [
+      "(hides behind his book) no more pokes."
+    ]
   },
   "fr": {
     "greeting": {
@@ -277,7 +287,17 @@ export const LINES = {
         "je vérifie juste que tu es toujours là.",
         "c'est calme. j'aime bien quand tu es là."
       ]
-    }
+    },
+    "poke": [
+      "*sursaute* hm ?",
+      "pas le nœud, il va se tordre.",
+      "je lisais. bon, vas-y.",
+      "*gonfle les joues*",
+      "shiori, quelqu'un me pique."
+    ],
+    "poke_many": [
+      "*se cache derrière son livre* fini, les petits coups."
+    ]
   },
   "de": {
     "greeting": {
@@ -400,7 +420,17 @@ export const LINES = {
         "Ich schau nur, ob du noch da bist.",
         "Es ist still. Ich mag es, wenn du da bist."
       ]
-    }
+    },
+    "poke": [
+      "*zuckt zusammen* Hm?",
+      "Nicht die Schleife, die verrutscht sonst.",
+      "Ich hab gelesen. Na gut, sag schon.",
+      "*bläst die Backen auf*",
+      "Shiori, jemand piekst mich."
+    ],
+    "poke_many": [
+      "*versteckt sich hinter seinem Buch* Schluss mit Piksen."
+    ]
   },
   "hi": {
     "greeting": {
@@ -523,7 +553,17 @@ export const LINES = {
         "बस देख रहा था कि तुम हो या नहीं।",
         "कितना शांत है। तुम्हारे होने से अच्छा लगता है।"
       ]
-    }
+    },
+    "poke": [
+      "*चौंकता है* हम्म?",
+      "रिबन नहीं, टेढ़ा हो जाएगा।",
+      "मैं पढ़ रहा था। अच्छा, बोलो।",
+      "*गाल फुलाता है*",
+      "शिओरी, कोई मुझे कोंच रहा है।"
+    ],
+    "poke_many": [
+      "*किताब के पीछे छिप जाता है* बस, अब और नहीं।"
+    ]
   },
   "id": {
     "greeting": {
@@ -555,8 +595,8 @@ export const LINES = {
       "pinggir halamannya sudah penuh. sebentar, ya."
     ],
     "working": [
-      "corat-coret di pinggir halaman.",
-      "bolak-balik halaman."
+      "*corat-coret di pinggir halaman*",
+      "*bolak-balik halaman*"
     ],
     "done": [
       "sudah selesai kubaca.",
@@ -646,7 +686,17 @@ export const LINES = {
         "cuma mau lihat kamu masih ada.",
         "sepi, ya. aku suka kalau kamu di sini."
       ]
-    }
+    },
+    "poke": [
+      "*kaget* hm?",
+      "jangan pitanya, nanti miring.",
+      "aku lagi baca. ya udah, bilang aja.",
+      "*pipinya menggembung*",
+      "shiori, ada yang nyolek aku."
+    ],
+    "poke_many": [
+      "*sembunyi di balik bukunya* udah, jangan dicolek lagi."
+    ]
   },
   "it": {
     "greeting": {
@@ -769,7 +819,17 @@ export const LINES = {
         "controllo solo che tu ci sia ancora.",
         "c'è silenzio. mi piace quando ci sei."
       ]
-    }
+    },
+    "poke": [
+      "*sussulta* mh?",
+      "il fiocco no, poi si storce.",
+      "stavo leggendo. va bene, dimmi.",
+      "*gonfia le guance*",
+      "shiori, qualcuno mi punzecchia."
+    ],
+    "poke_many": [
+      "*si nasconde dietro il libro* basta punzecchiarmi."
+    ]
   },
   "ja": {
     "greeting": {
@@ -777,7 +837,7 @@ export const LINES = {
         "おはよう。シオリがコーヒー狙ってるよ",
         "起きたね。リボンがシワになるところだった",
         "朝のコミット。一番のお供え物だね",
-        "ふぁ...起きてるよ。たぶん"
+        "*あくび*ふぁ...起きてるよ。たぶん"
       ],
       "day": [
         "お日さまが高いね。バグも元気だ",
@@ -808,7 +868,7 @@ export const LINES = {
     ],
     "working": [
       "ピカピカの道具、ぜんぶ持ってくるね",
-      "行ったり来たり",
+      "*行ったり来たり*",
       "いま、すっごく忙しいんだから"
     ],
     "done": [
@@ -824,7 +884,7 @@ export const LINES = {
     ],
     "waiting": [
       "このページは、きみがめくって",
-      "小さく足踏みしてるよ",
+      "*小さく足踏み*",
       "許可を待ってるだけだよ"
     ],
     "question": [
@@ -845,7 +905,7 @@ export const LINES = {
       "シオリ、このひどいループをかみくだけ"
     ],
     "wild_after": [
-      "コホン。袖が乱れちゃった",
+      "*コホン*袖が乱れちゃった",
       "今のは、シオリに言わされたんだからね",
       "また冷静になったよ。たぶん"
     ],
@@ -860,11 +920,11 @@ export const LINES = {
     "sleep": [
       "ちょっと目を休めてるだけ",
       "シオリはいい枕になる",
-      "スタンバイモードに、ふわふわ"
+      "*ふわふわとスタンバイモードへ*"
     ],
     "wake": [
-      "パチッ。ぜったい起きてたよ",
-      "リボンを直して、よし、行こう"
+      "*まばたき*ぜったい起きてたよ!",
+      "*リボンを直す*よし、行こう"
     ],
     "back": [
       "おかえり。ページ、取っておいたよ",
@@ -918,7 +978,17 @@ export const LINES = {
         "ゆっくりでいいよ。あせらないで",
         "この隅っこ、居心地いいね"
       ]
-    }
+    },
+    "poke": [
+      "*びくっ*ん?",
+      "リボンはだめ、曲がっちゃう",
+      "読んでたのに。いいよ、どうぞ",
+      "*ほっぺをふくらませる*",
+      "シオリ、だれかがつついてくる"
+    ],
+    "poke_many": [
+      "*本で顔をかくす*もうつつかせないよ"
+    ]
   },
   "ko": {
     "greeting": {
@@ -1041,7 +1111,17 @@ export const LINES = {
         "아직 있나 잠깐 본 거야.",
         "조용하네. 네가 있을 때가 좋아."
       ]
-    }
+    },
+    "poke": [
+      "*움찔* 응?",
+      "리본은 안 돼. 비뚤어져.",
+      "읽고 있었는데. 그래, 말해 봐.",
+      "*볼을 부풀린다*",
+      "시오리, 누가 나 찔러."
+    ],
+    "poke_many": [
+      "*책 뒤로 숨는다* 이제 그만 찔러."
+    ]
   },
   "pt-BR": {
     "greeting": {
@@ -1073,8 +1153,8 @@ export const LINES = {
       "as margens estão cheias. me dá um segundo."
     ],
     "working": [
-      "escrevendo na margem.",
-      "virando as páginas."
+      "*escrevendo na margem*",
+      "*virando as páginas*"
     ],
     "done": [
       "terminei de ler.",
@@ -1164,7 +1244,17 @@ export const LINES = {
         "só vendo se você ainda está aí.",
         "está tudo quietinho. gosto quando você está aqui."
       ]
-    }
+    },
+    "poke": [
+      "*dá um pulinho* hm?",
+      "o laço não, vai ficar torto.",
+      "eu tava lendo. tá, pode falar.",
+      "*enche as bochechas*",
+      "shiori, tão me cutucando."
+    ],
+    "poke_many": [
+      "*se esconde atrás do livro* chega de cutucar."
+    ]
   },
   "es-419": {
     "greeting": {
@@ -1197,7 +1287,7 @@ export const LINES = {
     ],
     "working": [
       "escribo en el margen.",
-      "pasando páginas."
+      "*pasando páginas*"
     ],
     "done": [
       "terminé de leer.",
@@ -1287,7 +1377,17 @@ export const LINES = {
         "solo quería ver si seguías ahí.",
         "qué tranquilo está. me gusta cuando estás aquí."
       ]
-    }
+    },
+    "poke": [
+      "*da un respingo* ¿mm?",
+      "el moño no, que se tuerce.",
+      "estaba leyendo. bueno, dime.",
+      "*infla los cachetes*",
+      "shiori, alguien me está picando."
+    ],
+    "poke_many": [
+      "*se esconde detrás de su libro* ya no más piquetes."
+    ]
   },
   "es-ES": {
     "greeting": {
@@ -1320,7 +1420,7 @@ export const LINES = {
     ],
     "working": [
       "escribo en el margen.",
-      "pasando páginas."
+      "*pasando páginas*"
     ],
     "done": [
       "ya he terminado de leer.",
@@ -1410,7 +1510,17 @@ export const LINES = {
         "solo miro si sigues ahí.",
         "qué silencio. me gusta cuando estás aquí."
       ]
-    }
+    },
+    "poke": [
+      "*da un respingo* ¿mm?",
+      "el lazo no, que se tuerce.",
+      "estaba leyendo. vale, dime.",
+      "*hincha los mofletes*",
+      "shiori, alguien me está pinchando."
+    ],
+    "poke_many": [
+      "*se esconde detrás de su libro* se acabaron los toques."
+    ]
   },
   "zh": {
     "greeting": {
@@ -1439,7 +1549,7 @@ export const LINES = {
     },
     "start": [
       "我读读看",
-      "撸起袖子,开工～",
+      "(撸起袖子)开工～",
       "小白,走了"
     ],
     "thinking_long": [
@@ -1449,7 +1559,7 @@ export const LINES = {
     ],
     "working": [
       "把亮闪闪的工具都拿来",
-      "跑来跑去",
+      "(跑来跑去)",
       "我们现在超忙的"
     ],
     "done": [
@@ -1465,7 +1575,7 @@ export const LINES = {
     ],
     "waiting": [
       "这一页得你来翻",
-      "小脚在轻轻点地",
+      "(小脚轻轻点地)",
       "就等一个授权"
     ],
     "question": [
@@ -1486,7 +1596,7 @@ export const LINES = {
       "小白,咬碎这个烂循环"
     ],
     "wild_after": [
-      "咳咳。袖子弄乱了",
+      "(咳咳)袖子弄乱了",
       "都是小白让我那么说的",
       "我又冷静了。大概吧"
     ],
@@ -1501,11 +1611,11 @@ export const LINES = {
     "sleep": [
       "只是闭目养神",
       "小白是个好枕头",
-      "飘进待机模式了"
+      "(飘进待机模式)"
     ],
     "wake": [
-      "眨眼。我绝对没睡着",
-      "理理蝴蝶结。走吧"
+      "(眨眼)我绝对没睡着喔!",
+      "(理理蝴蝶结)走吧"
     ],
     "back": [
       "回来啦。页我给你留着呢",
@@ -1559,7 +1669,17 @@ export const LINES = {
         "慢慢来,不着急",
         "待在这个角落好舒服"
       ]
-    }
+    },
+    "poke": [
+      "(缩了一下)嗯?",
+      "别戳蝴蝶结,会歪的",
+      "我在读呢。好吧,你说",
+      "(脸鼓起来)",
+      "小白,有人戳我"
+    ],
+    "poke_many": [
+      "(把书挡在脸前)不给戳了"
+    ]
   },
   "omikuji": {
     "_about": "Fortunes for /omen (and /claudesama omen). Internal keys daikichi..daikyo only pick the weight (daikichi 10, kichi 25, chukichi 20, shokichi 20, suekichi 15, kyo 8, daikyo 2). Each language shows its own culture's way of telling luck, rank words included in the text, and every slip keeps a programmer joke. en: blessing/curse plus a fortune-cookie lucky number that is an HTTP status code. fr: chance insolente .. poisse totale, closing on a dicton (a French proverb bent toward code). de: Schwein gehabt .. Pech auf ganzer Linie, plus a Gluecksbringer (German lucky charm). hi: newspaper rashifal words (ati shubh .. sankat) plus a shubh rang (lucky colour) taken from the terminal. id: hoki banget .. apes banget (everyday luck talk, no fortune-telling words) plus what to bring (bawa). it: fortuna sfacciata .. iella nera, Friday the seventeenth, plus a lucky number from the Neapolitan smorfia. ja: real omikuji ranks with an omikuji category in brackets. ko: lottery-ticket words (daebak, dangcheom, junbak, sohwakhaeng, neutbok, kkwang, jjokbak) plus a lucky key. pt-BR: sorte grande .. azar dos grandes plus a simpatia (Brazilian folk charm). es-419: suertota .. martes 13 plus an amuleto. es-ES: Christmas lottery prizes (el gordo, segundo, tercer premio, pedrea, reintegro, ni el reintegro) and martes y trece. zh: temple lots (shangshang .. xiaxia) with almanac yi/ji. No copied romaji like 'daikichi' outside Japanese.",

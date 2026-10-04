@@ -1,3 +1,5 @@
+import { REST_FRAMES } from './rest-frames'
+import { PAINTED_FRAMES } from './painted-frames'
 // Pictures, built once and cached: the desktop sprite as an SVG around the PNG, the terminal
 // sprite as packed half-block cells, the offering box and the fortune slip.
 
@@ -21,21 +23,35 @@ export const DESKTOP_REST = 64 // CSS px tall; the PNG is 128 px, so 2x on a Ret
 export const DESKTOP_COMPACT = 32
 const PIXEL_SIZE = { width: 35, height: 32 } as const
 
-export function desktopWidth(height: number): number {
-  const size = height === DESKTOP_COMPACT ? PIXEL_SIZE : DESKTOP_SIZE
+export function desktopWidth(height: number, pixel = height === DESKTOP_COMPACT): number {
+  const size = pixel ? PIXEL_SIZE : DESKTOP_SIZE
   return Math.round((size.width * height) / size.height)
 }
 
 // Where a frame's PNG lives under the plugin root.
-export function pngPath(frame: FrameName, height = DESKTOP_REST): string {
-  const folder = height === DESKTOP_COMPACT ? 'pixel' : 'desktop'
+export function pngPath(frame: FrameName, height = DESKTOP_REST, pixel = height === DESKTOP_COMPACT): string {
+  const folder = pixel ? 'pixel' : 'desktop'
   return `assets/${folder}/${String(FRAME_NAMES.indexOf(frame) + 1).padStart(2, '0')}-${frame}.png`
 }
 
-// The desktop sprite: the frame's PNG (base64, read once by register.tsx) inside an SVG, kept for
-// the band. spriteSource builds the same without keeping it (his book keeps its own while open).
-export function spriteSvg(frame: FrameName, height: number, png: string): string {
-  return once(`svg:${frame}:${height}`, () => spriteSource(height, png, height === DESKTOP_COMPACT))
+// An SVG around a PNG, cached by frame, geometry and source. spriteSource builds the
+// same without keeping it (his book keeps its own while open).
+export function spriteSvg(frame: FrameName, height: number, png: string, pixel = height === DESKTOP_COMPACT): string {
+  return once(`svg:${frame}:${height}:${pixel ? 1 : 0}:${png}`, () => spriteSource(height, png, pixel))
+}
+
+// Both styles are byte-exact generated modules, available before session startup.
+export function bundledPng(frame: FrameName, pixel = false): string {
+  return (pixel ? REST_FRAMES : PAINTED_FRAMES)[frame]
+}
+
+export function bundledSvg(frame: FrameName, height: number, pixel = false): string {
+  return once(`bundled:${frame}:${height}:${pixel ? 1 : 0}`, () => spriteSource(height, bundledPng(frame, pixel), pixel))
+}
+
+// Compatibility for callers that intentionally select the pixel family by compact height.
+export function restingSvg(frame: FrameName, height: number, pixel = height === DESKTOP_COMPACT): string {
+  return bundledSvg(frame, height, pixel)
 }
 
 export function spriteSource(height: number, png: string, pixel = false): string {
@@ -143,6 +159,41 @@ export function spriteCells(frame: FrameName, colors: 'truecolor' | '256' = 'tru
           at += 4
         }
       }
+    }
+    return toBase64(new Uint8Array(view.buffer))
+  })
+}
+
+// The door uses the actual sleeping frame's face crop in one dim terminal row.
+// Average the 18 x 12 face area into 8 x 2 pixels; no body/book or animation remains.
+export const DOOR_COLUMNS = 8
+export function sleepingDoorCells(colors: 'truecolor' | '256' = 'truecolor'): string {
+  return once(`door-cells:${colors}`, () => {
+    const rows = TERMINAL_PIXELS.sleep
+    const rgb = RGB[colors]
+    const view = new DataView(new ArrayBuffer(DOOR_COLUMNS * 12))
+    const sample = (x: number, y: number): number => {
+      const left = 7 + Math.floor(x * 18 / DOOR_COLUMNS)
+      const right = 7 + Math.floor((x + 1) * 18 / DOOR_COLUMNS)
+      const top = 6 + y * 6
+      const channels = [0, 0, 0]
+      let count = 0
+      for (let py = top; py < top + 6; py++) for (let px = left; px < right; px++) {
+        const color = pixel(rgb, rows, px, py)
+        if (color < 0) continue
+        channels[0]! += (color >> 16) & 255
+        channels[1]! += (color >> 8) & 255
+        channels[2]! += color & 255
+        count++
+      }
+      if (!count) return DEFAULT
+      // Muted towards neutral grey, still legible on either terminal background.
+      return channels.reduce((n, total) => (n << 8) | Math.round((total / count) * .55 + 136 * .45), 0)
+    }
+    for (let x = 0; x < DOOR_COLUMNS; x++) {
+      view.setUint32(x * 12, UPPER, true)
+      view.setUint32(x * 12 + 4, sample(x, 0), true)
+      view.setUint32(x * 12 + 8, sample(x, 1), true)
     }
     return toBase64(new Uint8Array(view.buffer))
   })

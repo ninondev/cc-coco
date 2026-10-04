@@ -2,23 +2,21 @@
 // language and local time. Everything that talks to Claude Code is in register.tsx.
 
 import type { FrameName } from './art'
+import { MOTION } from './motion'
 import { LINES, OMIKUJI_WEIGHTS } from './lines'
 import { WORDS } from './words'
 import type { Lang, Mood } from './words'
 import type { ClaudesamaView as View } from '../types'
 
 export const TIMING = {
-  blinkMin: 4000, blinkMax: 6000, blinkShut: 150,
-  think: 800, work: 500, wild: 333, wildFor: 2400,
+  blinkMin: MOTION.blink.interval.min, blinkMax: MOTION.blink.interval.max, blinkShut: MOTION.blink.shut.median,
+  think: MOTION.think.median, work: MOTION.work.median, wild: MOTION.wild.median, wildFor: 2400,
   happy: 3000, wave: 2600, flustered: 2600, errorFlash: 1600, error: 12000, refuse: 20000,
   snake: 3600, say: 14000, slip: 45000,
-  sleepAfter: 10 * 60_000, clingyAfter: 6 * 60_000,
+  sleepAfter: 4 * 60_000, clingyAfter: 150_000,
   thinkingLong: 45_000, done: 45_000, doneLong: 120_000, back: 2 * 3600_000, reload: 2 * 60_000,
   questionGap: 90_000, offeringFull: 85, offeringReset: 60,
-  // the box's second read after a spinner stage; an ask's line, and how soon a stage change
-  // counts as the ask being settled; how long the band trusts its own turn over the engine's
-  gaugeAgain: 250, askLine: 2000, askSettled: 400, reconcile: 800, sample: 750,
-  companionCheck: 10_000, // how often the mod looks for the companion's folder
+
 } as const
 
 // Two-frame loops; with reduced motion only the first frame shows.
@@ -69,7 +67,7 @@ export const ABSOLUTELY_RIGHT =
 export function initialView(): View {
   return {
     mood: 'idle', frame: 'idle-reading', said: null, slip: null, context: null, estimate: false,
-    verb: WORDS.en.spinner[0] ?? 'reading', band: 'on', voice: 'light', affection: 'warm',
+    verb: WORDS.en.spinner[0] ?? 'reading', band: 'on', workSize: 'same', voice: 'light', affection: 'warm',
     lang: 'en', pictures: 'cells', colors: 'truecolor', cue: 'claude',
   }
 }

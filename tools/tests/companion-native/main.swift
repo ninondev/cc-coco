@@ -67,31 +67,26 @@ import QuartzCore
     var events: [String] = []
     var trusted = false
     var complete: (() -> Void)?
-    var delayed: (() -> Void)?
     let permission = FollowPermission(effects: .init(trusted: { trusted }, run: { executable, arguments, timeout, done in
         expect(executable == "/usr/bin/tccutil" && arguments == ["reset", "Accessibility", LoginAgent.label] && timeout == 5, "reset targets only his own entry, with five-second limit")
         events.append("reset"); complete = done
-    }, prompt: { events.append("prompt") }, later: { delay, action in
-        expect(delay == 0.4, "settings opens 0.4 seconds after prompt")
-        delayed = action
-    }, open: { url in events.append(url == FollowPermission.settingsURL ? "url" : "app"); return true }))
+    }, prompt: { events.append("prompt") }, open: { url in events.append(url == FollowPermission.settingsURL ? "url" : "app"); return true }))
     permission.request(at: moment)
     permission.request(at: moment + 1)
     expect(events == ["reset"], "in-flight duplicate does not reset or open early")
     complete?()
-    expect(events == ["reset", "prompt"], "prompt follows reset completion")
-    delayed?()
+    expect(events == ["reset", "prompt", "url"], "completion opens Settings synchronously after prompt")
     expect(events == ["reset", "prompt", "url"], "order is reset then prompt then URL")
     permission.request(at: moment + 599_999)
     expect(events == ["reset", "prompt", "url", "url"], "second press inside ten minutes only reopens Settings")
     permission.request(at: moment + 600_000)
     expect(events.last == "reset" && events.filter { $0 == "reset" }.count == 2, "ten-minute boundary allows a new reset")
-    complete?(); delayed?()
+    complete?()
     trusted = true
     let before = events
     permission.request(at: moment + 1_200_000)
     expect(events == before, "trusted click never resets, prompts, or opens")
-    let fallback = FollowPermission(effects: .init(trusted: { false }, run: { _, _, _, done in done() }, prompt: {}, later: { _, action in action() }, open: { url in
+    let fallback = FollowPermission(effects: .init(trusted: { false }, run: { _, _, _, done in done() }, prompt: {}, open: { url in
         events.append(url == FollowPermission.settingsURL ? "url" : "app"); return url != FollowPermission.settingsURL
     }))
     fallback.openSettings()
@@ -108,6 +103,8 @@ import QuartzCore
     let scratch = FileManager.default.temporaryDirectory.appendingPathComponent("companion-native-" + UUID().uuidString)
     try! FileManager.default.createDirectory(at: scratch, withIntermediateDirectories: true)
     let savedURL = scratch.appendingPathComponent("companion.json")
+    let stateChannel = scratch.appendingPathComponent("requests.jsonl")
+    try! Data().write(to: stateChannel)
     let saved = Store(url: savedURL)
     saved.running = true; saved.answered = 123; saved.offered = "test-build"
     saved.sizeAt = 234; saved.loginAt = 345; saved.followAt = 456; saved.login = true
@@ -122,6 +119,18 @@ import QuartzCore
     expect(reread.answered == 123 && reread.offered == "test-build" && reread.sizeAt == 234 && reread.loginAt == 345 && reread.followAt == 456 && reread.login, "store restores request clocks and build offer")
     expect(reread.linesHidden && reread.seenAt == 567, "store restores linesHidden and Activity's seenAt clock")
     saved.running = false; saved.save()
+    let stateLines = try! String(contentsOf: stateChannel, encoding: .utf8).split(separator: "\n")
+    let status = try! JSONSerialization.jsonObject(with: Data(stateLines.last!.utf8)) as! [String: Any]
+    let statusInfo = status["info"] as! [String: Any]
+    expect(status["kind"] as? String == "companion-state" && statusInfo["running"] as? Bool == false,
+           "save broadcasts quit settings immediately to live channels")
+    expect(Set(statusInfo.keys) == Set(["running", "accessibility", "hiddenUntil", "answered", "size", "sizeAt", "loginAt", "followAt", "login", "version"]),
+           "state event contains only explicit metadata fields without paths or text")
+    expect(stateLines.allSatisfy { $0.utf8.count < 2048 }, "each complete native status event fits one small append")
+    let noChannel = scratch.appendingPathComponent("no-channel")
+    try! FileManager.default.createDirectory(at: noChannel, withIntermediateDirectories: true)
+    Store(url: noChannel.appendingPathComponent("companion.json")).save()
+    expect(!FileManager.default.fileExists(atPath: noChannel.appendingPathComponent("requests.jsonl").path), "save never creates a missing channel")
     let stopped = try! JSONSerialization.jsonObject(with: Data(contentsOf: savedURL)) as! [String: Any]
     expect(stopped["running"] as? Bool == false, "termination status persists false")
     let scratchAgent = LoginAgent.url(home: scratch)
@@ -137,6 +146,7 @@ import QuartzCore
     try! LoginAgent.set(true, home: missingAgentHome, executable: "/Pretend.app/Contents/MacOS/Companion")
     expect(!FileManager.default.fileExists(atPath: LoginAgent.url(home: missingAgentHome).path),
            "non-bundle executable never creates a login agent in a scratch home")
+    motionModelChecks(expect: expect)
     expect(!LoginAgent.isInstalledBundle, "native scratch executable fails the runtime installed-bundle guard")
     expect(LoginAgent.installedBundle(bundleIdentifier: LoginAgent.label, executable: "/Applications/Companion.app/Contents/MacOS/Companion"),
            "installed-bundle identity accepts matching id and app-contained executable")
@@ -247,15 +257,8 @@ func followupChecks(frames: Frames, expect: (Bool, String) -> Void) {
     expect(!blink(visible: false), "hidden pet has no idle animation")
     expect(!blink(unoccluded: false), "covered pet has no idle animation")
     expect(!blink(reduceMotion: true), "Reduce Motion removes the idle animation")
-    expect(IdleBlink.duration == 16 && IdleBlink.shuts == [3.8, 8.9, 9.22, 13.6] && IdleBlink.shutFor == 0.14,
-           "blink schedule is four specified 140ms blinks in sixteen seconds")
-    expect(IdleBlink.times.count == IdleBlink.closed.count + 1 && IdleBlink.times.first == 0 && IdleBlink.times.last == 16,
-           "discrete key times bracket all intervals and the full cycle")
-    let closeIndices = IdleBlink.closed.indices.filter { IdleBlink.closed[$0] }
-    expect(closeIndices.map { IdleBlink.times[$0] } == IdleBlink.shuts, "closed intervals start at each requested time")
-    expect(closeIndices.allSatisfy { abs(IdleBlink.times[$0 + 1] - IdleBlink.times[$0] - 0.14) < 0.000_001 },
-           "each closed interval lasts exactly 140ms")
-    expect(zip(IdleBlink.times, IdleBlink.times.dropFirst()).allSatisfy { $0 < $1 }, "blink key times strictly increase")
+    let schedule = IdleBlink.animation(open: frames.image("idle-reading", size: .medium, scale: 2)!, shut: frames.image("idle-blink", size: .medium, scale: 2)!)
+    expect(schedule.duration >= 180, "idle sequence lasts at least three minutes")
     let layer = CALayer()
     let open = frames.image("idle-reading", size: .medium, scale: 2)!
     let shut = frames.image("idle-blink", size: .medium, scale: 2)!
@@ -283,16 +286,36 @@ func followupChecks(frames: Frames, expect: (Bool, String) -> Void) {
     updateLayerBlink()
     expect(layer.animation(forKey: "loop") != nil, "missing layer animation is repaired even when the cached key matches")
 
+    var seed: UInt32 = 0x4c415544
+    func random() -> Double { seed ^= seed << 13; seed ^= seed >> 17; seed ^= seed << 5; return Double(seed) / 4_294_967_296 }
+    func checkSchedule(_ animation: CAKeyframeAnimation, minimum: Double, maximum: Double, label: String) {
+        let images = animation.values as! [CGImage]
+        let times = animation.keyTimes!.map { $0.doubleValue }
+        expect(images.count == times.count, "\(label): one key time corresponds to each contents value")
+        expect(times.first == 0 && times.last == 1, "\(label): explicit first frame and full endpoint")
+        expect(zip(times, times.dropFirst()).allSatisfy { $0 < $1 && $0 >= 0 && $1 <= 1 }, "\(label): increasing normalized key times")
+        expect(images.count >= 2 && images[images.count - 1] === images[images.count - 2], "\(label): endpoint preserves the last held frame")
+        expect(animation.duration >= 180, "\(label): full sampled sequence lasts at least three minutes")
+        let holds = zip(times, times.dropFirst()).map { ($1 - $0) * animation.duration * 1000 }
+        expect(holds.allSatisfy { $0 >= minimum - 0.0001 && $0 <= maximum + 0.0001 }, "\(label): final hold and all other holds obey model clamps")
+    }
+    for kind in ["think", "work", "wild"] {
+        let spec = kind == "think" ? MotionModel.standard.think : kind == "work" ? MotionModel.standard.work : MotionModel.standard.wild
+        let animation = MotionModel.standard.loop(first: open, second: shut, kind: kind, random: random)
+        checkSchedule(animation, minimum: spec.min, maximum: kind == "work" ? MotionModel.standard.workBurst.pause.max : spec.max, label: kind)
+    }
+    // Idle holds contain the gaze/blink/double gaps as well as the longer inter-blink interval.
+    checkSchedule(MotionModel.standard.idle(open: open, shut: shut, gaze: true, random: random), minimum: 100, maximum: 20000, label: "idle")
     for size in Size.allCases {
         for scale: CGFloat in [1, 2] {
             let open = frames.image("idle-reading", size: size, scale: scale)!
             let shut = frames.image("idle-blink", size: size, scale: scale)!
             let animation = IdleBlink.animation(open: open, shut: shut)
-            expect(animation.keyPath == "contents" && animation.calculationMode == .discrete && animation.duration == 16
-                   && animation.repeatCount == .infinity && animation.values?.count == 9 && animation.keyTimes?.count == 10,
+            expect(animation.keyPath == "contents" && animation.calculationMode == .discrete && animation.duration >= 180
+                   && animation.repeatCount == .infinity && animation.values!.count > 9 && animation.keyTimes!.count == animation.values!.count,
                    "\(size.rawValue) at \(Int(scale))x builds the repeating discrete contents animation")
             let images = animation.values as! [CGImage]
-            expect(images.enumerated().allSatisfy { $0.element === (IdleBlink.closed[$0.offset] ? shut : open) },
+            expect(images.allSatisfy { $0 === shut || $0 === open },
                    "\(size.rawValue) at \(Int(scale))x uses the matching cached open and closed frames")
         }
     }
@@ -735,20 +758,12 @@ func aroundHimChecks(scratch: URL, expect: (Bool, String) -> Void) {
     var hover = HoverState()
     expect(!hover.visible && hover.showAt == nil && hover.hideAt == nil, "hover starts at rest with no timer decision")
     hover.pointer(.sprite, inside: true, at: 1)
-    expect(hover.showAt == 1.35, "pointer entry arms one 0.35-second hover rest")
-    hover.advance(at: 1.349)
-    expect(!hover.visible, "hover does not appear before rest deadline")
-    hover.advance(at: 1.35)
-    expect(hover.visible && hover.showAt == nil, "hover appears at rest deadline and consumes show timer")
+    expect(hover.visible && hover.showAt == nil, "pointer entry shows actions in the same event")
     hover.pointer(.pill, inside: true, at: 1.4)
     hover.pointer(.sprite, inside: false, at: 1.4)
-    expect(hover.hideAt == nil, "moving from sprite into pill does not arm leave timer")
+    expect(hover.visible && hover.hideAt == nil, "entering sibling before exit keeps actions without a timer")
     hover.pointer(.pill, inside: false, at: 2)
-    expect(hover.hideAt == 2.3, "leaving both surfaces arms one 0.3-second deadline")
-    hover.advance(at: 2.299)
-    expect(hover.visible, "hover survives until leave deadline")
-    hover.advance(at: 2.3)
-    expect(!hover.visible && hover.hideAt == nil, "hover hides at leave deadline and consumes timer")
+    expect(!hover.visible && hover.hideAt == nil, "leaving both surfaces hides actions in the same event")
     hover.pointer(.sprite, inside: true, at: 3); hover.advance(at: 3.35, carried: true)
     expect(!hover.visible, "carrying suppresses the hover pill")
     hover.pointer(.sprite, inside: false, at: 4); hover.pointer(.sprite, inside: true, at: 4.1); hover.advance(at: 4.45, card: true)
@@ -1255,4 +1270,22 @@ func hoverLabelChecks(scratch: URL, hoverTable: [String: [String: Any]], expect:
             }
         }
     }
+}
+
+// Seeded native statistics verify the model consumed by the Core Animation builder.
+func motionModelChecks(expect: (Bool, String) -> Void) {
+    var seed: UInt32 = 42
+    func random() -> Double { seed ^= seed << 13; seed ^= seed >> 17; seed ^= seed << 5; return Double(seed) / 4_294_967_296 }
+    let model = MotionModel.standard
+    for spec in [model.blink.interval, model.think, model.work, model.wild] {
+        let samples = (0..<100_000).map { _ in spec.sample(random) }.sorted()
+        expect(abs(samples[50_000] / spec.median - 1) < 0.015, "native log-normal median matches feed")
+        expect(samples[0] >= spec.min && samples.last! <= spec.max, "native holds obey both clamps")
+        expect(samples[5_000] / samples[95_000] < 0.6, "native motion has the requested uneven spread")
+    }
+    let doubles = (0..<100_000).filter { _ in random() < model.blink.doubleChance }.count
+    expect(abs(Double(doubles) / 100_000 - 1 / 12) < 0.003, "native one-in-twelve double probability")
+    let data = try! JSONSerialization.jsonObject(with: Data(MotionModel.defaultJSON.utf8))
+    expect(MotionModel(data) == model, "optional v1 feed decodes the exact shared model")
+    expect(MotionModel(["version": 2]) == nil, "unknown model degrades to generated default")
 }

@@ -71,6 +71,7 @@ export type BookWords = {
     voice: { label: string; off: string; light: string; full: string; help: string }
     affection: { label: string; warm: string; clingy: string }
     band: { label: string; painted: string; pixel: string; on: string; compact: string; off: string }
+    workSize: { label: string; same: string; smaller: string }
     marks: { label: string; on: string; replies: string; off: string; help: string }
     language: { label: string; auto: string; autoNow: string }
     motion: { label: string; still: string }

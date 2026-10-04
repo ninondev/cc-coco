@@ -153,6 +153,11 @@
       "painted": "손그림",
       "pixel": "픽셀"
     },
+    "workSize": {
+      "label": "Claude가 작업할 때",
+      "same": "같은 크기",
+      "smaller": "더 작게"
+    },
     "marks": {
       "label": "대화 속 표시",
       "on": "그와 너",

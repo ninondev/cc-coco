@@ -65,17 +65,16 @@ describe('the review of his book and marks', () => {
     const w = world(on, { store: RECENT, percent: 56 })
     await $.session.start(START)
     await run($, 'claudesama', 'offerings')
-    await $.ui.mount({ surface: 'desktop', ...PANE })
+    const ui = await $.ui.mount({ surface: 'desktop', ...PANE })
     await run($, 'shut')
     w.percent = 61
     await $.turn.start({ text: 'go', turnId: 't1' })
-    const rev = (w.cell('book')?.value as { rev: number }).rev
+    expect(await ui.find({ type: 'Text', text: /61%/ })).toBeUndefined()
     await $.tool.call({ tool: 'Read', file_path: '/tmp/a' }) // the band reads the engine's figures here
-    await w.clock.advance(1)
-    expect((w.cell('book')?.value as { rev: number }).rev).toBeGreaterThan(rev)
+    expect(await ui.find({ type: 'Text', text: /61%/ })).toBeDefined()
   })
 
-  test('his book keeps no words, portraits or figures before it is first opened', async ($, on) => {
+  test('book content is bundled and opening it never reads words or portraits', async ($, on) => {
     const w = world(on, { store: RECENT, percent: 56 })
     await $.session.start(START)
     await $.turn.start({ text: 'go', turnId: 't1' })
@@ -83,7 +82,7 @@ describe('the review of his book and marks', () => {
     expect(w.fileReads.filter(path => /[\\/]book[\\/]/.test(path))).toEqual([])
     await run($, 'claudesama')
     await $.ui.mount({ surface: 'desktop', ...PANE })
-    expect(w.fileReads.filter(path => /[\\/]book[\\/]/.test(path))).toEqual([expect.stringMatching(/[\\/]book[\\/]en\.json$/)])
+    expect(w.fileReads.filter(path => /[\\/]book[\\/]/.test(path))).toEqual([])
   })
 
   test('the book takes the keyboard when the person opens it, and the terminal tabs show their keys', async ($, on) => {

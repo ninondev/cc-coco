@@ -69,10 +69,9 @@ describe('Windows roots and unsupported capabilities', () => {
     expect((await book.findAll({ type: 'Button' })).filter(button => String(button.key).startsWith('claudesama:book:tab:')).length).toBe(6)
     if (WINDOWS_ROOTS) {
       const windowsReads = w.fileReads.map(path => path.slice(path.indexOf('C:'))).filter(path => path.startsWith('C:'))
-      expect(windowsReads.length > 0).toBe(true)
+      expect(windowsReads.filter(path => /\\(?:book|assets)\\/.test(path))).toEqual([])
       expect(windowsReads.every(path => /^C:\\/.test(path) && !path.includes('/'))).toBe(true)
-      expect(windowsReads.some(path => /\\book\\en\.json$/.test(path))).toBe(true)
-      if (surface === 'desktop') expect(windowsReads.some(path => /\\assets\\(?:pixel|desktop)\\/.test(path))).toBe(true)
+
     }
     expect(await book.find({ type: 'Text', text: words.icon.label })).toBeUndefined()
     expect(await book.find({ type: 'Text', text: words.companion.label })).toBeUndefined()

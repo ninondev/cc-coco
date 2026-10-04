@@ -153,6 +153,11 @@
       "painted": "Painted",
       "pixel": "Pixel"
     },
+    "workSize": {
+      "label": "While Claude works",
+      "same": "Same size",
+      "smaller": "Smaller"
+    },
     "marks": {
       "label": "Marks in the conversation",
       "on": "His and yours",

@@ -12,6 +12,52 @@ old behavior back.
 
 ## [Unreleased]
 
+## [0.1.1] - 2026-10-04
+
+He's quicker, he stays painted, and you can poke him now.
+
+### Changed
+
+- **No more waiting.** Everything he shows follows what happens on the very next redraw. The
+  offering box changes the moment a reply lands instead of checking every 0.75 seconds, and it
+  shows the new estimate right after /compact. His pictures ship inside the plugin, so drawing
+  him never waits on a file.
+- **Lighter when idle.** Nothing polls anymore. In our tests a terminal band sitting idle
+  re-renders 2 times a minute instead of 22, and the box's 80 checks a minute while Claude
+  works are gone. The macOS companion lost its little waits too.
+- **Painted means painted.** He used to turn into a pixel head whenever Claude was working or
+  the window was narrow. Now he only gets smaller. Pixel is still there if you pick it.
+- He blinks and moves at a person's pace, never on a beat.
+
+### Added
+
+- **Poke him** in the desktop app. He reacts and says something; poke too fast and he hides
+  behind his book.
+- **While Claude works** in his book: Same size (the default) or Smaller.
+- **Off leaves a sleeping face** with a Wake him button, so his band, his book and the
+  companion are always one click away. The terminal band has a small book button too.
+
+### Fixed
+
+- In a new session he's there from the first frame, in the style you picked. Before, he
+  sometimes took a few seconds, and once in a while he didn't show up at all.
+- Several sessions starting at once no longer trip over his shared files.
+
+### Persona changes
+
+- He falls asleep after four quiet minutes instead of ten, and his clingy line comes at two
+  and a half. Rollback: 0.1.0.1.
+- A few lines mark his actions as actions now. Rollback: 0.1.0.1.
+
+### Notes
+
+- After you update, his book shows **Update him** for the companion. The rebuilt app needs
+  macOS's Accessibility permission once more: say yes on his card, or press **Let him follow
+  the window** in his book.
+- For bug reports there's a diagnostics log, off by default: create an empty file named
+  `diagnostics` in `~/Library/Application Support/Claude-sama/`. It records startup and
+  redraw steps only, never your prompts, replies or files.
+
 ## [0.1.0.1] - 2026-10-03
 
 Small fixes, mostly words. Nothing new to learn.
@@ -112,6 +158,7 @@ The first public release. Here's everything he came with.
 - The desktop app doesn't tell mods your language setting, so there he follows the language
   you type in.
 
-[Unreleased]: https://github.com/ninondev/claude-sama/compare/v0.1.0.1...HEAD
+[Unreleased]: https://github.com/ninondev/claude-sama/compare/v0.1.1...HEAD
+[0.1.1]: https://github.com/ninondev/claude-sama/compare/v0.1.0.1...v0.1.1
 [0.1.0.1]: https://github.com/ninondev/claude-sama/compare/v0.1.0...v0.1.0.1
 [0.1.0]: https://github.com/ninondev/claude-sama/releases/tag/v0.1.0

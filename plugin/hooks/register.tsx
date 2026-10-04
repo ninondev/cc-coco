@@ -9,18 +9,17 @@
 // icon is a separate command (/claudesama:icon) that asks Claude to run bin/icon-*.sh where you
 // can see and approve it.
 //
-// Cost: no timer runs while he is hidden or asleep; while idle and visible, one blink every
-// 4 to 6 s; two-frame loops (at most 2.5 frames a second) only while a turn runs and a sprite
-// is on screen. Terminal frames swap by $.ui.blit, desktop frames by a redraw of a cached SVG.
-// The offering box reads the engine's figure (a free in-process call) at the moments it can
-// move and every 0.75 s while a turn runs, never while idle, and redraws only when it changes.
+// Cost: animation holds follow one shared motion model. Terminal frames blit; desktop SVG
+// frames redraw from bundled bytes. Off and sleep have no animation timer. The offering box
+// follows response/measurement events, with no polling even while working. Optional companion
+// writes and diagnostics run after the band's state publication/redraw request.
 //
 // The state machine lives here because every function handed `$` must sit in this file.
 // mood.ts holds its pure parts; band.tsx draws; pictures.ts builds the images once.
 
-import type { EngineInterface, Register, SessionContextUsage, ToolCallInput, TurnCompleteInput } from 'claude-code'
+import type { EngineInterface, Register, SessionContextUsage, ToolCallInput, TurnCompleteInput, TurnUsage } from 'claude-code'
 import type { FrameName } from './art'
-import { desktopBand, planDesktop, rowsOf, terminalBand, terminalHasSprite } from './band'
+import { desktopBand, desktopDoor, planDesktop, rowsOf, terminalBand, terminalDoor, terminalHasSprite } from './band'
 import {
   ABSOLUTELY_RIGHT, FORCE_PUSH, LOOPS, PERSON, PRAISE, PYTHON, STILL, TEST_RUN, TIMING, colorsOf, cueFor, fill, fortunesFor, greetingFor,
   HEARING, detectLanguage, initialView, langOf, languageOf, linesFor, localDay, localHour, pick, rollRank, slipLabel,
@@ -29,10 +28,13 @@ import { COMPANION_DIR, COMPANION_FEED, companionActivity, companionEnded, compa
 import { CompanionChannel } from './channel'
 import { replyExcerpt, taskForTool } from './tasks'
 import type { TaskDescription } from './tasks'
-import { registerBook } from './pages'
-import { DESKTOP_REST, pngPath, spriteCells, spriteSvg } from './pictures'
+import { companionChanged, registerBook } from './pages'
+import { bundledPng, bundledSvg, spriteCells } from './pictures'
+import { blinkDouble, blinkGap, blinkInterval, blinkShut, gazeBlinkDelay, motionCycle } from './motion'
+import { ATOMIC_WRITE, DIAGNOSTIC_APPEND, safeDiagnosticError } from './shared-files'
 import { homePath, isWindows, joinPath } from './paths'
 import { registerTranscript } from './transcript'
+import { latest } from './latest'
 import { gapBefore } from './typeset'
 import { VOICE } from './voice'
 import { LANGS, WORDS } from './words'
@@ -42,8 +44,7 @@ import type { ClaudesamaView as View } from '../types'
 type Engine = EngineInterface
 type Timer = { cancel: () => void }
 type TimerName =
-  | 'loop' | 'revert' | 'blink' | 'say' | 'slip' | 'long' | 'sleep' | 'clingy' | 'gauge' | 'ask' | 'reconcile' | 'sync'
-  | 'sample'
+  | 'loop' | 'revert' | 'blink' | 'say' | 'slip' | 'long' | 'sleep' | 'clingy' | 'ask' | 'poke' | 'pokeLine'
 type Draw = { day: string; rank: string; index: number }
 type Shown = 'cells' | 'image' | 'svg' | null // what each mounted band draws for him
 
@@ -71,8 +72,7 @@ let arrived = false
 let startSaid = false
 let offeringWarned = false
 let spinnerStage = '' // the spinner's last stage this turn: requesting, thinking, responding, ...
-let lastTokens: number | undefined // the engine's last reading, in tokens
-let staleTokens: number | undefined // a reading that still counts the conversation before a compaction
+let awaitingResponse = false // a compacted window keeps its estimate until its own first response
 let askedAt = 0
 // The companion app (plugin/companion, macOS) reads a feed of what he is doing. The mod writes it
 // only while the companion's folder exists, and only when the record changed. A push checks
@@ -92,7 +92,88 @@ let heard: Lang | undefined // the language of the person's prompts, kept in $.s
 let hearing: Lang | undefined // the last prompt's guess, waiting for a second that agrees
 const timers: Partial<Record<TimerName, Timer>> = {}
 const bands = new Map<string, Shown>() // band instances by requestId
-const pngs = new Map<string, string>() // painted and pixel frame paths read so far, base64
+const animationRedraws = new Set<string>()
+const diagnosticBands = new Map<string, string>()
+let statePublishFailed = false
+let publishedVersion = 0
+let publishPending = 0
+let lastBand: 'on' | 'compact' = 'on'
+let preferences: Promise<void> | undefined
+let adoptedRestored = false
+let diagnosticEnabled = false
+let diagnosticChecked = -Infinity
+let diagnosticChecking = false
+let firstBand = true
+// Local touch is a face overlay; task mood, book records and companion feed stay unchanged.
+let poked: { frame?: FrameName; line?: string } | undefined
+let pokeClicks: number[] = []
+let lastPoke = -Infinity
+const pokeNext = new Map<string, number>()
+let diagnostics: Promise<string | undefined> | undefined
+let diagnosticWrite: Promise<void> = Promise.resolve()
+let diagnosticRegistered = false
+let diagnosticPending = 0
+
+// register has no engine argument. Record its completed step with the first engine event.
+async function checkDiagnostics($: Engine, force = false): Promise<void> {
+  if (diagnosticChecking) return
+  const now = await $.clock.now()
+  if (!force && now - diagnosticChecked < 10_000) return
+  diagnosticChecking = true
+  diagnosticChecked = now
+  try {
+    diagnostics ??= (async () => {
+      const rawHome = await $.env.get('HOME'), profile = await $.env.get('USERPROFILE')
+      const home = homePath(rawHome, profile)
+      if (!home || isWindows(await $.env.get('OS'), rawHome, profile)) return undefined
+      return joinPath(home, COMPANION_DIR)
+    })().catch(() => undefined)
+    const folder = await diagnostics
+    diagnosticEnabled = !!folder && await $.fs.exists(joinPath(folder, 'diagnostics'))
+  } catch { diagnosticEnabled = false }
+  finally { diagnosticChecking = false }
+}
+
+// Cached OFF is an immediate return, including on every render. Only engine events refresh
+// the flag, at most once per ten seconds; animation frames never enter this function.
+function diagnose($: Engine, step: string, error?: unknown, detail?: Record<string, unknown>): void {
+  if (!diagnosticEnabled || diagnosticPending >= 64) return
+  diagnosticPending += 1
+  const message = error === undefined ? undefined : safeDiagnosticError(error)
+  const at = $.clock.now()
+  diagnosticWrite = diagnosticWrite.then(async () => {
+    const folder = await diagnostics
+    if (!folder || !diagnosticEnabled) return
+    const steps = diagnosticRegistered ? [step] : ['register', step]
+    diagnosticRegistered = true
+    for (const current of steps) {
+      const line = JSON.stringify({ at: await at, step: current,
+        ...(current === step ? detail : {}),
+        ...(current === step && message !== undefined ? { message } : {}) }) + '\n'
+      const written = await $.process.run(['/bin/sh', '-c', DIAGNOSTIC_APPEND, 'claudesama', folder], { stdin: line, timeoutMs: 2000 })
+      if (written.exitCode !== 0) throw new Error('diagnostic append failed')
+    }
+  }).catch(() => undefined).finally(() => { diagnosticPending -= 1 })
+}
+
+function caught($: Engine, step: string, error: unknown): void { diagnose($, `error:${step}`, error) }
+function background($: Engine, step: string, work: Promise<unknown>): Promise<void> {
+  return work.then(() => undefined, error => caught($, step, error))
+}
+async function optional<T>($: Engine, step: string, work: () => Promise<T>, fallback: T): Promise<T> {
+  try { return await work() } catch (error) { caught($, step, error); return fallback }
+}
+function redraw($: Engine, why: string): void {
+  animationRedraws.clear()
+  diagnose($, `redraw:${why}`)
+  try { $.ui.invalidate('ui.render') } catch (error) { caught($, 'invalidate', error) }
+}
+
+function after($: Engine, ms: number, callback: () => unknown): Timer {
+  return $.clock.after(ms, async () => {
+    try { await callback() } catch (error) { caught($, 'timer.after', error) }
+  })
+}
 
 function stop(name: TimerName): void {
   timers[name]?.cancel()
@@ -108,26 +189,58 @@ function spriteOnScreen(): boolean {
   return false
 }
 
+async function publish($: Engine, invalidate = true, trace = true): Promise<void> {
+  if (trace) animationRedraws.clear()
+  const snapshot = { ...view, bandBeforeOff: lastBand }
+  publishPending += 1
+  try {
+    const set = await $.state.set(VIEW, snapshot)
+    statePublishFailed = !set.isSet
+    if (!set.isSet) latest.view = snapshot
+    publishedVersion = set.version
+    if (trace) diagnose($, 'push', undefined, { version: set.version, published: set.isSet })
+  } catch (error) {
+    statePublishFailed = true
+    latest.view = snapshot
+    if (trace) caught($, 'state.set', error)
+    if (trace) diagnose($, 'push', undefined, { version: publishedVersion, published: false })
+  } finally {
+    publishPending -= 1
+    if (invalidate) redraw($, statePublishFailed ? 'state.set-fallback' : 'state.set')
+  }
+}
+
 async function push($: Engine): Promise<void> {
   taskNow()
-  await $.state.set(VIEW, { ...view })
-  if (!companionLive) return
-  if (!(await companionHere($))) {
-    companionChannel?.stop()
-    companionSent = ''
-    return
-  }
-  await companionChannel?.start()
-  const key = companionKey(view)
-  if (key === companionSent) return
-  companionSent = key
+  const captured = companionLive ? companionKey(view) : undefined
+  await publish($)
+  void background($, 'diagnostics.check', checkDiagnostics($))
+  // Optional host I/O never lies between the event and its redraw or delays the next mood.
+  if (captured !== undefined) void background($, 'companion', pushCompanion($, captured))
+}
+
+async function pushCompanion($: Engine, captured = companionKey(view)): Promise<void> {
+  // Reserve ordering before any await. A fast tool's start and finish must retain their own
+  // immutable records even when optional host I/O completes out of order.
   const previous = companionWrite
   let finish!: () => void
   companionWrite = new Promise(resolve => { finish = resolve })
   await previous
   try {
+    if (!companionLive) return
+    if (!(await companionHere($))) { companionChannel?.stop(); companionSent = ''; return }
+    await companionChannel?.start()
+    const record = JSON.parse(captured) as Record<string, unknown>
+    record.channel = companionChannel?.isRunning ?? false
+    const key = JSON.stringify(record)
+    if (key === companionSent) return
+    companionSent = key
     const desktop = (await $.session.surfaces()).includes('desktop')
     if (!(await feedCompanion($, companionText(key, companionId, desktop, await $.clock.now()))) && companionSent === key) companionSent = ''
+  } catch (error) {
+    companionSent = ''
+    companionChannel?.stop()
+    caught($, 'companion', error)
   } finally { finish() }
 }
 
@@ -149,9 +262,10 @@ async function feedCompanion($: Engine, text: string): Promise<boolean> {
     return false
   }
   try {
-    await $.fs.write(joinPath(companionHome, COMPANION_FEED), text)
+    const written = await $.process.run(['/bin/sh', '-c', ATOMIC_WRITE, 'claudesama', joinPath(companionHome, COMPANION_DIR), 'view.json'], { stdin: text, timeoutMs: 2000 })
+    if (written.exitCode !== 0) throw new Error('shared write failed')
     return true
-  } catch { return false }
+  } catch (error) { caught($, 'feed', error); return false }
 }
 
 function taskNow(): void {
@@ -159,60 +273,59 @@ function taskNow(): void {
     : view.mood === 'question' ? { key: 'waitingAnswer' } : currentTask ?? { key: 'thinking' })
 }
 
-async function pngOf($: Engine, frame: FrameName, height = DESKTOP_REST): Promise<string> {
-  const path = pngPath(frame, height)
-  let png = pngs.get(path)
-  if (png === undefined) {
-    png = (await $.fs.read(joinPath($.plugin.root, path), { as: 'bytes' })).base64
-    pngs.set(path, png)
-  }
-  return png
-}
-
-// A new frame of the same mood: blitted where the terminal draws cells or a picture, redrawn
-// where the desktop draws (its SVG strings are cached). Nothing on screen: the loop stops.
+// Animation changes remain blits on terminals. SVG needs a desktop redraw; a band restored
+// without a mounted sprite needs publication so its host cell carries the current frame.
 async function showFrame($: Engine, frame: FrameName): Promise<void> {
   view.frame = frame
-  if (!spriteOnScreen()) {
-    stop('loop')
-    return
-  }
-  let redraw = false
+  if (!spriteOnScreen()) { stop('loop'); await publish($, false, false); return }
+  let svg = false
   for (const [requestId, shown] of bands) {
-    if (shown === 'svg') redraw = true
-    if (shown === 'cells' || shown === 'image') {
-      const blit =
-        shown === 'cells'
-          ? await $.ui.blit({ requestId, key: 'sprite', cells: spriteCells(frame, view.colors) })
-          : await $.ui.blit({ requestId, key: 'sprite', source: { png: await pngOf($, frame) } })
-      if (blit.deny) bands.set(requestId, null)
-    }
+    if (shown === 'svg') { svg = true; continue }
+    if (shown !== 'cells' && shown !== 'image') continue
+    const blit = await $.ui.blit(shown === 'cells'
+      ? { requestId, key: 'sprite', cells: spriteCells(frame, view.colors) }
+      : { requestId, key: 'sprite', source: { png: bundledPng(frame) } })
+      .catch(() => ({ deny: 'unavailable' }))
+    if (blit.deny) bands.set(requestId, null)
   }
-  if (redraw) await push($)
+  // Keep the task's frame current beneath a held poke face, without redrawing hidden frames.
+  if (svg && !poked?.frame) {
+    for (const requestId of bands.keys()) animationRedraws.add(requestId)
+    try { $.ui.invalidate('ui.render') } catch { /* next draw carries the frame */ }
+  }
 }
 
 async function setMood($: Engine, mood: Mood, holdMs?: number): Promise<void> {
+  clearPoke()
   stop('loop')
   stop('revert')
   stop('blink')
   view.mood = mood
   view.frame = STILL[mood]
-  if (holdMs !== undefined) timers.revert = $.clock.after(holdMs, () => void settle($))
+  if (holdMs !== undefined) timers.revert = after($, holdMs, () => background($, 'settle', settle($)))
   animate($)
   await push($)
+  if (mood === 'idle') blinkAtGaze($)
 }
 
 // Starts the mood's motion if a sprite is on screen and nothing runs yet: the two-frame loop
 // of a running turn, or the idle blink. Also called when a band first shows his picture.
 function animate($: Engine): void {
-  if (reducedMotion || !spriteOnScreen()) return
+  if (reducedMotion || view.band === 'off' || !spriteOnScreen()) return
   const loop = LOOPS[view.mood]
   if (loop && !timers.loop) {
     let tick = 0
-    timers.loop = $.clock.every(loop.every, () => {
-      tick = 1 - tick
-      void showFrame($, loop.frames[tick] ?? loop.frames[0])
-    })
+    const hold = motionCycle(view.mood as 'think' | 'work' | 'wild')
+    const schedule = () => {
+      timers.loop = after($, hold(), async () => {
+        delete timers.loop
+        if (view.band === 'off' || LOOPS[view.mood] !== loop || !spriteOnScreen()) return
+        tick = 1 - tick
+        await showFrame($, loop.frames[tick] ?? loop.frames[0])
+        schedule()
+      })
+    }
+    schedule()
   }
   if (view.mood === 'idle' && !timers.blink) blinkLater($)
 }
@@ -224,29 +337,38 @@ async function settle($: Engine): Promise<void> {
   return setMood($, working ? (toolsThisTurn > 0 ? 'work' : 'think') : 'idle')
 }
 
-function blinkLater($: Engine): void {
+function blinkLater($: Engine, wait = blinkInterval()): void {
   stop('blink')
-  if (reducedMotion || !spriteOnScreen()) return
-  const wait = TIMING.blinkMin + Math.random() * (TIMING.blinkMax - TIMING.blinkMin)
-  timers.blink = $.clock.after(wait, async () => {
-    if (view.mood !== 'idle') return
-    void gauge($) // rides the blink: catches a model picked outside /model while idle
-    await showFrame($, 'idle-blink')
-    timers.blink = $.clock.after(TIMING.blinkShut, async () => {
-      if (view.mood !== 'idle') return
-      await showFrame($, 'idle-reading')
-      blinkLater($)
-    })
+  if (reducedMotion || view.band === 'off' || !spriteOnScreen() || view.mood !== 'idle') return
+  timers.blink = after($, wait, () => blink($, blinkDouble()))
+}
+
+async function blink($: Engine, double: boolean): Promise<void> {
+  if (view.mood !== 'idle' || view.band === 'off' || reducedMotion) return
+  await showFrame($, 'idle-blink')
+  timers.blink = after($, blinkShut(), async () => {
+    if (view.mood !== 'idle' || view.band === 'off' || reducedMotion) return
+    await showFrame($, 'idle-reading')
+    if (double) timers.blink = after($, blinkGap(), () => blink($, false))
+    else blinkLater($)
   })
+}
+
+function blinkAtGaze($: Engine): void {
+  if (view.mood !== 'idle' || view.frame === 'idle-blink') return
+  const wait = gazeBlinkDelay()
+  if (wait !== undefined) blinkLater($, wait)
 }
 
 async function sayText($: Engine, text: string | undefined): Promise<void> {
   if (!text) return push($)
   stop('say')
   view.said = text
-  timers.say = $.clock.after(TIMING.say, () => {
+  blinkAtGaze($)
+  timers.say = after($, TIMING.say, () => {
     view.said = null
-    void push($)
+    blinkAtGaze($)
+    background($, 'push', push($))
   })
   await push($)
 }
@@ -255,49 +377,48 @@ function say($: Engine, key: string, vars: Record<string, string | number> = {})
   return sayText($, fill(pick(`${view.lang}:${view.affection}:${key}`, linesFor(view, key)), vars))
 }
 
-// One-shot timers armed by activity, never a polling loop: asleep after ten quiet minutes, and
-// in the clingy voice one line after six.
+// One-shot timers armed by activity, never a polling loop: asleep after four quiet minutes, and
+// in the clingy voice one line after 150 seconds.
 function armQuiet($: Engine): void {
   stop('sleep')
   stop('clingy')
-  if (working) return
-  timers.sleep = $.clock.after(TIMING.sleepAfter, async () => {
+  if (working || view.band === 'off') return
+  timers.sleep = after($, TIMING.sleepAfter, async () => {
     delete timers.sleep
     if (working || view.mood !== 'idle') return
     await setMood($, 'sleep')
     await say($, 'sleep')
   })
   if (view.affection === 'clingy') {
-    timers.clingy = $.clock.after(TIMING.clingyAfter, () => {
+    timers.clingy = after($, TIMING.clingyAfter, () => {
       delete timers.clingy
-      if (!working && view.mood === 'idle') void say($, 'idle')
+      if (!working && view.mood === 'idle') background($, 'say.idle', say($, 'idle'))
     })
   }
 }
 
 // ---------------------------------------------------------------- the offering box
 //
-// The box shows the engine's own figure: the last response's input side against the window.
-// That figure moves only when a response starts or lands, so the box reads it at those moments:
-// every 0.75 s while a turn runs, each change of the spinner's stage where the surface raises it
-// (and once more 250 ms later), each tool call's start and end, the end of a turn, the engine's
-// own measurement after it, /model, a setting changed in /config, a prompt sent. Every read is a
-// free in-process call; the band redraws only when the number moves.
+// Each main-thread response completes turn.step on every surface. Usage is an in-process
+// snapshot, measured events carry their figure directly. No sampler or delayed spinner read.
 
-async function gauge($: Engine, given?: SessionContextUsage): Promise<void> {
+async function gauge($: Engine, given?: SessionContextUsage, response = false, usage?: TurnUsage): Promise<void> {
+  if (awaitingResponse && !response) return
+  if (response) awaitingResponse = false
   let context = given
   if (context === undefined) {
     try {
       context = (await $.session.usage()).context
-    } catch {
+    } catch (error) {
+      caught($, 'usage', error)
       return
     }
   }
+  if (context?.window && usage) {
+    const tokens = usage.input_tokens + usage.cache_creation_input_tokens + usage.cache_read_input_tokens
+    context = { ...context, tokens, percent: Math.round(tokens / context.window * 100) }
+  }
   if (!context?.window || (context.tokens === undefined && context.percent === undefined)) return
-  // After a compaction the engine may still hold the response that counted the old conversation.
-  if (staleTokens !== undefined && context.tokens === staleTokens) return
-  staleTokens = undefined
-  lastTokens = context.tokens
   await showContext($, context.percent ?? Math.round(((context.tokens ?? 0) / context.window) * 100), false)
 }
 
@@ -318,63 +439,86 @@ async function showContext($: Engine, percent: number, estimate: boolean): Promi
 // local estimate (no request, no tokens), marked "~"; without one it hides rather than show the
 // old number.
 async function sweep($: Engine, tokensAfter?: number): Promise<void> {
-  staleTokens = lastTokens
+  awaitingResponse = true
   try {
     const { context } = await $.session.usage({ breakdown: 'summary' })
     const total = context.breakdown?.totalTokens ?? tokensAfter
     if (context.window && total !== undefined) return showContext($, Math.round((total / context.window) * 100), true)
-  } catch {
-    // no estimate this time
+  } catch (error) {
+    caught($, 'usage.estimate', error)
   }
   view.context = null
   view.estimate = false
   await push($)
 }
 
-// While a turn runs the figure moves with every response, and the desktop raises no spinner
-// stages, so the box also reads it every 0.75 s until the turn ends: one free in-process call,
-// a redraw only when the number moves. No read at all while idle.
-function sample($: Engine): void {
-  stop('sample')
-  timers.sample = $.clock.every(TIMING.sample, () => void gauge($))
-}
-
-// A stage change of the spinner is the engine starting or landing a response, or a tool
-// starting after a permission was settled. Called from the spinner's drawing, which may not
-// write state, so the reads run just after it: at once, and once more a beat later.
-function stageMoved($: Engine, stage: string): void {
-  if (stage === spinnerStage) return
-  spinnerStage = stage
-  stop('gauge')
-  timers.gauge = $.clock.after(0, async () => {
-    timers.gauge = $.clock.after(TIMING.gaugeAgain, () => {
-      delete timers.gauge
-      void gauge($)
-    })
-    if (view.mood === 'waiting' && askedAt !== 0 && (await $.clock.now()) - askedAt >= TIMING.askSettled) await settled($)
-    await gauge($)
-  })
-}
-
 // ---------------------------------------------------------------- session
 
+// Host store/settings/env calls stay in process. A fresh first draw awaits exactly this
+// initialization; a restored host view already carries its correct visible preferences.
+function hydrate($: Engine): Promise<void> {
+  return preferences ??= (async () => {
+  const settings = await optional($, 'settings.read', () => $.settings.read(), {})
+  reducedMotion = settings.prefersReducedMotion === true
+  timeZone = typeof settings.timeZone === 'string' ? settings.timeZone : undefined
+  locale = [await optional($, 'env.LC_ALL', () => $.env.get('LC_ALL'), undefined), await optional($, 'env.LC_MESSAGES', () => $.env.get('LC_MESSAGES'), undefined), await optional($, 'env.LANG', () => $.env.get('LANG'), undefined)]
+  langChosen = langOf(await optional($, 'store.lang', () => $.store.get('lang'), undefined))
+  heard = langOf(await optional($, 'store.heard', () => $.store.get('heard'), undefined))
+  hearing = undefined
+  const lang = languageOf(langChosen, settings.language, heard, ...locale)
+  const term = (await optional($, 'env.TERM', () => $.env.get('TERM'), undefined)) ?? ''
+  const program = (await optional($, 'env.TERM_PROGRAM', () => $.env.get('TERM_PROGRAM'), undefined)) ?? ''
+  const inTmux = (await optional($, 'env.TMUX', () => $.env.get('TMUX'), undefined)) !== undefined
+  const kittyWindow = (await optional($, 'env.KITTY_WINDOW_ID', () => $.env.get('KITTY_WINDOW_ID'), undefined)) !== undefined
+  const colorterm = (await optional($, 'env.COLORTERM', () => $.env.get('COLORTERM'), undefined)) ?? ''
+  const windowsTerminal = (await optional($, 'env.WT_SESSION', () => $.env.get('WT_SESSION'), undefined)) !== undefined
+  const band = await optional($, 'store.band', () => $.store.get('band'), undefined)
+  const workSize = await optional($, 'store.workSize', () => $.store.get('workSize'), undefined)
+  const voice = await optional($, 'store.voice', () => $.store.get('voice'), undefined)
+  const affection = await optional($, 'store.affection', () => $.store.get('affection'), undefined)
+  const beforeOff = await optional($, 'store.bandBeforeOff', () => $.store.get('bandBeforeOff'), undefined)
+  lastBand = band === 'on' || band === 'compact' ? band : beforeOff === 'compact' ? 'compact' : 'on'
+  view = {
+    ...view,
+    lang,
+    pictures: !inTmux && (kittyWindow || /kitty|ghostty/i.test(term) || /ghostty/i.test(program)) ? 'kitty' : 'cells',
+    band: band === 'compact' || band === 'off' ? band : 'on',
+    workSize: workSize === 'smaller' ? 'smaller' : 'same',
+    voice: voice === 'off' || voice === 'full' ? voice : 'light',
+    affection: affection === 'clingy' ? 'clingy' : 'warm',
+    verb: WORDS[lang].spinner[0] ?? 'reading',
+    colors: colorsOf({ colorterm, term, program, tmux: inTmux, windowsTerminal }),
+    cue: cueFor(settings.theme),
+  }
+  })()
+}
+
 async function boot($: Engine, surface: string | null): Promise<void> {
+  clearPoke()
+  pokeClicks = []
+  lastPoke = -Infinity
+  pokeNext.clear()
+  await hydrate($)
+  await publish($)
   stopAll()
   companionChannel?.stop()
   companionChannel = undefined
   companionSent = ''
-  const home = await $.env.get('HOME'), profile = await $.env.get('USERPROFILE')
-  companionSupported = !isWindows(await $.env.get('OS'), home, profile) && (await $.fs.exists('/System/Library/CoreServices/SystemVersion.plist').catch(() => false))
+  const home = await optional($, 'env.HOME', () => $.env.get('HOME'), undefined), profile = await optional($, 'env.USERPROFILE', () => $.env.get('USERPROFILE'), undefined)
+  companionSupported = !isWindows(await optional($, 'env.OS', () => $.env.get('OS'), undefined), home, profile) && (await optional($, 'platform', () => $.fs.exists('/System/Library/CoreServices/SystemVersion.plist'), false))
   companionLive = companionSupported
   companionHome = companionLive ? homePath(home, profile) : undefined
-  companionId = await $.session.id().catch(() => '')
-  companionSession(await $.session.root().catch(() => ''))
+  companionId = await optional($, 'session.id', () => $.session.id(), '')
+  companionSession(await optional($, 'session.root', () => $.session.root(), ''))
   currentTask = null
   if (companionLive && companionHome !== undefined) {
     const channel = new CompanionChannel({
       exists: path => $.fs.exists(path),
-      write: (path, text) => $.fs.write(path, text),
       spawn: argv => $.process.spawn({ argv }),
+      ensureRequests: async path => {
+        const made = await $.process.run(['/usr/bin/touch', path], { timeoutMs: 2000 })
+        if (made.exitCode !== 0) throw new Error('request create failed')
+      },
       now: () => $.clock.now(),
       submit: text => $.prompt.submit({ text, asUser: true }),
       clear: () => $.command.run({ command: 'clear', args: '' }),
@@ -388,37 +532,12 @@ async function boot($: Engine, surface: string | null): Promise<void> {
         await push($)
       },
       changed: async () => { if (companionChannel === channel) await push($) },
+      companionState: async info => { companionChanged(info); redraw($, 'companion-state') },
+      error: error => caught($, 'channel', error),
     })
     companionChannel = channel
   }
-  const settings = await $.settings.read()
-  reducedMotion = settings.prefersReducedMotion === true
-  timeZone = typeof settings.timeZone === 'string' ? settings.timeZone : undefined
-  locale = [await $.env.get('LC_ALL'), await $.env.get('LC_MESSAGES'), await $.env.get('LANG')]
-  langChosen = langOf(await $.store.get('lang'))
-  heard = langOf(await $.store.get('heard'))
-  hearing = undefined
-  const lang = languageOf(langChosen, settings.language, heard, ...locale)
-  const term = (await $.env.get('TERM')) ?? ''
-  const program = (await $.env.get('TERM_PROGRAM')) ?? ''
-  const inTmux = (await $.env.get('TMUX')) !== undefined
-  const kittyWindow = (await $.env.get('KITTY_WINDOW_ID')) !== undefined
-  const colorterm = (await $.env.get('COLORTERM')) ?? ''
-  const windowsTerminal = (await $.env.get('WT_SESSION')) !== undefined
-  const band = await $.store.get('band')
-  const voice = await $.store.get('voice')
-  const affection = await $.store.get('affection')
-  view = {
-    ...initialView(),
-    lang,
-    pictures: !inTmux && (kittyWindow || /kitty|ghostty/i.test(term) || /ghostty/i.test(program)) ? 'kitty' : 'cells',
-    band: band === 'compact' || band === 'off' ? band : 'on',
-    voice: voice === 'off' || voice === 'full' ? voice : 'light',
-    affection: affection === 'clingy' ? 'clingy' : 'warm',
-    verb: WORDS[lang].spinner[0] ?? 'reading',
-    colors: colorsOf({ colorterm, term, program, tmux: inTmux, windowsTerminal }),
-    cue: cueFor(settings.theme),
-  }
+  await hydrate($)
   working = false
   turnId = ''
   toolsThisTurn = 0
@@ -428,21 +547,21 @@ async function boot($: Engine, surface: string | null): Promise<void> {
   startSaid = false
   offeringWarned = false
   spinnerStage = ''
-  lastTokens = undefined
-  staleTokens = undefined
+  awaitingResponse = false
   askedAt = 0
-  lastSeen = Number((await $.store.get('lastActive')) ?? 0)
+  lastSeen = Number((await optional($, 'store.lastActive', () => $.store.get('lastActive'), undefined)) ?? 0)
   lastActivity = await $.clock.now()
   await gauge($)
   if (view.context === null) await sweep($)
   await setMood($, 'idle')
   armQuiet($)
   if (surface === 'terminal') await arrive($)
+  if (await companionHere($)) void background($, 'companion.start', pushCompanion($))
 }
 
 // A /config change applies at once: reduced motion, theme, language, time zone.
 async function settingsMoved($: Engine): Promise<void> {
-  const settings = await $.settings.read()
+  const settings = await optional($, 'settings.read', () => $.settings.read(), {})
   timeZone = typeof settings.timeZone === 'string' ? settings.timeZone : undefined
   view.cue = cueFor(settings.theme)
   const lang = languageOf(langChosen, settings.language, heard, ...locale)
@@ -478,6 +597,9 @@ async function arrive($: Engine): Promise<void> {
 }
 
 async function sessionEnded($: Engine, reason: string): Promise<void> {
+  clearPoke()
+  pokeClicks = []
+  lastPoke = -Infinity
   companionLive = false
   stopAll()
   companionChannel?.stop()
@@ -489,7 +611,7 @@ async function sessionEnded($: Engine, reason: string): Promise<void> {
   await companionWrite
   if (await companionHere($)) await feedCompanion($, companionEnded(await $.session.id(), await $.clock.now()))
   companionSent = ''
-  await $.store.set('lastActive', await $.clock.now())
+  await optional($, 'store.set.lastActive', async () => { await $.store.set('lastActive', await $.clock.now()) }, undefined)
   if (reason === 'clear') return
   const line = pick(`${view.lang}:goodbye`, linesFor(view, 'goodbye'))
   if (line && view.band !== 'off') $.ui.toast(line)
@@ -510,7 +632,7 @@ async function hear($: Engine, text: string): Promise<void> {
   hearing = guess.lang
   if ((!sure && !agreed) || guess.lang === heard) return
   heard = guess.lang
-  await $.store.set('heard', heard)
+  await optional($, 'store.set.heard', async () => { await $.store.set('heard', heard) }, undefined)
   const lang = languageOf(langChosen, (await $.settings.read()).language, heard, ...locale)
   if (lang === view.lang) return
   view.lang = lang
@@ -538,7 +660,7 @@ async function prompted($: Engine, text: string, origin: string): Promise<void> 
 }
 
 async function turnStarted($: Engine, id: string): Promise<void> {
-  reducedMotion = (await $.settings.read()).prefersReducedMotion === true
+  reducedMotion = (await optional($, 'settings.read', () => $.settings.read(), {})).prefersReducedMotion === true
   working = true
   currentTask = null
   companionTask({ key: 'thinking' })
@@ -549,12 +671,10 @@ async function turnStarted($: Engine, id: string): Promise<void> {
   lastActivity = await $.clock.now()
   stop('sleep')
   stop('clingy')
-  stop('reconcile')
-  sample($)
   view.verb = pick(`${view.lang}:verb`, WORDS[view.lang].spinner) ?? view.verb
   stop('long')
-  timers.long = $.clock.after(TIMING.thinkingLong, () => {
-    if (working && turnId === id) void say($, 'thinking_long')
+  timers.long = after($, TIMING.thinkingLong, () => {
+    if (working && turnId === id) background($, 'say.thinking_long', say($, 'thinking_long'))
   })
   await setMood($, 'think')
   if (!startSaid) {
@@ -568,11 +688,11 @@ async function toolStarted($: Engine, input: ToolCallInput, command: string | un
   lastActivity = await $.clock.now()
   if (!working) return
   toolsThisTurn += 1
+  if (view.mood === 'waiting') await settled($)
   currentTask = taskForTool(input)
   companionTask(currentTask)
-  await gauge($) // the response that asked for this call has landed
-  if (view.mood === 'waiting') await settled($)
   companionActivity({ waitAt: tool === 'AskUserQuestion' ? lastActivity : null })
+  await gauge($, undefined, true) // a tool call proves its main-thread response has landed
   if (tool === 'AskUserQuestion') {
     await setMood($, 'question')
     if (lastActivity - lastQuestion >= TIMING.questionGap) {
@@ -620,20 +740,15 @@ async function toolEnded($: Engine, tool: string, command: string | undefined, i
   }
 }
 
-// An ask goes to the mode's decider: the dialog, or in auto mode a classifier that settles it
-// without you. He waits at once, but says it is your page only once the wait has lasted long
-// enough to be yours; the next spinner stage or the call itself ends the wait.
+// A call-bound permission event starts the wait immediately. The corresponding tool call
+// settles it, including a classifier decision that never needed a human dialog.
 async function asked($: Engine): Promise<void> {
   if (!working) return
   askedAt = await $.clock.now()
   companionActivity({ waitAt: askedAt })
   companionTask({ key: 'waitingOK' })
   await setMood($, 'waiting')
-  stop('ask')
-  timers.ask = $.clock.after(TIMING.askLine, () => {
-    delete timers.ask
-    if (view.mood === 'waiting') void say($, 'waiting')
-  })
+  await say($, 'waiting')
 }
 
 async function settled($: Engine): Promise<void> {
@@ -642,38 +757,6 @@ async function settled($: Engine): Promise<void> {
   companionTask(currentTask ?? { key: 'thinking' })
   stop('ask')
   if (view.mood === 'waiting') await setMood($, 'work')
-}
-
-// The engine's own word on whether a turn runs wins over ours: after a reload in the middle of
-// a turn, or a turn whose end we did not hear, the band catches up on its next draw.
-async function reconcile($: Engine, isWorking: boolean): Promise<void> {
-  if (isWorking && !working) {
-    working = true
-    currentTask = null
-    companionTask({ key: 'thinking' })
-    toolsThisTurn = 0
-    stop('sleep')
-    stop('clingy')
-    sample($)
-    return setMood($, 'think')
-  }
-  if (!isWorking && working && !timers.reconcile) {
-    timers.reconcile = $.clock.after(TIMING.reconcile, () => {
-      delete timers.reconcile
-      if (!working) return
-      working = false
-      currentTask = null
-      companionTask(null)
-      companionActivity({ waitAt: null })
-      askedAt = 0
-      stop('long')
-      stop('ask')
-      stop('sample')
-      armQuiet($)
-      void gauge($)
-      void settle($)
-    })
-  }
 }
 
 async function turnEnded($: Engine, e: TurnCompleteInput): Promise<void> {
@@ -685,16 +768,14 @@ async function turnEnded($: Engine, e: TurnCompleteInput): Promise<void> {
   spinnerStage = ''
   stop('long')
   stop('ask')
-  stop('reconcile')
-  stop('sample')
   const now = await $.clock.now()
   companionActivity({ done: now, waitAt: null, reply: { text: replyExcerpt(e.answer), at: now } })
   lastActivity = now
-  const turns = Number((await $.store.get('turns')) ?? 0) + 1
-  await $.store.set('turns', turns)
-  await $.store.set('lastActive', now)
+  const turns = Number((await optional($, 'store.turns', () => $.store.get('turns'), undefined)) ?? 0) + 1
+  await optional($, 'store.set.turns', async () => { await $.store.set('turns', turns) }, undefined)
+  await optional($, 'store.set.lastActive', async () => { await $.store.set('lastActive', now) }, undefined)
   armQuiet($)
-  await gauge($)
+  await gauge($, undefined, e.reason === 'answer' || e.reason === 'refusal')
   if (e.reason === 'error') {
     await setMood($, 'error', TIMING.error)
     return say($, 'error')
@@ -719,15 +800,60 @@ async function turnEnded($: Engine, e: TurnCompleteInput): Promise<void> {
   if (e.durationMs >= TIMING.done) return say($, 'done')
 }
 
+// Native head pats use happy for 1.4 s, and three clicks in 1.5 s use flustered for 1.8 s.
+// Repeated pokes within 300 ms do not extend the hold or queue work. Only a touch arms a timer.
+function clearPoke(): void {
+  stop('poke')
+  stop('pokeLine')
+  poked = undefined
+}
+
+async function poke($: Engine): Promise<void> {
+  if (view.band === 'off') return
+  const now = await $.clock.now()
+  if (now - lastPoke < 300) return
+  lastPoke = now
+  pokeClicks = [...pokeClicks.filter(at => now - at < 1500), now].slice(-3)
+  const flustered = pokeClicks.length >= 3
+  const urgent = ['waiting', 'question', 'error', 'wild', 'refuse'].includes(view.mood)
+  const hold = Math.min(flustered ? 1800 : 1400, urgent ? 900 : Infinity)
+  const lines = linesFor(view, flustered ? 'poke_many' : 'poke')
+  const next = flustered ? 0 : (pokeNext.get(view.lang) ?? 0)
+  const line = lines.length ? lines[next % lines.length] : undefined
+  if (!flustered && lines.length) pokeNext.set(view.lang, (next + 1) % lines.length)
+  poked = { frame: flustered ? 'flustered' : 'happy', ...(line ? { line } : {}) }
+  stop('poke')
+  redraw($, 'poke')
+  timers.poke = after($, hold, () => {
+    delete timers.poke
+    poked = poked?.line ? { line: poked.line } : undefined
+    redraw($, 'poke.end')
+  })
+  stop('pokeLine')
+  if (line) timers.pokeLine = after($, urgent ? 2000 : 2600, () => {
+    delete timers.pokeLine
+    poked = poked?.frame ? { frame: poked.frame } : undefined
+    redraw($, 'poke.line.end')
+  })
+}
+
 // ---------------------------------------------------------------- commands
 
-async function choose($: Engine, picked: Partial<Pick<View, 'band' | 'voice' | 'affection'>>): Promise<void> {
+async function choose($: Engine, picked: Partial<Pick<View, 'band' | 'voice' | 'affection' | 'workSize'>>): Promise<void> {
+  if (picked.band === 'off') { if (view.band !== 'off') lastBand = view.band }
+  else if (picked.band) lastBand = picked.band
   Object.assign(view, picked)
-  if (picked.band) await $.store.set('band', picked.band)
-  if (picked.voice) await $.store.set('voice', picked.voice)
-  if (picked.affection) await $.store.set('affection', picked.affection)
+  if (view.band === 'off') { clearPoke(); stop('loop'); stop('blink'); stop('sleep'); stop('clingy') }
+  else { animate($); if (picked.band) armQuiet($) }
   if (picked.affection) armQuiet($)
   await push($)
+  if (picked.band) {
+    await optional($, 'store.set.bandBeforeOff', async () => { await $.store.set('bandBeforeOff', lastBand) }, undefined)
+    await optional($, 'store.set.band', async () => { await $.store.set('band', picked.band) }, undefined)
+  }
+  if (picked.workSize) await optional($, 'store.set.workSize', async () => { await $.store.set('workSize', picked.workSize) }, undefined)
+  if (picked.voice) await optional($, 'store.set.voice', async () => { await $.store.set('voice', picked.voice) }, undefined)
+  if (picked.affection) await optional($, 'store.set.affection', async () => { await $.store.set('affection', picked.affection) }, undefined)
 }
 
 // /claudesama lang <code>|auto: a language picked by hand wins over the settings and the locale
@@ -738,7 +864,7 @@ async function chooseLang($: Engine, value: string): Promise<string> {
   const picked = value === 'auto' ? undefined : langOf(value)
   if (value !== 'auto' && picked === undefined) return fill(WORDS[view.lang].reply.unknown, { value, codes }) ?? ''
   langChosen = picked
-  await $.store.set('lang', picked ?? 'auto')
+  await optional($, 'store.set.lang', async () => { await $.store.set('lang', picked ?? 'auto') }, undefined)
   view.lang = picked ?? languageOf((await $.settings.read()).language, heard, ...locale)
   view.verb = WORDS[view.lang].spinner[0] ?? view.verb
   await push($)
@@ -752,7 +878,7 @@ async function drawOmen($: Engine): Promise<void> {
   lastActivity = now
   const day = localDay(now, timeZone)
   const fortunes = fortunesFor(view.lang)
-  const held = (await $.store.get('omen')) as Draw | undefined
+  const held = (await optional($, 'store.omen', () => $.store.get('omen'), undefined)) as Draw | undefined
   const again = held !== undefined && held.day === day && fortunes[held.rank]?.[held.index] !== undefined
   let draw: Draw
   if (again && held) {
@@ -760,7 +886,7 @@ async function drawOmen($: Engine): Promise<void> {
   } else {
     const rank = rollRank(Math.random())
     draw = { day, rank, index: Math.floor(Math.random() * (fortunes[rank]?.length ?? 1)) }
-    await $.store.set('omen', draw)
+    await optional($, 'store.set.omen', async () => { await $.store.set('omen', draw) }, undefined)
   }
   // Shown as written: each language's line carries its own culture's rank.
   const line = fortunes[draw.rank]?.[draw.index] ?? ''
@@ -769,9 +895,9 @@ async function drawOmen($: Engine): Promise<void> {
   view.said = null
   stop('say')
   stop('slip')
-  timers.slip = $.clock.after(TIMING.slip, () => {
+  timers.slip = after($, TIMING.slip, () => {
     view.slip = null
-    void settle($)
+    background($, 'settle', settle($))
   })
   await setMood($, 'omen')
   if (draw.rank === 'kyo' || draw.rank === 'daikyo') await showFrame($, 'flustered')
@@ -786,20 +912,25 @@ export const register: Register = on => {
   registerTranscript(on)
 
   on('session.start', async ($, e, next) => {
-    const started = await next(e)
-    await $.command.register({
-      name: 'claudesama',
-      description: 'Claude-sama: his voice, warmth, the band, language, omen, about',
-      argumentHint: '[voice|warmth|band|lang|omen|about] [value]',
-    })
-    await $.command.register({ name: 'omen', description: 'Draw an omen from Claude-sama' })
-    await boot($, e.surface)
-    return started
+    await checkDiagnostics($, true)
+    diagnose($, 'session.start.begin')
+    try {
+      const started = await next(e)
+      await optional($, 'command.register', () => $.command.register({
+        name: 'claudesama',
+        description: 'Claude-sama: his voice, warmth, the band, language, omen, about',
+        argumentHint: '[voice|warmth|band|lang|omen|about] [value]',
+      }), undefined)
+      await optional($, 'command.register', () => $.command.register({ name: 'omen', description: 'Draw an omen from Claude-sama' }), undefined)
+      try { await boot($, e.surface) }
+      catch (error) { caught($, 'boot', error); await push($) }
+      return started
+    } finally { diagnose($, 'session.start.end') }
   })
 
   on('session.attach', async ($, e, next) => {
     const attached = await next(e)
-    await arrive($)
+    await optional($, 'arrive', () => arrive($), undefined)
     return attached
   })
 
@@ -814,6 +945,7 @@ export const register: Register = on => {
     const compacted = await next(e)
     if (e.agentId === undefined && e.trigger !== 'precompute' && compacted.skip === undefined) {
       await sweep($, compacted.tokensAfter)
+      diagnose($, 'compaction', undefined, { trigger: e.trigger, tokensAfter: compacted.tokensAfter !== undefined, context: view.context, estimate: view.estimate })
     }
     return compacted
   })
@@ -851,9 +983,7 @@ export const register: Register = on => {
       askedAt = 0
       stop('long')
       stop('ask')
-      stop('reconcile')
-      stop('sample')
-      currentTask = null
+              currentTask = null
       companionTask(null)
       companionActivity({ done: null, waitAt: null, reply: null, notice: null })
       await push($)
@@ -870,8 +1000,14 @@ export const register: Register = on => {
 
   on('prompt.submit', async ($, e, next) => {
     await prompted($, e.text, e.origin.kind)
-    void gauge($)
+    background($, 'gauge', gauge($))
     return next(e)
+  })
+
+  on('turn.step', async function* ($, e, next) {
+    const response = yield* next(e)
+    if (e.agentId === undefined && response.stopReason !== null) await gauge($, undefined, true, response.usage ?? undefined)
+    return response
   })
 
   on('turn.start', async ($, e, next) => {
@@ -902,24 +1038,48 @@ export const register: Register = on => {
   })
 
   // The band. Another mod's band content is kept, drawn under his. Reading the state cell
-  // subscribes this drawing to it; the drawing itself uses the module's `view`, which is newer.
+  // subscribes this drawing to it; an absent or refused cell uses the ready module defaults.
   on('ui.render', { component: 'AbovePrompt' }, async ($, e, next) => {
-    await $.state.get(VIEW)
-    if (e.props.isWorking !== working) {
-      const isWorking = e.props.isWorking
-      stop('sync')
-      timers.sync = $.clock.after(0, () => {
-        delete timers.sync
-        void reconcile($, isWorking)
-      })
+    const held = await optional($, 'state.get', () => $.state.get(VIEW), { value: undefined, version: 0 })
+    if (!held.value) await hydrate($)
+    else if (!preferences && !adoptedRestored) { adoptedRestored = true; publishedVersion = held.version; view = held.value; lastBand = held.value.bandBeforeOff ?? (held.value.band === 'compact' ? 'compact' : 'on') }
+    const fallback = statePublishFailed || publishPending > 0 || held.value === undefined
+    let drawn = fallback ? view : held.value!
+    if (!fallback && held.version === publishedVersion && drawn.mood === view.mood) drawn = { ...drawn, frame: view.frame }
+    // A cold module can attach to a running turn without having heard its start. The engine's
+    // render prop decides that first frame directly; rendering never schedules a state write.
+    if (!turnId) {
+      working = e.props.isWorking
+      if (working && ['idle', 'sleep'].includes(drawn.mood)) {
+        drawn = { ...drawn, mood: 'think', frame: view.mood === 'think' ? view.frame : 'think-a' }; view = drawn
+      } else if (!working && ['think', 'work'].includes(view.mood) && ['idle', 'sleep'].includes(drawn.mood)) {
+        view = drawn; stop('loop')
+      }
     }
-    if (e.props.hasSurvey || view.band === 'off') {
-      bands.set(e.requestId, null)
+    const record = (kind: string, height = 0) => {
+      const detail = { surface: e.surface, isWorking: e.props.isWorking,
+        bodyColumns: e.props.bodyColumns, maxRows: e.props.maxRows,
+        style: (drawn.band === 'off' ? drawn.bandBeforeOff ?? lastBand : drawn.band) === 'compact' ? 'pixel' : 'painted',
+        height, fallback, version: held.version }
+      const animation = animationRedraws.delete(e.requestId)
+      if (!diagnosticEnabled) return
+      const signature = JSON.stringify({ ...detail, kind, viewport: e.viewport, scroll: e.props.scroll })
+      if (animation && diagnosticBands.get(e.requestId) === signature) return
+      diagnosticBands.set(e.requestId, signature)
+      diagnose($, 'band', undefined, detail)
+      if (firstBand) { firstBand = false; diagnose($, `first-band:${kind}`) }
+    }
+    if (e.props.hasSurvey) { bands.set(e.requestId, null); record('survey'); return next(e) }
+    if (drawn.band === 'off') {
+      bands.set(e.requestId, null); stop('loop'); stop('blink'); record('off', e.surface === 'desktop' ? 32 : 1)
+      const wake = () => choose($, { band: lastBand })
+      if (e.surface === 'desktop') return desktopDoor($.ui.resolve(e), drawn, wake, (drawn.bandBeforeOff ?? lastBand) === 'compact')
+      if (e.surface === 'terminal') return terminalDoor($.ui.resolve(e), drawn, wake)
       return next(e)
     }
     // Good manners: other mods' rows under ours come off the room we take, so the band does not
     // start scrolling; at worst he keeps one line.
-    const theirs = await next(e)
+    const theirs = await optional($, 'band.next', () => next(e), undefined)
     const size = {
       columns: e.props.bodyColumns,
       maxRows: e.props.maxRows - rowsOf(theirs),
@@ -929,13 +1089,14 @@ export const register: Register = on => {
     if (e.surface === 'terminal') {
       const ui = $.ui.resolve(e)
       const { Box } = ui
-      const sprite = terminalHasSprite(view, size)
-      const png = sprite && view.pictures === 'kitty' ? await pngOf($, view.frame) : undefined
+      const sprite = terminalHasSprite(drawn, size)
+      const png = sprite && drawn.pictures === 'kitty' ? bundledPng(drawn.frame) : undefined
       bands.set(e.requestId, sprite ? (png ? 'image' : 'cells') : null)
       animate($)
+      record(png ? 'image' : sprite ? 'cells' : 'text')
       return (
         <Box flexDirection="column">
-          {terminalBand(ui, view, size, png)}
+          {terminalBand(ui, drawn, size, png)}
           {theirs}
         </Box>
       )
@@ -943,25 +1104,26 @@ export const register: Register = on => {
     if (e.surface === 'desktop') {
       const ui = $.ui.resolve(e)
       const { Box } = ui
-      const plan = planDesktop(view, size)
+      if (poked?.frame) drawn = { ...drawn, frame: poked.frame }
+      const plan = planDesktop(drawn, size, poked?.line)
       bands.set(e.requestId, plan.height ? 'svg' : null)
       animate($)
-      const sprite = plan.height ? spriteSvg(view.frame, plan.height, await pngOf($, view.frame, plan.height)) : ''
+      const sprite = plan.height ? bundledSvg(drawn.frame, plan.height, drawn.band === 'compact') : ''
+      record(plan.height ? 'svg-bundled' : 'text', plan.height)
       return (
         <Box flexDirection="column">
-          {desktopBand(ui, view, size, sprite, plan)}
+          {desktopBand(ui, drawn, size, sprite, plan, poked?.line)}
           {theirs}
         </Box>
       )
     }
+    record('other-surface')
     return theirs
   })
 
   // Terminal spinner: his verb for this turn; the engine keeps its glyph, time and tokens.
-  // The desktop's spinner row already says what the step is doing, so it is left alone. On
-  // both, a new stage is where the offering box reads the engine's figure.
+  // Responses update the box through turn.step, independently of whether this row draws.
   on('ui.render', { component: 'Spinner' }, async ($, e, next) => {
-    stageMoved($, e.props.mode)
     if (e.surface !== 'terminal' || e.props.message !== null) return next(e)
     await $.state.get(VIEW)
     return next({ ...e, props: { ...e.props, word: view.verb } })
@@ -972,12 +1134,23 @@ export const register: Register = on => {
   on('ui.press', async ($, e, next) => {
     if (e.plugin !== 'claudesama') return next(e)
     const [, scope, what, value] = e.element.split(':')
-    if (scope === 'set' && what === 'voice' && (value === 'off' || value === 'light' || value === 'full')) await choose($, { voice: value })
+    if (scope === 'band' && what === 'poke' && e.surface === 'desktop' && e.link?.href === 'file:///claudesama-poke') {
+      await poke($)
+      return { element: e.element }
+    }
+    else if (scope === 'set' && what === 'workSize' && (value === 'same' || value === 'smaller')) await choose($, { workSize: value })
+    else if (scope === 'band' && what === 'wake') await choose($, { band: lastBand })
+    else if (scope === 'set' && what === 'voice' && (value === 'off' || value === 'light' || value === 'full')) await choose($, { voice: value })
     else if (scope === 'set' && what === 'affection' && (value === 'warm' || value === 'clingy')) await choose($, { affection: value })
     else if (scope === 'set' && what === 'band' && (value === 'on' || value === 'compact' || value === 'off')) await choose($, { band: value })
     else if (scope === 'set' && what === 'lang' && value) await chooseLang($, value)
     else if (scope === 'omen' && what === 'draw') await drawOmen($)
-    else return next(e)
+    else {
+      const pressed = await next(e)
+      if (companionLive) void background($, 'companion.refresh', companionHere($).then(() => pushCompanion($)))
+      return pressed
+    }
+    if (companionLive) void background($, 'companion.refresh', companionHere($).then(() => pushCompanion($)))
     return { element: e.element }
   })
 

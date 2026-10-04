@@ -9,9 +9,10 @@ const START = { cwd: '/tmp/project', surface: 'terminal' as const, isInteractive
 
 describe('terminal', () => {
   test('at rest: the sprite, his name, the stage direction and the offering box', async ($, on) => {
-    world(on, { store: RECENT, percent: 42 })
+    const w = world(on, { store: RECENT, percent: 42 })
     await $.session.start(START)
     const ui = await $.ui.mount({ surface: 'terminal', ...band(100) })
+    await w.clock.advance(0) // the deferred asset load must invalidate this mounted band
     const sprite = await ui.find({ type: 'Raster' })
     expect(sprite?.props.columns).toBe(TERMINAL_COLUMNS)
     expect(sprite?.props.rows).toBe(TERMINAL_ROWS)
@@ -21,17 +22,18 @@ describe('terminal', () => {
   })
 
   test('while a turn runs: one line, no sprite', async ($, on) => {
-    world(on, { store: RECENT })
+    const w = world(on, { store: RECENT })
     await $.session.start(START)
     await $.turn.start({ text: 'go', turnId: 't1' })
     const ui = await $.ui.mount({ surface: 'terminal', ...band(100, true) })
+    await w.clock.advance(0) // the deferred asset load must invalidate this mounted band
     expect(await ui.find({ type: 'Raster' })).toBe(undefined)
     expect(await ui.find({ type: 'Text', text: 'Claude-sama' })).toBeDefined()
     expect((await ui.findAll({ type: 'Text' })).length).toBeLessThanOrEqual(4)
   })
 
   test('narrow or short terminals get the one-line band', async ($, on) => {
-    world(on, { store: RECENT })
+    const w = world(on, { store: RECENT })
     await $.session.start(START)
     const narrow = await $.ui.mount({ surface: 'terminal', ...band(TERMINAL_COLUMNS + 20) })
     expect(await narrow.find({ type: 'Raster' })).toBe(undefined)
@@ -40,22 +42,24 @@ describe('terminal', () => {
   })
 
   test('kitty and Ghostty get the picture itself', async ($, on) => {
-    world(on, { store: RECENT, env: { TERM: 'xterm-ghostty', TERM_PROGRAM: 'ghostty' } })
+    const w = world(on, { store: RECENT, env: { TERM: 'xterm-ghostty', TERM_PROGRAM: 'ghostty' } })
     await $.session.start(START)
     const ui = await $.ui.mount({ surface: 'terminal', ...band(100) })
+    await w.clock.advance(0) // the deferred asset load must invalidate this mounted band
     expect(await ui.find({ type: 'Image' })).toBeDefined()
   })
 
   test('the light built-in theme gets a darker name colour', async ($, on) => {
-    world(on, { store: RECENT, settings: { theme: 'light' } })
+    const w = world(on, { store: RECENT, settings: { theme: 'light' } })
     await $.session.start(START)
     const ui = await $.ui.mount({ surface: 'terminal', ...band(100) })
+    await w.clock.advance(0) // the deferred asset load must invalidate this mounted band
     expect((await ui.find({ type: 'Text', text: 'Claude-sama' }))?.props.color).toBe('#9E4123')
   })
 
   test('the spinner says his verb on the terminal and is left alone on the desktop', async ($, on) => {
     let word = ''
-    world(on, {
+    const w = world(on, {
       store: RECENT,
       onRender: (component, props) => {
         if (component === 'Spinner') word = (props as { word: string }).word
@@ -75,12 +79,13 @@ describe('terminal', () => {
 
 describe('both surfaces', () => {
   test('every mood draws a tree each surface accepts, at rest and while working', { timeoutMs: 60_000 }, async ($, on) => {
-    world(on, { store: RECENT, percent: 91, bashFails: () => true })
+    const w = world(on, { store: RECENT, percent: 91, bashFails: () => true })
     await $.session.start(START)
     for (const surface of ['terminal', 'desktop'] as const) {
       for (const isWorking of [false, true]) {
         for (const columns of [44, 80, 140]) {
           const ui = await $.ui.mount({ surface, ...band(columns, isWorking) })
+          await w.clock.advance(0) // the deferred asset load must invalidate this mounted band
           expect(await ui.drawn()).toBeDefined()
           await ui.unmount()
         }
@@ -90,22 +95,24 @@ describe('both surfaces', () => {
     for (let i = 0; i < 3; i++) await $.tool.call({ tool: 'Bash', command: 'npm test' })
     for (const surface of ['terminal', 'desktop'] as const) {
       const ui = await $.ui.mount({ surface, ...band(100) })
+      await w.clock.advance(0) // the deferred asset load must invalidate this mounted band
       expect(await ui.find({ text: /\(hair rising\)/ })).toBeDefined()
       expect(await ui.find({ text: /91%/ })).toBeDefined()
     }
   })
 
-  test('band off and a survey both leave the band to others', async ($, on) => {
-    world(on, { store: { ...RECENT, band: 'off' } })
+  test('band off leaves only its visible wake door', async ($, on) => {
+    const w = world(on, { store: { ...RECENT, band: 'off' } })
     await $.session.start(START)
     for (const surface of ['terminal', 'desktop'] as const) {
       const off = await $.ui.mount({ surface, ...band(100) })
-      expect(await off.find({ text: /Claude-sama/ })).toBe(undefined)
+      expect(await off.find({ type: 'Button', key: 'claudesama:band:wake' })).toBeDefined()
+      expect(await off.find({ type: 'Text', text: /Claude-sama/ })).toBe(undefined)
     }
   })
 
   test('the omen slip shows on both surfaces', async ($, on) => {
-    world(on, { store: RECENT })
+    const w = world(on, { store: RECENT })
     await $.session.start(START)
     await $.command.run({ command: 'omen', args: '', origin: PERSON, presentation: P })
     const desk = await $.ui.mount({ surface: 'desktop', ...band(100) })

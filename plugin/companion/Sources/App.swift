@@ -30,7 +30,7 @@ final class OneShot {
     }
 
     func fire(after seconds: Double) {
-        timer.schedule(deadline: .now() + max(0, seconds), leeway: .milliseconds(20))
+        timer.schedule(deadline: .now() + max(0, seconds), leeway: .nanoseconds(0))
     }
 
     func cancel() {
@@ -170,7 +170,19 @@ final class Store {
             break
         }
         guard let data = try? JSONSerialization.data(withJSONObject: object, options: [.prettyPrinted, .sortedKeys]) else { return }
-        try? data.write(to: url, options: .atomic)
+        guard (try? data.write(to: url, options: .atomic)) != nil else { return }
+        // Broadcast only safe settings metadata to live mod channels. Opening an existing file
+        // cannot recreate an uninstalled folder, and O_APPEND keeps the complete line together.
+        let keys = ["running", "accessibility", "hiddenUntil", "answered", "size", "sizeAt", "loginAt", "followAt", "login", "version"]
+        let info = object.filter { keys.contains($0.key) }
+        let event: [String: Any] = ["v": 1, "kind": "companion-state", "at": Date().timeIntervalSince1970 * 1000, "info": info]
+        guard var line = try? JSONSerialization.data(withJSONObject: event, options: [.sortedKeys]), line.count < 2048 else { return }
+        line.append(10)
+        let channel = url.deletingLastPathComponent().appendingPathComponent("requests.jsonl")
+        let fd = open(channel.path, O_WRONLY | O_APPEND | O_NOFOLLOW)
+        guard fd >= 0 else { return }
+        defer { close(fd) }
+        _ = line.withUnsafeBytes { Darwin.write(fd, $0.baseAddress!, $0.count) }
     }
 }
 
@@ -218,6 +230,7 @@ final class Companion: NSObject, NSApplicationDelegate {
         do { channel = try RequestChannel(folder: options.folder) }
         catch { trace.say("requests: cannot prepare the channel: \(error.localizedDescription)") }
         scheduleRequestExpiry()
+        _ = Store.build // preload the one optional resource read before any native drawing
         store = Store(url: options.folder.appendingPathComponent("companion.json"))
         store.running = true
         answeredSummon = store.answered
@@ -246,12 +259,12 @@ final class Companion: NSObject, NSApplicationDelegate {
             activity?.update(rows: feed.rows, sessions: feed.liveSessions)
         }
         feed.received = { [unowned self] record in
+            activity?.receive(record)
             if let ack = record.ack {
                 do { try channel?.acknowledge(ack) }
                 catch { trace.say("requests: cannot remove acknowledged text: \(error.localizedDescription)") }
             }
             scheduleRequestExpiry()
-            activity?.receive(record)
         }
         for name in [NSWorkspace.didActivateApplicationNotification, NSWorkspace.didDeactivateApplicationNotification] {
             NSWorkspace.shared.notificationCenter.addObserver(self, selector: #selector(frontmostMoved), name: name, object: nil)
@@ -260,8 +273,8 @@ final class Companion: NSObject, NSApplicationDelegate {
         claude.quit = { [unowned self] in feed.forget() }
         claude.trustMoved = { [unowned self] in
             store.trusted = claude.trusted
-            store.save()
             pet.trustChanged()
+            store.save()
         }
 
         feed.start()
@@ -335,7 +348,9 @@ final class Companion: NSObject, NSApplicationDelegate {
             scheduleRequestExpiry()
         } catch {
             Trace(on: options.trace).say("requests: cannot remove expired text: \(error.localizedDescription)")
-            requestExpiry.fire(after: 1)
+            // A failed filesystem operation is retried by the next feed/request event,
+            // rather than waking an idle process every second.
+            requestExpiry.cancel()
         }
     }
 
@@ -343,8 +358,8 @@ final class Companion: NSObject, NSApplicationDelegate {
         guard !claude.trusted else { return }
         answeredFollow = max(answeredFollow, at)
         store.followAt = max(store.followAt, at)
-        store.save()
         pet.showFollowCard(waiting: true, asked: true)
+        store.save()
         claude.requestFollow()
     }
 

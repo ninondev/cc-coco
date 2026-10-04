@@ -1,7 +1,7 @@
 // The offering box keeps up with the engine within a beat, and costs nothing while nothing moves.
 
 import { describe, expect, test } from 'claude-code/testing'
-import { RECENT, SUMMARY, band, world } from './world'
+import { RECENT, SUMMARY, band, desktopPicture, world } from './world'
 
 const START = { cwd: '/tmp/project', surface: 'terminal' as const, isInteractive: true }
 const SPINNER = { word: 'Working', message: null, suffix: '…' }
@@ -62,19 +62,15 @@ describe('the offering box keeps up', () => {
     expect(w.view().context).toBe(null)
   })
 
-  test('each spinner stage reads it within 250 ms, on either surface', async ($, on) => {
+  test('each response reads it immediately on either surface, without a spinner or a timer', async ($, on) => {
     const w = world(on, { percent: 20, store: RECENT })
     await $.session.start(START)
     await $.turn.start({ text: 'go', turnId: 't1' })
-    const row = await $.ui.mount({ surface: 'desktop', ...spinner('requesting') })
-    w.percent = 31
-    await row.redraw({ ...SPINNER, mode: 'thinking' })
-    await w.clock.advance(260)
-    expect(w.view().context).toBe(31)
-    w.percent = 33
-    await row.redraw({ ...SPINNER, mode: 'tool-input' })
-    await w.clock.advance(260)
-    expect(w.view().context).toBe(33)
+    for (const [index, percent] of [31, 33].entries()) {
+      w.percent = percent
+      for await (const chunk of $.turn.step({ turnId: 't1', index, model: 'claude', messageCount: 1 })) {}
+      expect(w.view().context).toBe(percent)
+    }
   })
 
   test('the engine’s own measurement after a turn is taken as pushed', async ($, on) => {
@@ -96,12 +92,12 @@ describe('the offering box keeps up', () => {
     expect(w.view().estimate).toBe(true)
   })
 
-  test('while a turn runs a new figure shows within a second, with no tool call and no stage', async ($, on) => {
+  test('a running response changes the figure without a clock advance, tool call or stage', async ($, on) => {
     const w = world(on, { percent: 20, store: RECENT })
     await $.session.start(START)
     await $.turn.start({ text: 'think hard', turnId: 't1' })
     w.percent = 27 // a response landed during a long think
-    await w.clock.advance(1000)
+    for await (const chunk of $.turn.step({ turnId: 't1', index: 0, model: 'claude', messageCount: 1 })) {}
     expect(w.view().context).toBe(27)
     await $.turn.complete({ answer: 'Done.', durationMs: 9000, isAborted: false, turnId: 't1', reason: 'answer' })
     const after = w.reads
@@ -140,10 +136,9 @@ describe('the band keeps up with everything else', () => {
     const w = world(on, { store: RECENT })
     await $.session.start(START)
     const drawn = await $.ui.mount({ surface: 'desktop', ...band(90, true) })
-    await w.clock.advance(10)
-    expect(w.view().mood).toBe('think')
+    expect(String((await desktopPicture(drawn))?.props.source)).toContain('data:image/png;base64,')
+    expect(await drawn.find({ type: 'Text', text: /rereading a line/ })).toBeDefined()
     await drawn.redraw(band(90, false).props)
-    await w.clock.advance(1000)
-    expect(w.view().mood).toBe('idle')
+    expect(await drawn.find({ type: 'Text', text: /training/ })).toBeDefined()
   })
 })

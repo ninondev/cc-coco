@@ -189,11 +189,7 @@ describe('his book', () => {
     w.limits = [{ kind: 'five_hour', percentUsed: 31, resetsAt: '2026-10-02T16:00:00Z' }]
     w.percent = 61
     await $.turn.start({ text: 'go', turnId: 't1' })
-    const rev = (w.cell('book')?.value as { rev: number }).rev
     await $.tool.call({ tool: 'Read', file_path: '/tmp/a' }) // the box reads the engine's figures here
-    await w.clock.advance(1)
-    expect((w.cell('book')?.value as { rev: number }).rev).toBeGreaterThan(rev) // the open book redrew
-    await ui.redraw()
     expect(await ui.find({ type: 'Text', text: /31% used/ })).toBeDefined()
     expect(await ui.find({ type: 'Text', text: /61% full/ })).toBeDefined()
   })

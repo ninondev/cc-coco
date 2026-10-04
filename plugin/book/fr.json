@@ -153,6 +153,11 @@
       "painted": "Peint",
       "pixel": "Pixels"
     },
+    "workSize": {
+      "label": "Quand Claude travaille",
+      "same": "Même taille",
+      "smaller": "Plus petit"
+    },
     "marks": {
       "label": "Marques dans la conversation",
       "on": "Les siennes et les tiennes",

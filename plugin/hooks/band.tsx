@@ -11,10 +11,12 @@
 // whole.
 
 import type { Elements, RenderElement } from 'claude-code'
-import { DESKTOP_COMPACT, DESKTOP_REST, TERMINAL_COLUMNS, TERMINAL_ROWS, desktopWidth, imageColumns, offeringSvg, slipSvg, spriteCells } from './pictures'
+import { DESKTOP_COMPACT, DESKTOP_REST, TERMINAL_COLUMNS, TERMINAL_ROWS, desktopWidth, bundledSvg, DOOR_COLUMNS, sleepingDoorCells, imageColumns, offeringSvg, slipSvg, spriteCells } from './pictures'
 import { fill } from './book-words'
 import { COLUMN_PX, cutToPx, gapBefore, minWrapPx, planPx } from './typeset'
 import { WORDS } from './words'
+import { companionPatLabel } from './companion'
+import { DOOR_WORDS } from './door-words'
 import type { ClaudesamaView as View } from '../types'
 
 const PAPER = '#FAEEE9' // the slip's cream; its ink below keeps 5.7:1 on it
@@ -51,7 +53,7 @@ function plain(aside: string): string {
 }
 
 // Whether the terminal band has room for the sprite: not while a turn runs, not when narrow,
-// short, or set to compact. The desktop always shows him, smaller while a turn runs.
+// short, or set to compact. The desktop keeps its resting size unless Smaller was chosen.
 export function terminalHasSprite(view: View, size: BandSize): boolean {
   const columns = view.pictures === 'kitty' ? imageColumns(TERMINAL_ROWS) : TERMINAL_COLUMNS
   return !(
@@ -64,7 +66,7 @@ export function terminalHasSprite(view: View, size: BandSize): boolean {
 }
 
 export function desktopHeight(view: View, size: BandSize): number {
-  return view.band === 'compact' || size.isWorking || size.maxRows < 4 ? DESKTOP_COMPACT : DESKTOP_REST
+  return view.band === 'compact' || (size.isWorking && view.workSize === 'smaller') || size.maxRows < 4 ? DESKTOP_COMPACT : DESKTOP_REST
 }
 
 // About how many rows a tree takes on the terminal: columns stack, rows take their tallest
@@ -94,13 +96,19 @@ export function rowsOf(node: unknown): number {
 
 // `png` is the frame's PNG for kitty and Ghostty, absent for half-block cells.
 export function terminalBand(ui: Elements['terminal'], view: View, size: BandSize, png?: string): RenderElement {
-  const { Box, Text, Raster, Image } = ui
+  const { Box, Text, Raster, Image, Button } = ui
   const words = WORDS[view.lang]
   const aside = words.aside[view.mood]
   const sprite = terminalHasSprite(view, size)
+  const bookWidth = 1 + cells(words.marks.shelf)
+  const book = (
+    <Box marginLeft={1} flexShrink={0}>
+      <Button key="claudesama:book:open" label={words.marks.shelf} plain dimColor onPress={() => {}} />
+    </Box>
+  )
   // Room left of the offering box: his name never shrinks, the stage direction may, and the
   // word "context" shows only where the whole line fits.
-  const room = size.columns - (sprite ? (png ? imageColumns(TERMINAL_ROWS) : TERMINAL_COLUMNS) + 2 + (view.slip?.label ? 6 : 0) : 0)
+  const room = size.columns - bookWidth - (sprite ? (png ? imageColumns(TERMINAL_ROWS) : TERMINAL_COLUMNS) + 2 + (view.slip?.label ? 6 : 0) : 0)
   const short = view.context === null ? '' : `▤ ${view.estimate ? '~' : ''}${view.context}%`
   const label = view.context !== null && room >= cells(words.name) + cells(gapBefore(aside)) + cells(aside) + 2 + cells(`${short} ${words.context}`) ? `${short} ${words.context}` : short
   const offering =
@@ -120,7 +128,7 @@ export function terminalBand(ui: Elements['terminal'], view: View, size: BandSiz
     const chip = view.slip?.label ? 1 + cells(view.slip.label) + 2 : 0
     // His line stays on his row when it fits there whole; otherwise it wraps under the row. A
     // stage direction may end in an ellipsis; a line he says is never cut.
-    const fits = said !== undefined && cells(words.name) + chip + cells(gapBefore(said)) + cells(said) + (view.context === null ? 0 : 2 + cells(label)) <= size.columns
+    const fits = said !== undefined && cells(words.name) + chip + cells(gapBefore(said)) + cells(said) + (view.context === null ? 0 : 2 + cells(label)) + bookWidth <= size.columns
     const row = (
       <Box flexDirection="row">
         <Box flexDirection="row" flexGrow={1} flexShrink={1}>
@@ -133,6 +141,7 @@ export function terminalBand(ui: Elements['terminal'], view: View, size: BandSiz
           ) : null}
         </Box>
         {offering}
+        {book}
       </Box>
     )
     if (said === undefined || fits) return row
@@ -171,6 +180,7 @@ export function terminalBand(ui: Elements['terminal'], view: View, size: BandSiz
             <Text color="inactive" wrap="truncate-end">{`${gapBefore(aside)}${aside}`}</Text>
           </Box>
           {offering}
+          {book}
         </Box>
         {line ? <Text wrap="wrap">{line}</Text> : null}
       </Box>
@@ -211,13 +221,17 @@ function offeringLabel(view: View, word: boolean): string {
   return ` ${view.estimate ? '~' : ''}${view.context}%${word ? ` ${WORDS[view.lang].context}` : ''}`
 }
 
-export function planDesktop(view: View, size: BandSize): DesktopPlan {
+export function planDesktop(view: View, size: BandSize, displaySpeech?: string): DesktopPlan {
   const words = WORDS[view.lang]
   const avail = size.columns * COLUMN_PX
   const row = desktopHeight(view, size) === DESKTOP_COMPACT
-  const said = view.slip?.text ?? view.said ?? undefined
+  const said = displaySpeech ?? view.slip?.text ?? view.said ?? undefined
   const saidMin = said ? minWrapPx(said) : 0
   const aside = words.aside[view.mood]
+  // Same size keeps the resting geometry even when a new mood has a longer direction.
+  // Fit the actual direction into the idle slot instead of moving his picture or controls.
+  const stable = view.band === 'on' && view.workSize !== 'smaller' && !(row && said)
+  const layoutAside = stable ? words.aside.idle : aside
   const nameW = planPx(words.name, true)
   const offering = (word: boolean) => (view.context === null ? 0 : BOX_PX + planPx(offeringLabel(view, word)))
   const button = (shelf: boolean) => BUTTON_CHROME + planPx(shelf ? words.marks.shelf : words.marks.book)
@@ -230,14 +244,15 @@ export function planDesktop(view: View, size: BandSize): DesktopPlan {
     ? said
       ? [place(true, 'beside'), place(false, 'beside'), place(false, 'below')]
       : [place(true, 'beside'), place(false, 'beside'), place(false, 'beside', true), place(false, 'none')]
-    : said
+    : said && !stable
       ? [place(true, 'beside'), place(false, 'beside'), place(false, 'beside', true), place(false, 'none')]
       : [place(true, 'beside'), place(false, 'beside'), place(false, 'below'), place(false, 'below', true), place(false, 'none')]
   const content = row && said ? said : aside
+  const layoutContent = row && said ? said : layoutAside
 
   for (const [f, frame] of frames.entries()) {
     const slip = !row && view.slip !== null && frame.height === DESKTOP_REST
-    const left = (frame.height ? desktopWidth(frame.height) + COLUMN_PX : 0) + (slip ? 24 + COLUMN_PX : 0)
+    const left = (frame.height ? desktopWidth(frame.height, view.band === 'compact') + COLUMN_PX : 0) + (slip ? 24 + COLUMN_PX : 0)
     for (const [p, at] of places.entries()) {
       // Without his name nothing stands beside it: only his line, under the row.
       if (!frame.name && at.aside !== 'none' && !(row && said && at.aside === 'below')) continue
@@ -254,12 +269,14 @@ export function planDesktop(view: View, size: BandSize): DesktopPlan {
       if (at.aside === 'below') {
         // In a row, his line wraps under it at full width; at rest the stage direction stands
         // under his name in the middle column, whole or cut.
-        text = row ? content : at.cut ? cutToPx(content, middle) : planPx(content) <= middle ? content : undefined
+        text = row ? layoutContent : at.cut ? cutToPx(layoutContent, middle) : planPx(layoutContent) <= middle ? layoutContent : undefined
         if (text === undefined) continue
+        if (stable) text = cutToPx(content, middle) ?? ''
       } else if (at.aside === 'beside') {
-        const room = middle - nameW - planPx(gapBefore(content))
-        text = at.cut ? cutToPx(content, room, false, row ? 4 : 3) : planPx(content) <= room ? content : undefined
+        const room = middle - nameW - planPx(gapBefore(layoutContent))
+        text = at.cut ? cutToPx(layoutContent, room, false, row ? 4 : 3) : planPx(layoutContent) <= room ? layoutContent : undefined
         if (text === undefined) continue
+        if (stable) text = cutToPx(content, middle - nameW - planPx(gapBefore(content)), false, row ? 4 : 3) ?? ''
       }
       return { height: frame.height, row, slip, word: at.word, aside: at.aside, text, label: frame.shelf ? words.marks.shelf : words.marks.book, name: frame.name ? words.name : undefined, frame: f, place: p }
     }
@@ -269,11 +286,24 @@ export function planDesktop(view: View, size: BandSize): DesktopPlan {
   return { height: 0, row: row || !!said, slip: false, word: false, aside: said ? 'below' : 'none', text: said, label: words.marks.shelf, name: undefined, frame: frames.length, place: 0 }
 }
 
+const pictureLinks = new Map<string, string>()
+function pictureLink(source: string, alt: string): string {
+  const key = `${alt}:${source}`
+  const cached = pictureLinks.get(key)
+  if (cached !== undefined) return cached
+  const escaped = alt.replace(/[\\[\]]/g, '\\$&')
+  const text = `[![${escaped}](data:image/svg+xml;base64,${btoa(source)})](file:///claudesama-poke)`
+  if (pictureLinks.size >= 64) pictureLinks.delete(pictureLinks.keys().next().value!)
+  pictureLinks.set(key, text)
+  return text
+}
+
 // `sprite` uses the final plan's height and matching painted or pixel frame.
-export function desktopBand(ui: Elements['desktop'], view: View, size: BandSize, sprite: string, plan = planDesktop(view, size)): RenderElement {
-  const { Box, Text, Svg, Button } = ui
+export function desktopBand(ui: Elements['desktop'], view: View, size: BandSize, sprite: string, plan?: DesktopPlan, displaySpeech?: string): RenderElement {
+  plan ??= planDesktop(view, size, displaySpeech)
+  const { Box, Text, Svg, Button, Markdown } = ui
   const words = WORDS[view.lang]
-  const said = view.slip?.text ?? view.said
+  const said = displaySpeech ?? view.slip?.text ?? view.said
   const offering =
     view.context === null ? null : (
       <Box flexDirection="row" alignItems="center" marginLeft={2} flexShrink={0}>
@@ -284,7 +314,7 @@ export function desktopBand(ui: Elements['desktop'], view: View, size: BandSize,
   const aside = words.aside[view.mood]
   const picture = plan.height ? (
     <Box flexShrink={0}>
-      <Svg alt={`${words.name}, ${plain(aside)}`} source={sprite} width={desktopWidth(plan.height)} height={plan.height} />
+      <Markdown key="claudesama:band:poke" text={pictureLink(sprite, `${words.name}, ${plain(aside)}, ${companionPatLabel(view.lang)}`)} pressableLinks={['file:///claudesama-poke']} onLinkPress={() => {}} />
     </Box>
   ) : null
   // His book (pages.tsx answers the press): the way to his pages without a command. At rest it
@@ -347,6 +377,30 @@ export function desktopBand(ui: Elements['desktop'], view: View, size: BandSize,
         {offering}
         {book}
       </Box>
+    </Box>
+  )
+}
+
+// Svg/Raster are API leaves without press callbacks. A plain Button beside the sleeping
+// picture gives both surfaces a pointer, keyboard and accessible route back.
+export function desktopDoor(ui: Elements['desktop'], view: View, onWake: () => void, pixel = false): RenderElement {
+  const { Box, Svg, Button } = ui
+  const words = DOOR_WORDS[view.lang]
+  return (
+    <Box flexDirection="row" justifyContent="flex-end" alignItems="center">
+      <Svg source={bundledSvg('sleep', DESKTOP_COMPACT, pixel)} alt={words.alt} width={desktopWidth(DESKTOP_COMPACT, pixel)} height={DESKTOP_COMPACT} />
+      <Box marginLeft={1}><Button key="claudesama:band:wake" label={words.wake} plain dimColor onPress={onWake} /></Box>
+    </Box>
+  )
+}
+
+export function terminalDoor(ui: Elements['terminal'], view: View, onWake: () => void): RenderElement {
+  const { Box, Raster, Button } = ui
+  const words = DOOR_WORDS[view.lang]
+  return (
+    <Box flexDirection="row" justifyContent="flex-end">
+      <Raster key="claudesama:door:sleep" columns={DOOR_COLUMNS} rows={1} cells={sleepingDoorCells(view.colors)} />
+      <Box marginLeft={1}><Button key="claudesama:band:wake" label={words.wake} plain dimColor onPress={onWake} /></Box>
     </Box>
   )
 }

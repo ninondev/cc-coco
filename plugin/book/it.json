@@ -153,6 +153,11 @@
       "painted": "Dipinto",
       "pixel": "Pixel"
     },
+    "workSize": {
+      "label": "Mentre Claude lavora",
+      "same": "Stessa dimensione",
+      "smaller": "Più piccolo"
+    },
     "marks": {
       "label": "Segni nella conversazione",
       "on": "I suoi e i tuoi",

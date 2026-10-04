@@ -31,6 +31,8 @@ export type ClaudesamaView = {
   estimate: boolean // the context figure is the engine's local estimate (after a compaction, at a fresh start)
   verb: string
   band: 'on' | 'compact' | 'off'
+  bandBeforeOff?: 'on' | 'compact'
+  workSize?: 'same' | 'smaller' // absent in an older session: keep the resting size
   voice: 'off' | 'light' | 'full'
   affection: 'warm' | 'clingy'
   lang: 'en' | 'fr' | 'de' | 'hi' | 'id' | 'it' | 'ja' | 'ko' | 'pt-BR' | 'es-419' | 'es-ES' | 'zh'

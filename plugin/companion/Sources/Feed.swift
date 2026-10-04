@@ -4,9 +4,9 @@ import Foundation
 // written by plugin/hooks/companion.ts from register.tsx's push().
 //
 // Watched with DispatchSource vnode sources, never polled: one on the folder (the file appears,
-// goes or is replaced) and one on the file (written in place). The mod writes in place and not
-// atomically, so a read can catch half a file; that read is dropped, and the next event, or one
-// retry 80 ms later, brings the whole file. An event costs one read of a file of about 400 bytes.
+// goes or is replaced) and one on the file (written in place). The mod atomically replaces its
+// feed. A partial legacy write retains the last valid record until the completing write event.
+// No retry timer sits between a file event and its first read/draw.
 //
 // Several sessions write the same file. The newest record of each session is kept; the one shown
 // is the newest among desktop sessions when there are any (he sits on the desktop app), preferring
@@ -88,6 +88,7 @@ struct Record: Equatable {
     var frame = "idle-reading"
     var loop: [String]?
     var every: Double?
+    var motion = MotionModel.standard
     var rest = true
     var said: String?
     var slip = false
@@ -143,6 +144,7 @@ struct Record: Equatable {
             self.loop = loop
             self.every = every
         }
+        if let model = MotionModel(object["motion"]) { motion = model }
         rest = object["rest"] as? Bool ?? (mood == "idle" || mood == "sleep")
         if let said = object["said"] as? String, !said.isEmpty { self.said = said }
         slip = object["slip"] as? Bool ?? false
@@ -397,7 +399,6 @@ final class Feed {
     private var folderSource: DispatchSourceFileSystemObject?
     private var fileSource: DispatchSourceFileSystemObject?
     private var lastData: Data?
-    private lazy var retry: OneShot = OneShot { [unowned self] in read() }
 
     init(file: URL, trace: Trace) {
         self.file = file
@@ -463,20 +464,22 @@ final class Feed {
         guard let data = try? Data(contentsOf: file), !data.isEmpty, data != lastData else { return }
         guard let object = (try? JSONSerialization.jsonObject(with: data)) as? [String: Any],
               object["session"] is String else {
-            readAgainSoon() // caught mid-write
+            // Keep the last complete record; the completing write/rename raises another event.
             return
         }
-        retry.cancel()
         lastData = data
         var summon: Double = 0
+        var accepted: Record?
         var requests = latestRequests
         if let record = Record(object), activity.receive(record, now: now) {
-            received(record)
+            accepted = record
             summon = record.summon
             requests.merge(record.requests)
             trace.say("feed: \(record.mood) \(record.frame) said=\(record.said ?? "-") lag=\(Int(Date().timeIntervalSince1970 * 1000 - record.at)) ms")
         }
+        // Show first: acknowledgement/file cleanup listeners cannot hold up this draw.
         choose()
+        if let accepted { received(accepted) }
         if requests != latestRequests {
             latestRequests = requests
             requested(requests)
@@ -485,10 +488,6 @@ final class Feed {
             latestSummon = summon
             summoned(summon)
         }
-    }
-
-    private func readAgainSoon() {
-        retry.fire(after: 0.08)
     }
 
     private func choose() {

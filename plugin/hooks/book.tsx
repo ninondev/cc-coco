@@ -248,9 +248,9 @@ export function pageBlocks(page: Page, w: BookWords, d: BookData, surface: 'desk
     ...(local ? { local } : {}),
   })
   const picked = LANGS.find(l => l.code === d.store.lang)?.code
-  // The store first: it is written before the view, so a redraw right after a press is current.
-  const now = (key: 'voice' | 'affection' | 'band', fallback: string) => String(d.store[key] ?? d.view?.[key] ?? fallback)
-  // The store first, as above; then the value the transcript holds.
+  // The applied view first: choices publish their reaction before waiting on persistence.
+  const now = (key: 'voice' | 'affection' | 'band', fallback: string) => String(d.view?.[key] ?? d.store[key] ?? fallback)
+  // Marks use their stored choice, then the value the transcript holds.
   const stored = d.store.marks
   const marks: Marks = stored === 'off' || stored === 'replies' || stored === 'on' ? stored : d.marks
   const reading = LANGS.find(l => l.code === d.view?.lang)?.native ?? 'English'
@@ -258,6 +258,9 @@ export function pageBlocks(page: Page, w: BookWords, d: BookData, surface: 'desk
     choice(s.voice.label, 'voice', now('voice', 'light'), { off: s.voice.off, light: s.voice.light, full: s.voice.full }, s.voice.help),
     choice(s.affection.label, 'affection', now('affection', 'warm'), { warm: s.affection.warm, clingy: s.affection.clingy }),
     choice(s.band.label, 'band', now('band', 'on'), { on: surface === 'desktop' ? s.band.painted : s.band.on, compact: surface === 'desktop' ? s.band.pixel : s.band.compact, off: s.band.off }),
+    ...(surface === 'desktop' && (d.view?.band ?? d.store.band ?? 'on') === 'on'
+      ? [choice(s.workSize.label, 'workSize', String(d.view?.workSize ?? d.store.workSize ?? 'same'), { same: s.workSize.same, smaller: s.workSize.smaller })]
+      : []),
     ...(surface === 'desktop' ? [choice(s.marks.label, 'marks', marks, { on: s.marks.on, replies: s.marks.replies, off: s.marks.off }, s.marks.help, true)] : []),
     // Each language by its own name, so anyone finds theirs whatever the page is in.
     choice(

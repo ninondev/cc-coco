@@ -1,8 +1,10 @@
+import { drainFeed } from './feed-drain'
 import { samePath } from './file-paths'
 // The activity feed is exercised through the mod's actual session/tool hooks.
 import { describe, expect, test } from 'claude-code/testing'
 import type { On } from 'claude-code'
 import { MORNING, RECENT, band, world } from './world'
+import { atomicFeed, PROCESS_OK } from './shared-world'
 
 const START = { cwd: '/tmp/project', surface: 'terminal' as const, isInteractive: true }
 const HOME = '/tmp/activity-test'
@@ -19,6 +21,11 @@ function feed(on: On, root = '/tmp/project') {
   on('session.surfaces', () => ({ value: ['desktop'] }))
   on('fs.exists', ($, e) => ({ value: samePath(e.path, '/System/Library/CoreServices/SystemVersion.plist') || samePath(e.path, '/usr/bin/tail') || samePath(e.path, FOLDER) || samePath(e.path, `${FOLDER}/requests.jsonl`) }))
   on('fs.write', ($, e) => { if (samePath(e.path, FEED)) records.push(JSON.parse(e.text)); return { value: undefined } })
+  on('process.run', ($, e) => {
+    const feed = atomicFeed(e.argv, e.init?.stdin)
+    if (feed && samePath(feed.path, FEED)) records.push(JSON.parse(feed.text))
+    return { value: PROCESS_OK }
+  })
   on('process.spawn', async function* () { throw new Error('stream unavailable in activity fixture') })
   return { records, latest: () => records[records.length - 1]!, roots: () => roots }
 }
@@ -31,7 +38,9 @@ function ended(answer: string) { return { answer, durationMs: 1000, isAborted: f
     world(on, { store: RECENT, env: { HOME, LANG: 'en_US.UTF-8' }, onTool: () => starts.push(current.latest().task ?? '') })
     current = feed(on)
     await $.session.start(START)
+    await drainFeed($)
     await $.turn.start({ text: 'go', turnId: 't1' })
+    await drainFeed($)
     expect(current.latest().task).toBe('thinking')
     const cases = [
       [{ tool: 'Read', file_path: '/private/path/source.ts' }, 'reading source.ts'],
@@ -51,11 +60,14 @@ function ended(answer: string) { return { answer, durationMs: 1000, isAborted: f
       [{ tool: 'mcp__private_server__inspect_widget', private: 'do not show' }, 'using inspect_widget'],
     ] as const
     for (const [input, expected] of cases) {
+      const firstRecord = current.records.length
       await $.tool.call(input as never)
-      expect(starts[starts.length - 1]).toBe(expected)
+      await drainFeed($)
+      expect(current.records.slice(firstRecord).some(record => record.task === expected)).toBe(true)
       expect(current.latest().task).toBe('thinking')
     }
     await $.turn.complete(ended('Done.'))
+    await drainFeed($)
     expect(current.latest().task).toBe(null)
     expect(current.latest().done).toBe(MORNING)
   })
@@ -66,10 +78,13 @@ function ended(answer: string) { return { answer, durationMs: 1000, isAborted: f
     world(on, { store: RECENT, env: { HOME, LANG: 'zh_CN.UTF-8' }, onTool: () => { during = current.latest().task ?? '' } })
     current = feed(on)
     await $.session.start(START)
+    await drainFeed($)
     await $.turn.start({ text: 'go', turnId: 't1' })
+    await drainFeed($)
     expect(current.latest().task).toBe('在想')
     await $.tool.call({ tool: 'Read', file_path: '/tmp/README.md' })
-    expect(during).toBe('在读README.md')
+    await drainFeed($)
+    expect(current.records.some(record => record.task === '在读README.md')).toBe(true)
   })
 
   test('permission and question waits retain their starting timestamp until resolved', async ($, on) => {
@@ -79,17 +94,23 @@ function ended(answer: string) { return { answer, durationMs: 1000, isAborted: f
     current = feed(on)
     // A call-bound permission check carries tool_use_id; a standalone query does not.
     await $.session.start(START)
+    await drainFeed($)
     await $.turn.start({ text: 'go', turnId: 't1' })
+    await drainFeed($)
     await $.tool.check({ tool: 'Bash', input: { command: 'echo ok' }, tool_use_id: 'main-call' } as never)
+    await drainFeed($)
     expect(current.latest().task).toBe('waiting for your OK')
     expect(current.latest().waitAt).toBe(MORNING)
     await w.clock.advance(500)
     await $.tool.call({ tool: 'AskUserQuestion', questions: [] })
-    expect(question?.task).toBe('waiting for your answer')
-    expect(question?.waitAt).toBe(MORNING + 500)
+    await drainFeed($)
+    const questionRecord = current.records.find(record => record.task === 'waiting for your answer')
+    expect(questionRecord?.task).toBe('waiting for your answer')
+    expect(questionRecord?.waitAt).toBe(MORNING + 500)
     expect(current.latest().task).toBe('thinking')
     expect(current.latest().waitAt).toBe(null)
     await $.turn.complete(ended('Done.'))
+    await drainFeed($)
     expect(current.latest().task).toBe(null)
   })
 
@@ -97,6 +118,7 @@ function ended(answer: string) { return { answer, durationMs: 1000, isAborted: f
     const w = world(on, { store: RECENT, env: { HOME, LANG: 'en_US.UTF-8' } })
     const current = feed(on, '/tmp/abcdefghijklmnopqrstuvwxyz0123456789')
     await $.session.start(START)
+    await drainFeed($)
     const project = current.latest().project
     expect(Array.from(project).length).toBe(24)
     expect(project.startsWith('abc')).toBe(true)
@@ -107,10 +129,13 @@ function ended(answer: string) { return { answer, durationMs: 1000, isAborted: f
     await w.clock.advance(20_000)
     expect(current.records.length).toBe(before)
     await $.turn.start({ text: 'go', turnId: 't1' })
+    await drainFeed($)
     const running = current.records.length
     await $.session.measure({ changed: ['context'], context: { window: 200000, tokens: 40000, percent: 20 } } as never)
+    await drainFeed($)
     expect(current.records.length).toBe(running)
     await $.tool.call({ tool: 'Read', file_path: '/tmp/a.ts' })
+    await drainFeed($)
     expect(current.roots()).toBe(1)
   })
 
@@ -118,18 +143,26 @@ function ended(answer: string) { return { answer, durationMs: 1000, isAborted: f
     world(on, { store: RECENT, env: { HOME, LANG: 'en_US.UTF-8' } })
     const current = feed(on)
     await $.session.start(START)
+    await drainFeed($)
     await $.turn.start({ text: 'go', turnId: 't1' })
+    await drainFeed($)
     await $.turn.complete(ended('# A heading!\n- **Bold**, _plain_, `code`.\n[Keep this](https://example.invalid/private)\n```ts\nconst x = 1;\n```'))
+    await drainFeed($)
     expect(current.latest().reply?.text).toBe('A heading! Bold, plain, code. Keep this const x = 1;')
     expect(current.latest().reply?.at).toBe(MORNING)
     await $.turn.start({ text: 'go', turnId: 't1' })
+    await drainFeed($)
     await $.turn.complete(ended('😀'.repeat(150)))
+    await drainFeed($)
     expect(Array.from(current.latest().reply?.text ?? '').length).toBe(140)
     expect(current.latest().reply?.text).toBe('😀'.repeat(140))
     await $.command.run({ command: 'clear', args: '' })
+    await drainFeed($)
     expect(current.latest().reply).toBe(null)
     await $.turn.start({ text: 'go', turnId: 't1' })
+    await drainFeed($)
     await $.turn.complete(ended('A final reply.'))
+    await drainFeed($)
     await $.session.end({ reason: 'prompt_input_exit' } as never)
     expect(current.latest().reply).toBe(null)
     expect(current.latest().task).toBe(null)
@@ -139,9 +172,12 @@ function ended(answer: string) { return { answer, durationMs: 1000, isAborted: f
     world(on, { store: RECENT, env: { HOME, LANG: 'en_US.UTF-8' } })
     const current = feed(on)
     await $.session.start(START)
+    await drainFeed($)
     await $.turn.start({ text: 'main task', turnId: 'main' })
+    await drainFeed($)
     const before = current.records.length
     await $.turn.complete({ ...ended('Helper only.'), turnId: 'worker-turn', agentId: 'worker' })
+    await drainFeed($)
     expect(current.latest().task).toBe('thinking')
     expect(current.latest().reply).toBe(null)
     expect(current.latest().done).toBe(null)
@@ -152,8 +188,11 @@ function ended(answer: string) { return { answer, durationMs: 1000, isAborted: f
     world(on, { store: RECENT, env: { HOME, LANG: 'en_US.UTF-8' } })
     const current = feed(on)
     await $.session.start(START)
+    await drainFeed($)
     await $.turn.start({ text: 'go', turnId: 't1' })
+    await drainFeed($)
     await $.turn.complete(ended(`## 标题\n**做完了**,保留!\n_日本語_、保留。\nC# and issue #42.\n[链接](https://example.invalid/path_(nested))。`))
+    await drainFeed($)
     expect(current.latest().reply?.text).toBe('标题 做完了,保留! 日本語、保留。 C# and issue #42. 链接。')
   })
 
@@ -161,6 +200,7 @@ function ended(answer: string) { return { answer, durationMs: 1000, isAborted: f
     world(on, { store: RECENT, env: { HOME, LANG: 'en_US.UTF-8' } })
     const current = feed(on)
     await $.session.start(START)
+    await drainFeed($)
     const cases = [
       ['`[x](y)`', '[x](y)'],
       ['``a ` b``', 'a ` b'],
@@ -168,7 +208,9 @@ function ended(answer: string) { return { answer, durationMs: 1000, isAborted: f
     ]
     for (const [answer, expected] of cases) {
       await $.turn.start({ text: 'go', turnId: 't1' })
+    await drainFeed($)
       await $.turn.complete(ended(answer!))
+    await drainFeed($)
       expect(current.latest().reply?.text).toBe(expected)
     }
   })
@@ -178,7 +220,9 @@ function ended(answer: string) { return { answer, durationMs: 1000, isAborted: f
     const current = feed(on)
     on('classic.Notification', () => ({}))
     await $.session.start(START)
+    await drainFeed($)
     await $.classic.Notification({ message: '🔔'.repeat(150), title: 'Do not use the title', notification_type: 'permission_prompt' })
+    await drainFeed($)
     expect(current.latest().notice).toEqual({ kind: 'permission_prompt', text: '🔔'.repeat(140), at: MORNING })
     await $.session.end({ reason: 'prompt_input_exit' } as never)
     expect(current.latest().notice).toBe(null)

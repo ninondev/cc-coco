@@ -60,7 +60,8 @@ function natural(node: unknown): number {
   const n = node as Node
   const p = n.props ?? {}
   if (n.type === 'Raster' || n.type === 'Image') return Number(p.columns ?? 0)
-  if (n.type === 'Button') return cells(String(p.label)) + 4
+  // API plain terminal buttons draw just their label (no bracket/chrome cells).
+  if (n.type === 'Button') return cells(String(p.label)) + (p.plain ? 0 : 4)
   const kids = (n.children ?? []).map(natural)
   if (n.type === 'Text') return kids.reduce((a, b) => a + b, 0)
   const row = !String(p.flexDirection ?? 'row').startsWith('column')
@@ -73,7 +74,8 @@ function narrowest(node: unknown): number {
   const p = n.props ?? {}
   if (p.flexShrink === 0) return natural(node)
   if (n.type === 'Raster' || n.type === 'Image') return Number(p.columns ?? 0)
-  if (n.type === 'Button') return cells(String(p.label)) + 4
+  // API plain terminal buttons draw just their label (no bracket/chrome cells).
+  if (n.type === 'Button') return cells(String(p.label)) + (p.plain ? 0 : 4)
   if (n.type === 'Text') return String(p.wrap ?? '').startsWith('truncate') ? 0 : Math.max(0, ...(n.children ?? []).map(narrowest))
   const kids = (n.children ?? []).map(narrowest)
   // a row that wraps is as narrow as its widest child
@@ -135,7 +137,7 @@ function spokenRoom(v: ClaudesamaView, columns: number, working: boolean, runPx?
   const fullWidth = columns * COLUMN_PX
   // Match the drawn frame's physical boxes, not a production text-fitting helper: sprite
   // plus its margin, optional 24px slip plus its margin, 20px box and 28px button chrome.
-  const left = (plan.height ? desktopWidth(plan.height) + COLUMN_PX : 0) + (plan.slip ? 24 + COLUMN_PX : 0)
+  const left = (plan.height ? desktopWidth(plan.height, v.band === 'compact') + COLUMN_PX : 0) + (plan.slip ? 24 + COLUMN_PX : 0)
   const offering = v.context === null ? 0 : 20 + planPx(` ${v.estimate ? '~' : ''}${v.context}%${plan.word ? ` ${WORDS[v.lang].context}` : ''}`)
   const button = 28 + planPx(plan.label)
   const right = plan.row
@@ -286,8 +288,10 @@ describe('the desktop band at every width', () => {
   const STATES: [string, Partial<ClaudesamaView>, boolean][] = [
     ['reading', {}, false],
     ['saying', { said: 'the offering box is almost full. time to sweep it out soon.', mood: 'happy' }, false],
-    ['working', { mood: 'work' }, true],
-    ['working and saying', { mood: 'work', said: 'still at it. the parser has more corners than it looks.' }, true],
+    ['working same size', { mood: 'work', workSize: 'same' }, true],
+    ['working smaller', { mood: 'work', workSize: 'smaller' }, true],
+    ['working same size and saying', { mood: 'work', workSize: 'same', said: 'still at it. the parser has more corners than it looks.' }, true],
+    ['working smaller and saying', { mood: 'work', workSize: 'smaller', said: 'still at it. the parser has more corners than it looks.' }, true],
     ['omen', { slip: { rank: 'kichi', label: '', text: 'blessing. the docs and the code agree today. lucky number: 304.' }, mood: 'omen' }, false],
   ]
   test('as the band narrows, things are given up in one order and never come back; his lines are never cut', { timeoutMs: 60_000 }, () => {
@@ -304,7 +308,7 @@ describe('the desktop band at every width', () => {
           place = plan.place
           expect(plan.label === WORDS[lang].marks.book || plan.label === WORDS[lang].marks.shelf).toBe(true)
           const said = change.slip?.text ?? change.said
-          if (working && said && plan.text !== undefined) expect(plan.text).toBe(said) // a line in a row is whole
+          if (plan.row && said && plan.text !== undefined) expect(plan.text).toBe(said) // a line in a row is whole
         }
       }
     }

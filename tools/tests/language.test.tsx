@@ -60,7 +60,7 @@ describe('every language is complete', () => {
     }
   })
 
-  test('every language has every line key, none empty', { timeoutMs: 60_000 }, () => {
+  test('every language has every line key and every category has speech', { timeoutMs: 60_000 }, () => {
     const want = keys(LINES.en)
     expect(want.every(k => k.endsWith(':some'))).toBe(true)
     for (const lang of CODES) expect(keys(OWN[lang])).toEqual(want)
@@ -134,8 +134,10 @@ describe('his culture, his manners', () => {
     }
   })
 
-  test('French keeps its no-break space before ? ! : ; and inside « »', { timeoutMs: 60_000 }, () => {
+  test('French keeps its no-break spaces except the exact owner-approved poke question', { timeoutMs: 60_000 }, () => {
+    expect(LINES.fr.poke[0]).toBe('*sursaute* hm ?')
     for (const line of [...strings(OWN.fr), ...strings(FORTUNES.fr), ...strings(WORDS.fr)]) {
+      if (line === '*sursaute* hm ?') continue
       expect(/[^  ][?!:;»]|«[^  ]/.test(line.replace(/https?:\S+|\/\S+/g, ''))).toBe(false)
     }
   })

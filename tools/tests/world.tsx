@@ -4,7 +4,7 @@
 // with their own result. Not shipped: tools/run-tests.py copies these next to a copy of plugin/.
 
 import { mock } from 'claude-code/testing'
-import type { On } from 'claude-code'
+import type { On, TurnUsage } from 'claude-code'
 import type { ClaudesamaView } from '../types'
 import { BOOK_FILES } from './book-files'
 import { WINDOWS_ROOTS } from './test-system'
@@ -21,12 +21,14 @@ export type World = {
   store?: Record<string, unknown>
   env?: Record<string, string>
   percent?: number | null // null: the engine has no figure (a fresh session, just compacted)
+  stepUsage?: TurnUsage | null // a landed response before the engine's session snapshot catches up
   estimate?: number // what the engine's local breakdown counts, in tokens
   bashFails?: () => boolean
   ask?: boolean
   onTool?: (tool: string) => void
   hold?: (tool: string) => Promise<void> | undefined
   onRender?: (component: string, props: unknown) => void
+  onOpen?: (id: string) => void // measurement of the engine pane-open request
   theirsRows?: number // rows another mod draws in the band under ours
   limits?: { kind: string; percentUsed: number; resetsAt?: string }[] // the account's rate-limit windows
   cost?: number // the session's cost in US dollars, as /cost totals it
@@ -60,6 +62,22 @@ export function band(columns: number, isWorking = false, maxRows = 30) {
     props: { hasSurvey: false, isWorking, maxRows, bodyColumns: columns, scroll: { offset: 0, bodyRows: maxRows }, view: {} },
     viewport: { columns, rows: 48 },
   }
+}
+
+// Normalize the linked native desktop picture so legacy geometry/source assertions keep
+// checking the actual image bytes, including the ordinary Svg used by the Off door.
+export async function desktopPicture(ui: { find: (match: { type: string; key?: string }) => Promise<any> }): Promise<{ props: Record<string, unknown> } | undefined> {
+  const linked = await ui.find({ type: 'Markdown', key: 'claudesama:band:poke' })
+  if (linked) {
+    const text = String(linked.props.text)
+    const match = /^\[!\[([\s\S]*?)\]\(data:image\/svg\+xml;base64,([A-Za-z0-9+/=]+)\)\]\(file:\/\/\/claudesama-poke\)$/.exec(text)
+    if (!match) throw new Error('invalid linked desktop picture')
+    const source = atob(match[2]!)
+    const width = Number(/<svg[^>]*\bwidth="(\d+)"/.exec(source)?.[1])
+    const height = Number(/<svg[^>]*\bheight="(\d+)"/.exec(source)?.[1])
+    return { props: { source, width, height, alt: match[1]!.replace(/\\([\\[\]])/g, '$1') } }
+  }
+  return ui.find({ type: 'Svg' })
 }
 
 export function world(on: On, w: World = {}) {
@@ -130,6 +148,7 @@ export function world(on: On, w: World = {}) {
     return { value: undefined }
   })
   on('ui.open', ($, e) => {
+    w.onOpen?.(e.id)
     opens.push({ id: e.id, ...(e.focus ? { focus: e.focus } : {}) })
     return { value: { isPlaced: true } }
   })
@@ -139,6 +158,7 @@ export function world(on: On, w: World = {}) {
   on('prompt.submit', ($, e) => ({ text: e.text }))
   on('turn.start', ($, e) => ({ turnId: e.turnId }))
   on('turn.complete', ($, e) => ({ text: e.answer }))
+  on('turn.step', async function* ($, e) { return { turnId: e.turnId, index: e.index, answer: '', toolUses: [], stopReason: 'end_turn', usage: w.stepUsage ?? null } })
   on('tool.check', () => ({ decision: w.ask ? 'ask' : 'allow' }))
   on('session.compact', () => ({ messages: [SUMMARY], tokensBefore: 138000, tokensAfter: 20000 }))
   on('session.measure', ($, e) => ({ changed: e.changed }))

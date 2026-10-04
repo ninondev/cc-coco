@@ -14,10 +14,10 @@ struct HoverState {
         switch surface { case .sprite: sprite = inside; case .pill: pill = inside }
         if sprite || pill {
             hideAt = nil
-            if !visible && showAt == nil { showAt = at + 0.35 }
+            visible = true; showAt = nil
         } else {
             showAt = nil
-            if visible { hideAt = at + 0.3 }
+            visible = false; hideAt = nil
         }
     }
     mutating func advance(at: Double, carried: Bool = false, card: Bool = false) {
