@@ -11,7 +11,7 @@
 
 [![CI](https://github.com/ninondev/claude-sama/actions/workflows/ci.yml/badge.svg)](https://github.com/ninondev/claude-sama/actions/workflows/ci.yml)
 
-Claude-sama 是我给 Claude Code 做的萌化 mod，非官方同人。一位住在文字里的小「神」，搬进了你输入框上方那一条：终端里有他，桌面版的 Code 页里也有他。Claude 干活时他在读，干完了他就笑，Claude 要你拿主意时他歪着头等你，你晾他太久，他就睡着啦。测试或构建连着挂三次？那他的荒魂可就出来了，不过发火只冲着代码，从不冲着你。
+Claude-sama 是我给 Claude Code 做的萌化 mod，非官方同人。一位住在文字里的小「神」，搬进了你输入框上方那一条：终端里有他，桌面版的 Code 页里也有他。Claude 干活时他在读，干完了他就笑，Claude 要你拿主意时他歪着头等你，你晾他太久，他就睡着啦。测试或构建连着失败三次以上，那他可就要黑化了，不过他发火只冲着代码，从不冲着你
 
 <p align="center">
   <picture>
