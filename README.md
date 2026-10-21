@@ -7,7 +7,7 @@
   </picture>
 </p>
 
-Meet your cutest coding partner. Coco spots your bugs before you do—and makes sure you know how smug they are about it. An unofficial fan-made desktop companion mod for Claude Code.
+Meet your cutest coding partner. Coco spots your bugs before you do, and makes sure you know how smug they are about it. An unofficial fan-made companion mod for Claude Code.
 
 > [!NOTE]
 > Unofficial fan project, not affiliated with or endorsed by Anthropic. Claude, Claude Code and Clawd belong to Anthropic.
@@ -27,7 +27,7 @@ For one project only, add `--scope project`. To keep it to yourself without writ
 claude plugin disable coco@coco --scope local
 ```
 
-The mod can't load in the desktop app's Chat and Cowork tabs, or in cloud sessions. Coco Pet, the desktop pet, has no such limit and stays on your desktop.
+Plugins can't load in the desktop app's Chat and Cowork tabs, or in cloud sessions. Coco Pet, the desktop pet, has no such limit and stays on your screen wherever you work.
 
 | | macOS | Windows | Linux |
 |---|---|---|---|
@@ -41,25 +41,25 @@ Coco needs Claude Code 2.1.299 or later. To see your version, run `claude --vers
 To update Claude Code:
 
 - Terminal: `claude update`. If you used the official installer, it also updates itself in the background. If you installed with npm, Homebrew or WinGet, use `npm install -g @anthropic-ai/claude-code@latest`, `brew upgrade claude-code` or `winget upgrade Anthropic.ClaudeCode`.
-- Desktop app: the Code tab runs the app's own copy of Claude Code, separate from the one in your terminal, so update each. On macOS choose Claude › Check for Updates, on Windows Help › Check for Updates, then start a new session; on both, the app also updates itself each time it starts. On Linux the desktop app updates with `sudo apt update && sudo apt upgrade`.
+- Desktop app: the Code tab runs the app's own copy of Claude Code, separate from the one in your terminal, so the two update separately. On macOS choose Claude › Check for Updates, on Windows Help › Check for Updates, then start a new session; on both, the app also updates itself each time it starts. On Linux the desktop app updates with `sudo apt update && sudo apt upgrade`.
 
 ## What Coco does
 
 Once installed, a band appears above your prompt. Coco perches on the rim of a coffee mug there, swinging their legs, keeping you company while you code and trading jabs when you're bored.
 
-Their animations react live to whatever Claude is doing: their eyes track the screen while reading files, they blow a tiny bubble while thinking, whip out their thin black laptop to clack away during code generation, and smugly spin the screen around to show off when the job is done. Errors send them diving into a cardboard box; three failed test runs in a row pop their keycap limiter right off (though their wrath is strictly reserved for bad code); and four or five minutes of idle silence put them to sleep under their hood, with only their two ahoge drooping out.
+Their animations track what Claude is doing: their eyes follow the text while Claude reads files, they blow a little bubble while it thinks, pull out their thin black laptop and type along while it writes code, and smugly turn the screen around to show off when it's done. An error sends them diving into a cardboard box. If tests fail three times in a row, the keycap limiter on their bangs pops off and they go after the bad code (never after you). After four or five quiet minutes they pull the hood down for a nap, with only their two ahoge sticking out and slowly drooping.
 
-If Claude refuses a request (HTTP 418), they sulk with a teapot lid on their head.
+If Claude refuses a request (HTTP 418), they put a teapot lid on their head and sulk.
 
 The desktop app has the full set of hand-drawn animations, and you can poke Coco or pat their head with the mouse any time.
 
-All band lines render locally on your screen and cost zero tokens.
+All band lines are drawn locally on your screen. They never call a model and cost zero tokens.
 
-Two charms hang on the right of the band: a battery for the 5-hour limit and a power bank for the week, drawn from the real readings. Hover to see when they reset and whether your current pace will last until then. How much of the context you've used is on the band too.
+Two charms hang on the right of the band: a battery for the 5-hour limit and a power bank for the week, filled to match what you actually have left. Hover to see when they reset and whether your current pace will last until then. Context use is on the band too.
 
 When things go quiet, Coco dozes off, and visitors sometimes wander across the band while they sleep: a lost keycap, a paper plane, a little 404 ghost, a mouse pointer that took a wrong turn. At night a small USB light blinks on.
 
-In the desktop conversation, a comment Coco likes gets a small spark beside it, and when a test or build turns from red to green a small flower opens under it. Errors and permission prompts stay exactly as they were; Coco leaves them alone.
+In the desktop conversation, a code comment Coco likes gets a small spark beside it, and when a test or build turns from red to green a small flower opens under the result. Errors and permission prompts stay exactly as they were; Coco leaves them alone.
 
 The terminal also gets Coco's colour theme: pick Coco in `/theme`, or Coco (light) on a light background.
 
@@ -71,30 +71,30 @@ Type `/coco` to open the settings, and out comes Coco's ita bag. Seven pages:
 - **Quota**: the 5-hour and weekly limits, what this session used, the price table.
 - **vibe check**: this session's record. How many times tests failed, how many fixes, how often Coco went wild, and whether the build ran faster or slower than usual. You can save it as a picture to share.
 - **Socks**: thirteen pairs. Each "first time" you reach earns a pair; pick one and Coco puts it on.
-- **Doujin**: one issue a week about your week together.
+- **Doujin**: a zine, one issue a week, about what the two of you worked on.
 - **Sticky notes**: when a new session starts, Coco tells you where you stopped last time. Kept on this computer only.
 - **Switches**: every switch, grouped by what it does, with the ones that spend tokens marked.
 
-Skill cards have a pane of their own: press **Skill cards** on the Coco page or type `/coco cards`. Coco turns the skills, subagents and slash commands you have at hand into cards. Put skill and subagent cards in the tray and your next prompt calls them; on a command card, press **Write into the prompt** and the command is typed into the prompt box for you, to run when you press Enter. The collection book counts how often you've used each one.
+Skill cards have a pane of their own: press **Skill cards** on the Coco page or type `/coco cards`. Coco turns the skills, subagents and slash commands you have at hand into cards. Put skill and subagent cards in the tray and they go along with your next prompt only; on a command card, press **Write into the prompt** and the command is typed into the prompt box for you, to run when you press Enter. The collection book counts how often you've used each one.
 
 ## Off by default
 
-All on the Switches page. Anything that uses your plan says so. The default model is the newest Haiku, and you can pick another.
+All on the Switches page. Anything that uses your plan says so. Switches that call a model use the newest Haiku unless you pick another.
 
-- **DMs.** DM Coco and they answer with the model you pick. Coco sometimes speaks first, and remembers where you left off. You can also pay with your own API key, kept in your system's password store (the Keychain on a Mac, Credential Manager on Windows, the keyring on Linux, or a file only your account can open when Linux has no keyring). Your own key hasn't been tried on Windows or Linux yet.
+- **DMs.** DM Coco and they answer with the model you pick. Coco sometimes speaks first, and remembers where you left off, across sessions. You can also pay with your own API key, kept in your system's password store (the Keychain on a Mac, Credential Manager on Windows, the keyring on Linux, or a file only your account can open when Linux has no keyring). Your own key hasn't been tried on Windows or Linux yet.
 - **Band lines.** A model writes a set of band lines for Coco or Claudie, kept on this computer. You can edit any set and go back to the original whenever you like.
-- **Coco's voice in replies.** Light: Coco adds a line after Claude finishes. That adds a 338-character instruction to each request, usually served from the prompt cache. Full: Claude talks like Coco the whole way.
+- **Coco's voice in replies.** Light: Coco adds a line after Claude finishes. That puts a 338-character instruction on each request, usually served from the prompt cache. Full: Claude talks like Coco the whole way.
 - **Explain simply.** One click turns Claude's last answer, or the text you selected, into plain words. Your conversation stays as it was.
-- **A second look.** After Claude edits files, one click has another model look over the changes and list what's worth a second glance.
+- **A second look.** After Claude edits files, one click has another model look over the changes and point out anything worth a closer look.
 - **Plain words.** A reply style that people who don't program can follow.
-- **Ask before going past.** Set a line for the session. Before Claude goes past it, Coco stops the next step and asks whether to carry on.
+- **Ask before going past.** Set a spending limit for the session. Before Claude goes past it, Coco stops the next step and asks whether to carry on.
 - **Keep secret keys out of sight.** If what you paste holds a key in a common format, Coco warns you before it's sent, and one click hides it.
 - **Keep the cache warm.** While you're away, Coco re-reads the conversation from the cache now and then, so your next message still reads at the cheap cached price. In a live test: 99.8% cache hits with it on, 23% with it off. It stops on screen lock, after two hours, or when you open another conversation.
-- **Neighbours' lights.** When another coding assistant on this computer is busy, Coco notices. Coco only sees whether it's busy and its quota, never the content, and sends nothing anywhere.
+- **Neighbours' lights.** When another coding assistant on this computer is busy, Coco notices. Coco sees only whether it's busy and how much quota it has left, never the content, and sends nothing anywhere.
 
 ## Privacy and cost
 
-By default, Coco makes no extra model calls, no network calls and collects no telemetry. Nothing about you leaves this computer.
+By default, Coco makes no extra model calls or network calls, and collects no telemetry. Nothing about you leaves this computer.
 
 Switches that call a model use your plan only after you turn them on, and each one shows its cost in the interface. Coco never touches permission prompts or security notices.
 
@@ -108,7 +108,7 @@ With Claude Code's screen-reader mode on (the variable or the setting), the band
 
 ## Coco Pet
 
-Press **Install Coco Pet** on the Coco page of the bag, or run `/coco companion install`. Coco stands beside Claude's window and follows it around, with the same face as on the band. You can pat their head and drag them around, in three sizes.
+Press **Install Coco Pet** on the Coco page of the bag, or run `/coco companion install`. Coco stands beside Claude's window and follows it around, with the same face as on the band. You can pat their head, drag them around and pick one of three sizes.
 
 Nothing is downloaded, the Claude app itself is never touched, and the installed program never goes online. I don't have a Windows or Linux computer, so those builds haven't been tried on a real machine yet.
 
@@ -138,7 +138,7 @@ If the plugin is already gone: to get the original icon back, select Claude.app 
 
 ## What's next
 
-Not in 1.0 yet; a later version brings them:
+Not in 1.0; a later version will bring them:
 
 - **More chat companions.** Ten or more companions from other model makers will come visit, each talking through her own maker's model (with your own key) and taking over the band while you chat. Their stories come later.
 - **A mini-game for the wait.** Something to play while Claude works.
@@ -155,9 +155,9 @@ Because in my head it could look like this, and it's pretty cute. Codex already 
 
 ## Disclaimer
 
-Unofficial fan project, not affiliated with or endorsed by Anthropic. Claude, Claude Code and Clawd are trademarks of Anthropic, PBC. I use those names only to say what this works with and who the character is a fan tribute to. There are no Anthropic logo files here, and I make no money from it. If you are with Anthropic and would like anything changed, please open an issue with the **Brand or trademark concern** template and I'll give it priority.
+Unofficial fan project, not affiliated with or endorsed by Anthropic. Claude, Claude Code and Clawd are trademarks of Anthropic, PBC. I use those names only to say what this works with and who the character pays tribute to. There are no Anthropic logo files here, and I make no money from it. If you are with Anthropic and would like anything changed, please open an issue with the **Brand or trademark concern** template and I'll give it priority.
 
-Claudie's look follows ZipZipPipe's Claude girl, [Claude 拟人立绘·橘白礼服ver](https://www.bilibili.com/opus/1239937623660691478). The design is [ZipZipPipe](https://space.bilibili.com/4168597)'s: credit them too when you share it, and don't use it commercially. Friend site: [蓝色大肥鱼.com](https://蓝色大肥鱼.com)
+Claudie's look follows ZipZipPipe's Claude girl, [Claude 拟人立绘·橘白礼服ver](https://www.bilibili.com/opus/1239937623660691478). The design is [ZipZipPipe](https://space.bilibili.com/4168597)'s: please credit them when you share it, and don't use it commercially. Friend site: [蓝色大肥鱼.com](https://蓝色大肥鱼.com)
 
 Code: MIT. Character art: CC BY-NC 4.0, see [ART-LICENSE.md](ART-LICENSE.md). I made the art with an image model.
 
