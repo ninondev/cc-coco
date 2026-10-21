@@ -133,6 +133,7 @@ claude plugin uninstall coco@coco && claude plugin marketplace remove coco
 If the plugin is already gone: to get the original icon back, select Claude.app in Finder, open File › Get Info, click the small icon at the top left and press Delete. To remove Coco Pet, right-click it and quit, then move these to the Trash (the Recycle Bin on Windows):
 
 - macOS: `~/Applications/Coco Pet.app`, `~/Library/Application Support/Coco`, `~/Library/Application Support/Coco-presence`
+- On macOS, also run `security delete-identity -c "Coco Pet Local Signing"` to remove the signing certificate Coco Pet made in your login keychain
 - Windows: `%LOCALAPPDATA%\Programs\Coco Pet`, `%APPDATA%\Coco`, `%USERPROFILE%\.local\state\coco`
 - Linux: `~/.local/share/coco-pet`, `~/.local/state/coco`, `~/.config/coco-pet`
 

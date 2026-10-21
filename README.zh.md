@@ -135,6 +135,7 @@ claude plugin uninstall coco@coco && claude plugin marketplace remove coco
 要是已经先把插件删了：想还原图标，在访达里选中 `Claude.app`，打开「文件 › 显示简介」，点左上角的小图标按退格键；想删掉桌宠，右键退出后，把下面这些目录丢进废纸篓（Windows 是回收站）：
 
 - macOS：`~/Applications/Coco Pet.app`、`~/Library/Application Support/Coco`、`~/Library/Application Support/Coco-presence`
+- macOS 上再在终端跑一下 `security delete-identity -c "Coco Pet Local Signing"`，删掉桌宠在登录钥匙串里建的签名证书
 - Windows：`%LOCALAPPDATA%\Programs\Coco Pet`、`%APPDATA%\Coco`、`%USERPROFILE%\.local\state\coco`
 - Linux：`~/.local/share/coco-pet`、`~/.local/state/coco`、`~/.config/coco-pet`
 

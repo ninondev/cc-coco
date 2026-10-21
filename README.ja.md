@@ -135,6 +135,7 @@ claude plugin uninstall coco@coco && claude plugin marketplace remove coco
 すでにプラグインがない場合：アイコンを元に戻したいときは、FinderでClaude.appを選び、「ファイル › 情報を見る」を開いて左上の小さなアイコンをクリックし、Deleteキーを押します。デスクトップペットを消したいときは、右クリックで終了させてから、以下をゴミ箱に入れてください。
 
 * macOS：`~/Applications/Coco Pet.app`、`~/Library/Application Support/Coco`、`~/Library/Application Support/Coco-presence`
+* macOSでは、ターミナルで`security delete-identity -c "Coco Pet Local Signing"`も実行して、Coco Petがログインキーチェーンに作った署名用の証明書を削除してください
 * Windows：`%LOCALAPPDATA%\Programs\Coco Pet`、`%APPDATA%\Coco`、`%USERPROFILE%\.local\state\coco`
 * Linux：`~/.local/share/coco-pet`、`~/.local/state/coco`、`~/.config/coco-pet`
 
