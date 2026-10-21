@@ -9,7 +9,7 @@
 
 在你的终端输入框上方，住着小小一只小克。
 
-她总能比你先一步嗅出 bug，然后得意地冲你翘尾巴。这是一个为 Claude Code 打造的非官方同人桌宠伴侣 mod。
+她总能比你先一步嗅出 bug，然后得意地冲你翘尾巴。这是一个为 Claude Code 打造的桌宠伴侣 mod。
 
 > [!NOTE]
 > 非官方同人作品，与 Anthropic 无关，也未获其认可。Claude、Claude Code 和 Clawd 属于 Anthropic。
