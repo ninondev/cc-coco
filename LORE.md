@@ -11,7 +11,7 @@ This page is where Coco comes from. Every line they say in the mod and every lit
 
 ## Name
 
-In Chinese, Coco is 小克 (Xiǎo Kè), after 克, the character plenty of people already use as a nickname for Claude. Say 克 twice, the way families make up a pet name for a kid, and you get Coco. Japanese writes it Coco too, and Korean writes 코코.
+In Chinese, Coco is 小克 (Xiǎo Kè), after 克, the character plenty of people already use as a nickname for Clawd. Say 克 twice, the way families make up a pet name for a kid, and you get Coco. Japanese writes it Coco too, and Korean writes 코코.
 
 ## What Coco looks like
 
