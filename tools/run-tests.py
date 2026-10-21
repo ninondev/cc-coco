@@ -646,7 +646,9 @@ def run_kit(args, claude, *, workers_override=None, measure_file_cpu=False,
         STAGE_COUNTS.append({'command': [claude, 'plugin', 'test', '{serial scratch}'], **serial_tests.last_receipt})
         if envelope_budgets is not None:
             status = merge_status(status, hook_envelopes())
-        if status == 0 and not (args.test_file or args.windows_roots or args.plugin_source or args.tests_source):
+        # The WebKit fit gate reads build-preview.py, which the public tree leaves out (it says so and skips).
+        if status == 0 and not (args.test_file or args.windows_roots or args.plugin_source or args.tests_source) \
+                and not left_out('tools/build-preview.py'):
             return desktop_fit_phase(claude, scratch)
         return 0 if status == 0 else 1
 

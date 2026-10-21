@@ -184,8 +184,9 @@ def main() -> int:
         stale = set(before_owned - generated_owned)
         compiled = output / COMPILED
         if compiled.exists():
-            stale.update(str(path.relative_to(output)) for path in compiled.rglob("*")
-                         if path.is_file() and str(path.relative_to(output)) not in generated_owned)
+            # Owned paths are written with forward slashes; Windows' own separator would make every file stale.
+            stale.update(path.relative_to(output).as_posix() for path in compiled.rglob("*")
+                         if path.is_file() and path.relative_to(output).as_posix() not in generated_owned)
         if args.check:
             for kind, names in (("missing", missing), ("changed", changed), ("stale", sorted(stale))):
                 for name in names:

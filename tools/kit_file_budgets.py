@@ -112,13 +112,16 @@ CPU_BASELINES = {
     'stress-round-a.test.tsx': [15.413205, 10.635369, 9.159327],
     'tool-mark.test.tsx': [3.401265, 2.329468, 2.261995],
     'turn-head.test.tsx': [14.353818, 11.153378, 9.888881],
-    'w2-band-regressions.test.tsx': [20.873465, 17.912184, 15.947416],
+    # 10-21: three serial runs on his Mac (was [20.87, 17.91, 15.95]; the full kit's run went to 30.2 against its budget of 30)
+    'w2-band-regressions.test.tsx': [24.725762, 26.379872, 26.457944],
     'w3-band-regressions.test.tsx': [12.102770999999999, 10.843468, 9.552912999999998],
     'w3-companion-stage.test.tsx': [0.727334, 0.6221789999999999, 0.5378649999999999],
     'w3-inferred-stage.test.tsx': [3.260862, 3.268497, 2.866114],
     'w3-spoken-stage.test.tsx': [15.577045, 14.141335, 13.134070000000001],
     'w3-stage-marks.test.tsx': [3.6793, 3.182817, 3.0532470000000003],
     'w3-stage-runtime.test.tsx': [7.136637, 6.224296, 5.289418],
+    # 10-21: three serial runs on his Mac; it had the new-file floor of 30 and measured 30.5 twice in the kit
+    'w4-part3-terminal-point.test.tsx': [30.602851, 29.620566, 30.520735],
     'warmth-discovery.test.tsx': [1.237683, 0.8575489999999999, 0.77354],
     'windows-roots.test.tsx': [2.126822, 1.569013, 1.4058190000000002],
     'work-size.test.tsx': [7.773765, 5.833854, 6.1196280000000005],

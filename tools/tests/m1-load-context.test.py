@@ -52,10 +52,10 @@ class MeasurePairContextTests(unittest.TestCase):
     @staticmethod
     def _runtime_snapshot(root):
         suffixes = {'.ts', '.tsx', '.js', '.jsx', '.mjs', '.cjs', '.json'}
-        return {str(p.relative_to(root)): hashlib.sha256(p.read_bytes()).hexdigest()
+        return {p.relative_to(root).as_posix(): hashlib.sha256(p.read_bytes()).hexdigest()
                 for p in sorted(root.rglob('*'))
                 if p.is_file() and p.suffix in suffixes
-                and not str(p.relative_to(root)).startswith('.claude-plugin/types/')}
+                and not p.relative_to(root).as_posix().startswith('.claude-plugin/types/')}
 
     def test_pair_uses_byte_preserved_siblings_common_cwd_and_empty_unique_caches(self):
         calls = []
