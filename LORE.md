@@ -1,5 +1,9 @@
 # Who is Coco
 
+<p align="center">
+  <img src="https://raw.githubusercontent.com/ninondev/cc-coco/media/poster.webp" width="360" alt="Coco stepping out of a tilted terminal window, a laptop in their hoodie pocket, looking pleased with themself.">
+</p>
+
 NOTE: Unofficial fan project, not affiliated with or endorsed by Anthropic. Claude, Claude Code, and Clawd are trademarks of Anthropic.
 
 ## Name

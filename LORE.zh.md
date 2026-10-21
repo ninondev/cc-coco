@@ -1,5 +1,9 @@
 # 小克是谁
 
+<p align="center">
+  <img src="https://raw.githubusercontent.com/ninondev/cc-coco/media/poster.webp" width="360" alt="小克从斜着的终端窗口里跨出来，兜里揣着轻薄本，一脸得意。">
+</p>
+
 > [!NOTE]
 > 非官方同人作品，与 Anthropic 无关，也未获其认可。Claude、Claude Code 和 Clawd 属于 Anthropic。
 
