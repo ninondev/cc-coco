@@ -7,8 +7,10 @@
 #   install    Builds the companion from its Swift source (../companion) with swiftc from the Xcode
 #              Command Line Tools (Swift 5.9 or newer, Xcode 15 or later) into ~/Applications/Coco Pet.app, copies the mod's
 #              frames into it (16 desktop pictures, 16 pixel ones) with Coco's clips and Claudie's
-#              cells, signs it for this Mac only (ad hoc, no Apple ID) and starts it. Nothing is downloaded. It rebuilds only when the
-#              source changed, so a permission you gave the app stays valid. --login also adds a
+#              cells, signs it for this Mac only (no Apple ID) and starts it. Nothing is downloaded. It rebuilds only when the
+#              source changed, so a permission you gave the app stays valid. The signature is "Coco Pet Local Signing", a
+#              self-signed identity made once in your login keychain, so a rebuilt app keeps the Accessibility permission
+#              too; if it cannot be made, the signature is ad hoc and a rebuild asks again. --login also adds a
 #              LaunchAgent so it starts when you log in (macOS shows a "background item added"
 #              notice).
 #              Settings and the mod's feed stay in ~/Library/Application Support/Coco/;
@@ -19,7 +21,7 @@
 #              window, login item, and when the mod last wrote its feed.
 #   uninstall  Stops it and moves the app, ~/Library/Application Support/Coco/ (settings and
 #              the mod's feed file) and the LaunchAgent to the Trash; resets only its own
-#              Accessibility entry.
+#              Accessibility entry and deletes its signing identity.
 #
 # Permissions: to follow the window it needs Accessibility (System Settings > Privacy & Security >
 # Accessibility > Coco Pet); its card or the bag's Settings button offers it. Without it, Coco waits in the
@@ -41,6 +43,7 @@ PROG=companion-macos.sh
 LABEL=io.github.ninondev.coco-companion
 EXE=coco-companion
 NAME="Coco Pet"
+SIGN_NAME="Coco Pet Local Signing"
 REPORT=0
 RESULT=failed
 
@@ -191,6 +194,33 @@ source_hash() {
   } | /usr/bin/shasum -a 256 | /usr/bin/cut -c 1-16
 }
 
+# macOS ties an Accessibility permission to the app's signature, and an ad hoc one changes with every build (owner's
+# card 10-21: a rebuild should not ask again). So the app is signed with a self-signed identity of this Mac's own, made
+# once in the login keychain (ten years, code signing only, never trusted for anything else). Prints its name, or -
+# (ad hoc) when it is not there and cannot be made.
+sign_identity() {
+  if /usr/bin/security find-identity -p codesigning 2>/dev/null | /usr/bin/grep -qF "\"$SIGN_NAME\""; then
+    printf '%s' "$SIGN_NAME"
+    return 0
+  fi
+  _keys="$STAGE/identity"
+  /bin/mkdir -m 700 "$_keys" || { printf '%s' -; return 0; }
+  /usr/bin/printf '[req]\ndistinguished_name=dn\nx509_extensions=ext\nprompt=no\n[dn]\nCN=%s\n[ext]\nbasicConstraints=critical,CA:false\nkeyUsage=critical,digitalSignature\nextendedKeyUsage=critical,codeSigning\n' "$SIGN_NAME" >"$_keys/cert.cnf"
+  _pass=$(/usr/bin/openssl rand -hex 16 2>/dev/null) || _pass=
+  if [ -n "$_pass" ] &&
+    /usr/bin/openssl req -x509 -newkey rsa:2048 -nodes -keyout "$_keys/key.pem" -out "$_keys/cert.pem" -days 3650 -config "$_keys/cert.cnf" >/dev/null 2>&1 &&
+    /usr/bin/openssl pkcs12 -export -inkey "$_keys/key.pem" -in "$_keys/cert.pem" -name "$SIGN_NAME" -out "$_keys/id.p12" -passout "pass:$_pass" >/dev/null 2>&1 &&
+    /usr/bin/security import "$_keys/id.p12" -P "$_pass" -T /usr/bin/codesign >/dev/null 2>&1; then
+    /bin/rm -rf "$_keys"
+    say "Made the signing identity \"$SIGN_NAME\" in your login keychain; a rebuilt $NAME keeps its Accessibility permission." >&2
+    printf '%s' "$SIGN_NAME"
+    return 0
+  fi
+  /bin/rm -rf "$_keys"
+  warn "could not make a signing identity; signing ad hoc, so a rebuild asks for Accessibility again"
+  printf '%s' -
+}
+
 installed_build() { /bin/cat "$APP/Contents/Resources/build.txt" 2>/dev/null || true; }
 
 state_value() { /usr/bin/plutil -extract "$1" raw -o - "$STATE" 2>/dev/null || true; }
@@ -276,7 +306,9 @@ build() {
   /usr/bin/xcrun --sdk macosx swiftc -O -swift-version 5 -module-cache-path "$STAGE/cache" \
     -o "$NEW/Contents/MacOS/$EXE" "$SRC"/Sources/*.swift >&2 ||
     die "the build failed (messages above); nothing was installed"
-  /usr/bin/codesign --force --sign - --identifier "$LABEL" "$NEW" >/dev/null 2>&1 ||
+  _sign=$(sign_identity)
+  /usr/bin/codesign --force --sign "$_sign" --identifier "$LABEL" "$NEW" >/dev/null 2>&1 ||
+    { [ "$_sign" != - ] && /usr/bin/codesign --force --sign - --identifier "$LABEL" "$NEW" >/dev/null 2>&1; } ||
     die "codesign could not sign the app; nothing was installed"
 }
 
@@ -505,6 +537,9 @@ do_uninstall() {
     say "Nothing installed at $DIR."
   fi
   say "The mod writes its feed only while that folder exists, so it has stopped too."
+  if /usr/bin/security delete-identity -c "$SIGN_NAME" >/dev/null 2>&1; then
+    say "Deleted its signing identity \"$SIGN_NAME\" from your login keychain."
+  fi
   if /usr/bin/tccutil reset Accessibility "$LABEL"; then
     say "Reset its own Accessibility entry ($LABEL)."
   else
