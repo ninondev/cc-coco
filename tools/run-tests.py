@@ -449,7 +449,10 @@ def isolated_env(home):
                'UV_THREADPOOL_SIZE', 'GOMAXPROCS',
                'BUN_FEATURE_FLAG_DISABLE_IO_POOL',
                'COCO_TEST_SERIAL_FILES', 'COCO_TEST_FILE_WORKERS',
-               'COCO_TYPESCRIPT', 'PLAYWRIGHT_BROWSERS_PATH')
+               'COCO_TYPESCRIPT', 'PLAYWRIGHT_BROWSERS_PATH',
+               # Windows' own system settings: Bun refuses to start without SystemRoot, and programs
+               # find the shell and executables through these. None of them holds a credential.
+               'SYSTEMROOT', 'WINDIR', 'COMSPEC', 'PATHEXT', 'SYSTEMDRIVE', 'PROGRAMFILES', 'PROGRAMDATA')
     env = {key: os.environ[key] for key in allowed if key in os.environ}
     env.update(HOME=str(home), USERPROFILE=str(home),
                APPDATA=str(home/'AppData/Roaming'), LOCALAPPDATA=str(home/'AppData/Local'),
