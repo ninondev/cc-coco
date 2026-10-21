@@ -455,7 +455,9 @@ def isolated_env(home):
                APPDATA=str(home/'AppData/Roaming'), LOCALAPPDATA=str(home/'AppData/Local'),
                CLAUDE_CONFIG_DIR=str(home/'config'), DISABLE_AUTOUPDATER='1',
                CLAUDE_CODE_DISABLE_NONESSENTIAL_TRAFFIC='1', DISABLE_TELEMETRY='1',
-               DISABLE_ERROR_REPORTING='1', CARGO_BUILD_JOBS='4')
+               DISABLE_ERROR_REPORTING='1', CARGO_BUILD_JOBS='4',
+               # Python checks read the sources as UTF-8 everywhere; Windows' own default (cp1252) cannot.
+               PYTHONUTF8='1')
     return env
 
 
