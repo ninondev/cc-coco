@@ -76,7 +76,7 @@ import type { OpeningKind, SessionSource } from './openings'
 import { loadWeekWords, weekWord } from './week-words'
 import { ModGapsRuntime, GapLimits, WaitSound, detectScreenReader, voiceDecision, textBandMode, hintTail, personBandFocus, compactChapter } from './mod-gaps'
 import { renderTextBand, renderRunMark } from './mod-gaps-render'
-import { gapWord, gapCharacterName, loadGapWords } from './mod-gaps-words'
+import { gapWord, gapCharacterName, claudieName, loadGapWords } from './mod-gaps-words'
 import { MoreRuntime, MISSING_MORE_MODEL_SLOTS } from './more-runtime'
 import { moreModels } from './more-models'
 import type { TalkFacts } from './talk-parts'
@@ -357,7 +357,7 @@ async function startM1($:Engine):Promise<void>{
   line:(text,kind,ms)=>{offerLine($,{key:kind==='safety'?'more.paste':'more.status',text,class:kind==='safety'?3:1,ttl:ms,...(kind==='safety'?{buttons:[{key:'coco:more:paste:hide',label:moreWord('paste.hide',view.lang)},{key:'coco:more:paste:keep',label:moreWord('paste.keep',view.lang)}]}:{})})},
  })
  m1More=runtime
- void background($,'store.talkOpened',(async()=>{talkOpenedBefore=(await $.store.get('talkOpened'))===true})())
+ void background($,'store.talkOpened',(async()=>{const [coco,claudie]=await Promise.all([$.store.get('talkOpened'),$.store.get('talkOpened.claudie')]);talkOpenedBefore=coco===true;claudieOpenedBefore=claudie===true})())
  const current=()=>generation===lifecycleGeneration&&m1More===runtime
  m1More.restore(values,agreed,today,clockSnapshot);m1More.restoreKey(payer,savedKey,keyToday,estimateFactor,clockSnapshot);m1More.configure(view.lang,screenReader);configureM1Book(m1More)
  const [models,modelPicks]=await readMoreModels($)
@@ -948,8 +948,9 @@ function offerLine($: Engine, line: LineRequest, shouldPublish = true, rearm = t
 }
 // Talk opening up on its own (talk-openers.ts): the group for right now, one of lane B's lines for it (never the same one
 // twice running), its slots filled. The first opening is written down, so it is only ever the first once.
-const openerEvents:Partial<Record<OpenerEvent,number>>={},openerLast=new Map<OpenerGroup,number>()
-let talkOpenedBefore:boolean|undefined,openerFailed=0
+const openerEvents:Partial<Record<OpenerEvent,number>>={},openerLast=new Map<string,number>()
+// Claudie's first meeting is her own (owner 10-21): the first time Talk opens while she is worn.
+let talkOpenedBefore:boolean|undefined,claudieOpenedBefore:boolean|undefined,openerFailed=0
 function openerQuota():'low'|'out'|undefined {
   const used=(view.quota?.rateLimits??[]).map(limit=>limit.percentUsed).filter((p):p is number=>typeof p==='number'&&Number.isFinite(p))
   return used.some(p=>p>=100)?'out':used.some(p=>p>75)?'low':undefined
@@ -957,18 +958,20 @@ function openerQuota():'low'|'out'|undefined {
 function talkOpener($:Engine,quiet:boolean):string|undefined {
   const now=clockSnapshot,lastActiveAt=Math.max(lastPromptAt,lastSeen)||undefined
   const quota=openerQuota()
-  const group:OpenerGroup=quiet?'quiet':openerGroup({now,timeZone,first:talkOpenedBefore===false,...(lastActiveAt?{lastActiveAt}:{}),events:openerEvents,...(quota?{quota}:{})})
+  const group:OpenerGroup=quiet?'quiet':openerGroup({now,timeZone,first:(view.claudie?claudieOpenedBefore:talkOpenedBefore)===false,...(lastActiveAt?{lastActiveAt}:{}),events:openerEvents,...(quota?{quota}:{})})
   return talkOpenerLine($,group,lastActiveAt)
 }
-/** One of lane B's talk.open.<group> lines with its slots filled, never the one said last from that group. */
+/** One of lane B's talk.open.<group> lines with its slots filled, never the one said last from that group; while
+ *  Claudie is worn, one of her form's (talk.dake.open, talk.maid.open; owner 10-21). */
 function talkOpenerLine($:Engine,group:OpenerGroup,lastActiveAt=Math.max(lastPromptAt,lastSeen)||undefined):string|undefined {
-  const now=clockSnapshot,lang=view.lang
+  const now=clockSnapshot,lang=view.lang,form=view.claudie,set=form?`talk.${form}.open`:'talk.open'
   const lines:string[]=[]
-  for(let i=0;i<10;i++){const text=moreWord(`talk.open.${group}.${i}`,lang);if(!text)break;lines.push(text)}
-  const at=openerPick(lines,openerLast.get(group))
+  for(let i=0;i<10;i++){const text=moreWord(`${set}.${group}.${i}`,lang);if(!text)break;lines.push(text)}
+  const at=openerPick(lines,openerLast.get(`${set}.${group}`))
   if(at===undefined)return undefined
-  openerLast.set(group,at)
-  if(talkOpenedBefore===false){talkOpenedBefore=true;void background($,'store.set.talkOpened',$.store.set('talkOpened',true))}
+  openerLast.set(`${set}.${group}`,at)
+  if(form){if(claudieOpenedBefore===false){claudieOpenedBefore=true;void background($,'store.set.talkOpened.claudie',$.store.set('talkOpened.claudie',true))}}
+  else if(talkOpenedBefore===false){talkOpenedBefore=true;void background($,'store.set.talkOpened',$.store.set('talkOpened',true))}
   const away=lastActiveAt?durationText(Math.max(60,(now-lastActiveAt)/1000),lang,c3Durations(lang),false):''
   return moreFill(lines[at]!,{time:clockText(now,lang,timeZone),away})
 }
@@ -993,7 +996,9 @@ async function dmConsider($:Engine,lastActiveAt?:number):Promise<void>{
 function dmNotify($:Engine,texts:string[]):void{
   if(!m1More?.dm().notify||view.mood==='sleep'||!texts.length)return
   // Titled as a chat app titles it, «New message from Coco» (his words, via lane B), her words under it.
-  const title=moreWord('dm.notice',view.lang)||WORDS[view.lang].name,body=dmPreview(texts.join(' '))
+  // Claudie's messages are under her name (owner 10-21).
+  const coco=gapCharacterName(view.lang),notice=moreWord('dm.notice',view.lang)||WORDS[view.lang].name
+  const title=view.claudie?notice.split(coco).join(claudieName(view.lang)):notice,body=dmPreview(texts.join(' '))
   if(!body)return
   // Answering what the person wrote on the pet: the pet shows it (or notifies, its window closed); Claude Code stays quiet.
   if(clockSnapshot>=dmPetUntil)void background($,'dm.toast',Promise.resolve($.ui.toast(`${title}: ${body}`,{timeoutMs:12000})))

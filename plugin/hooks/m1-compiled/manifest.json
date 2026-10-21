@@ -247,8 +247,8 @@
       "sha256": "b7f26a14914751025151e5be54348861420d08c710c63a26ab36fef6cd7925e0"
     },
     "hooks-source/pages.tsx": {
-      "bytes": 118812,
-      "sha256": "d39d4efaedb4f6af225fa8765ff5a660c6614145b3ab71de667dbe736d380dff"
+      "bytes": 118891,
+      "sha256": "e1f0ec8e747a5c090255b2957bd44c07f65c4cb1b541690aa65aa7a04722c92e"
     },
     "hooks-source/words.ts": {
       "bytes": 57381,
@@ -395,16 +395,16 @@
       "sha256": "ffcf45082e7e97c0e8eacfebebb28bcd449f61a04a6b7e4a10f40f8d7aea92ab"
     },
     "hooks-source/companion.ts": {
-      "bytes": 74559,
-      "sha256": "d7c21cd00a5122d610d467db1dd8ca8123fa1611fb4894818321345f9d787096"
+      "bytes": 74896,
+      "sha256": "3a8b139b7d0579dfa26db1c878ba3676a5d0132d9745c2a4c7ec47ce6449a78c"
     },
     "hooks-source/band.tsx": {
       "bytes": 139503,
       "sha256": "21092f50b3c04c3f0aed7725bf8f3123db94c5fad1b3e31ab8915759918995b3"
     },
     "hooks-source/more-runtime.ts": {
-      "bytes": 89113,
-      "sha256": "9230b4a001e59e1c2725627e06a0b56c01abc7901aa8b315df820b6a3f8efa30"
+      "bytes": 91152,
+      "sha256": "21e5c23028c25f77508861dab15f37e8dcaba7c77e6de3f60270a86fcd4e01af"
     },
     "hooks-source/talk-parts.ts": {
       "bytes": 7255,
@@ -463,8 +463,8 @@
       "sha256": "109033e060edf025542e7633e3a90f5a8739873bec97a88f4acc9c50250db37e"
     },
     "hooks-source/mod-gaps-words.ts": {
-      "bytes": 2313,
-      "sha256": "51f5d1dfb9364fa5f1ad39b3fec17410c48201264af7bd503071245e085b50ce"
+      "bytes": 2746,
+      "sha256": "29c7834da95369909492e0e9d65a30c7b6a971e9432f2e5e304e3cddba37c63a"
     },
     "hooks-source/settings-migration.ts": {
       "bytes": 106,
@@ -575,8 +575,8 @@
       "sha256": "d66348c63206983ae22ea814b72179e2d421a78d9271c4c4c15cb8042a7f0933"
     },
     "hooks-source/more-book.tsx": {
-      "bytes": 25456,
-      "sha256": "d602f3179eae5b3d55485341616fc48187072f78bd62f2f4a1541e0776c09cf8"
+      "bytes": 25798,
+      "sha256": "331c9ed06d4a011f94874425a159f9ca3664ec6d988db34ea0662e3cb476fb13"
     },
     "hooks-source/mod-gaps-art.ts": {
       "bytes": 4918,
@@ -663,8 +663,8 @@
       "sha256": "7a7c54b98091c26c776cdf126583846e28e46f3c675d28cc22fe0fb556d8f1aa"
     },
     "hooks-source/register.tsx": {
-      "bytes": 312360,
-      "sha256": "f8a707ab72e3559707549682fbc679028628176e61a6446ef98b56d471f1eb97"
+      "bytes": 313157,
+      "sha256": "ce093a2c278bffcc7c17a87a82f102d08f393f334cd2618ed7764f774cd1fb24"
     },
     "hooks-source/touch-client.ts": {
       "bytes": 1190,
@@ -2538,17 +2538,17 @@
         "companionActivity": 81,
         "companionTask": 85,
         "companionDm": 100,
-        "companionDock": 110,
-        "companionSeen": 114,
-        "companionFeedContext": 124,
-        "companionPatLabel": 1151,
-        "companionWakeLines": 1176,
-        "companionRecord": 1182,
-        "companionKey": 1282,
-        "companionText": 1299,
-        "companionEnded": 1306,
-        "companionSummonText": 1313,
-        "companionRequestText": 1319,
+        "companionDock": 112,
+        "companionSeen": 116,
+        "companionFeedContext": 126,
+        "companionPatLabel": 1153,
+        "companionWakeLines": 1178,
+        "companionRecord": 1184,
+        "companionKey": 1284,
+        "companionText": 1301,
+        "companionEnded": 1308,
+        "companionSummonText": 1315,
+        "companionRequestText": 1321,
         "COMPANION_DIR": 39,
         "COMPANION_FEED": 41,
         "CompanionRequest": 47,
@@ -2556,13 +2556,13 @@
         "CompanionDmWords": 93,
         "COMPANION_DM_LINES": 94,
         "COMPANION_DM_CHARS": 95,
-        "CompanionTarget": 120,
-        "CompanionSurface": 121,
-        "CompanionWords": 128,
-        "ReactionKey": 169,
-        "TaskKey": 457,
-        "TASK_WORDS": 461,
-        "CompanionRecord": 1093
+        "CompanionTarget": 122,
+        "CompanionSurface": 123,
+        "CompanionWords": 130,
+        "ReactionKey": 171,
+        "TaskKey": 459,
+        "TASK_WORDS": 463,
+        "CompanionRecord": 1095
       }
     },
     "hooks-source/band.tsx": {
@@ -2654,14 +2654,15 @@
         "TALK_NOTES_HEAD": "more_runtime__TALK_NOTES_HEAD",
         "TALK_PERSONA_LIMIT": "more_runtime__TALK_PERSONA_LIMIT",
         "TALK_RECENT": "more_runtime__TALK_RECENT",
+        "TALK_SHARED_COCO": "more_runtime__TALK_SHARED_COCO",
         "rewriteKeepsExact": "more_runtime__rewriteKeepsExact",
         "talkEstimate": "more_runtime__talkEstimate",
         "talkLooksLikeWork": "more_runtime__talkLooksLikeWork"
       },
       "exportLines": {
-        "talkEstimate": 58,
-        "talkLooksLikeWork": 61,
-        "rewriteKeepsExact": 117,
+        "talkEstimate": 63,
+        "talkLooksLikeWork": 66,
+        "rewriteKeepsExact": 122,
         "MorePayerChoice": 22,
         "MoreKey": 22,
         "MoreKeyToday": 22,
@@ -2673,19 +2674,21 @@
         "TALK_DEFAULT_REPLY_TOKENS": 34,
         "TALK_COMPACT_TOKENS": 35,
         "TALK_NOTES_HEAD": 36,
-        "TALK_MEMORY_ITEMS": 39,
-        "TALK_MEMORY": 40,
-        "TalkMemory": 41,
-        "MoreBubble": 43,
-        "MoreModelWords": 44,
-        "LINES_WRITE_TOKENS": 47,
-        "TALK_CAP": 49,
-        "TALK_PERSONA_LIMIT": 52,
-        "DM_FIRST_TOKENS": 54,
-        "EXPLAIN_TEXT_LIMIT": 56,
-        "MoreBindings": 71,
-        "LOOK_DENY": 107,
-        "MoreRuntime": 126
+        "TALK_SHARED_COCO": 39,
+        "TALK_MEMORY_ITEMS": 42,
+        "TALK_MEMORY": 43,
+        "TalkMemory": 44,
+        "TalkWho": 46,
+        "MoreBubble": 48,
+        "MoreModelWords": 49,
+        "LINES_WRITE_TOKENS": 52,
+        "TALK_CAP": 54,
+        "TALK_PERSONA_LIMIT": 57,
+        "DM_FIRST_TOKENS": 59,
+        "EXPLAIN_TEXT_LIMIT": 61,
+        "MoreBindings": 76,
+        "LOOK_DENY": 112,
+        "MoreRuntime": 131
       }
     },
     "hooks-source/talk-parts.ts": {
@@ -3105,6 +3108,7 @@
       "publicPath": "hooks/mod-gaps-words.ts",
       "group": "hooks/m1-compiled/companion.js",
       "aliases": {
+        "claudieName": "mod_gaps_words__claudieName",
         "gapCharacterName": "mod_gaps_words__gapCharacterName",
         "gapFill": "mod_gaps_words__gapFill",
         "gapPool": "mod_gaps_words__gapPool",
@@ -3118,11 +3122,12 @@
         "installGapWords": 6,
         "loadGapWords": 15,
         "resetGapWords": 22,
-        "gapCharacterName": 23,
-        "gapPool": 25,
-        "gapWord": 26,
-        "gapFill": 27,
-        "missingGapKeys": 28
+        "claudieName": 25,
+        "gapCharacterName": 26,
+        "gapPool": 28,
+        "gapWord": 29,
+        "gapFill": 30,
+        "missingGapKeys": 31
       }
     },
     "hooks-source/settings-migration.ts": {
@@ -3756,8 +3761,8 @@
         "moreRowDrawn": 197,
         "MorePage": 198,
         "MoreTalk": 211,
-        "MoreExplanation": 225,
-        "MoreLook": 229,
+        "MoreExplanation": 227,
+        "MoreLook": 231,
         "MoreKeyPlace": 12,
         "MoreBookData": 13,
         "MoreExchange": 210
@@ -4572,16 +4577,16 @@
     "hooks/line-types.ts",
     "hooks/lines.ts",
     "hooks/m1-always.ts",
-    "hooks/m1-compiled/chunk-295emqg4.js",
-    "hooks/m1-compiled/chunk-48hknabf.js",
-    "hooks/m1-compiled/chunk-8wszd5a8.js",
-    "hooks/m1-compiled/chunk-9fq1200d.js",
-    "hooks/m1-compiled/chunk-bxhh5n8p.js",
+    "hooks/m1-compiled/chunk-0xd1sfea.js",
+    "hooks/m1-compiled/chunk-0xn4g3h9.js",
+    "hooks/m1-compiled/chunk-7950858m.js",
+    "hooks/m1-compiled/chunk-bb3jvbad.js",
+    "hooks/m1-compiled/chunk-gpg4makf.js",
     "hooks/m1-compiled/chunk-jahhamrc.js",
-    "hooks/m1-compiled/chunk-jcfb4cbm.js",
-    "hooks/m1-compiled/chunk-k5zwrpzz.js",
-    "hooks/m1-compiled/chunk-m0xbwnyz.js",
-    "hooks/m1-compiled/chunk-y6mndvys.js",
+    "hooks/m1-compiled/chunk-k2qpbs5d.js",
+    "hooks/m1-compiled/chunk-m4mw4vmb.js",
+    "hooks/m1-compiled/chunk-q7dbte03.js",
+    "hooks/m1-compiled/chunk-yq26bpww.js",
     "hooks/m1-compiled/companion.d.ts",
     "hooks/m1-compiled/companion.js",
     "hooks/m1-compiled/manifest.json",
@@ -4665,20 +4670,20 @@
     "hooks/words.ts"
   ],
   "chunkBytes": {
-    "chunk-295emqg4.js": 358957,
-    "chunk-48hknabf.js": 92629,
-    "chunk-8wszd5a8.js": 46697,
-    "chunk-9fq1200d.js": 208401,
-    "chunk-bxhh5n8p.js": 10209,
+    "chunk-0xd1sfea.js": 93770,
+    "chunk-0xn4g3h9.js": 46688,
+    "chunk-7950858m.js": 62122,
+    "chunk-bb3jvbad.js": 199472,
+    "chunk-gpg4makf.js": 10209,
     "chunk-jahhamrc.js": 63116,
-    "chunk-jcfb4cbm.js": 20980,
-    "chunk-k5zwrpzz.js": 224150,
-    "chunk-m0xbwnyz.js": 199394,
-    "chunk-y6mndvys.js": 62122,
-    "companion.js": 110859,
+    "chunk-k2qpbs5d.js": 359268,
+    "chunk-m4mw4vmb.js": 20980,
+    "chunk-q7dbte03.js": 224308,
+    "chunk-yq26bpww.js": 208526,
+    "companion.js": 110982,
     "motion_stills.js": 219189,
     "pages.js": 67905,
     "presence.js": 13396,
-    "register.js": 223629
+    "register.js": 224223
   }
 }

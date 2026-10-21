@@ -27,7 +27,7 @@ import { keyPlatform, keyNoDisplay } from './talk-key'
 import { moreWord, moreFill, loadMoreWords } from './more-words'
 import { ReceivedNotesBook } from './window-notes'
 import { focusBook } from './mod-gaps'
-import { gapWord, gapFill, gapCharacterName } from './mod-gaps-words'
+import { gapWord, gapFill, gapCharacterName, claudieName } from './mod-gaps-words'
 import { PAGES } from './book-words'
 import type { RenderElement, Elements } from 'claude-code'
 import type { EngineInterface, On, SessionUsage, SessionMeasureInput } from 'claude-code'
@@ -1773,7 +1773,7 @@ export function registerBook(on: On): void {
       const words=await wordsFor($,m1Runtime.lang), E=$.ui.resolve(e), d:MoreBookData={snapshot:m1Runtime.snapshot(),surface:e.surface,usage,...await m1KeyData($,e.props.bodyColumns)}
       // His messages still to come wait on a clock only while Talk is drawn (owner, 10-10).
       if(m1Runtime.open)m1Runtime.talkHidden();else m1Runtime.talkShown(morePageEngine($))
-      const content=m1Runtime.open?MorePage(E,d):MoreTalk(E,{...d,exchanges:m1Runtime.talkView,name:gapCharacterName(m1Runtime.lang),busy:m1Runtime.busy,writing:m1Runtime.talkWriting})
+      const content=m1Runtime.open?MorePage(E,d):MoreTalk(E,{...d,exchanges:m1Runtime.talkView,name:gapCharacterName(m1Runtime.lang),claudieName:claudieName(m1Runtime.lang),who:m1Runtime.talkSpeaker,busy:m1Runtime.busy,writing:m1Runtime.talkWriting})
       return m1Frame(E,words,e.surface,content)
     }
     m1Runtime?.talkHidden()

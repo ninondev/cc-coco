@@ -207,8 +207,8 @@ export function MorePage(E: MoreElements,d: MoreBookData): RenderElement {
 // Each of his messages is its own bubble; his name heads a run of them, as a chat does. While he is writing (a call
 // running or messages still to come) a still «…» sits where his next one will appear: no words, no motion.
 // A failure line stands in place of his reply and is never his voice; `retry` is the message the fallback resends.
-export type MoreExchange={side:'person'|'him';text:string;work?:string;failure?:KeyFailure;retry?:string}
-export function MoreTalk(E: MoreElements, d: MoreBookData & {exchanges:MoreExchange[];name:string;busy?:boolean;writing?:boolean}):RenderElement {
+export type MoreExchange={side:'person'|'him';text:string;work?:string;failure?:KeyFailure;retry?:string;who?:'claudie'}
+export function MoreTalk(E: MoreElements, d: MoreBookData & {exchanges:MoreExchange[];name:string;claudieName?:string;who?:'claudie';busy?:boolean;writing?:boolean}):RenderElement {
   const {Box,Text,Button}=E, Input='Input' in E?E.Input:undefined,w=(key:string)=>moreWord(key,d.snapshot.lang)
   const failure=(item:MoreExchange,index:number)=>{
     const buttons=KEY_FAILURE_BUTTONS[item.failure!]
@@ -216,11 +216,13 @@ export function MoreTalk(E: MoreElements, d: MoreBookData & {exchanges:MoreExcha
   }
   // A failure line is not his voice: the message after it starts a new run under his name.
   const his=(item?:MoreExchange)=>item?.side==='him'&&!item.failure
+  // Coco and Claudie share the thread (owner 10-21): a run of his messages is under the name of the one who wrote it.
+  const nameOf=(who?:'claudie')=>who?d.claudieName??d.name:d.name
   const key=d.snapshot.key,other=key?.payer==='key'&&(elsewhere(key)||!!key.key?.model&&key.key.model!=='claude-haiku-5-5')
   // The person's own key paying Anthropic's Haiku: lane B's line without the plan's half (more.talk.disclosure.key); the
   // usual line until those words are in.
   const disclosure=other?moreFill(w('talk.disclosure.other'),{model:key!.key!.model??''}):key?.payer==='key'&&key.key?(w('talk.disclosure.key')||w('talk.disclosure')):w('talk.disclosure')
-  return <Box flexDirection="column" rowGap={1}><Box flexDirection="column"><Text wrap="wrap">{[disclosure,w(MORE_SERVICE_SLOT)].filter(Boolean).join('\n')}</Text>{d.snapshot.key?<Text bold wrap="wrap">{moreTalkPayer(d.snapshot.key,d.payer,d.snapshot.lang)}</Text>:null}</Box>{d.exchanges.map((item,index)=>item.failure?failure(item,index):<Box key={`coco:talk:message:${index}`} flexDirection="column" alignItems={item.side==='person'?'flex-end':'flex-start'}>{item.side==='him'&&!his(d.exchanges[index-1])?<Text bold>{d.name}</Text>:null}<Text wrap="wrap">{item.text}</Text>{item.work?<Button key={`coco:talk:askClaude:${index}`} label={w('talk.askClaude')} onPress={()=>{}}/>:null}</Box>)}{d.writing?<Box key="coco:talk:writing" flexDirection="column" alignItems="flex-start">{!his(d.exchanges[d.exchanges.length-1])?<Text bold>{d.name}</Text>:null}<Text color="inactive">…</Text></Box>:null}{!w(MORE_SERVICE_SLOT)?null:d.surface==='mobile'||!Input?<Text>{w('talk.phone')}</Text>:<Box flexDirection="column"><Input key="coco:talk:input" placeholder={w('talk.placeholder')} onInput={()=>{}} onSubmit={()=>{}}/>{d.busy?null:<Button key="coco:talk:send" label={w('talk.send')} onPress={()=>{}}/>}</Box>}</Box>
+  return <Box flexDirection="column" rowGap={1}><Box flexDirection="column"><Text wrap="wrap">{[disclosure,w(MORE_SERVICE_SLOT)].filter(Boolean).join('\n')}</Text>{d.snapshot.key?<Text bold wrap="wrap">{moreTalkPayer(d.snapshot.key,d.payer,d.snapshot.lang)}</Text>:null}</Box>{d.exchanges.map((item,index)=>item.failure?failure(item,index):<Box key={`coco:talk:message:${index}`} flexDirection="column" alignItems={item.side==='person'?'flex-end':'flex-start'}>{item.side==='him'&&!(his(d.exchanges[index-1])&&d.exchanges[index-1]!.who===item.who)?<Text bold>{nameOf(item.who)}</Text>:null}<Text wrap="wrap">{item.text}</Text>{item.work?<Button key={`coco:talk:askClaude:${index}`} label={w('talk.askClaude')} onPress={()=>{}}/>:null}</Box>)}{d.writing?<Box key="coco:talk:writing" flexDirection="column" alignItems="flex-start">{!(his(d.exchanges[d.exchanges.length-1])&&d.exchanges[d.exchanges.length-1]!.who===d.who)?<Text bold>{nameOf(d.who)}</Text>:null}<Text color="inactive">…</Text></Box>:null}{!w(MORE_SERVICE_SLOT)?null:d.surface==='mobile'||!Input?<Text>{w('talk.phone')}</Text>:<Box flexDirection="column"><Input key="coco:talk:input" placeholder={w('talk.placeholder')} onInput={()=>{}} onSubmit={()=>{}}/>{d.busy?null:<Button key="coco:talk:send" label={w('talk.send')} onPress={()=>{}}/>}</Box>}</Box>
 }
 export function MoreExplanation(E:MoreElements,d:MoreBookData & {text:string}):RenderElement {
   const {Box,Text,Markdown,Button}=E,w=(key:string)=>moreWord(key,d.snapshot.lang)

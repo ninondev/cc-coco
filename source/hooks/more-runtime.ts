@@ -20,7 +20,7 @@ import type { DmState, DmFirst } from './dm'
 import { runTalkKey, keyMessages, keyFailure, keyFailureText, keyCost, keyPriced, talkKeyPath, KEY_DIALOG_TIMEOUT } from './talk-key'
 import type { KeyFailure, KeyHost, KeyPrice, KeyReply, KeyRequest, KeyStore } from './talk-key'
 export type { MorePayerChoice, MoreKey, MoreKeyToday, MoreKeyView } from './more-state'
-export const MISSING_MORE_MODEL_SLOTS=['more.model.talk.persona','more.model.talk.compact','more.model.talk.first','more.model.look.prompt','more.model.lines.coco','more.model.lines.dake','more.model.lines.maid'] as const
+export const MISSING_MORE_MODEL_SLOTS=['more.model.talk.persona','more.model.talk.compact','more.model.talk.first','more.model.talk.persona.dake','more.model.talk.persona.maid','more.model.talk.compact.claudie','more.model.talk.first.claudie','more.model.look.prompt','more.model.lines.coco','more.model.lines.dake','more.model.lines.maid'] as const
 // Talk's history (owner, 10-10): compact into his notes once a Send would estimate over the trigger, keeping the
 // newest exchanges that fit TALK_RECENT verbatim; without a compact, keep the newest that fit TALK_HISTORY (about
 // 90,000 since his 10-17 「记录8万改成上下文9万」). The whole request never passes TALK_CAP (TALK-KEY 2). Estimates
@@ -34,13 +34,18 @@ export const TALK_HISTORY=90000
 export const TALK_DEFAULT_REPLY_TOKENS=1024
 export const TALK_COMPACT_TOKENS=1000
 export const TALK_NOTES_HEAD='Your notes from earlier in this chat:'
+// Coco and Claudie share one chat (owner 10-21): the other one's replies reach the model under their name, and Coco is
+// told who that is (her persona says it for her).
+export const TALK_SHARED_COCO='You and Claudie (Claude, in her gown or her maid outfit) take turns on the band and share this one chat, so some earlier replies are hers. They are marked [Claudie].'
 // Talk remembers them across sessions (owner 10-17: 「记住最近的聊天」): the newest plain chat, at most this many items and
 // this estimate, and its notes, kept on this computer only; secrets hidden, work and failure lines never kept.
 export const TALK_MEMORY_ITEMS=24
 export const TALK_MEMORY=6000
-export type TalkMemory={exchanges:{side:'person'|'him';text:string}[];summary?:string}
+export type TalkMemory={exchanges:{side:'person'|'him';text:string;who?:TalkWho}[];summary?:string}
+// Who wrote one of his messages: Coco when unset, Claudie (gown or maid) once she is worn (owner 10-21).
+export type TalkWho='claudie'
 // A failure line (TALK-KEY 3) is a bubble too: shown in his place, never his voice, never in a prompt.
-export type MoreBubble={side:'person'|'him';text:string;work?:string;failure?:KeyFailure;retry?:string}
+export type MoreBubble={side:'person'|'him';text:string;work?:string;failure?:KeyFailure;retry?:string;who?:TalkWho}
 export type MoreModelWords=Partial<Record<typeof MISSING_MORE_MODEL_SLOTS[number],string>>
 type Timer={cancel:()=>void}
 // A written set of lines: 24 groups of three short lines, one JSON object (line-library.ts), well under this.
@@ -410,7 +415,7 @@ export class MoreRuntime {
  }
  talk($:EngineInterface,text:string,now:number,payer:MorePayerChoice=this.payer()):Promise<void>|undefined{
    if(!this.isOn('talk')||!this.canSend('talk')||this.busy||this.diaryBusy||!text.trim())return
-   const persona=this.modelWords['more.model.talk.persona']
+   const persona=this.talkSlot('persona')
    if(!persona)return // Missing authored text: fail closed; never substitute instructions.
    if(utf8(persona)>TALK_PERSONA_LIMIT)return // TALK-KEY 2 persona lint: never shipped over the bound.
    const generation=this.sessionGeneration,token=this.operationToken('talk')
@@ -437,7 +442,7 @@ export class MoreRuntime {
    return MORE_LANGUAGE[this.lang]?`Reply in ${MORE_LANGUAGE[this.lang]}.`:''
  }
  private async answer($:EngineInterface,text:string,persona:string,now:number,generation:number,token:number,payer:MorePayerChoice):Promise<void>{
-   const current=()=>generation===this.sessionGeneration&&this.operationCurrent('talk',token)
+   const current=()=>generation===this.sessionGeneration&&this.operationCurrent('talk',token),who=this.talkWho()
    // O8's secret families, before any send and either payer: refused and kept nowhere (TALK-KEY 3).
    if(secretHits(text.slice(0,100000)).length){
      this.talkInput=''
@@ -450,18 +455,18 @@ export class MoreRuntime {
      this.say('person',text);this.lastTalkAt=now
      await this.count($,'talk',undefined,await this.completionAt($,now),1,current())
      if(!current())return
-     this.his([{side:'him',text:this.w('talk.work'),work:text}])
+     this.his([{side:'him',text:this.w('talk.work'),work:text}],who)
      return
    }
    // Work messages, their answers and failure lines never ride in later prompts.
    const items=this.exchanges.filter(item=>!item.work&&!item.failure&&!(item.side==='person'&&this.exchanges.some(other=>other.work===item.text)))
    // The persona ends with his texting paragraph (DECISIONS 10-10): one text, so a new persona is one swap.
-   const system=persona
+   const system=!who.who&&items.some(item=>item.who)?persona+'\n\n'+TALK_SHARED_COCO:persona
    const facts=this.bindings.talkFacts?.(),language=this.replyLanguage(text,items)
    const context=[facts?talkContextLine(facts,this.lastTalkAt||undefined):'',language].filter(Boolean).join(' ')
    this.lastTalkAt=now
    this.say('person',text)
-   const line=(item:MoreExchange)=>`${item.side}: ${item.text}`
+   const line=(item:MoreExchange)=>`${item.side}: ${this.marked(item).text}`
    const estimate=(part:string)=>talkEstimate(part)-2000
    const prompt=(history:readonly MoreExchange[])=>[this.talkSummary?TALK_NOTES_HEAD+'\n'+this.talkSummary+'\n':'',...history.map(item=>line(item)+'\n'),context?context+'\n':'','person: '+text].join('')
    let history=items
@@ -469,7 +474,7 @@ export class MoreRuntime {
    // the compact kind, TALK-KEY K4); the newest stay as they are.
    if(this.talkSize(payer,system,prompt(history))>TALK_COMPACT_TRIGGER){
      const recent=talkHistory(items,line,TALK_RECENT,estimate),older=items.slice(0,items.length-recent.length)
-     const instruction=this.modelWords['more.model.talk.compact']
+     const instruction=this.talkSlot('compact')
      let compacted=false
      if(instruction&&older.length){
        // The compact request stays under TALK_CAP too: the oldest of what it summarises goes first if it must.
@@ -502,31 +507,31 @@ export class MoreRuntime {
    while(history.length&&this.over(this.talkSize(payer,system,prompt(history))))history=talkHistory(history,line,history.reduce((n,item)=>n+estimate(line(item)+'\n'),0)-1,estimate)
    if(this.over(this.talkSize(payer,system,prompt(history)))){
      // In place of his reply, with Ask Claude under it (TALK-KEY 2).
-     this.his([{side:'him',text:this.w('talk.tooLong'),work:text}])
+     this.his([{side:'him',text:this.w('talk.tooLong'),work:text}],who)
      return
    }
    const estimated=talkEstimate(system,prompt(history))
    if(payer==='key'){
      // The same words as the plan's prompt: his notes ride with the persona, the context line with this message.
      const notes=this.talkSummary?TALK_NOTES_HEAD+'\n'+this.talkSummary:''
-     const reply=await this.sendKey($,'talk',{system:notes?system+'\n\n'+notes:system,messages:keyMessages(history,context?context+'\n'+text:text)},estimated,now)
+     const reply=await this.sendKey($,'talk',{system:notes?system+'\n\n'+notes:system,messages:keyMessages(history.map(item=>this.marked(item)),context?context+'\n'+text:text)},estimated,now)
      if(!current())return
      if(reply.kind!=='ok'){this.failLine({side:'him',text:keyFailureText(keyFailure(reply),reply,this.lang,this.keyAt()),failure:keyFailure(reply),retry:text});return}
-     this.his(splitTalkReply(reply.text??'').map(text=>({side:'him' as const,text})))
+     this.his(splitTalkReply(reply.text??'').map(text=>({side:'him' as const,text})),who)
      return
    }
    // On the model the person picked; on their own connection none is picked for them (owner 10-17), so a fallback from
    // the key sends nothing until they pick one.
    const model=this.modelFor('talk')
-   if(!model){this.his([{side:'him',text:moreFill(this.w('talk.failed'),{reason:'model'})}]);return}
+   if(!model){this.his([{side:'him',text:moreFill(this.w('talk.failed'),{reason:'model'})}],who);return}
    const result=await this.completeRow($,'talk',{model,system,prompt:prompt(history),effort:'low'})
    await this.count($,'talk',result.usage,await this.completionAt($,now),1,current())
    await this.checkEstimate($,estimated,result.usage)
    if(!current())return
    if(result.isAnswered&&result.usage.output_tokens>=TALK_DEFAULT_REPLY_TOKENS)this.replyCut(now)
    if(result.isAnswered){const u=result.usage;this.talkMeasured={bytes:estimated+textBytes(result.text),tokens:u.input_tokens+u.cache_read_input_tokens+u.cache_creation_input_tokens+u.output_tokens,summary:this.talkSummary}}
-   if(result.isAnswered)this.his(splitTalkReply(result.text).map(text=>({side:'him' as const,text})))
-   else this.his([{side:'him',text:moreFill(this.w('talk.failed'),{reason:result.reason})}])
+   if(result.isAnswered)this.his(splitTalkReply(result.text).map(text=>({side:'him' as const,text})),who)
+   else this.his([{side:'him',text:moreFill(this.w('talk.failed'),{reason:result.reason})}],who)
  }
  /** A reply that reached its cap is shown as he wrote it; it is counted so we can see how often (lead, 10-10). */
  private replyCut(now:number):void{
@@ -544,7 +549,7 @@ export class MoreRuntime {
  }
  /** What Talk keeps for the next session: the newest plain exchanges within the memory's size, secrets hidden. */
  talkMemory():TalkMemory|undefined{
-   const hidden=this.w('key.hidden'),plain=this.exchanges.filter(item=>item.work===undefined&&!item.failure).map(item=>({side:item.side,text:hideSecrets(item.text,hidden)}))
+   const hidden=this.w('key.hidden'),plain=this.exchanges.filter(item=>item.work===undefined&&!item.failure).map(item=>({side:item.side,text:hideSecrets(item.text,hidden),...(item.who?{who:item.who}:{})}))
    const kept=talkHistory(plain,item=>`${item.side}: ${item.text}`,TALK_MEMORY,part=>talkEstimate(part)-2000).slice(-TALK_MEMORY_ITEMS)
    const summary=this.talkSummary?hideSecrets(this.talkSummary,hidden):''
    return kept.length||summary?{exchanges:kept,...(summary?{summary}:{})}:undefined
@@ -554,7 +559,7 @@ export class MoreRuntime {
  restoreTalk(value:unknown):void{
    if(!this.isOn('talk')||this.exchanges.length||!value||typeof value!=='object')return
    const memory=value as {exchanges?:unknown;summary?:unknown}
-   const items=(Array.isArray(memory.exchanges)?memory.exchanges:[]).filter((item):item is {side:'person'|'him';text:string}=>!!item&&typeof item==='object'&&((item as {side?:unknown}).side==='person'||(item as {side?:unknown}).side==='him')&&typeof (item as {text?:unknown}).text==='string').slice(-TALK_MEMORY_ITEMS).map(item=>({side:item.side,text:item.text.slice(0,TALK_MEMORY)}))
+   const items=(Array.isArray(memory.exchanges)?memory.exchanges:[]).filter((item):item is {side:'person'|'him';text:string}=>!!item&&typeof item==='object'&&((item as {side?:unknown}).side==='person'||(item as {side?:unknown}).side==='him')&&typeof (item as {text?:unknown}).text==='string').slice(-TALK_MEMORY_ITEMS).map(item=>({side:item.side,text:item.text.slice(0,TALK_MEMORY),...((item as {who?:unknown}).who==='claudie'?{who:'claudie' as const}:{})}))
    this.exchanges=items.map(item=>({...item}));this.talkView=items.map(item=>({...item}))
    if(typeof memory.summary==='string')this.talkSummary=memory.summary.slice(0,TALK_MEMORY)
    this.trimTalk()
@@ -563,10 +568,11 @@ export class MoreRuntime {
   * His reply: one history turn (parts joined by blank lines), each part its own message. The first shows now unless
   * one of his is still to come or has just appeared; every other waits its pause behind the ones before it.
   */
- private his(parts:MoreBubble[]):void{
+ private his(parts:MoreBubble[],who:{who?:TalkWho}=this.talkWho()):void{
    if(!parts.length)return
+   parts=parts.map(part=>({...part,...who}))
    const work=parts.find(part=>part.work)?.work
-   this.exchanges.push(work===undefined?{side:'him',text:talkTurnText(parts.map(part=>part.text))}:{side:'him',text:talkTurnText(parts.map(part=>part.text)),work})
+   this.exchanges.push(work===undefined?{side:'him',text:talkTurnText(parts.map(part=>part.text)),...who}:{side:'him',text:talkTurnText(parts.map(part=>part.text)),work,...who})
    const waiting=this.pendingParts.length>0||this.revealTimer!==undefined||this.settleTimer!==undefined
    const rest=waiting?parts:parts.slice(1)
    if(!waiting)this.showPart(parts[0]!)
@@ -643,7 +649,7 @@ export class MoreRuntime {
    this.dmCounts=next;this.dmSave()
  }
  /** Her first messages can be written by the model once lane B's instruction for them is there (fail closed). */
- get dmModelReady():boolean{return !!this.modelWords['more.model.talk.persona']&&!!this.modelWords['more.model.talk.first']}
+ get dmModelReady():boolean{return !!this.talkSlot('persona')&&!!this.talkSlot('first')}
  /**
   * She writes first while the thread is closed (dm.ts): about the first moment every rule allows, in one to three
   * messages written by the model when the person chose that and it answers, else one of her lines. They land in the
@@ -661,7 +667,8 @@ export class MoreRuntime {
      if(!texts.length){const line=this.bindings.dmLine?.(moment);if(line)texts=[line]}
      texts=texts.map(dmSpoken)
      if(!texts.length)return false
-     for(const text of texts){this.exchanges.push({side:'him',text});this.talkView.push({side:'him',text})}
+     const who=this.talkWho()
+     for(const text of texts){this.exchanges.push({side:'him',text,...who});this.talkView.push({side:'him',text,...who})}
      this.trimTalk();this.lastShownPart=texts.at(-1)!
      // Opening the thread does not add an opener on top of her own messages.
      this.openerAt=facts.now;this.openerSeen=this.dmStands=this.talkView.length
@@ -674,12 +681,13 @@ export class MoreRuntime {
  /** Her first messages written by the model on the chat's payer: lane B's instruction names the moment; the recent
   *  exchanges, his notes and the context line go with it, as with a reply. Nothing written is nothing sent. */
  private async dmWritten($:EngineInterface,moment:OpenerGroup,facts:OpenerFacts):Promise<string[]>{
-   const persona=this.modelWords['more.model.talk.persona'],cue=this.modelWords['more.model.talk.first']
+   const persona=this.talkSlot('persona'),cue=this.talkSlot('first')
    if(!persona||!cue||utf8(persona)>TALK_PERSONA_LIMIT)return []
    const generation=this.sessionGeneration,token=this.operationToken('talk')
    const current=()=>generation===this.sessionGeneration&&this.operationCurrent('talk',token)
-   const line=(item:MoreExchange)=>`${item.side}: ${item.text}`
+   const line=(item:MoreExchange)=>`${item.side}: ${this.marked(item).text}`
    const items=talkHistory(this.exchanges.filter(item=>!item.work&&!item.failure),line,TALK_RECENT,part=>talkEstimate(part)-2000)
+   const system=!this.linesForm&&items.some(item=>item.who)?persona+'\n\n'+TALK_SHARED_COCO:persona
    const talkFacts=this.bindings.talkFacts?.()
    const context=[talkFacts?talkContextLine(talkFacts,this.lastTalkAt||undefined):'',dmMomentLine(moment)].filter(Boolean).join(' ')
    const instruction=moreFill(cue,{moment:dmMomentLine(moment)})+'\nWrite in '+(MORE_LANGUAGE[this.lang]??'English')+'.'
@@ -688,12 +696,12 @@ export class MoreRuntime {
    try{
      if(payer==='key'){
        const notes=this.talkSummary?TALK_NOTES_HEAD+'\n'+this.talkSummary:''
-       const reply=await this.sendKey($,'talk',{system:notes?persona+'\n\n'+notes:persona,messages:keyMessages(items,context?context+'\n'+instruction:instruction),max_tokens:DM_FIRST_TOKENS},talkEstimate(persona,prompt),facts.now,0)
+       const reply=await this.sendKey($,'talk',{system:notes?system+'\n\n'+notes:system,messages:keyMessages(items.map(item=>this.marked(item)),context?context+'\n'+instruction:instruction),max_tokens:DM_FIRST_TOKENS},talkEstimate(system,prompt),facts.now,0)
        return current()&&reply.kind==='ok'?splitTalkReply(reply.text??'').slice(0,3):[]
      }
      const model=this.modelFor('talk')
      if(!model)return []
-     const result=await this.completeRow($,'talk',{model,system:persona,prompt,effort:'low',maxTokens:DM_FIRST_TOKENS})
+     const result=await this.completeRow($,'talk',{model,system,prompt,effort:'low',maxTokens:DM_FIRST_TOKENS})
      await this.count($,'talk',result.usage,await this.completionAt($,facts.now),0,current())
      return current()&&result.isAnswered?splitTalkReply(result.text).slice(0,3):[]
    }catch{return []}
@@ -701,7 +709,8 @@ export class MoreRuntime {
  private opener(quiet:boolean,now:number):boolean{
    const text=this.bindings.opener?.(quiet)
    if(!text)return false
-   this.exchanges.push({side:'him',text});this.showPart({side:'him',text});this.trimTalk()
+   const who=this.talkWho()
+   this.exchanges.push({side:'him',text,...who});this.showPart({side:'him',text,...who});this.trimTalk()
    this.openerAt=now;this.openerSeen=this.talkView.length
    this.remember()
    return true
@@ -968,6 +977,18 @@ export class MoreRuntime {
  /** The character worn now: Coco, or one of Claudie's forms. */
  setLinesForm(form:'dake'|'maid'|undefined):void{this.linesForm=form}
  private linesCharacter():LineCharacter{return this.linesForm??'coco'}
+ /** Who answers in Talk now: Claudie while one of her forms is worn, else Coco (owner 10-21). */
+ get talkSpeaker():TalkWho|undefined{return this.linesForm?'claudie':undefined}
+ private talkWho():{who?:TalkWho}{return this.linesForm?{who:'claudie'}:{}}
+ // Her persona is her form's; her first-message cue and her notes' instruction are one for both forms.
+ private talkSlot(slot:'persona'|'first'|'compact'):string|undefined{
+   const form=this.linesForm
+   return this.modelWords[!form?`more.model.talk.${slot}`:slot==='persona'?`more.model.talk.persona.${form}`:`more.model.talk.${slot}.claudie`]
+ }
+ /** One of his messages as the one answering now reads it: the other character's carry their name. */
+ private marked<T extends {side:'person'|'him';text:string;who?:TalkWho}>(item:T):T{
+   return item.side==='him'&&item.who!==this.talkSpeaker?{...item,text:`[${item.who?'Claudie':'Coco'}] ${item.text}`}:item
+ }
  private linesLangNow():string{return this.linesLang??this.lang}
  private linesView():MoreLines{
    const character=this.linesCharacter(),lang=this.linesLangNow(),key=`${character}:${lang}`

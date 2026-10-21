@@ -100,7 +100,9 @@ let dmNotify = true
 export function companionDm(on: boolean, thread?: readonly CompanionDmLine[], words?: CompanionDmWords, notify?: boolean): void {
   dmOn = on
   if (!on) dmThread = []
-  else if (thread) dmThread = thread.slice(-COMPANION_DM_LINES).map(line => ({ side: line.side, text: [...line.text].slice(0, COMPANION_DM_CHARS).join('') }))
+  // Each paragraph is its own bubble: the pets cap one bubble at the thread's 300 points, and a long reply in one bubble
+  // was cut off there (owner 10-21); paragraphs let the older ones give way instead.
+  else if (thread) dmThread = thread.flatMap(line => line.text.split(/\n[ \t]*\n/).map(text => text.trim()).filter(Boolean).map(text => ({ side: line.side, text }))).slice(-COMPANION_DM_LINES).map(line => ({ side: line.side, text: [...line.text].slice(0, COMPANION_DM_CHARS).join('') }))
   if (words) dmWords = { label: words.label.slice(0, 64), placeholder: words.placeholder.slice(0, 128) }
   if (notify !== undefined) dmNotify = notify
 }

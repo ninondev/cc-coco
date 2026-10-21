@@ -20,6 +20,9 @@ export function loadGapWords(read: () => Promise<string>): Promise<boolean> {
  return pending
 }
 export function resetGapWords(): void { WORDS = {}; loaded = false; generation++; pending = undefined }
+// Claudie's name as others call her (CANON: 大克, Claudeさま, 클로디…); she calls herself Claude.
+const CLAUDIE_NAMES: Record<string,string> = {zh:'大克','zh-Hant':'大克',ja:'Claudeさま',ko:'클로디',fr:'Claudette',de:'Claudi','es-ES':'Claudita','es-419':'Claudita','pt-BR':'Claudinha',it:'Claudina',hi:'क्लॉडी'}
+export function claudieName(lang: string): string {return CLAUDIE_NAMES[lang]??'Claudie'}
 export function gapCharacterName(lang: string): string {return (lang==='zh'||lang==='zh-Hant')?'小克':lang==='ja'?'Coco':lang==='ko'?'코코':lang==='hi'?'कोको':'Coco'}
 function gapName(lang: string, text: string): string { const name=gapCharacterName(lang);return text.replace(/(^|[^A-Za-z0-9_-])Coco(?=$|[^A-Za-z0-9_-])/gi,(_whole,before:string)=>before+name) }
 export function gapPool(lang: string, key: string): readonly string[] { const value=WORDS[key]?.[lang]??WORDS[key]?.en,pool=Array.isArray(value)?value:typeof value==='string'?[value]:[];return pool.map(text=>gapName(lang,text)) }
