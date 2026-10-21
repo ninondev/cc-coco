@@ -258,27 +258,27 @@ function prose(text: string): string {
 }
 
 let chineseSets: Promise<readonly [ReadonlySet<string>, ReadonlySet<string>]> | undefined
-async function chineseLanguage(text: string, candidates: readonly unknown[], read?: () => Promise<string>): Promise<'zh' | 'zh-Hant'> {
-  if (read) {
-    chineseSets ??= Promise.resolve().then(read).then(text => {
-      const data: unknown = JSON.parse(text)
-      if (!data || typeof data !== 'object' || Array.isArray(data)) throw new Error('Invalid Chinese script data')
-      const { TRADITIONAL_ONLY, SIMPLIFIED_ONLY } = data as Record<string, unknown>
-      if (typeof TRADITIONAL_ONLY !== 'string' || typeof SIMPLIFIED_ONLY !== 'string') throw new Error('Invalid Chinese script data')
-      return [new Set(TRADITIONAL_ONLY), new Set(SIMPLIFIED_ONLY)] as const
-    }).catch(error => { chineseSets = undefined; throw error })
-  }
-  if (chineseSets) {
-    const sets = await chineseSets.catch(() => undefined)
-    if (sets) {
-      const [traditional, simplified] = sets
-      let traditionalHits = 0, simplifiedHits = 0
-      for (const char of text) {
-        if (traditional.has(char)) traditionalHits++
-        if (simplified.has(char)) simplifiedHits++
-      }
-      if (traditionalHits !== simplifiedHits) return traditionalHits > simplifiedHits ? 'zh-Hant' : 'zh'
+// The same sets once read, for hearing without waiting (a DM's language, 10-21).
+let chineseReady: readonly [ReadonlySet<string>, ReadonlySet<string>] | undefined
+async function readChineseSets(read: () => Promise<string>): Promise<void> {
+  chineseSets ??= Promise.resolve().then(read).then(text => {
+    const data: unknown = JSON.parse(text)
+    if (!data || typeof data !== 'object' || Array.isArray(data)) throw new Error('Invalid Chinese script data')
+    const { TRADITIONAL_ONLY, SIMPLIFIED_ONLY } = data as Record<string, unknown>
+    if (typeof TRADITIONAL_ONLY !== 'string' || typeof SIMPLIFIED_ONLY !== 'string') throw new Error('Invalid Chinese script data')
+    return chineseReady = [new Set(TRADITIONAL_ONLY), new Set(SIMPLIFIED_ONLY)] as const
+  }).catch(error => { chineseSets = undefined; throw error })
+  await chineseSets.catch(() => undefined)
+}
+function chineseLanguage(text: string, candidates: readonly unknown[]): 'zh' | 'zh-Hant' {
+  if (chineseReady) {
+    const [traditional, simplified] = chineseReady
+    let traditionalHits = 0, simplifiedHits = 0
+    for (const char of text) {
+      if (traditional.has(char)) traditionalHits++
+      if (simplified.has(char)) simplifiedHits++
     }
+    if (traditionalHits !== simplifiedHits) return traditionalHits > simplifiedHits ? 'zh-Hant' : 'zh'
   }
   for (const candidate of candidates) {
     const fallback = langOf(candidate)
@@ -288,6 +288,12 @@ async function chineseLanguage(text: string, candidates: readonly unknown[], rea
 }
 
 export async function detectLanguage(text: string, fallbackCandidates: readonly unknown[] = [], readChinese?: () => Promise<string>): Promise<Heard | undefined> {
+  if (readChinese && /\p{Script=Han}/u.test(text)) await readChineseSets(readChinese)
+  return detectLanguageNow(text, fallbackCandidates)
+}
+
+/** detectLanguage without waiting: Traditional and Simplified Chinese told apart only once the band has read its sets. */
+export function detectLanguageNow(text: string, fallbackCandidates: readonly unknown[] = []): Heard | undefined {
   const rest = prose(text)
   const latin = (rest.match(/[\p{Script=Latin}]+(?:['’][\p{Script=Latin}]+)*/gu) ?? []).map(w => w.toLowerCase())
   const kana = (rest.match(/[ぁ-ゟ゠-ヿ]/g) ?? []).length
@@ -305,7 +311,7 @@ export async function detectLanguage(text: string, fallbackCandidates: readonly 
   ]
   const [lang, weight] = scripts.reduce((a, b) => (b[1] > a[1] ? b : a))
   if (weight >= 1 && weight >= words / 2) {
-    return { lang: lang === 'zh' ? await chineseLanguage(rest, fallbackCandidates, readChinese) : lang, confidence: Math.min(1, weight / (weight + words / 2)), words: Math.ceil(weight) }
+    return { lang: lang === 'zh' ? chineseLanguage(rest, fallbackCandidates) : lang, confidence: Math.min(1, weight / (weight + words / 2)), words: Math.ceil(weight) }
   }
   // Latin prose: each language's function words and its own letters. A word several languages share is split among
   // them, so "para" or "was" alone decides nothing and a short line in Spanish or German is heard (owner 10-18:

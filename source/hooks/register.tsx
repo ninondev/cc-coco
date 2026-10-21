@@ -23,7 +23,7 @@ import { costumedView, desktopBand, desktopDoor, planDesktop, rowsOf, squashedVi
 import type { DesktopClients } from './band.js'
 import {
   ABSOLUTELY_RIGHT, FORCE_PUSH, LOOPS, PERSON, PRAISE, STILL, TEST_RUN, TIMING, colorsOf, cueFor, fill, greetingFor,
-  HEARING, PRESENCE_LINES, detectLanguage, typed, initialView, langOf, languageOf, linesFor, localDay, localHour, macSystemLanguage, pick, sharedLineFor,
+  HEARING, PRESENCE_LINES, detectLanguage, detectLanguageNow, typed, initialView, langOf, languageOf, linesFor, localDay, localHour, macSystemLanguage, pick, sharedLineFor,
   NOT_FOUND, PLAN_TOOL, runMoment,
 } from './mood'
 import { COMPANION_DIR, COMPANION_FEED, companionActivity, companionEnded, companionKey, companionSeen, companionSession, companionTask, companionDock, companionDm, companionText, companionRequestText, clearCompanionLongTaskAuthorization } from './companion'
@@ -333,6 +333,8 @@ async function startM1($:Engine):Promise<void>{
  latest.settings={...latest.settings,voiceAskAgain:again===true,m1Always:alwaysSnapshot()}
  const runtime:MoreRuntime=new MoreRuntime(moreModelWords(MISSING_MORE_MODEL_SLOTS), {
   talkFacts:()=>({now:clockSnapshot,timeZone,working,tool:talkTool,mood:view.mood,test:talkTest,lastActiveAt:lastPromptAt||undefined}),
+  // the chat's language heard the way the band hears a prompt (no model): his reply is told to answer in it (10-21)
+  hearLanguage:text=>detectLanguageNow(text,[langChosen,cachedEngineSettings.language,heard,...locale]),
   debug:(step,detail)=>{diagnose($,step,undefined,detail)},
   dataFolder:()=>home?joinPath(home,'.local/share/coco/mod'):undefined,
   // the line library's files, where the person opens and edits them (his 10-17 cards)

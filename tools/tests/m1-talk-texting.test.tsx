@@ -194,7 +194,7 @@ describe('Talk texting',()=>{
   // In the request it is one line just before the person's message, and not in the system text.
   const {f,r}=runtime(()=>({text:'Mm.'}),{talkFacts:()=>facts})
   await r.talk(f.$,'still here?',AT)
-  expect(f.requests[0]!.prompt).toBe(talkContextLine(facts)+'\nperson: still here?');expect(f.requests[0]!.system).toBe(PERSONA)
+  expect(f.requests[0]!.prompt).toBe(talkContextLine(facts)+' Reply in the language of their message.\nperson: still here?');expect(f.requests[0]!.system).toBe(PERSONA)
  })
  test('the persona, the context line and the empty-chat framing stay within 10 % of their measured size (10-10)',()=>{
   const wednesday=AT-2*86400000

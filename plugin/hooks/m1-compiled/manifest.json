@@ -151,8 +151,8 @@
       "sha256": "466266f42a3d0e02d748c8e9f72889ceb172c9ce0fba75d693a5453252cceee4"
     },
     "hooks-source/mood.ts": {
-      "bytes": 24639,
-      "sha256": "adab55f7f719acc6edc7b1239b358d04cc62ffc9769e1cc3aa556a786d9abeae"
+      "bytes": 25138,
+      "sha256": "717487f00e0397426f14df199d57a83a2eca5ba93445cb7dcd3f7a3b38e01cde"
     },
     "hooks-source/line-library.ts": {
       "bytes": 6975,
@@ -403,8 +403,8 @@
       "sha256": "21092f50b3c04c3f0aed7725bf8f3123db94c5fad1b3e31ab8915759918995b3"
     },
     "hooks-source/more-runtime.ts": {
-      "bytes": 87370,
-      "sha256": "113280a676d8b06028877a14f6ce043d615907750c64abc961ff5b4080098715"
+      "bytes": 89113,
+      "sha256": "9230b4a001e59e1c2725627e06a0b56c01abc7901aa8b315df820b6a3f8efa30"
     },
     "hooks-source/talk-parts.ts": {
       "bytes": 7255,
@@ -419,8 +419,8 @@
       "sha256": "7d63419988858e6c1c9d53f6bdd15f1b1c4346cb2d10e521e4edcbde25febb91"
     },
     "hooks-source/talk-key.ts": {
-      "bytes": 11844,
-      "sha256": "e4c8f2fa392fee8a6da5ea77a9a5fbe5834042da922db35943c46e0b1bf93e83"
+      "bytes": 12313,
+      "sha256": "bdac3e5e82acfc9e860fdacd0fe9a0de9590a15df54e5106a3c24bbb160acd87"
     },
     "hooks-source/c3-runtime.ts": {
       "bytes": 31420,
@@ -663,8 +663,8 @@
       "sha256": "7a7c54b98091c26c776cdf126583846e28e46f3c675d28cc22fe0fb556d8f1aa"
     },
     "hooks-source/register.tsx": {
-      "bytes": 312119,
-      "sha256": "ed63a497ae0bae35a5352a71d32da44045b6da9eb1cb156200e6908662c86c6e"
+      "bytes": 312360,
+      "sha256": "f8a707ab72e3559707549682fbc679028628176e61a6446ef98b56d471f1eb97"
     },
     "hooks-source/touch-client.ts": {
       "bytes": 1190,
@@ -1053,6 +1053,7 @@
         "colorsOf": "mood__colorsOf",
         "cueFor": "mood__cueFor",
         "detectLanguage": "mood__detectLanguage",
+        "detectLanguageNow": "mood__detectLanguageNow",
         "fill": "mood__fill",
         "greetingFor": "mood__greetingFor",
         "initialView": "mood__initialView",
@@ -1082,8 +1083,9 @@
         "macSystemLanguage": 205,
         "typed": 246,
         "detectLanguage": 290,
-        "localHour": 331,
-        "localDay": 340,
+        "detectLanguageNow": 296,
+        "localHour": 337,
+        "localDay": 346,
         "TIMING": 13,
         "LOOPS": 25,
         "STILL": 31,
@@ -2659,7 +2661,7 @@
       "exportLines": {
         "talkEstimate": 58,
         "talkLooksLikeWork": 61,
-        "rewriteKeepsExact": 112,
+        "rewriteKeepsExact": 117,
         "MorePayerChoice": 22,
         "MoreKey": 22,
         "MoreKeyToday": 22,
@@ -2682,8 +2684,8 @@
         "DM_FIRST_TOKENS": 54,
         "EXPLAIN_TEXT_LIMIT": 56,
         "MoreBindings": 71,
-        "LOOK_DENY": 105,
-        "MoreRuntime": 121
+        "LOOK_DENY": 107,
+        "MoreRuntime": 126
       }
     },
     "hooks-source/talk-parts.ts": {
@@ -2793,6 +2795,7 @@
         "ANTHROPIC_HOST": "talk_key__ANTHROPIC_HOST",
         "DEFAULT_KEY_MODEL": "talk_key__DEFAULT_KEY_MODEL",
         "KEY_DIALOG_TIMEOUT": "talk_key__KEY_DIALOG_TIMEOUT",
+        "KEY_EARLIER": "talk_key__KEY_EARLIER",
         "KEY_ENDPOINT_SLOTS": "talk_key__KEY_ENDPOINT_SLOTS",
         "KEY_FAILURE_BUTTONS": "talk_key__KEY_FAILURE_BUTTONS",
         "KEY_NEAR_CAP": "talk_key__KEY_NEAR_CAP",
@@ -2822,12 +2825,12 @@
         "parseKeyReply": 83,
         "runTalkKey": 113,
         "keyMessages": 126,
-        "keyFailure": 156,
-        "keyFailureText": 172,
-        "keyPriced": 181,
-        "keyCost": 191,
-        "keyUsd": 197,
-        "keyTokens": 201,
+        "keyFailure": 161,
+        "keyFailureText": 177,
+        "keyPriced": 186,
+        "keyCost": 196,
+        "keyUsd": 202,
+        "keyTokens": 206,
         "KeyPlatform": 8,
         "KeyStore": 9,
         "KeyKind": 10,
@@ -2840,12 +2843,13 @@
         "KEY_PER_MINUTE": 38,
         "KeyArch": 40,
         "KeyHost": 107,
-        "KeyFailure": 140,
-        "KEY_FAILURE_BUTTONS": 141,
-        "ANTHROPIC_HOST": 163,
-        "DEFAULT_KEY_MODEL": 164,
-        "KEY_ENDPOINT_SLOTS": 186,
-        "KeyPrice": 188
+        "KEY_EARLIER": 141,
+        "KeyFailure": 145,
+        "KEY_FAILURE_BUTTONS": 146,
+        "ANTHROPIC_HOST": 168,
+        "DEFAULT_KEY_MODEL": 169,
+        "KEY_ENDPOINT_SLOTS": 191,
+        "KeyPrice": 193
       }
     },
     "hooks-source/c3-runtime.ts": {
@@ -4568,16 +4572,16 @@
     "hooks/line-types.ts",
     "hooks/lines.ts",
     "hooks/m1-always.ts",
-    "hooks/m1-compiled/chunk-1bk8h35w.js",
-    "hooks/m1-compiled/chunk-420118w3.js",
-    "hooks/m1-compiled/chunk-94287a9e.js",
-    "hooks/m1-compiled/chunk-crwyzjxe.js",
-    "hooks/m1-compiled/chunk-e380e1ry.js",
-    "hooks/m1-compiled/chunk-g121076t.js",
-    "hooks/m1-compiled/chunk-g9q5n1wt.js",
-    "hooks/m1-compiled/chunk-hw883g9m.js",
+    "hooks/m1-compiled/chunk-08y9etg1.js",
+    "hooks/m1-compiled/chunk-6v2edn5m.js",
+    "hooks/m1-compiled/chunk-by89b9g9.js",
+    "hooks/m1-compiled/chunk-ft5vjz5f.js",
+    "hooks/m1-compiled/chunk-fxrsgv47.js",
+    "hooks/m1-compiled/chunk-hh8dskb1.js",
     "hooks/m1-compiled/chunk-jahhamrc.js",
-    "hooks/m1-compiled/chunk-qgzmz5x2.js",
+    "hooks/m1-compiled/chunk-k32yxvmt.js",
+    "hooks/m1-compiled/chunk-s53fb0sv.js",
+    "hooks/m1-compiled/chunk-v09trn27.js",
     "hooks/m1-compiled/companion.d.ts",
     "hooks/m1-compiled/companion.js",
     "hooks/m1-compiled/manifest.json",
@@ -4661,20 +4665,20 @@
     "hooks/words.ts"
   ],
   "chunkBytes": {
-    "chunk-1bk8h35w.js": 91786,
-    "chunk-420118w3.js": 199471,
-    "chunk-94287a9e.js": 10209,
-    "chunk-crwyzjxe.js": 63535,
-    "chunk-e380e1ry.js": 224144,
-    "chunk-g121076t.js": 20980,
-    "chunk-g9q5n1wt.js": 46697,
-    "chunk-hw883g9m.js": 208186,
+    "chunk-08y9etg1.js": 208381,
+    "chunk-6v2edn5m.js": 20974,
+    "chunk-by89b9g9.js": 92619,
+    "chunk-ft5vjz5f.js": 199475,
+    "chunk-fxrsgv47.js": 46697,
+    "chunk-hh8dskb1.js": 63535,
     "chunk-jahhamrc.js": 63116,
-    "chunk-qgzmz5x2.js": 358778,
-    "companion.js": 110810,
-    "motion_stills.js": 219126,
+    "chunk-k32yxvmt.js": 10209,
+    "chunk-s53fb0sv.js": 358983,
+    "chunk-v09trn27.js": 224144,
+    "companion.js": 110859,
+    "motion_stills.js": 219189,
     "pages.js": 67905,
     "presence.js": 13391,
-    "register.js": 223502
+    "register.js": 223624
   }
 }

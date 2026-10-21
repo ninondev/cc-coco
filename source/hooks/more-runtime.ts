@@ -76,6 +76,8 @@ export type MoreBindings={
  livelyStopped?:()=>void
  /** Facts for Talk's context line: only enumerated values and numbers (talk-parts.ts). */
  talkFacts?:()=>TalkFacts
+ /** The language of what the person wrote, heard on this computer (mood.ts detectLanguage): no model, no request. */
+ hearLanguage?:(text:string)=>{lang:string;confidence:number}|undefined
  /** Debug-only diagnostics (no text of the chat). */
  debug?:(step:string,detail?:Record<string,unknown>)=>void
  // Where the key program lives and whether this is the desktop app; undefined where it cannot run.
@@ -106,6 +108,9 @@ export const LOOK_DENY='Only the changed files listed in the request can be read
 // The person's language by its English name, the last line of a request whose answer is shown to them (lane B's
 // instructions: «Write in the language named at the end»): the second look's, Claudie's lines, her first DMs.
 const MORE_LANGUAGE:Record<string,string>=Object.fromEntries(LANGS.map(lang=>[lang.code,lang.english]))
+// A message is heard by name at the band's own bar (mood.ts HEARING.sure); one with this many letters and no name heard
+// is still words in some language, so his reply follows it rather than an older one.
+const TALK_LANGUAGE_SURE=0.7,TALK_LANGUAGE_LETTERS=6
 function boundedMoreValues(values:MoreValues):MoreValues {const safe={...values};for(const id of MORE_IDS)if(!moreBoundarySupported(id))delete safe[id];return safe}
 // 口语版 keeps the original's exact parts (his card 10-20): a code line or span, a link, or a number of two or more
 // digits missing from the rewrite shows the original instead.
@@ -414,6 +419,23 @@ export class MoreRuntime {
    for(const item of this.pendingParts)item.quick=true
    return this.answer($,text,persona,now,generation,token,payer).finally(()=>{if(generation===this.sessionGeneration&&this.operationToken('talk')===token){this.busy=false;this.busyOwner=undefined;if(this.isOn('talk'))$.ui.invalidate('ui.render')}})
  }
+ /** The language his reply is named (owner 10-21, any language): what the person just wrote, heard clearly; else, when
+  *  it has words in a language not heard by name, theirs; else (too short: «ok», «好») their last message heard in
+  *  this chat; else the band's. Without it a short Chinese line once got Japanese, the persona's examples outweighing it. */
+ private replyLanguage(text:string,history:readonly MoreExchange[]):string{
+   const named=(said:string)=>{let heard:{lang:string;confidence:number}|undefined;try{heard=this.bindings.hearLanguage?.(said)}catch{};return heard&&heard.confidence>=TALK_LANGUAGE_SURE?MORE_LANGUAGE[heard.lang]:undefined}
+   const wordy=(said:string)=>(said.match(/\p{L}/gu)??[]).length>=TALK_LANGUAGE_LETTERS
+   const now=named(text)
+   if(now)return `Reply in ${now}.`
+   if(wordy(text))return 'Reply in the language of their message.'
+   for(const item of [...history].reverse()){
+     if(item.side!=='person')continue
+     const before=named(item.text)
+     if(before)return `Reply in ${before}.`
+     if(wordy(item.text))return 'Reply in the language of their messages.'
+   }
+   return MORE_LANGUAGE[this.lang]?`Reply in ${MORE_LANGUAGE[this.lang]}.`:''
+ }
  private async answer($:EngineInterface,text:string,persona:string,now:number,generation:number,token:number,payer:MorePayerChoice):Promise<void>{
    const current=()=>generation===this.sessionGeneration&&this.operationCurrent('talk',token)
    // O8's secret families, before any send and either payer: refused and kept nowhere (TALK-KEY 3).
@@ -435,7 +457,8 @@ export class MoreRuntime {
    const items=this.exchanges.filter(item=>!item.work&&!item.failure&&!(item.side==='person'&&this.exchanges.some(other=>other.work===item.text)))
    // The persona ends with his texting paragraph (DECISIONS 10-10): one text, so a new persona is one swap.
    const system=persona
-   const facts=this.bindings.talkFacts?.(),context=facts?talkContextLine(facts,this.lastTalkAt||undefined):''
+   const facts=this.bindings.talkFacts?.(),language=this.replyLanguage(text,items)
+   const context=[facts?talkContextLine(facts,this.lastTalkAt||undefined):'',language].filter(Boolean).join(' ')
    this.lastTalkAt=now
    this.say('person',text)
    const line=(item:MoreExchange)=>`${item.side}: ${item.text}`

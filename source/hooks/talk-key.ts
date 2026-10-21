@@ -125,15 +125,20 @@ export async function runTalkKey($: Pick<EngineInterface, 'env' | 'fs' | 'proces
 /** Alternating turns from user to user, as the program requires; same-side neighbours are joined. */
 export function keyMessages(history: { side: 'person' | 'him'; text: string }[], text: string): KeyMessage[] {
   const messages: KeyMessage[] = []
+  // A request starts with the person, so what he said before their first message rides in it, marked as his (10-21:
+  // dropped, his Chinese openers left a short message and the persona's Japanese to decide the language).
+  const before: string[] = []
   for (const item of [...history, { side: 'person' as const, text }]) {
     const role = item.side === 'person' ? 'user' : 'assistant'
     const last = messages.at(-1)
-    if (!last && role === 'assistant') continue
-    if (last?.role === role) last.content += '\n' + item.text
+    if (!last && role === 'assistant') before.push(item.text)
+    else if (!last && before.length) messages.push({ role, content: KEY_EARLIER + '\n' + before.join('\n') + '\n\n' + item.text })
+    else if (last?.role === role) last.content += '\n' + item.text
     else messages.push({ role, content: item.text })
   }
   return messages
 }
+export const KEY_EARLIER = 'Your earlier messages in this chat:'
 
 // What the failure line offers (TALK-KEY 3 «Failures», card 1, tk-failure-lines 10-09). The four computer-side
 // failures are one line with «Open Settings»; the fallback sends that one message on the session's payer.
