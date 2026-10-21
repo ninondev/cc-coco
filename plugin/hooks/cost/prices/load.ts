@@ -2,19 +2,23 @@
 // Pure: fetching, timers and clock are injected via LoadDeps.
 import { parsePricePage } from './page';
 import type { PriceRow } from './page';
-import { filterOthers } from './others';
+import { readOthersList } from './others';
 import type { OtherMaker } from './others';
 
 export const PRICE_PAGE_URL = 'https://platform.claude.com/docs/en/about-claude/pricing.md';
-export const OTHERS_URL = 'https://raw.githubusercontent.com/BerriAI/litellm/main/model_prices_and_context_window.json';
+// LiteLLM's public table, read once a day on GitHub to make the small list below (tools/prices/others-list.ts).
+export const LITELLM_URL = 'https://raw.githubusercontent.com/BerriAI/litellm/main/model_prices_and_context_window.json';
+export const LITELLM_MAX_BYTES = 8_000_000;
+// What Coco itself downloads when the other makers are unfolded: a few kilobytes (readOthersList).
+export const OTHERS_URL = 'https://raw.githubusercontent.com/ninondev/cc-coco/prices/others.json';
 export const FETCH_LIMIT_MS = 6000;
-export const OTHERS_MAX_BYTES = 8_000_000;
+export const OTHERS_MAX_BYTES = 65_536;
 export const SHIPPED_MAX_AGE_DAYS = 14;
 
 // Count the decompressed UTF-8 response without allocating a second copy.
 // Stop at the limit, including replacement bytes for unpaired surrogates.
-export function otherResponseWithinLimit(text: string): boolean {
-  if (typeof text !== 'string' || text.length > OTHERS_MAX_BYTES) return false;
+export function otherResponseWithinLimit(text: string, limit = OTHERS_MAX_BYTES): boolean {
+  if (typeof text !== 'string' || text.length > limit) return false;
   let bytes = 0;
   for (let i = 0; i < text.length; i++) {
     const c = text.charCodeAt(i);
@@ -23,7 +27,7 @@ export function otherResponseWithinLimit(text: string): boolean {
     else if (c >= 0xd800 && c <= 0xdbff && i + 1 < text.length &&
       text.charCodeAt(i + 1) >= 0xdc00 && text.charCodeAt(i + 1) <= 0xdfff) { bytes += 4; i++; }
     else bytes += 3;
-    if (bytes > OTHERS_MAX_BYTES) return false;
+    if (bytes > limit) return false;
   }
   return true;
 }
@@ -215,9 +219,9 @@ export function loadClaudePrices(d: LoadDeps & { stored: StoredPrices | null; sh
 }
 
 export function loadOtherPrices(
-  d: LoadDeps & { stored: StoredOthers | null; shipped: ShippedPrices; today: string },
+  d: LoadDeps & { stored: StoredOthers | null; shipped: ShippedPrices },
 ): Promise<LoadedOthers> {
-  const deps = (d ?? {}) as LoadDeps & { stored: StoredOthers | null; shipped: ShippedPrices; today: string };
+  const deps = (d ?? {}) as LoadDeps & { stored: StoredOthers | null; shipped: ShippedPrices };
   const fallback = (): { makers: OtherMaker[]; from: 'fetched' | 'shipped'; at: number | null } => {
     const stored = deps.stored ?? null;
     const shipped = deps.shipped;
@@ -256,10 +260,14 @@ export function loadOtherPrices(
     },
     (text) => {
       if (!otherResponseWithinLimit(text)) throw new Error('other price response exceeds byte limit');
-      const makers = filterOthers(JSON.parse(text), deps.today);
-      if (makers.length === 0) throw new Error('no other makers found');
-      const fetchedAt = deps.now();
-      return { makers, from: 'fetched', at: fetchedAt, why: null, store: { fetchedAt, makers } };
+      // The list's own time, so a list the daily job stopped making shows its real date.
+      const list = readOthersList(JSON.parse(text), deps.now());
+      const start = dayStart(deps.shipped != null ? deps.shipped.asOf : undefined);
+      if (start !== null && list.at < start) {
+        const f = fallback();
+        return { makers: f.makers, from: f.from, at: f.at, why: null, store: null };
+      }
+      return { makers: list.makers, from: 'fetched', at: list.at, why: null, store: { fetchedAt: list.at, makers: list.makers } };
     },
   );
 }

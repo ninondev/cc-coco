@@ -1,0 +1,49 @@
+name: Other makers' prices
+
+# Once a day, LiteLLM's public price table goes through the plugin's own filter (tools/prices/others-list.ts) and the
+# few kilobytes it keeps are published as others.json on the prices branch, one commit that each run replaces. Coco
+# downloads that file when the other makers are unfolded on its Prices page; the 3 MB table itself never reaches it.
+# A run that fails leaves yesterday's list in place, and Coco shows the date the list was made.
+on:
+  schedule:
+    - cron: "23 4 * * *"
+  workflow_dispatch:
+
+# Writes the prices branch only. A push made with this token starts no other workflow, so CI does not run on it.
+permissions:
+  contents: write
+
+concurrency:
+  group: prices
+  cancel-in-progress: false
+
+env:
+  BUN_VERSION: "1.4.2"
+
+jobs:
+  list:
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    defaults:
+      run:
+        shell: bash
+    steps:
+      - uses: actions/checkout@v6
+
+      - name: Install Bun
+        run: |
+          curl -fsSL https://bun.sh/install | bash -s "bun-v$BUN_VERSION"
+          echo "$HOME/.bun/bin" >> "$GITHUB_PATH"
+
+      - name: Make the list
+        run: bun --no-env-file tools/prices/others-list.ts "$RUNNER_TEMP/prices/others.json"
+
+      - name: Publish it on the prices branch
+        run: |
+          git checkout --orphan prices
+          git rm -rfq .
+          cp "$RUNNER_TEMP/prices/others.json" others.json
+          git add others.json
+          git -c user.name="github-actions[bot]" -c user.email="41898282+github-actions[bot]@users.noreply.github.com" \
+            commit -q -m "Other makers' prices, $(date -u +%F)"
+          git push -f origin prices

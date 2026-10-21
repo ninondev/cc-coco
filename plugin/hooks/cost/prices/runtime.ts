@@ -108,7 +108,7 @@ export function createPricesController(o: PricesControllerOptions) {
     try {
       const raw = await o.store.get('prices.others') as { fetchedAt: number; rows: OtherMaker[] } | null
       if (gen !== generation || !opened) return
-      const result = await loadOtherPrices({ ...deps, policyRefuses: o.policyRefusesOthers ?? deps.policyRefuses, stored: raw && Array.isArray(raw.rows) ? { fetchedAt: raw.fetchedAt, makers: raw.rows } : null, shipped: o.shipped, today: localDay(deps.now()) })
+      const result = await loadOtherPrices({ ...deps, policyRefuses: o.policyRefusesOthers ?? deps.policyRefuses, stored: raw && Array.isArray(raw.rows) ? { fetchedAt: raw.fetchedAt, makers: raw.rows } : null, shipped: o.shipped })
       if (gen !== generation || !opened) return
       if (result.store) await o.store.set('prices.others', { fetchedAt: result.store.fetchedAt, rows: result.store.makers })
       if (gen === generation && opened) apply({ others: result, checkingOthers: false })

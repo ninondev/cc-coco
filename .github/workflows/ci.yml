@@ -90,6 +90,9 @@ jobs:
     # Not tried on a real Windows machine yet; failures are reported without blocking the release.
     continue-on-error: true
     timeout-minutes: 150
+    # Python reads and writes files as UTF-8, as on macOS and Linux; Windows' own default cannot read the Chinese in them.
+    env:
+      PYTHONUTF8: "1"
     defaults:
       run:
         shell: pwsh

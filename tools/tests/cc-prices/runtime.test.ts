@@ -1,6 +1,6 @@
 import { expect, test } from 'bun:test'
 import { createPricesController, estimateOtherModel, recordModelUsed } from '../../../plugin/hooks/cost/prices/runtime.ts'
-import { expectedRows, expectedOthers, pricingPage, litellmData, NOW, fakeDeps } from './helpers'
+import { expectedRows, expectedOthers, pricingPage, othersList, NOW, fakeDeps } from './helpers'
 import type { LoadDeps } from '../../../plugin/hooks/cost/prices/load'
 const shipped = { asOf: '2026-10-06', source: 'fixture', rows: expectedRows, others: expectedOthers }
 function fixture(over: Partial<LoadDeps> = {}) {
@@ -40,7 +40,7 @@ test('W2 constructor and redraws stay offline; one Claude fetch per opening; oth
 
 test('W2 the injected boundary receives URL only, with no init or auth; others persistence shape', async () => {
   const args: unknown[][] = []
-  const f = fixture({ fetchText: async (...call: [string]) => { args.push(call); return call[0].includes('pricing.md') ? pricingPage : JSON.stringify(litellmData) } })
+  const f = fixture({ fetchText: async (...call: [string]) => { args.push(call); return call[0].includes('pricing.md') ? pricingPage : othersList() } })
   await f.c.open()
   await f.c.openOthers()
   expect(args).toHaveLength(2)
@@ -115,13 +115,13 @@ test('managed refusal is specific to each source: denied Claude does not disable
   const c = createPricesController({
     shipped, store: { get: async key => raw.get(key), set: async (key, value) => { raw.set(key, value) } },
     policyRefusesOthers: false,
-    deps: { now: () => NOW, env: {}, policyRefuses: true, after: () => () => {}, fetchText: async url => { calls.push(url); return JSON.stringify(litellmData) } },
+    deps: { now: () => NOW, env: {}, policyRefuses: true, after: () => () => {}, fetchText: async url => { calls.push(url); return othersList() } },
   })
   await c.open()
   expect(c.state().why).toBe('off')
   await c.openOthers()
   expect(calls).toHaveLength(1)
-  expect(calls[0]).toContain('litellm')
+  expect(calls[0]).toContain('prices/others.json')
   expect(c.state().others?.why).toBeNull()
 })
 

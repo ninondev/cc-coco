@@ -1,13 +1,13 @@
 {
   "kitSanctioned": {
-    "reason": "Owner decisions 10-06 to 10-07 (DECISIONS, COST-CACHE cards 1 and 3): the Prices page fetches Anthropic's public price page once each time it is opened, and LiteLLM's public price list once when the other makers are unfolded, as plain GETs with no headers, body or credentials. The kit tests of that page must be able to answer those two requests from their own mock.",
+    "reason": "Owner decisions 10-06 to 10-07 (DECISIONS, COST-CACHE cards 1 and 3) and 10-21 (card: the small daily list): the Prices page fetches Anthropic's public price page once each time it is opened, and the other makers' daily list (a few kilobytes on the public repository's prices branch, made from LiteLLM's table) once when the other makers are unfolded, as plain GETs with no headers, body or credentials. The kit tests of that page must be able to answer those two requests from their own mock.",
     "urls": [
       "https://platform.claude.com/docs/en/about-claude/pricing.md",
-      "https://raw.githubusercontent.com/BerriAI/litellm/main/model_prices_and_context_window.json"
+      "https://raw.githubusercontent.com/ninondev/cc-coco/prices/others.json"
     ],
     "testNamePrefixes": [
       "K1 mounted Prices",
-      "S16 unsupported HTTP adapter"
+      "S16 other makers' list"
     ]
   }
 }

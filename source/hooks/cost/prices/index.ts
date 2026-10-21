@@ -10,7 +10,7 @@ export {
   type RowStatus,
 } from './page';
 export { normalizeModelId, priceAt, priceFor } from './ids';
-export { filterOthers, OTHER_MAKERS, type OtherMaker, type OtherModel } from './others';
+export { filterOthers, readOthersList, OTHER_MAKERS, OTHERS_PER_MAKER, OTHERS_LIST_VERSION, type OtherMaker, type OtherModel } from './others';
 export {
   loadClaudePrices,
   loadOtherPrices,
@@ -22,6 +22,8 @@ export {
   OTHERS_MAX_BYTES,
   otherResponseWithinLimit,
   OTHERS_URL,
+  LITELLM_URL,
+  LITELLM_MAX_BYTES,
   PRICE_PAGE_URL,
   SHIPPED_MAX_AGE_DAYS,
   type ChosenTable,

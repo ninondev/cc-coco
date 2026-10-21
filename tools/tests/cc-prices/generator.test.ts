@@ -4,9 +4,9 @@ import { join } from 'node:path'
 const root = join(import.meta.dir, '../../..')
 function check(today: string) { return spawnSync('python3', ['tools/build-prices.py', '--check', '--release', '--today', today], { cwd: root, encoding: 'utf8' }) }
 test('W9 saved page, both shipped snapshots and release age agree', () => {
-  const fresh = check('2026-10-20')
+  const fresh = check('2026-11-04')
   expect(fresh.status).toBe(0)
-  const stale = check('2026-10-21')
+  const stale = check('2026-11-05')
   expect(stale.status).toBe(1)
   expect(stale.stdout).toContain('older than 14 days')
 })

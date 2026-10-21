@@ -91,6 +91,11 @@ export function fakeDeps(over: Record<string, unknown> = {}): FakeDeps {
   return { d, calls, timers, fetch };
 }
 
+// The daily list Coco downloads (readOthersList): what filterOthers kept, with the time it was made.
+export function othersList(makers: unknown = expectedOthers, generatedAt: string = new Date(NOW).toISOString(), extra: Record<string, unknown> = {}): string {
+  return JSON.stringify({ version: 1, generatedAt, source: 'fixture', makers, ...extra });
+}
+
 // A shipped table with the given rows and as-of day.
 export const DAY = '2026-10-06';
 export const dayMs = (key: string): number => Date.UTC(Number(key.slice(0, 4)), Number(key.slice(5, 7)) - 1, Number(key.slice(8, 10)));

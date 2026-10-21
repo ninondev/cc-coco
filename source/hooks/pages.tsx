@@ -349,10 +349,8 @@ async function beginPrices($: Engine): Promise<void> {
       after: (ms, fn) => startPriceTimer!(ms, fn),
       fetchText: async url => {
         if (pricePolicyRefuses(policy, url)) throw Error('managed WebFetch denial')
-        // SDK 286/289 returns a fully buffered body and has no cancellable,
-        // byte-bounded HTTP request. Retain the approved LiteLLM source and
-        // dated fallback until that transport boundary can enforce both.
-        if (url === priceRuntime.OTHERS_URL) throw Error('bounded cancellable other-price transport unavailable')
+        // The host reads a whole response with no size limit, so the other makers come from the few-kilobyte
+        // daily list (OTHERS_URL), never LiteLLM's 3 MB table itself; load.ts refuses a list over 64 KB.
         const response = await $.http.fetch(url)
         if (!response.ok) throw Error('public price page unavailable')
         priceNow = await $.clock.now()

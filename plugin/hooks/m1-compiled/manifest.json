@@ -247,8 +247,8 @@
       "sha256": "b7f26a14914751025151e5be54348861420d08c710c63a26ab36fef6cd7925e0"
     },
     "hooks-source/pages.tsx": {
-      "bytes": 118938,
-      "sha256": "f565c3626bdba8d1617b8ff72ec316cba61244223fd5dfb43dc54fed36382ca1"
+      "bytes": 118812,
+      "sha256": "d39d4efaedb4f6af225fa8765ff5a660c6614145b3ab71de667dbe736d380dff"
     },
     "hooks-source/words.ts": {
       "bytes": 57381,
@@ -519,8 +519,8 @@
       "sha256": "47bc59f18089234890ca1975601ea9a0e4d63c2cb3bee8592f088858fbdea9d1"
     },
     "hooks-source/cost/units.js": {
-      "bytes": 30906,
-      "sha256": "5cea0371301401ee5b62862fe639a421e9d36408bf72d6deeea9069df7334671"
+      "bytes": 29496,
+      "sha256": "710b481474cdb8028eb6be0868a7480ce2b49b6587ce4ccdf342321f0c809787"
     },
     "hooks-source/cost/state.ts": {
       "bytes": 285,
@@ -540,7 +540,7 @@
     },
     "hooks-source/cost/prices-page.tsx": {
       "bytes": 6857,
-      "sha256": "7f5f80e645a74b71e7e01d13d7591398e10cb55144d6749443e015af8606e989"
+      "sha256": "43892a4a64d86609e127173f2bd2422b34c3ce80e5e11957c5298caeb297ca05"
     },
     "hooks-source/presence.ts": {
       "bytes": 51046,
@@ -775,24 +775,24 @@
       "sha256": "dcf76a269d3f737d1329b777640092067ef2c0d449f5787a4ffd57d2401c0778"
     },
     "hooks-source/cost/prices/index.ts": {
-      "bytes": 841,
-      "sha256": "da87f0952844ab2a15b7f3ae5d7227b5a68785861e7a5faef0b30437ccbd5c03"
+      "bytes": 932,
+      "sha256": "9d28b3367c01d7ab34ee5f64028891b8e5fd4648c30a9957456c0619f2ab9f3d"
     },
     "hooks-source/cost/prices/load.ts": {
-      "bytes": 9081,
-      "sha256": "6200bde1b8f79e3720a0a2e7f9e26adecdcfc4a906c584c1de96297733e9b86f"
+      "bytes": 9679,
+      "sha256": "2b2dc7f4e02fb4f207e089a5daed1aa8e2d263cf7466f2e5b038a80e8ac33a1c"
     },
     "hooks-source/cost/prices/others.ts": {
-      "bytes": 5984,
-      "sha256": "94975e0adf409dd163b9a53b583208df79ae573ce2bc809bd980f7dc47b6d93c"
+      "bytes": 8503,
+      "sha256": "bd479ec8820f1c6db58d81e2d43b47da5f1fab781aa5e4137957bc113a187f61"
     },
     "hooks-source/cost/prices/page.ts": {
       "bytes": 6395,
       "sha256": "778a118c49ff8487b6f20f2f22be664d4b16dcec59aeaf0960600508c397f3e3"
     },
     "hooks-source/cost/prices/runtime.ts": {
-      "bytes": 7542,
-      "sha256": "03cd5142bce4d48082028479aa5d7ea95f7684e04f459652a78fc70a868f58d1"
+      "bytes": 7513,
+      "sha256": "c89563fa63d15d5abfc8bdbc9c0879c636a528a64a0441e91ab971c7f4b5cef6"
     },
     "hooks-source/cost/runtime.d.ts": {
       "bytes": 249,
@@ -804,7 +804,7 @@
     },
     "hooks-source/cost/units.d.ts": {
       "bytes": 532,
-      "sha256": "de211e68a319bed61731c9995caf7cd1dec865369d3cf6c0f86f95cbcbad389f"
+      "sha256": "a841d84c079ea5e6bcfab91ee8e99301d37ba8c82e577bce0f9d66d1510b2dee"
     },
     "hooks-source/cost/warm-runtime.ts": {
       "bytes": 11721,
@@ -1674,41 +1674,41 @@
         "takeBookDrawReport": 297,
         "setPriceTimer": 301,
         "pricePolicyRefuses": 317,
-        "setIconSettingsWriter": 386,
-        "resetIconSession": 387,
-        "iconFirstDraw": 394,
-        "iconSettingsHydrated": 401,
-        "iconWord": 413,
-        "iconCommand": 417,
-        "iconAutomatic": 444,
-        "setCheckSessionsReader": 541,
-        "setPetProgramReader": 544,
-        "bookMeasured": 546,
-        "bookSettingsChanged": 555,
-        "bookPlayChanged": 561,
-        "companionChanged": 676,
-        "bagOpenInTerminal": 737,
-        "openQuotaPage": 739,
-        "openVibeCheck": 768,
-        "setC3BookSnapshot": 800,
-        "setD1BookSnapshot": 803,
-        "setVisitBookSnapshot": 811,
-        "setD1BookNotificationDenied": 816,
-        "openIconSettings": 904,
-        "runIcon": 921,
-        "companionIsMac": 1049,
-        "companionSnapshot": 1056,
-        "warmCompanion": 1100,
-        "companionData": 1118,
-        "companionDataFromSnapshot": 1123,
-        "ownCall": 1159,
-        "companionRun": 1171,
-        "writeCompanionRequest": 1181,
-        "pressCompanion": 1197,
-        "completeBookClose": 1439,
-        "registerBook": 1453,
+        "setIconSettingsWriter": 384,
+        "resetIconSession": 385,
+        "iconFirstDraw": 392,
+        "iconSettingsHydrated": 399,
+        "iconWord": 411,
+        "iconCommand": 415,
+        "iconAutomatic": 442,
+        "setCheckSessionsReader": 539,
+        "setPetProgramReader": 542,
+        "bookMeasured": 544,
+        "bookSettingsChanged": 553,
+        "bookPlayChanged": 559,
+        "companionChanged": 674,
+        "bagOpenInTerminal": 735,
+        "openQuotaPage": 737,
+        "openVibeCheck": 766,
+        "setC3BookSnapshot": 798,
+        "setD1BookSnapshot": 801,
+        "setVisitBookSnapshot": 809,
+        "setD1BookNotificationDenied": 814,
+        "openIconSettings": 902,
+        "runIcon": 919,
+        "companionIsMac": 1047,
+        "companionSnapshot": 1054,
+        "warmCompanion": 1098,
+        "companionData": 1116,
+        "companionDataFromSnapshot": 1121,
+        "ownCall": 1157,
+        "companionRun": 1169,
+        "writeCompanionRequest": 1179,
+        "pressCompanion": 1195,
+        "completeBookClose": 1437,
+        "registerBook": 1451,
         "BOOK_PANE": 121,
-        "C3BookSnapshot": 798
+        "C3BookSnapshot": 796
       }
     },
     "hooks-source/words.ts": {
@@ -4572,16 +4572,16 @@
     "hooks/line-types.ts",
     "hooks/lines.ts",
     "hooks/m1-always.ts",
-    "hooks/m1-compiled/chunk-08y9etg1.js",
-    "hooks/m1-compiled/chunk-6v2edn5m.js",
-    "hooks/m1-compiled/chunk-by89b9g9.js",
-    "hooks/m1-compiled/chunk-ft5vjz5f.js",
-    "hooks/m1-compiled/chunk-fxrsgv47.js",
-    "hooks/m1-compiled/chunk-hh8dskb1.js",
+    "hooks/m1-compiled/chunk-295emqg4.js",
+    "hooks/m1-compiled/chunk-48hknabf.js",
+    "hooks/m1-compiled/chunk-8wszd5a8.js",
+    "hooks/m1-compiled/chunk-9fq1200d.js",
+    "hooks/m1-compiled/chunk-bxhh5n8p.js",
     "hooks/m1-compiled/chunk-jahhamrc.js",
-    "hooks/m1-compiled/chunk-k32yxvmt.js",
-    "hooks/m1-compiled/chunk-s53fb0sv.js",
-    "hooks/m1-compiled/chunk-v09trn27.js",
+    "hooks/m1-compiled/chunk-jcfb4cbm.js",
+    "hooks/m1-compiled/chunk-k5zwrpzz.js",
+    "hooks/m1-compiled/chunk-m0xbwnyz.js",
+    "hooks/m1-compiled/chunk-y6mndvys.js",
     "hooks/m1-compiled/companion.d.ts",
     "hooks/m1-compiled/companion.js",
     "hooks/m1-compiled/manifest.json",
@@ -4665,20 +4665,20 @@
     "hooks/words.ts"
   ],
   "chunkBytes": {
-    "chunk-08y9etg1.js": 208381,
-    "chunk-6v2edn5m.js": 20974,
-    "chunk-by89b9g9.js": 92619,
-    "chunk-ft5vjz5f.js": 199475,
-    "chunk-fxrsgv47.js": 46697,
-    "chunk-hh8dskb1.js": 63535,
+    "chunk-295emqg4.js": 358957,
+    "chunk-48hknabf.js": 92629,
+    "chunk-8wszd5a8.js": 46697,
+    "chunk-9fq1200d.js": 208401,
+    "chunk-bxhh5n8p.js": 10209,
     "chunk-jahhamrc.js": 63116,
-    "chunk-k32yxvmt.js": 10209,
-    "chunk-s53fb0sv.js": 358983,
-    "chunk-v09trn27.js": 224144,
+    "chunk-jcfb4cbm.js": 20980,
+    "chunk-k5zwrpzz.js": 224150,
+    "chunk-m0xbwnyz.js": 199394,
+    "chunk-y6mndvys.js": 62122,
     "companion.js": 110859,
     "motion_stills.js": 219189,
     "pages.js": 67905,
-    "presence.js": 13391,
-    "register.js": 223624
+    "presence.js": 13396,
+    "register.js": 223629
   }
 }

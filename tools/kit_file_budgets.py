@@ -133,16 +133,17 @@ CALIBRATION_CPU_CEILING_SECONDS = 900
 
 
 def cpu_scale():
-    # The budgets come from one Mac. A slower host sets COCO_CPU_SCALE; unset means 1.
+    # The budgets come from one Mac. A slower host sets COCO_CPU_SCALE; unset means 1. Up to 8: public CI runs at 6,
+    # since startup's batches went over at 4 on a slow cloud machine in the 10-17 rehearsal.
     raw = os.environ.get('COCO_CPU_SCALE', '')
     if raw.strip() == '':
         return 1.0
     try:
         value = float(raw)
     except ValueError:
-        raise ValueError('COCO_CPU_SCALE must be a number from 1 to 4, got ' + repr(raw))
-    if not math.isfinite(value) or not 1 <= value <= 4:
-        raise ValueError('COCO_CPU_SCALE must be a number from 1 to 4, got ' + repr(raw))
+        raise ValueError('COCO_CPU_SCALE must be a number from 1 to 8, got ' + repr(raw))
+    if not math.isfinite(value) or not 1 <= value <= 8:
+        raise ValueError('COCO_CPU_SCALE must be a number from 1 to 8, got ' + repr(raw))
     return value
 
 

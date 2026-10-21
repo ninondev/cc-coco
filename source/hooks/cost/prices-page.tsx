@@ -86,7 +86,7 @@ export function pricesPage(ui: PriceUI, state: PricesViewState, o: PricesPageOpt
     {state.othersOpen ? <Box flexDirection="column" rowGap={1}>
       {state.checkingOthers ? <Text wrap="wrap">{word('prices.checking')}</Text> : null}
       {state.others ? <Text wrap="wrap">{state.others.from === 'fetched' && state.others.at !== null
-        ? word('prices.others.source', { time: time(state.others.at) })
+        ? word('prices.others.source', { time: date(state.others.at) })
         : word('prices.source.shipped', { date: state.shippedAsOf ? date(Date.parse(state.shippedAsOf), true) : '—' })}</Text> : null}
       {state.others?.why ? <Text wrap="wrap">{word(`prices.why.${state.others.why}`)}</Text> : null}
       {state.others?.makers.map(makerRows)}

@@ -1,7 +1,7 @@
 import { expect, test } from 'claude-code/testing'
 import type { On } from 'claude-code'
 import type { ShippedPrices } from '../hooks/cost/prices/load'
-import { PRICE_PAGE_URL } from '../hooks/cost/prices/load'
+import { OTHERS_URL, PRICE_PAGE_URL } from '../hooks/cost/prices/load'
 import { COST_WORDS_RAW, SHIPPED_PRICES_RAW } from './cost-words-fixture'
 import { C3_WORDS_RAW } from './c3-words-fixture'
 import { MORNING, PERSON, P, RECENT, settleLegacyStart, world } from './world'
@@ -14,7 +14,9 @@ function costWord(lang: string, key: string, values: Record<string, string | num
   if (!template) throw Error(`missing approved expected word: ${key}.${lang}`)
   return template.replace(/\{(\w+)\}/g, (_match, slot: string) => String(values[slot] ?? `{${slot}}`))
 }
-const NOW = MORNING + 5 * 86400000
+// Twenty days on: past the shipped table's day (10-21), so a table kept from an hour ago is newer than it.
+const DAYS = 20
+const NOW = MORNING + DAYS * 86400000
 const START = { cwd: WINDOWS_ROOTS ? 'C:\\Users\\windows\\k1-prices' : '/tmp/k1-prices', surface: 'vscode' as const, isInteractive: true }
 const PANE = { plugin: 'coco', component: 'Pane' as const, requestId: 'coco-book', props: { title: 'Coco', isFocused: true, bodyColumns: 42, placement: 'dock' as const, scroll: { offset: 0, bodyRows: 24 }, view: {} } }
 const OK = { exitCode: 0, stdout: '', stderr: '', isStdoutTruncated: false, isStderrTruncated: false }
@@ -22,7 +24,9 @@ const FRESH_ROWS = SHIPPED.rows.map(row => row.id === 'claude-opus-5-5' ? { ...r
 // Public response fixture, with the production parser's full table shape and families.
 const pageRow = (name: string, p: { input: number; write5m: number; write1h: number; read: number; output: number }) => `| ${name} | ${[p.input, p.write5m, p.write1h, p.read, p.output].map(n => `$${n}/MTok`).join(' | ')} |`
 const PAGE = ['## Model pricing', '| Model | Input | 5m writes | 1h writes | Cache hits | Output |', '| --- | --- | --- | --- | --- | --- |', ...FRESH_ROWS.flatMap(row => [pageRow(row.over ? `${row.name} (up to 100K tokens)` : row.name, row), ...(row.over ? [pageRow(`${row.name} (over 100K tokens)`, row.over)] : [])])].join('\n')
-const OTHER_PAGE = JSON.stringify({ 'openai/gpt-6.1-sol': { litellm_provider: 'openai', mode: 'chat', input_cost_per_token: .000003, output_cost_per_token: .000015, cache_read_input_token_cost: .0000003 } })
+// The daily other makers' list (readOthersList), made two hours before the press.
+const LIST_MADE = NOW - 7200000
+const OTHER_PAGE = JSON.stringify({ version: 1, generatedAt: new Date(LIST_MADE).toISOString(), source: 'fixture', makers: [{ maker: 'openai', label: 'OpenAI', models: [{ name: 'gpt-6.2-fixture', input: 3, read: .3, output: 15 }] }] })
 type Mode = 'online' | 'offline' | 'changed' | 'pending'
 function fixture(on: On, options: { mode?: Mode; disabled?: string; deny?: string[]; stored?: boolean } = {}) {
   const requests: { url: string; init: unknown }[] = [], delays: number[] = [], sources: (string | undefined)[] = []
@@ -62,7 +66,7 @@ function fixture(on: On, options: { mode?: Mode; disabled?: string; deny?: strin
   return { w, requests, delays, sources, old, release: () => release?.() }
 }
 async function mount($: any, f: ReturnType<typeof fixture>) {
-  await f.w.clock.advance(5 * 86400000)
+  await f.w.clock.advance(DAYS * 86400000)
   await $.session.start(START); await settleLegacyStart($, f.w)
   expect(f.requests).toEqual([])
   await $.command.run({ command: 'coco', args: 'usage', origin: PERSON, presentation: P })
@@ -96,24 +100,26 @@ test('K1 mounted Prices fetches only on opening, uses a default GET, and loads o
   expect(f.requests.length).toBe(1)
   expect((f.w.stored('prices.claude') as { rows: unknown[] }).rows).toEqual(FRESH_ROWS.map(row => ({ ...row, status: 'current' })))
   await ui.press({ key: 'coco:prices:others' }); await settle($, f, ui)
-  // S16: the SDK's fetch has no size or cancel control, so the other makers are never fetched; the shipped dated list shows.
-  expect(f.requests).toEqual([{ url: PRICE_PAGE_URL, init: undefined }])
-  expect(await visible(ui)).toContain(SHIPPED.others![0]!.models[0]!.name)
-  expect(await visible(ui)).toContain(costWord('en', 'prices.why.offline'))
+  // The small daily list, as a default GET; it shows with the day it was made and is kept.
+  expect(f.requests).toEqual([{ url: PRICE_PAGE_URL, init: undefined }, { url: OTHERS_URL, init: undefined }])
+  expect(await visible(ui)).toContain('gpt-6.2-fixture')
+  expect(await visible(ui)).toContain(costWord('en', 'prices.others.source', { time: new Intl.DateTimeFormat('en', { year: 'numeric', month: 'short', day: 'numeric' }).format(new Date(LIST_MADE)) }))
+  expect(await visible(ui)).not.toContain(costWord('en', 'prices.why.offline'))
+  expect((f.w.stored('prices.others') as { fetchedAt: number }).fetchedAt).toBe(LIST_MADE)
   for (let i = 0; i < 3; i++) { await ui.press({ key: 'coco:prices:others' }); await ui.redraw() }
-  expect(f.requests.length).toBe(1)
+  expect(f.requests.length).toBe(2)
   await ui.press({ key: 'coco:prices:back' }); await ui.redraw()
   expect(await ui.find({ type: 'Button', key: 'coco:prices:open' })).toBeDefined()
   await ui.press({ key: 'coco:prices:open' }); await settle($, f, ui)
-  expect(f.requests.map(request => request.url)).toEqual([PRICE_PAGE_URL, PRICE_PAGE_URL])
+  expect(f.requests.map(request => request.url)).toEqual([PRICE_PAGE_URL, OTHERS_URL, PRICE_PAGE_URL])
   // Prices occupies the subpage body; its only navigation button is Back.
   // The real book command can still change the page while this subpage is open.
   await $.command.run({ command: 'coco', args: 'log', origin: PERSON, presentation: P }); await settle($, f, ui)
   expect(await ui.find({ type: 'Button', key: 'coco:book:tab:offerings' })).toBeDefined()
   await ui.press({ key: 'coco:book:tab:offerings' }); await settle($, f, ui)
-  expect(f.requests.length).toBe(2)
-  await ui.press({ key: 'coco:prices:open' }); await settle($, f, ui)
   expect(f.requests.length).toBe(3)
+  await ui.press({ key: 'coco:prices:open' }); await settle($, f, ui)
+  expect(f.requests.length).toBe(4)
   await ui.unmount()
 })
 
@@ -143,14 +149,14 @@ for (const blocked of ['nonessential', 'policy'] as const) test(`K1 mounted Pric
   await ui.unmount()
 })
 
-test('K1 mounted Prices domain denial of the Claude page leaves the other makers on their shipped list (S16: never fetched)', async ($, on) => {
+test('K1 mounted Prices domain denial of the Claude page still loads the other makers\' list', async ($, on) => {
   const f = fixture(on, { deny: ['WebFetch(domain:platform.claude.com)'] }), ui = await mount($, f)
   await ui.press({ key: 'coco:prices:open' }); await settle($, f, ui)
   expect(f.requests).toEqual([])
   expect(await visible(ui)).toContain(costWord('en', 'prices.why.off'))
   await ui.press({ key: 'coco:prices:others' }); await settle($, f, ui)
-  expect(f.requests).toEqual([])
-  expect(await visible(ui)).toContain(SHIPPED.others![0]!.models[0]!.name)
+  expect(f.requests).toEqual([{ url: OTHERS_URL, init: undefined }])
+  expect(await visible(ui)).toContain('gpt-6.2-fixture')
   await ui.unmount()
 })
 

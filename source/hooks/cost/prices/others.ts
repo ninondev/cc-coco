@@ -115,9 +115,11 @@ interface Row extends OtherModel {
   v: string | null;
 }
 
-export function filterOthers(data: unknown, today: string, perMaker = 6): OtherMaker[] {
+export const OTHERS_PER_MAKER = 6;
+
+export function filterOthers(data: unknown, today: string, perMaker = OTHERS_PER_MAKER): OtherMaker[] {
   if (data == null || typeof data !== 'object' || Array.isArray(data)) return [];
-  const per = typeof perMaker === 'number' ? perMaker : 6;
+  const per = typeof perMaker === 'number' ? perMaker : OTHERS_PER_MAKER;
   const obj = data as Record<string, unknown>;
   const keys = Object.keys(obj);
 
@@ -190,4 +192,48 @@ export function filterOthers(data: unknown, today: string, perMaker = 6): OtherM
     if (models.length > 0) out.push({ maker: provider, label, models });
   }
   return out;
+}
+
+// The daily list on the public repository's prices branch (.github/workflows/prices.yml there): filterOthers' result
+// on LiteLLM's table, with the time it was made. Coco reads this instead of the 3 MB table itself, since the host
+// cannot stop reading a response at a size (owner 10-21). Anything off shape is refused whole; labels come from
+// OTHER_MAKERS, never from the file.
+export const OTHERS_LIST_VERSION = 1;
+const LIST_NAME = /^[A-Za-z0-9][A-Za-z0-9._-]{0,79}$/;
+// Dollars per million tokens; far above any real price, below anything absurd.
+const LIST_PRICE_CAP = 100_000;
+const LIST_AHEAD_MS = 86_400_000;
+
+export function readOthersList(data: unknown, now: number): { at: number; makers: OtherMaker[] } {
+  const bad = (why: string): never => {
+    throw new Error(`other makers' list: ${why}`);
+  };
+  const record = (x: unknown): Record<string, unknown> =>
+    x != null && typeof x === 'object' && !Array.isArray(x) ? (x as Record<string, unknown>) : bad('not an object');
+  const price = (x: unknown): number => (isNum(x) && x >= 0 && x <= LIST_PRICE_CAP ? x : bad('bad price'));
+  const list = record(data);
+  if (list.version !== OTHERS_LIST_VERSION) bad('unknown version');
+  const at = typeof list.generatedAt === 'string' ? Date.parse(list.generatedAt) : NaN;
+  if (!Number.isFinite(at) || !Number.isFinite(now) || at > now + LIST_AHEAD_MS) bad('bad time');
+  if (!Array.isArray(list.makers) || list.makers.length === 0 || list.makers.length > OTHER_MAKERS.length) bad('bad makers');
+  const seen = new Set<string>();
+  const makers = (list.makers as unknown[]).map((m): OtherMaker => {
+    const maker = record(m);
+    const known = OTHER_MAKERS.find((k) => k.provider === maker.maker);
+    if (!known || seen.has(known.provider)) return bad('unknown or repeated maker');
+    seen.add(known.provider);
+    if (!Array.isArray(maker.models) || maker.models.length === 0 || maker.models.length > OTHERS_PER_MAKER) bad('bad models');
+    const models = (maker.models as unknown[]).map((x): OtherModel => {
+      const model = record(x);
+      if (typeof model.name !== 'string' || !LIST_NAME.test(model.name)) bad('bad name');
+      return {
+        name: model.name as string,
+        input: price(model.input),
+        read: model.read === null ? null : price(model.read),
+        output: price(model.output),
+      };
+    });
+    return { maker: known.provider, label: known.label, models };
+  });
+  return { at, makers };
 }

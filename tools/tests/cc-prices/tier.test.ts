@@ -86,13 +86,13 @@ describe('priceAt picks the prices of one request by its whole prompt', () => {
 
 describe('the shipped table', () => {
   const shipped = JSON.parse(readFileSync(join(import.meta.dir, '../../../plugin/assets/prices.json'), 'utf8')) as { rows: PriceRow[]; supplement?: { ids: string[]; asOf: string } };
-  test('carries Haiku 5.5 with both tiers, ahead of Haiku 4.5, and says where the row came from', () => {
+  test('carries Haiku 5.5 with both tiers, ahead of Haiku 4.5, from the page itself since 10-21', () => {
     const ids = shipped.rows.map((r) => r.id);
     expect(ids.indexOf('claude-haiku-5-5')).toBeGreaterThan(-1);
     expect(ids.indexOf('claude-haiku-5-5')).toBeLessThan(ids.indexOf('claude-haiku-4-5'));
     const haiku = shipped.rows[ids.indexOf('claude-haiku-5-5')]!;
     expect([haiku.input, haiku.output, haiku.read, haiku.write5m, haiku.write1h]).toEqual([0.1, 0.5, 0.01, 0.125, 0.2]);
     expect([haiku.over?.above, haiku.over?.input, haiku.over?.output, haiku.over?.read, haiku.over?.write5m, haiku.over?.write1h]).toEqual([100000, 0.5, 2.5, 0.05, 0.625, 1]);
-    expect(shipped.supplement?.ids).toEqual(['claude-haiku-5-5']);
+    expect(shipped.supplement).toBeUndefined();
   });
 });

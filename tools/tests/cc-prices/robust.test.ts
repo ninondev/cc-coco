@@ -3,6 +3,7 @@ import * as index from '../../../plugin/hooks/cost/prices/index.ts';
 import {
   FETCH_LIMIT_MS,
   OTHERS_URL,
+  LITELLM_URL,
   PRICE_PAGE_URL,
   SHIPPED_MAX_AGE_DAYS,
   arrangeRows,
@@ -24,7 +25,8 @@ import type { PriceRow } from '../../../plugin/hooks/cost/prices/index.ts';
 describe('exported literals', () => {
   test('URLs and constants have the documented values', () => {
     expect(PRICE_PAGE_URL).toBe('https://platform.claude.com/docs/en/about-claude/pricing.md');
-    expect(OTHERS_URL).toBe('https://raw.githubusercontent.com/BerriAI/litellm/main/model_prices_and_context_window.json');
+    expect(OTHERS_URL).toBe('https://raw.githubusercontent.com/ninondev/cc-coco/prices/others.json');
+    expect(LITELLM_URL).toBe('https://raw.githubusercontent.com/BerriAI/litellm/main/model_prices_and_context_window.json');
     expect(FETCH_LIMIT_MS).toBe(6000);
     expect(SHIPPED_MAX_AGE_DAYS).toBe(14);
   });
@@ -33,6 +35,7 @@ describe('exported literals', () => {
     const names = [
       'PRICE_PAGE_URL',
       'OTHERS_URL',
+      'LITELLM_URL',
       'FETCH_LIMIT_MS',
       'SHIPPED_MAX_AGE_DAYS',
       'PageChanged',
@@ -46,6 +49,7 @@ describe('exported literals', () => {
       'loadClaudePrices',
       'OTHER_MAKERS',
       'filterOthers',
+      'readOthersList',
       'loadOtherPrices',
       'priceChanges',
       'arrangeRows',
