@@ -5,36 +5,48 @@ import CoreText
 struct HoverState {
     enum Surface { case sprite, pill }
     private var sprite = false
+    private var deliberateSprite = false
     private var pill = false
     private(set) var visible = false
     private(set) var showAt: Double?
     private(set) var hideAt: Double?
 
-    mutating func pointer(_ surface: Surface, inside: Bool, at: Double) {
-        switch surface { case .sprite: sprite = inside; case .pill: pill = inside }
-        if sprite || pill {
+    mutating func pointer(_ surface: Surface, inside: Bool, at: Double, deliberate: Bool = true,
+                          tuning: CompanionMotionTuning = .standard) {
+        switch surface {
+        case .sprite:
+            sprite = inside
+            deliberateSprite = inside && deliberate
+        case .pill: pill = inside
+        }
+        if pill {
+            hideAt = nil; showAt = nil; visible = true
+        } else if sprite && deliberateSprite {
             hideAt = nil
-            visible = true; showAt = nil
+            if !visible && showAt == nil { showAt = at + tuning.number("near.rowAfterMs") / 1000 }
         } else {
             showAt = nil
-            visible = false; hideAt = nil
+            if visible && hideAt == nil { hideAt = at + tuning.number("near.rowLeaveMs") / 1000 }
         }
     }
     mutating func advance(at: Double, carried: Bool = false, card: Bool = false) {
         if carried || card { blocked(carried: carried, card: card); return }
-        if let showAt, at >= showAt { visible = sprite || pill; self.showAt = nil }
+        if let showAt, at >= showAt { visible = pill || (sprite && deliberateSprite); self.showAt = nil }
         if let hideAt, at >= hideAt { visible = false; self.hideAt = nil }
     }
     mutating func blocked(carried: Bool, card: Bool) {
         guard carried || card else { return }
         visible = false; showAt = nil; hideAt = nil
-        sprite = false; pill = false
+        sprite = false; deliberateSprite = false; pill = false
     }
 }
 
 /// Shared ink, paper and spark for the two small pills.
 class PaperPill: NSView {
-    var contrast = false { didSet { needsDisplay = true } }
+    var contrast = false { didSet {
+        subviews.compactMap { $0 as? SymbolButton }.forEach { $0.contrast = contrast }
+        needsDisplay = true
+    } }
     var dark: Bool { effectiveAppearance.bestMatch(from: [.darkAqua, .aqua]) == .darkAqua }
     var ink: NSColor { dark ? CardView.paper : CardView.ink }
     var paper: NSColor { dark ? CardView.color(0x2B2220) : CardView.paper }
@@ -71,11 +83,13 @@ struct ButtonLabelState {
 }
 
 enum ButtonLabelPlacement {
-    static func frame(button: NSRect, row: NSRect, size: NSSize, visible: NSRect) -> NSRect {
+    static func frame(button: NSRect, row: NSRect, size: NSSize, visible: NSRect, faceKeepOut: CGRect? = nil) -> NSRect {
         let width = min(size.width, max(1, visible.width - 4))
         let y = row.maxY + 26 <= visible.maxY ? row.maxY + 4 : row.minY - 24
-        return NSRect(x: Place.clamp(button.midX - width / 2, visible.minX + 2, visible.maxX - width - 2),
-                      y: Place.clamp(y, visible.minY + 2, visible.maxY - 22), width: width, height: 20)
+        let result = NSRect(x: Place.clamp(button.midX - width / 2, visible.minX + 2, visible.maxX - width - 2),
+                            y: Place.clamp(y, visible.minY + 2, visible.maxY - 22), width: width, height: 20)
+        guard let faceKeepOut else { return result }
+        return Place.avoidFace(frame: result, visible: visible, keepOut: faceKeepOut) ?? .zero
     }
 }
 
@@ -115,7 +129,7 @@ final class ButtonLabel {
     private(set) var panel: Panel?
     private(set) var view: ButtonLabelView?
     func show(text: String, lang: String, button: NSRect, row: NSRect, visible: NSRect,
-              parent: NSWindow, contrast: Bool) {
+              parent: NSWindow, contrast: Bool, faceKeepOut: CGRect? = nil) {
         guard parent.isVisible else { hide(); return }
         if panel == nil {
             let panel = Panel(clickable: false, shadow: true), view = ButtonLabelView()
@@ -125,7 +139,10 @@ final class ButtonLabel {
         view.appearance = parent.effectiveAppearance; view.contrast = contrast
         let size = view.fit(text, lang: lang, maxWidth: max(1, visible.width - 4))
         panel.level = parent.level
-        panel.setFrame(ButtonLabelPlacement.frame(button: button, row: row, size: size, visible: visible), display: true)
+        panel.collectionBehavior = parent.collectionBehavior
+        let frame = ButtonLabelPlacement.frame(button: button, row: row, size: size, visible: visible, faceKeepOut: faceKeepOut)
+        guard !frame.isEmpty else { hide(); return }
+        panel.setFrame(frame, display: true)
         if panel.parent !== parent {
             panel.parent?.removeChildWindow(panel); parent.addChildWindow(panel, ordered: .above)
         }
@@ -135,38 +152,44 @@ final class ButtonLabel {
 }
 
 final class BubbleView: PaperPill {
+    var ribbon: Int? { didSet { needsDisplay=true } }
     private var label = NSAttributedString()
     override init(frame: NSRect) { super.init(frame: frame); setAccessibilityElement(true); setAccessibilityRole(.staticText) }
     convenience init() { self.init(frame: .zero) }
     @available(*, unavailable) required init?(coder: NSCoder) { fatalError("not used") }
     func fit(project: String, task: String, lang: String, maxWidth: CGFloat = 260) -> NSSize {
         let value = NSMutableAttributedString(attributedString: CardView.text(project, size: 12, lineHeight: 16, bold: true, lang: lang))
-        value.append(CardView.text(" · " + task, size: 12, lineHeight: 16, bold: false, lang: lang))
+        value.append(CardView.text(Clauses.projectTask(lang) + task, size: 12, lineHeight: 16, bold: false, lang: lang))
         label = value
-        let size = NSSize(width: min(maxWidth, ceil(label.size().width) + 32), height: 22)
+        let size = NSSize(width: min(maxWidth, ceil(label.size().width) + (ribbon == nil ? 32:46)), height: 22)
         frame.size = size; needsDisplay = true
-        setAccessibilityLabel(project + " · " + task)
+        setAccessibilityLabel(project + Clauses.projectTask(lang) + task)
         return size
     }
     override func draw(_ dirtyRect: NSRect) {
         super.draw(dirtyRect)
-        Self.spark(at: NSPoint(x: 12.5, y: 11))
+        Self.spark(at: NSPoint(x: ribbon == nil ? 12.5:26.5, y: 11))
         let value = NSMutableAttributedString(attributedString: label)
         let style = NSMutableParagraphStyle(); style.lineBreakMode = .byTruncatingTail
         value.addAttributes([.foregroundColor: ink, .paragraphStyle: style], range: NSRange(location: 0, length: value.length))
-        value.draw(in: NSRect(x: 22, y: 3, width: bounds.width - 32, height: 17))
+        value.draw(in: NSRect(x: ribbon == nil ? 22:36, y: 3, width: bounds.width - (ribbon == nil ? 32:46), height: 17))
     }
 }
 
 final class SymbolButton: NSButton {
     var pressed: () -> Void = {}
     var seal = false
+    var contrast = false { didSet { needsDisplay = true } }
     var stroke = false { didSet { needsDisplay = true } }
     var dot = false
     var dotRect: NSRect { NSRect(x: bounds.width - 8, y: 3, width: 5, height: 5) }
     var quietBorder = false
     var keyboardFocusable = false
     let symbolName: String
+    /// Writes its name instead of drawing a symbol, in a rounded box as wide as the word: the Activity window's «Close»,
+    /// since `xmark` is a cross and Coco keeps none (SPEC 0.4 6.5, comp-close-word; the Rust pet's ui.rs says the same).
+    private(set) var spoken = false
+    private var spokenText = NSAttributedString()
     var pointerChanged: (Bool) -> Void = { _ in }
     var focusChanged: (Bool) -> Void = { _ in }
     var labelChanged: () -> Void = {}
@@ -176,13 +199,20 @@ final class SymbolButton: NSButton {
     init(symbol: String) {
         symbolName = symbol
         super.init(frame: .zero)
-        image = NSImage(systemSymbolName: symbol, accessibilityDescription: nil)?.withSymbolConfiguration(.init(pointSize: 13, weight: .regular))
+        image = symbol.isEmpty ? nil : NSImage(systemSymbolName: symbol, accessibilityDescription: nil)?.withSymbolConfiguration(.init(pointSize: 13, weight: .regular))
         imagePosition = .imageOnly; isBordered = false
         setButtonType(.momentaryPushIn); target = self; action = #selector(pressButton)
         setAccessibilityRole(.button)
     }
     @available(*, unavailable) required init?(coder: NSCoder) { fatalError("not used") }
+    static func spoken() -> SymbolButton { let button = SymbolButton(symbol: ""); button.spoken = true; return button }
     func name(_ text: String) { toolTip = nil; setAccessibilityLabel(text); labelChanged() }
+    /// A spoken button's word; returns its width, the word and 8 on each side (the Rust pet's text_width + 16).
+    func say(_ text: String, lang: String) -> CGFloat {
+        spokenText = CardView.text(text, size: 12.5, lineHeight: 16, bold: false, lang: lang)
+        name(text); needsDisplay = true
+        return ceil(spokenText.size().width) + 16
+    }
     @objc private func pressButton() { pressed() }
     override func accessibilityPerformPress() -> Bool { pressed(); return true }
     override func acceptsFirstMouse(for event: NSEvent?) -> Bool { true }
@@ -226,30 +256,47 @@ final class SymbolButton: NSButton {
         let dark = !seal && effectiveAppearance.bestMatch(from: [.darkAqua, .aqua]) == .darkAqua && superview is PaperPill
         let ink = dark ? CardView.paper : CardView.ink
         var ground = (superview as? PaperPill)?.paper ?? CardView.paper
-        let path = NSBezierPath(ovalIn: bounds.insetBy(dx: 0.5, dy: 0.5))
+        let path = spoken ? NSBezierPath(roundedRect: bounds.insetBy(dx: 0.5, dy: 0.5), xRadius: 6, yRadius: 6)
+                          : NSBezierPath(ovalIn: bounds.insetBy(dx: 0.5, dy: 0.5))
         if seal {
-            ground = CardView.color(isHighlighted ? 0x76301A : hovered ? 0x873719 : 0x9E4123)
+            ground = CardView.color(contrast ? (isHighlighted ? 0x5C2412 : 0x76301A) : (isHighlighted ? 0x76301A : hovered ? 0x873719 : 0x9E4123))
+            // Under Increase Contrast a hovered seal keeps its rest colour, with no inner ring (cut 10-09, HIGH-CONTRAST 2.2).
             ground.setFill(); path.fill()
         } else if hovered || isHighlighted {
-            let alpha: CGFloat = dark ? 0.12 : 0.08
-            ground = ground.blended(withFraction: alpha, of: ink) ?? ground
-            ink.withAlphaComponent(alpha).setFill(); path.fill()
+            if contrast { ground = ink; ink.setFill(); path.fill() }
+            else {
+                let alpha: CGFloat = dark ? 0.12 : 0.08
+                ground = ground.blended(withFraction: alpha, of: ink) ?? ground
+                ink.withAlphaComponent(alpha).setFill(); path.fill()
+            }
         }
-        if quietBorder { CardView.color(0x8E8481).setStroke(); path.lineWidth = 1; path.stroke() }
-        contentTintColor = seal ? CardView.paper : hovered ? CardView.vermilion : ink
-        if let glyph = glyph(color: contentTintColor ?? ink, ground: ground) {
+        // Under Increase Contrast a spoken button keeps an ink edge at rest, as the Rust pet's quiet buttons do.
+        if quietBorder || (spoken && contrast) { (contrast ? ink : CardView.color(0x8E8481)).setStroke(); path.lineWidth = 1; path.stroke() }
+        contentTintColor = seal ? CardView.paper : contrast && (hovered || isHighlighted) ? ((superview as? PaperPill)?.paper ?? CardView.paper) : hovered ? (dark ? CardView.color(0xE07A55) : CardView.vermilion) : ink
+        if spoken {
+            // The word stays in ink when hovered: vermilion is 3.82:1 on the cream, enough for a symbol, not for words.
+            let value = NSMutableAttributedString(attributedString: spokenText)
+            value.addAttribute(.foregroundColor, value: contrast && (hovered || isHighlighted) ? ((superview as? PaperPill)?.paper ?? CardView.paper) : ink, range: NSRange(location: 0, length: value.length))
+            let size = value.size()
+            value.draw(at: NSPoint(x: (bounds.width - size.width) / 2, y: (bounds.height - size.height) / 2))
+        } else if let glyph = glyph(color: contentTintColor ?? ink, ground: ground) {
             glyph.draw(in: NSRect(x: bounds.midX - glyph.size.width / 2, y: bounds.midY - glyph.size.height / 2,
                                  width: glyph.size.width, height: glyph.size.height),
                        from: .zero, operation: .sourceOver, fraction: 1, respectFlipped: true, hints: nil)
         }
-        if dot { CardView.color(0x9E4123).setFill(); NSBezierPath(ovalIn: dotRect).fill() }
+        if dot {
+            let spot = NSBezierPath(ovalIn: dotRect)
+            CardView.color(0x9E4123).setFill(); spot.fill()
+            if contrast { ((superview as? PaperPill)?.paper ?? CardView.paper).setStroke(); spot.lineWidth = 1; spot.stroke() }
+        }
         if window?.firstResponder === self {
-            CardView.vermilion.setStroke(); path.lineWidth = 2; path.stroke()
+            (contrast ? ink : CardView.vermilion).setStroke(); path.lineWidth = 2; path.stroke()
         }
     }
 }
 
 final class BadgeView: NSButton {
+    var contrast = false { didSet { needsDisplay = true } }
     var pressed: () -> Void = {}
     private var label = NSAttributedString()
     init() {
@@ -258,10 +305,11 @@ final class BadgeView: NSButton {
     }
     @available(*, unavailable) required init?(coder: NSCoder) { fatalError("not used") }
     override var acceptsFirstResponder: Bool { false }
-    func fit(count: Int, words: Record.Words, lang: String) -> NSSize {
+    /// `name` reads the badge when it opens her DM thread: the thread's name and the count.
+    func fit(count: Int, words: Record.Words, lang: String, name: String? = nil) -> NSSize {
         let value = NSMutableAttributedString(attributedString: CardView.text(count >= 10 ? "9+" : String(count), size: 11.5, lineHeight: 15, bold: true, lang: lang))
         value.addAttribute(.foregroundColor, value: CardView.paper, range: NSRange(location: 0, length: value.length)); label = value
-        setAccessibilityLabel(words.badge.replacingOccurrences(of: "{n}", with: String(count)))
+        setAccessibilityLabel(name ?? words.badge.replacingOccurrences(of: "{n}", with: String(count)))
         needsDisplay = true
         return NSSize(width: max(20, ceil(label.size().width) + 10), height: 20)
     }
@@ -270,7 +318,7 @@ final class BadgeView: NSButton {
     override func acceptsFirstMouse(for event: NSEvent?) -> Bool { true }
     override func draw(_ dirtyRect: NSRect) {
         let path = NSBezierPath(roundedRect: bounds.insetBy(dx: 0.75, dy: 0.75), xRadius: 10, yRadius: 10)
-        CardView.color(0x9E4123).setFill(); path.fill(); CardView.paper.setStroke(); path.lineWidth = 1.5; path.stroke()
+        CardView.color(contrast ? 0x76301A : 0x9E4123).setFill(); path.fill(); CardView.paper.setStroke(); path.lineWidth = 1.5; path.stroke()
         let size = label.size(); label.draw(at: NSPoint(x: (bounds.width - size.width) / 2, y: (bounds.height - size.height) / 2))
     }
 }

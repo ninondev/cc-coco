@@ -1,0 +1,16 @@
+> Task :api:compileJava [32mUP-TO-DATE[0m
+> Task :api:test
+
+[31mBillingServiceTest > computes invoice totals() FAILED[0m
+    org.opentest4j.AssertionFailedError at BillingServiceTest.kt:42
+
+[32mBillingServiceTest > rounds cents() PASSED[0m
+
+[31m3 tests completed, 1 failed[0m
+
+> Task :api:test [31mFAILED[0m
+
+[31mFAILURE: Build failed with an exception.[0m
+* What went wrong:
+Execution failed for task ':api:test'.
+[31mBUILD FAILED in 12s[0m

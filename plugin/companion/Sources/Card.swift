@@ -167,19 +167,30 @@ final class CardButton: NSButton {
     override func draw(_ dirtyRect: NSRect) {
         let path = NSBezierPath(roundedRect: bounds.insetBy(dx: 0.5, dy: 0.5), xRadius: 6, yRadius: 6)
         if seal {
-            CardView.color(isHighlighted ? 0x76301A : hovered ? 0x873719 : 0x9E4123).setFill(); path.fill()
+            // Under Increase Contrast a hovered seal keeps its rest colour, with no inner ring (cut 10-09, HIGH-CONTRAST 2.2).
+            CardView.color(contrast ? (isHighlighted ? 0x5C2412 : 0x76301A) : (isHighlighted ? 0x76301A : hovered ? 0x873719 : 0x9E4123)).setFill(); path.fill()
         } else {
-            if hovered || isHighlighted { CardView.color(isHighlighted ? 0xE4D9D4 : 0xEDE1DD).setFill(); path.fill() }
-            if !borderlessQuiet {
+            if hovered || isHighlighted { (contrast ? CardView.ink : CardView.color(isHighlighted ? 0xE4D9D4 : 0xEDE1DD)).setFill(); path.fill() }
+            if !borderlessQuiet || contrast {
                 (contrast ? CardView.ink : CardView.color(0x8E8481)).setStroke(); path.lineWidth = 1; path.stroke()
             }
         }
         let size = label.size()
         let iconWidth: CGFloat = image == nil ? 0 : 18
-        image?.draw(in: NSRect(x: 12, y: (bounds.height - 13) / 2, width: 13, height: 13))
-        label.draw(in: NSRect(x: 12 + iconWidth, y: (bounds.height - size.height) / 2, width: bounds.width - 24 - iconWidth, height: size.height))
+        let inverted = contrast && !seal && (hovered || isHighlighted)
+        let icon = inverted ? image.map { source in NSImage(size: source.size, flipped: false) { rect in
+            source.draw(in: rect); CardView.paper.set(); rect.fill(using: .sourceAtop); return true
+        } } : image
+        icon?.draw(in: NSRect(x: 12, y: (bounds.height - 13) / 2, width: 13, height: 13))
+        let value: NSAttributedString
+        if inverted {
+            let changed = NSMutableAttributedString(attributedString: label)
+            changed.addAttribute(.foregroundColor, value: CardView.paper, range: NSRange(location: 0, length: changed.length))
+            value = changed
+        } else { value = label }
+        value.draw(in: NSRect(x: 12 + iconWidth, y: (bounds.height - size.height) / 2, width: bounds.width - 24 - iconWidth, height: size.height))
         if keyboardFocusable, window?.firstResponder === self {
-            CardView.vermilion.setStroke(); path.lineWidth = 2; path.stroke()
+            (contrast ? CardView.ink : CardView.vermilion).setStroke(); path.lineWidth = 2; path.stroke()
         }
     }
 }

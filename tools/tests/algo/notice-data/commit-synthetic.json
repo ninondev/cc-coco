@@ -1,0 +1,247 @@
+[
+ {
+  "lang": "en",
+  "want": 1,
+  "message": "Retry the token refresh once before logging out\n\nThe refresh call fails when the laptop wakes from sleep because the\nnetwork is not up yet. Without a retry the user is logged out and loses\nthe draft. One retry after 2 s covers every case in the logs.",
+  "pass": true,
+  "quality": "why"
+ },
+ {
+  "lang": "en",
+  "want": 0,
+  "message": "Fixed the login bug",
+  "pass": false,
+  "quality": null
+ },
+ {
+  "lang": "en",
+  "want": 0,
+  "message": "Update auth.ts",
+  "pass": false,
+  "quality": null
+ },
+ {
+  "lang": "en",
+  "want": 0,
+  "message": "wip",
+  "pass": false,
+  "quality": null
+ },
+ {
+  "lang": "en",
+  "want": 0,
+  "message": "Adding retry logic\n\nAdds a retry because the network may be down.",
+  "pass": false,
+  "quality": null
+ },
+ {
+  "lang": "en",
+  "want": 1,
+  "message": "feat(parser): keep comments between runs\n\nComments were dropped on the second run because the cache stored the\nstripped tree. Store the original tokens instead so formatting survives.",
+  "pass": true,
+  "quality": "why"
+ },
+ {
+  "lang": "en",
+  "want": 0,
+  "message": "Refactor parser\n\nCleaned up some things.",
+  "pass": false,
+  "quality": null
+ },
+ {
+  "lang": "zh",
+  "want": 1,
+  "message": "修复休眠唤醒后登录失效\n\n电脑从休眠中醒来时网络还没连上，刷新令牌的请求会失败，用户因此被登出、草稿丢失。现在失败后等两秒重试一次，日志里的情况都能覆盖。",
+  "pass": true,
+  "quality": "why"
+ },
+ {
+  "lang": "zh",
+  "want": 0,
+  "message": "修改了一些东西",
+  "pass": false,
+  "quality": null
+ },
+ {
+  "lang": "zh",
+  "want": 0,
+  "message": "更新代码",
+  "pass": false,
+  "quality": null
+ },
+ {
+  "lang": "zh",
+  "want": 0,
+  "message": "已修复登录问题\n\n因为网络问题导致失败。",
+  "pass": false,
+  "quality": null
+ },
+ {
+  "lang": "zh-Hant",
+  "want": 1,
+  "message": "修正休眠喚醒後登入失效\n\n電腦從休眠中醒來時網路還沒連上，更新權杖的請求會失敗，使用者因此被登出。現在失敗後等兩秒重試一次，以免草稿遺失。",
+  "pass": true,
+  "quality": "why"
+ },
+ {
+  "lang": "ja",
+  "want": 1,
+  "message": "スリープ復帰後のログイン切れを修正\n\nスリープから復帰した直後はネットワークがまだつながっていないため、トークン更新が失敗してログアウトされていた。失敗したら2秒待って1回だけ再試行する。",
+  "pass": true,
+  "quality": "why"
+ },
+ {
+  "lang": "ja",
+  "want": 0,
+  "message": "バグを修正しました",
+  "pass": false,
+  "quality": null
+ },
+ {
+  "lang": "ja",
+  "want": 0,
+  "message": "いろいろ修正",
+  "pass": false,
+  "quality": null
+ },
+ {
+  "lang": "ko",
+  "want": 1,
+  "message": "절전 해제 후 로그인 풀림 수정\n\n절전에서 깨어난 직후에는 네트워크가 아직 연결되지 않아 토큰 갱신이 실패했고, 그 때문에 사용자가 로그아웃되었다. 실패하면 2초 뒤 한 번 다시 시도하도록 했다.",
+  "pass": true,
+  "quality": "why"
+ },
+ {
+  "lang": "ko",
+  "want": 0,
+  "message": "버그 수정했습니다",
+  "pass": false,
+  "quality": null
+ },
+ {
+  "lang": "fr",
+  "want": 1,
+  "message": "Corriger la déconnexion après la mise en veille\n\nAu réveil, le réseau n'est pas encore disponible, donc le rafraîchissement du jeton échoue et\nl'utilisateur est déconnecté parce que nous ne réessayons pas. Réessayer une fois après 2 s.",
+  "pass": true,
+  "quality": "why"
+ },
+ {
+  "lang": "fr",
+  "want": 0,
+  "message": "Corrigé le bug de connexion",
+  "pass": false,
+  "quality": null
+ },
+ {
+  "lang": "de",
+  "want": 1,
+  "message": "Abmeldung nach dem Aufwachen beheben\n\nNach dem Aufwachen ist das Netz noch nicht da, deshalb schlägt die Erneuerung des Tokens fehl\nund der Nutzer wird abgemeldet. Einmal nach 2 s erneut versuchen, damit der Entwurf erhalten bleibt.",
+  "pass": true,
+  "quality": "why"
+ },
+ {
+  "lang": "de",
+  "want": 0,
+  "message": "Fehler behoben",
+  "pass": false,
+  "quality": null
+ },
+ {
+  "lang": "es-419",
+  "want": 1,
+  "message": "Corregir el cierre de sesión al despertar\n\nAl despertar la red todavía no está lista, por eso falla la renovación del token y se cierra la\nsesión. Reintentar una vez después de 2 s para que no se pierda el borrador.",
+  "pass": true,
+  "quality": "why"
+ },
+ {
+  "lang": "es-419",
+  "want": 0,
+  "message": "Corregido el error de inicio de sesión",
+  "pass": false,
+  "quality": null
+ },
+ {
+  "lang": "it",
+  "want": 1,
+  "message": "Correggere il logout dopo il risveglio\n\nAl risveglio la rete non è ancora pronta, quindi il rinnovo del token fallisce e l'utente viene\ndisconnesso. Riprovare una volta dopo 2 s per evitare di perdere la bozza.",
+  "pass": true,
+  "quality": "why"
+ },
+ {
+  "lang": "it",
+  "want": 0,
+  "message": "Corretto il bug del login",
+  "pass": false,
+  "quality": null
+ },
+ {
+  "lang": "pt-BR",
+  "want": 1,
+  "message": "Corrigir o logout ao acordar do modo de espera\n\nAo acordar a rede ainda não está pronta, por isso a renovação do token falha e o usuário é\ndesconectado. Tentar de novo uma vez depois de 2 s para evitar a perda do rascunho.",
+  "pass": true,
+  "quality": "why"
+ },
+ {
+  "lang": "pt-BR",
+  "want": 0,
+  "message": "Corrigido o bug do login",
+  "pass": false,
+  "quality": null
+ },
+ {
+  "lang": "id",
+  "want": 1,
+  "message": "Perbaiki logout setelah bangun dari mode tidur\n\nSaat laptop bangun, jaringan belum siap sehingga pembaruan token gagal dan pengguna keluar.\nCoba lagi sekali setelah 2 detik agar draf tidak hilang.",
+  "pass": true,
+  "quality": "why"
+ },
+ {
+  "lang": "id",
+  "want": 0,
+  "message": "Bug login sudah diperbaiki",
+  "pass": false,
+  "quality": null
+ },
+ {
+  "lang": "hi",
+  "want": 1,
+  "message": "स्लीप के बाद लॉगआउट की समस्या ठीक करें\n\nलैपटॉप जागने पर नेटवर्क तुरंत तैयार नहीं होता, इसलिए टोकन नवीनीकरण विफल होता है और उपयोगकर्ता लॉगआउट हो जाता है। दो सेकंड बाद एक बार फिर से कोशिश करें ताकि ड्राफ्ट न खोए।",
+  "pass": true,
+  "quality": "why"
+ },
+ {
+  "lang": "hi",
+  "want": 0,
+  "message": "लॉगिन बग ठीक किया",
+  "pass": false,
+  "quality": null
+ },
+ {
+  "lang": "en",
+  "want": 0,
+  "message": "Add retry\n\n🤖 Generated with [Claude Code](https://claude.com/claude-code)\n\nCo-Authored-By: Claude <noreply@anthropic.com>",
+  "pass": false,
+  "quality": null
+ },
+ {
+  "lang": "en",
+  "want": 1,
+  "message": "Add a retry to the token refresh\n\nThe refresh fails right after wake because the network is not up yet,\nwhich logged people out mid-draft.\n\n🤖 Generated with [Claude Code](https://claude.com/claude-code)\n\nCo-Authored-By: Claude <noreply@anthropic.com>",
+  "pass": true,
+  "quality": "why"
+ },
+ {
+  "lang": "en",
+  "want": 0,
+  "message": "UPDATE EVERYTHING NOW\n\nBecause the old stuff was broken and needed to go away for good reasons.",
+  "pass": false,
+  "quality": null
+ },
+ {
+  "lang": "en",
+  "want": 0,
+  "message": "Merge branch 'main' into feature",
+  "pass": false,
+  "quality": null
+ }
+]

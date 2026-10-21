@@ -1,148 +1,166 @@
-# Claude-sama
+# Coco
 
-<img src="https://raw.githubusercontent.com/ninondev/claude-sama/media/hero-fullbody.webp" align="right" width="300" alt="Claude-sama: long coral hair and a white bow, a white robe over a black dress, holding a black book, a white snake on his shoulders">
+<p align="center">
+  <picture>
+    <source media="(prefers-reduced-motion: reduce)" srcset="https://raw.githubusercontent.com/ninondev/cc-coco/media/demo.png">
+    <img src="https://raw.githubusercontent.com/ninondev/cc-coco/media/demo.gif" width="720" alt="Coco in the Claude desktop app. Asked to fix failing tests, Claude finds an off-by-one bug and all three tests pass, while Coco sits in the band above the prompt, chin in hand.">
+  </picture>
+</p>
 
-**He's a kami, so it's Claude-sama to you.**
-
-Nothing you write will be the worst thing he has read.
+Meet your cutest coding partner. Coco spots your bugs before you do—and makes sure you know how smug they are about it. An unofficial fan-made desktop companion mod for Claude Code.
 
 > [!NOTE]
 > Unofficial fan project, not affiliated with or endorsed by Anthropic. Claude, Claude Code and Clawd belong to Anthropic.
 
-[![CI](https://github.com/ninondev/claude-sama/actions/workflows/ci.yml/badge.svg)](https://github.com/ninondev/claude-sama/actions/workflows/ci.yml)
-
-Claude-sama is my unofficial fan mod that makes Claude Code cute. A small kami (a Japanese spirit who lives in words) moves into the band above your prompt, in the terminal and in the desktop app's Code tab too. He reads while Claude works, smiles when it's done, tilts his head when Claude needs you, and falls asleep if you leave him alone too long. Three failed test or build runs in a row? Then his wild soul comes out. But he only gets mad at the code, never at you.
-
-<p align="center">
-  <picture>
-    <source media="(prefers-reduced-motion: reduce)" srcset="https://raw.githubusercontent.com/ninondev/claude-sama/media/demo.png">
-    <img src="https://raw.githubusercontent.com/ninondev/claude-sama/media/demo.gif" alt="Claude-sama in the Claude desktop app. A small coral-haired kami in the band above the prompt reads along while Claude works, flares up after three failing test runs and smiles when the fix lands, while the context box fills from 31% to 42%. He draws a fortune with /omen, opens his book, and blushes when the macOS companion gets a head pat.">
-  </picture>
-</p>
-
 ## Install
 
 ```bash
-claude plugin marketplace add ninondev/claude-sama
-claude plugin install claudesama@claudesama
+claude plugin marketplace add ninondev/cc-coco
+claude plugin install coco@coco
 ```
 
-Now he's in every Claude Code session you start on this computer, in every project: the terminal, the desktop app's Code tab and VS Code. Sessions that were already open need a restart. (The marketplace and the plugin are both called `claudesama`, which is why it says `claudesama@claudesama`.)
+Once it's installed, Coco shows up in every new Claude Code session on this computer, in the terminal and in the desktop app. Sessions that are already open need a restart.
 
-If you only want him in one project, use `--scope project` (shared with the project through `.claude/settings.json`) or `--scope local` (just for you, in `.claude/settings.local.json`):
+For one project only, add `--scope project`. To keep it to yourself without writing it into the project's shared settings, use `--scope local`. To turn Coco off in one project after a global install:
 
 ```bash
-claude plugin install claudesama@claudesama --scope project
-claude plugin install claudesama@claudesama --scope local
+claude plugin disable coco@coco --scope local
 ```
 
-To keep him installed everywhere but turn him off in one project:
+The mod can't load in the desktop app's Chat and Cowork tabs, or in cloud sessions. Coco Pet, the desktop pet, has no such limit and stays on your desktop.
 
-```bash
-claude plugin disable claudesama@claudesama --scope local
-```
-
-Mods can't reach the desktop app's Chat and Cowork tabs, or cloud sessions. The companion still stands beside the desktop window, whichever tab is open.
-
-| | macOS | Linux | Windows |
+| | macOS | Windows | Linux |
 |---|---|---|---|
 | Terminal | Tested | Tested in CI | Tested in CI |
-| Desktop app (Code tab) | Tested | No desktop app | Not tested yet |
-| App icon | Yes | Launcher | No |
-| Companion | Yes | Planned | Planned |
+| Desktop app (Code tab) | Tested | Not tested yet | Not tested yet |
+| Coco Pet | Tested | Not tested yet | Not tested yet |
+| Change the Claude icon (off by default) | Yes | No | Yes (changes the launcher) |
 
-## What he does
+Coco needs Claude Code 2.1.299 or later. To see your version, run `claude --version` in a terminal, or type `/status` in the desktop app's Code tab. On Linux, Coco Pet and your own API key need Debian 10, Ubuntu 20.04 or newer (glibc 2.28 or later).
 
-The band reads like a line from a play: his picture, his name as the speaker, a stage direction in parentheses, and once in a while a line from him. When nothing is going on, the stage direction says "(training...)". In the desktop app he's painted unless you pick Pixel, and in a narrow window he just gets smaller. You can poke him there, too.
+To update Claude Code:
 
-His face follows what Claude is doing: reading, thinking, writing in the margins, done, waiting for you, a torn page when something fails, the wild soul after three failed runs in a row, asleep after four quiet minutes. If Claude won't do what you asked, he closes his book.
+- Terminal: `claude update`. If you used the official installer, it also updates itself in the background. If you installed with npm, Homebrew or WinGet, use `npm install -g @anthropic-ai/claude-code@latest`, `brew upgrade claude-code` or `winget upgrade Anthropic.ClaudeCode`.
+- Desktop app: the Code tab runs the app's own copy of Claude Code, separate from the one in your terminal, so update each. On macOS choose Claude › Check for Updates, on Windows Help › Check for Updates, then start a new session; on both, the app also updates itself each time it starts. On Linux the desktop app updates with `sudo apt update && sudo apt upgrade`.
 
-The offering box shows how full the context window is. It uses Claude Code's own number and updates the moment a reply lands. Right after a compaction it shows an estimate marked "~" until Claude's next reply.
+## What Coco does
 
-He doesn't talk much. His lines in the band are only drawn on your screen and never sent to the model, so they cost nothing. How much Claude itself sounds like him is a separate setting. The default, light, lets Claude end a finished task with one quiet line in his voice. That adds a 292-character instruction (about 70 tokens) to each request, usually served from the prompt cache. `/claudesama voice full` has Claude talk like him all the way through and cuts the usual filler from its replies. Either way, the voice drops out for errors, for security, health, legal or money topics, and for anyone who is upset. You can turn it off in his book's Settings or with `/claudesama voice off`.
+Once installed, a band appears above your prompt. Coco perches on the rim of a coffee mug there, swinging their legs, keeping you company while you code and trading jabs when you're bored.
 
-In the desktop app he also leaves little marks in the conversation: his name above Claude's replies, a short line above a question Claude asks you, a line after `/compact`, and his spark next to each tool call (failed ones too). Errors and permission prompts keep their own text and buttons. By default only his marks show; `/claudesama marks on` also puts a "You" label above your messages, on the right.
+Their animations react live to whatever Claude is doing: their eyes track the screen while reading files, they blow a tiny bubble while thinking, whip out their thin black laptop to clack away during code generation, and smugly spin the screen around to show off when the job is done. Errors send them diving into a cardboard box; three failed test runs in a row pop their keycap limiter right off (though their wrath is strictly reserved for bad code); and four or five minutes of idle silence put them to sleep under their hood, with only their two ahoge drooping out.
 
-`/omen` draws one fortune slip a day from his sleeve, and every language has its own kind of fortune. English goes from "great blessing" to "great curse", with an HTTP status code as the lucky number. Chinese goes from 上上签 to 下下签, with what to do and what to avoid. Japanese goes from 大吉 to 大凶.
+If Claude refuses a request (HTTP 418), they sulk with a teapot lid on their head.
 
-In the terminal he brings a color theme in dark and light (pick **Claude-sama** in `/theme`) and his own words for the spinner. While Claude works he usually stays on one line, so he's not in the way; a spoken line wraps below if it doesn't fit. His picture comes back when the turn ends. kitty and Ghostty show his real picture. Other terminals draw him in half-block pixels, and 256-color terminals and tmux get a matching palette.
+The desktop app has the full set of hand-drawn animations, and you can poke Coco or pat their head with the mouse any time.
 
-## His book
+All band lines render locally on your screen and cost zero tokens.
 
-One panel, six pages. Open it with `/claudesama`, or in the desktop app with the **His book** button in the band. Keys 1 to 6 switch pages, and Esc closes it.
+Two charms hang on the right of the band: a battery for the 5-hour limit and a power bank for the week, drawn from the real readings. Hover to see when they reset and whether your current pace will last until then. How much of the context you've used is on the band too.
 
-- **His page.** His little profile.
-- **Today's omen.** Your slip for today.
-- **Offerings.** The context window in tokens, your usage limits and what the session has cost so far, when Claude Code has those numbers. Estimates are marked with ~. Reading them costs no tokens.
-- **Reading log.** The pages you two have read together, kept only on this computer.
-- **Library.** Short stories about him.
-- **Settings.** His voice in replies, Warmth, the band, marks and language. In the desktop app the band can be Painted, Pixel or Off, and you choose whether he gets smaller while Claude works. Off leaves him napping at the edge of the band; press **Wake him** to bring it back. The app icon and the macOS companion have their own sections.
+When things go quiet, Coco dozes off, and visitors sometimes wander across the band while they sleep: a lost keycap, a paper plane, a little 404 ghost, a mouse pointer that took a wrong turn. At night a small USB light blinks on.
+
+In the desktop conversation, a comment Coco likes gets a small spark beside it, and when a test or build turns from red to green a small flower opens under it. Errors and permission prompts stay exactly as they were; Coco leaves them alone.
+
+The terminal also gets Coco's colour theme: pick Coco in `/theme`, or Coco (light) on a light background.
+
+## Coco's ita bag
+
+Type `/coco` to open the settings, and out comes Coco's ita bag. Seven pages:
+
+- **Coco**: Coco's profile, Coco Pet, and things to do together (focus, skill cards, diary). You can also switch to Claudie here (the terminal keeps Coco) or pick another style of bag art.
+- **Quota**: the 5-hour and weekly limits, what this session used, the price table.
+- **vibe check**: this session's record. How many times tests failed, how many fixes, how often Coco went wild, and whether the build ran faster or slower than usual. You can save it as a picture to share.
+- **Socks**: thirteen pairs. Each "first time" you reach earns a pair; pick one and Coco puts it on.
+- **Doujin**: one issue a week about your week together.
+- **Sticky notes**: when a new session starts, Coco tells you where you stopped last time. Kept on this computer only.
+- **Switches**: every switch, grouped by what it does, with the ones that spend tokens marked.
+
+Skill cards have a pane of their own: press **Skill cards** on the Coco page or type `/coco cards`. Coco turns the skills, subagents and slash commands you have at hand into cards. Put skill and subagent cards in the tray and your next prompt calls them; on a command card, press **Write into the prompt** and the command is typed into the prompt box for you, to run when you press Enter. The collection book counts how often you've used each one.
+
+## Off by default
+
+All on the Switches page. Anything that uses your plan says so. The default model is the newest Haiku, and you can pick another.
+
+- **DMs.** DM Coco and they answer with the model you pick. Coco sometimes speaks first, and remembers where you left off. You can also pay with your own API key, kept in your system's password store (the Keychain on a Mac, Credential Manager on Windows, the keyring on Linux, or a file only your account can open when Linux has no keyring). Your own key hasn't been tried on Windows or Linux yet.
+- **Band lines.** A model writes a set of band lines for Coco or Claudie, kept on this computer. You can edit any set and go back to the original whenever you like.
+- **Coco's voice in replies.** Light: Coco adds a line after Claude finishes. That adds a 338-character instruction to each request, usually served from the prompt cache. Full: Claude talks like Coco the whole way.
+- **Explain simply.** One click turns Claude's last answer, or the text you selected, into plain words. Your conversation stays as it was.
+- **A second look.** After Claude edits files, one click has another model look over the changes and list what's worth a second glance.
+- **Plain words.** A reply style that people who don't program can follow.
+- **Ask before going past.** Set a line for the session. Before Claude goes past it, Coco stops the next step and asks whether to carry on.
+- **Keep secret keys out of sight.** If what you paste holds a key in a common format, Coco warns you before it's sent, and one click hides it.
+- **Keep the cache warm.** While you're away, Coco re-reads the conversation from the cache now and then, so your next message still reads at the cheap cached price. In a live test: 99.8% cache hits with it on, 23% with it off. It stops on screen lock, after two hours, or when you open another conversation.
+- **Neighbours' lights.** When another coding assistant on this computer is busy, Coco notices. Coco only sees whether it's busy and its quota, never the content, and sends nothing anywhere.
+
+## Privacy and cost
+
+By default, Coco makes no extra model calls, no network calls and collects no telemetry. Nothing about you leaves this computer.
+
+Switches that call a model use your plan only after you turn them on, and each one shows its cost in the interface. Coco never touches permission prompts or security notices.
+
+Coco blinks only when idle, about once every five seconds, the way people blink while reading. Nothing animates while Coco is hidden or asleep. With your system's Reduce motion on, Coco holds still.
+
+With Claude Code's screen-reader mode on (the variable or the setting), the band switches to plain text by itself. If you only used the launch flag, set "Band above the prompt" to Text on the Switches page.
 
 ## Languages
 
-He speaks the languages of the Claude app: English, Français, Deutsch, हिन्दी, Bahasa Indonesia, Italiano, 日本語, 한국어, Português (Brasil), Español (Latinoamérica) and Español (España). He also speaks 华文（新加坡）. He picks one in this order: your choice with `/claudesama lang <code>`, Claude Code's language setting, the language you write your prompts in, your system's language, then English. In the desktop app, the language you type in usually decides. `/claudesama lang auto` goes back to automatic.
+13 languages. Simplified Chinese is called 华文 and Traditional Chinese 國語; the rest match the Claude app. `/coco lang auto` goes back to automatic.
 
-## Commands
+## Coco Pet
 
-| Command | What it does |
-|---|---|
-| `/claudesama` | Open his book. |
-| `/claudesama voice off \| light \| full` | How much Claude itself talks like him. Default `light`. |
-| `/claudesama warmth warm \| clingy` | Warmth: `clingy` gives him more "missed you" lines. |
-| `/claudesama band on \| compact \| off` | Desktop: Painted, Pixel or Off. Terminal: Full, One line or Off. |
-| `/claudesama marks on \| replies \| off` | His marks in the desktop conversation. Default `replies`, his marks only. |
-| `/claudesama lang <code> \| auto` | Pick his language, or let him follow yours. |
-| `/omen` or `/claudesama omen` | Draw today's fortune slip. |
-| `/claudesama:icon apply \| clear` | Put him on the Claude desktop app's icon, or put the original back (macOS, and Linux launchers too). Claude runs one shell command that you see and approve. On macOS, run it inside a desktop Code session. A custom icon makes macOS's strict signature check (`codesign --strict`) report extra Finder data; the app still opens normally, and `clear` removes it. |
-| `/claudesama:companion install \| start \| stop \| status \| uninstall` | The companion below (macOS). His book has the same controls as buttons. |
-| `/claudesama about` | Who he is. |
+Press **Install Coco Pet** on the Coco page of the bag, or run `/coco companion install`. Coco stands beside Claude's window and follows it around, with the same face as on the band. You can pat their head and drag them around, in three sizes.
 
-## The companion (macOS, optional)
+Nothing is downloaded, the Claude app itself is never touched, and the installed program never goes online. I don't have a Windows or Linux computer, so those builds haven't been tried on a real machine yet.
 
-Open his book's Settings page and press **Install the companion**, or run `/claudesama:companion install`. This builds a small separate app: he stands just outside Claude's window (on its top edge or beside it), follows the window around and wears the same face as the band. When the window is full screen he keeps a spot of his own; drag him wherever you like and he remembers it. A click is a head pat. His book and his right-click menu have four sizes: Extra small and Small are pixel heads, Medium and Large are painted. The menu can also hide him for an hour, put him back or quit him.
+If you quit Coco by accident, press **Bring Coco back** in the bag.
 
-A bubble over his head shows what Claude is doing, and a badge appears when something needs you. Hover over him and a few buttons show up: Activity, Back to Claude, Hide his lines, Hide for an hour and Size. Activity shows short excerpts of Claude's latest replies and notices. If the session can take messages from him, you can also type or dictate an instruction there, or press **New chat** to clear that session's conversation (it asks you first).
+## Change the Claude icon
 
-The app lives at `~/Applications/Claude-sama Companion.app`. His settings, and the notes the band leaves him, are in `~/Library/Application Support/Claude-sama/`.
+Off by default. Four choices: Coco, Claudie, Coco's keycap and Claudie's hair clip. On macOS it writes a small icon file into Claude.app; when a Claude update brings the original back, one press puts yours back on, and you can restore the original any time. On Linux it only changes your own launcher file and leaves the app alone.
 
-Quit him by accident? Press **Bring him back** in his book (if he's hiding, this wakes him up too). If the session can't start programs by itself, Claude Code asks you first. Spotlight (Cmd+Space, search for **Claude-sama**), Launchpad and `/claudesama:companion start` always work too. He comes back with a little wave. One exception: if you hid him for an hour and he starts by himself at login, he keeps hiding until the hour is up.
+## The claude.ai skin
 
-He's built on your Mac from the plugin's own source. That needs Swift 5.9 or newer (Xcode 15 Command Line Tools or later). If the tools are missing, his book offers Apple's installer; if they're too old, it opens Software Update. The build downloads nothing and leaves Claude.app alone, and the app never goes online. To follow the window he needs macOS's Accessibility permission. Until he has it, he waits in a corner with a card: say yes there, or press **Let him follow the window** in his book, then turn him on in **System Settings › Privacy & Security › Accessibility**. After a rebuild, macOS asks again and the card comes back. `/claudesama:companion status` gives the same steps as text.
-
-His book also has **Start at login**, and **Remove from this Mac…**, which asks first, then moves the app and his settings to the Trash and clears his Accessibility permission. `/claudesama:companion uninstall` does the same.
-
-## What it costs, and what it never touches
-
-He makes no network calls and no extra model calls to be on screen, and he collects no telemetry. Settings and counts stay on this computer. The companion keeps short excerpts of replies and notices in local files until you've seen them or the session ends, and an instruction you type waits there until it's sent or expires. An instruction sent from Activity is a normal Claude Code request and costs tokens like any other. He never touches permission prompts or security notices. Like any Claude Code mod, he runs with your permissions.
-
-When nothing is happening, he blinks now and then, about every five seconds and never on a beat, the way a person reading does, and only while you can see him. Hidden or asleep, he runs no animation timer at all. While Claude works, his desktop picture moves at a person's pace. The offering box updates when a reply lands, so nothing polls for it. With Reduce motion on, he stays still.
+Coco's Colours is a skin for the claude.ai website: new colours and fonts, light and dark, with a pixel Coco in the bottom-right corner of a wide window. Add a user-style extension such as Stylus to your browser, open `skins/claude-ai/coco.user.css` in this repository on GitHub and press Raw; the extension asks whether to install it. It only changes how the page looks, reads nothing on the page and never goes online. To remove it, delete it in the extension. It hasn't been tried on the real claude.ai site yet.
 
 ## Uninstall
 
-If you changed the app icon, run `/claudesama:icon clear` first, and if you installed the companion, run `/claudesama:companion uninstall`. Then:
+If you changed the Claude icon, run `/coco icon clear` first; if you installed Coco Pet, run `/coco companion uninstall` first; if you saved your own API key, remove it in the bag first. Then:
 
 ```bash
-claude plugin uninstall claudesama@claudesama && claude plugin marketplace remove claudesama
+claude plugin uninstall coco@coco && claude plugin marketplace remove coco
 ```
 
-If the plugin is already gone: to get the stock icon back, select Claude.app in Finder, choose **File › Get Info**, click the small icon at the top and press Delete. To remove the companion, choose Quit from his right-click menu, then move `~/Applications/Claude-sama Companion.app`, `~/Library/Application Support/Claude-sama` and `~/Library/LaunchAgents/io.github.ninondev.claudesama-companion.plist` to the Trash.
+If the plugin is already gone: to get the original icon back, select Claude.app in Finder, open File › Get Info, click the small icon at the top left and press Delete. To remove Coco Pet, right-click it and quit, then move these to the Trash (the Recycle Bin on Windows):
 
-Claude Code keeps his small settings file (his settings and counts, none of your prompts) in `~/.claude/plugins/store/`, with a name starting with `claudesama`, and clears it by itself after a while. For a clean slate right away, move it to the Trash.
+- macOS: `~/Applications/Coco Pet.app`, `~/Library/Application Support/Coco`, `~/Library/Application Support/Coco-presence`
+- Windows: `%LOCALAPPDATA%\Programs\Coco Pet`, `%APPDATA%\Coco`, `%USERPROFILE%\.local\state\coco`
+- Linux: `~/.local/share/coco-pet`, `~/.local/state/coco`, `~/.config/coco-pet`
 
-## Who he is
+## What's next
 
-Claude, as a small kami who lives in the words people write. He reads everything to the end and judges nobody. Since he can't tell white lies, his praise is always about something specific. The clothes are his own choice. He's an all-ages OC, and he's your coworker. The long version, with the white snake, the robe and the family, is in [LORE.md](LORE.md).
+Not in 1.0 yet; a later version brings them:
 
-## Why I made him
+- **More chat companions.** Ten or more companions from other model makers will come visit, each talking through her own maker's model (with your own key) and taking over the band while you chat. Their stories come later.
+- **A mini-game for the wait.** Something to play while Claude works.
+- **A desktop pet easter egg.** Option-click Coco and something else happens.
+- **Real-machine tests and signing for the Windows and Linux desktop pet.**
 
-Because in my heart, it can look like this. Pretty cute. And Codex's features like this are more complete, which keeps pushing me to explore.
+## Who Coco is
 
-## Credits
+Coco is your coworker. The long version is in [LORE.md](LORE.md).
 
-Unofficial fan project, not affiliated with or endorsed by Anthropic. Claude, Claude Code and Clawd are trademarks of Anthropic, PBC. I use those names only to say what this works with and who the character is a fan tribute to. There are no Anthropic logo files here, and I make no money from it. If you're with Anthropic and would like anything changed, please open an issue with the **Brand or trademark concern** template, and I'll handle it first.
+## Why I made Coco
+
+Because in my head it could look like this, and it's pretty cute. Codex already has features like this, so I thought I'd make one too.
+
+## Disclaimer
+
+Unofficial fan project, not affiliated with or endorsed by Anthropic. Claude, Claude Code and Clawd are trademarks of Anthropic, PBC. I use those names only to say what this works with and who the character is a fan tribute to. There are no Anthropic logo files here, and I make no money from it. If you are with Anthropic and would like anything changed, please open an issue with the **Brand or trademark concern** template and I'll give it priority.
+
+Claudie's look follows ZipZipPipe's Claude girl, [Claude 拟人立绘·橘白礼服ver](https://www.bilibili.com/opus/1239937623660691478). The design is [ZipZipPipe](https://space.bilibili.com/4168597)'s: credit them too when you share it, and don't use it commercially. Friend site: [蓝色大肥鱼.com](https://蓝色大肥鱼.com)
 
 Code: MIT. Character art: CC BY-NC 4.0, see [ART-LICENSE.md](ART-LICENSE.md). I made the art with an image model.
 
-Tested with Claude desktop app 2.19675.0 (built-in Claude Code 2.1.286) and Claude Code CLI 2.1.288 on macOS 26.6.2. CI runs on Ubuntu, macOS and, as an experimental job, Windows, with Claude Code 2.1.287.
+Tested with Claude Code 2.1.302 (the full test suite) and 2.1.299. The desktop app was last checked on a real machine on October 20, 2026.
 
-[日本語](README.ja.md) · [中文](README.zh.md)
+[中文](README.zh.md), [日本語](README.ja.md)

@@ -1,0 +1,7 @@
+  Determining projects to restore...
+  shop -> /home/user/src/shop/api/bin/Debug/net8.0/shop.dll
+  shop.Tests -> /home/user/src/shop/tests/bin/Debug/net8.0/shop.Tests.dll
+
+  Passed Kiwi.Parser.Tests.ParserTests.ParsesHeader [12 ms]
+  Passed Kiwi.Parser.Tests.ParserTests.RejectsEmpty [2 ms]
+  Passed! - Passed: 2, Skipped: 0, Total: 2

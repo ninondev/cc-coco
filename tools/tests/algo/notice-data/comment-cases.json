@@ -1,0 +1,414 @@
+{
+ "fixtures": [
+  {
+   "lang": "en",
+   "text": "Retry once: the refresh token may be mid-rotation in another tab, so a single 401 is not proof of logout.",
+   "next": "if (res.status === 401 && !retried) {",
+   "label": true,
+   "pass": false,
+   "quote": null
+  },
+  {
+   "lang": "en",
+   "text": "Hold the lock while copying, otherwise a concurrent flush can free the buffer under us.",
+   "next": "pthread_mutex_lock(&q->lock);",
+   "label": true,
+   "pass": true,
+   "quote": "Hold the lock while copying, otherwise a…"
+  },
+  {
+   "lang": "en",
+   "text": "Increment the counter.",
+   "next": "counter++",
+   "label": false,
+   "pass": false,
+   "quote": null
+  },
+  {
+   "lang": "en",
+   "text": "Set the timeout to 30 seconds",
+   "next": "timeout = 30",
+   "label": false,
+   "pass": false,
+   "quote": null
+  },
+  {
+   "lang": "en",
+   "text": "TODO: handle the empty case because it crashes",
+   "next": "if (!items.length) return",
+   "label": false,
+   "pass": false,
+   "quote": null
+  },
+  {
+   "lang": "en",
+   "text": "Copyright 2024 Example Corp. Licensed under the Apache License, Version 2.0, because we like it.",
+   "next": "",
+   "label": false,
+   "pass": false,
+   "quote": null
+  },
+  {
+   "lang": "en",
+   "text": "If the key is missing, return null. Otherwise, return the cached value.",
+   "next": "export function get(key) {",
+   "label": false,
+   "pass": false,
+   "quote": null
+  },
+  {
+   "lang": "en",
+   "text": "Parse the config file and return the result.",
+   "next": "def parse_config(path):",
+   "label": false,
+   "pass": false,
+   "quote": null
+  },
+  {
+   "lang": "en",
+   "text": "Must be called with the queue lock held: the worker thread reads `tail` without it.",
+   "next": "static void push(Queue *q) {",
+   "label": true,
+   "pass": true,
+   "quote": "Must be called with the queue lock held…"
+  },
+  {
+   "lang": "en",
+   "text": "Wait 250 ms before the second probe because the router drops the first SYN after a reset.",
+   "next": "await sleep(250)",
+   "label": true,
+   "pass": true,
+   "quote": "Wait 250 ms before the second probe because…"
+  },
+  {
+   "lang": "fr",
+   "text": "On vide le cache ici, sinon l'ancien jeton reste valide et la déconnexion ne sert à rien.",
+   "next": "cache.clear()",
+   "label": true,
+   "pass": true,
+   "quote": "On vide le cache ici, sinon l'ancien jeton…"
+  },
+  {
+   "lang": "fr",
+   "text": "Initialise la variable compteur.",
+   "next": "compteur = 0",
+   "label": false,
+   "pass": false,
+   "quote": null
+  },
+  {
+   "lang": "de",
+   "text": "Erst sperren, sonst kann ein zweiter Thread den Puffer gleichzeitig freigeben.",
+   "next": "mutex.lock()",
+   "label": true,
+   "pass": true,
+   "quote": "Erst sperren, sonst kann ein zweiter Thread…"
+  },
+  {
+   "lang": "de",
+   "text": "Hier wird die Liste sortiert.",
+   "next": "list.sort()",
+   "label": false,
+   "pass": false,
+   "quote": null
+  },
+  {
+   "lang": "es",
+   "text": "Esperamos al segundo evento porque Safari no dispara el primero tras volver de segundo plano.",
+   "next": "await nextEvent()",
+   "label": true,
+   "pass": false,
+   "quote": null
+  },
+  {
+   "lang": "es",
+   "text": "Recorre la lista de usuarios.",
+   "next": "for (const u of users) {",
+   "label": false,
+   "pass": false,
+   "quote": null
+  },
+  {
+   "lang": "es-419",
+   "text": "Guardamos la sesión antes de cerrar porque el navegador no espera a que termine la petición.",
+   "next": "saveSession()",
+   "label": true,
+   "pass": false,
+   "quote": null
+  },
+  {
+   "lang": "es-419",
+   "text": "Acá se arma la URL.",
+   "next": "const url = base + path",
+   "label": false,
+   "pass": false,
+   "quote": null
+  },
+  {
+   "lang": "pt",
+   "text": "Copiamos o vetor antes de ordenar, senão a ordenação altera o estado que o React ainda está lendo.",
+   "next": "const sorted = [...items].sort()",
+   "label": true,
+   "pass": true,
+   "quote": "Copiamos o vetor antes de ordenar, senão a…"
+  },
+  {
+   "lang": "pt",
+   "text": "Retorna o total.",
+   "next": "return total",
+   "label": false,
+   "pass": false,
+   "quote": null
+  },
+  {
+   "lang": "it",
+   "text": "Usiamo il timestamp del server perché l'orologio del client può essere indietro di minuti.",
+   "next": "const now = res.serverTime",
+   "label": true,
+   "pass": true,
+   "quote": "Usiamo il timestamp del server perché…"
+  },
+  {
+   "lang": "it",
+   "text": "Incrementa il contatore.",
+   "next": "contatore++",
+   "label": false,
+   "pass": false,
+   "quote": null
+  },
+  {
+   "lang": "id",
+   "text": "Tutup koneksi di sini karena server tidak menutupnya sendiri dan soket akan bocor.",
+   "next": "conn.close()",
+   "label": true,
+   "pass": true,
+   "quote": "Tutup koneksi di sini karena server tidak…"
+  },
+  {
+   "lang": "id",
+   "text": "Ambil data pengguna.",
+   "next": "const user = await getUser()",
+   "label": false,
+   "pass": false,
+   "quote": null
+  },
+  {
+   "lang": "hi",
+   "text": "यहाँ लॉक लेना ज़रूरी है क्योंकि दूसरा थ्रेड एक साथ बफ़र खाली कर सकता है।",
+   "next": "lock.acquire()",
+   "label": true,
+   "pass": true,
+   "quote": "यहाँ लॉक लेना ज़रूरी है क्योंकि दूसरा थ्रेड एक साथ…"
+  },
+  {
+   "lang": "hi",
+   "text": "उपयोगकर्ता की सूची लौटाता है।",
+   "next": "return users",
+   "label": false,
+   "pass": false,
+   "quote": null
+  },
+  {
+   "lang": "zh",
+   "text": "先加锁再拷贝，否则并发刷新会在我们读的时候释放缓冲区。",
+   "next": "lock.lock();",
+   "label": true,
+   "pass": true,
+   "quote": "先加锁再拷贝，否则并发刷新会在我们读的时候…"
+  },
+  {
+   "lang": "zh",
+   "text": "默认的时间格式",
+   "next": "String FORMAT = \"yyyy-MM-dd\";",
+   "label": false,
+   "pass": false,
+   "quote": null
+  },
+  {
+   "lang": "zh",
+   "text": "待办：这里以后再优化，因为太慢",
+   "next": "for (...) {",
+   "label": false,
+   "pass": false,
+   "quote": null
+  },
+  {
+   "lang": "zh-Hant",
+   "text": "先關閉舊連線，否則伺服器會把兩個請求當成重複送出而丟失一筆。",
+   "next": "old.close()",
+   "label": true,
+   "pass": true,
+   "quote": "先關閉舊連線，否則伺服器會把兩個請求當成重…"
+  },
+  {
+   "lang": "zh-Hant",
+   "text": "取得使用者名稱。",
+   "next": "name = user.name",
+   "label": false,
+   "pass": false,
+   "quote": null
+  },
+  {
+   "lang": "ja",
+   "text": "こっちを先に判定しないと、7の条件に含まれてしまう。",
+   "next": "if (x == 8) {",
+   "label": true,
+   "pass": true,
+   "quote": "こっちを先に判定しないと、7の条件に含まれて…"
+  },
+  {
+   "lang": "ja",
+   "text": "ユーザー一覧を取得する。",
+   "next": "users = fetch_users()",
+   "label": false,
+   "pass": false,
+   "quote": null
+  },
+  {
+   "lang": "ja",
+   "text": "どれにも該当しないときは、このラベルにする。",
+   "next": "label = DEFAULT",
+   "label": false,
+   "pass": false,
+   "quote": null
+  },
+  {
+   "lang": "ko",
+   "text": "먼저 잠그지 않으면 다른 스레드가 동시에 버퍼를 해제해서 충돌이 난다.",
+   "next": "mutex.lock()",
+   "label": true,
+   "pass": true,
+   "quote": "먼저 잠그지 않으면 다른 스레드가 동시에…"
+  },
+  {
+   "lang": "ko",
+   "text": "사용자 목록을 가져온다.",
+   "next": "users = fetch()",
+   "label": false,
+   "pass": false,
+   "quote": null
+  },
+  {
+   "lang": "ko",
+   "text": "나중에 고칠 것: 이 부분은 느리기 때문에",
+   "next": "for x in xs:",
+   "label": false,
+   "pass": false,
+   "quote": null
+  }
+ ],
+ "review": [
+  {
+   "text": "Free the main buffer here since it is no longer needed by anyone.",
+   "next": "free(buf);",
+   "want": false,
+   "pass": false,
+   "quote": null
+  },
+  {
+   "text": "We failed to find a free slot, so mark the cache as full and return nothing.",
+   "next": "cache->full = 1;",
+   "want": false,
+   "pass": false,
+   "quote": null
+  },
+  {
+   "text": "Not going to bother with Windows now, so the test only runs on unix systems.",
+   "next": "if (!isUnix) return",
+   "want": false,
+   "pass": false,
+   "quote": null
+  },
+  {
+   "text": "Close the file because we do not need it anymore after this point.",
+   "next": "fclose(f);",
+   "want": false,
+   "pass": false,
+   "quote": null
+  },
+  {
+   "text": "Clear the cache before the redirect, otherwise the old session is served.",
+   "next": "cache.clear()",
+   "want": true,
+   "pass": true,
+   "quote": "Clear the cache before the redirect…"
+  },
+  {
+   "text": "Den Cache vor der Weiterleitung leeren, sonst wird die alte Sitzung ausgeliefert.",
+   "next": "cache.clear()",
+   "want": true,
+   "pass": true,
+   "quote": "Den Cache vor der Weiterleitung leeren…"
+  },
+  {
+   "text": "Vider le cache avant la redirection, sinon l'ancienne session est servie.",
+   "next": "cache.clear()",
+   "want": true,
+   "pass": true,
+   "quote": "Vider le cache avant la redirection, sinon…"
+  },
+  {
+   "text": "रीडायरेक्ट से पहले कैश साफ़ करें, वरना पुराना सेशन दिखेगा।",
+   "next": "cache.clear()",
+   "want": true,
+   "pass": true,
+   "quote": "रीडायरेक्ट से पहले कैश साफ़ करें, वरना पुराना सेशन…"
+  },
+  {
+   "text": "리다이렉트 전에 캐시를 비운다. 그렇지 않으면 예전 세션이 나간다.",
+   "next": "cache.clear()",
+   "want": true,
+   "pass": true,
+   "quote": "리다이렉트 전에 캐시를 비운다. 그렇지…"
+  },
+  {
+   "text": "跳转前先清缓存，否则会拿到旧的会话。",
+   "next": "cache.clear()",
+   "want": true,
+   "pass": true,
+   "quote": "跳转前先清缓存，否则会拿到旧的会话。"
+  },
+  {
+   "text": "Retry once: the refresh token may be mid-rotation in another tab, otherwise one 401 logs the person out.",
+   "next": "if (res.status === 401 && !retried) {",
+   "want": true,
+   "pass": true,
+   "quote": "Retry once: the refresh token may be…"
+  },
+  {
+   "text": "只重试一次：别的标签页可能正在轮换刷新令牌， 否则一次 401 就会把人登出。",
+   "next": "if (res.status === 401 && !retried) {",
+   "want": true,
+   "pass": true,
+   "quote": "只重试一次：别的标签页可能正在轮换刷新令牌…"
+  },
+  {
+   "text": "一度だけ再試行する。別タブでリフレッシュトークンを 更新中のことがあり、再試行しないと 401 一回でログアウトしてしまう。",
+   "next": "if (res.status === 401 && !retried) {",
+   "want": true,
+   "pass": true,
+   "quote": "一度だけ再試行する。別タブでリフレッシュト…"
+  },
+  {
+   "text": "Clear the cache before the redirect, otherwise the old token stays valid for one more request.",
+   "next": "cache.clear()",
+   "want": true,
+   "pass": true,
+   "quote": "Clear the cache before the redirect…"
+  },
+  {
+   "text": "跳转前先清缓存，否则旧令牌还能再用一次请求。",
+   "next": "cache.clear()",
+   "want": true,
+   "pass": true,
+   "quote": "跳转前先清缓存，否则旧令牌还能再用一次请求。"
+  },
+  {
+   "text": "リダイレクトの前にキャッシュを消す。消さないと古いトークンがもう一回だけ通ってしまう。",
+   "next": "cache.clear()",
+   "want": true,
+   "pass": true,
+   "quote": "リダイレクトの前にキャッシュを消す。消さな…"
+  }
+ ]
+}

@@ -1,0 +1,2 @@
+// Generated live public facade. Authoritative implementation: hooks-source/more-words.ts
+export {more_words__MORE_SLOTS as MORE_SLOTS,more_words__installMoreWords as installMoreWords,more_words__loadMoreWords as loadMoreWords,more_words__moreFill as moreFill,more_words__moreMissing as moreMissing,more_words__moreModelWords as moreModelWords,more_words__moreName as moreName,more_words__moreWord as moreWord,more_words__resetMoreWords as resetMoreWords} from './m1-compiled/motion_stills.js'

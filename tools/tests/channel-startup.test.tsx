@@ -1,7 +1,7 @@
 import { describe, expect, test } from 'claude-code/testing'
 import { CompanionChannel } from '../hooks/channel'
 
-const FOLDER = '/tmp/shared-channel/Library/Application Support/Claude-sama'
+const FOLDER = '/tmp/shared-channel/Library/Application Support/Coco'
 const REQUESTS = `${FOLDER}/requests.jsonl`
 const drain = async () => { for (let i = 0; i < 40; i++) await Promise.resolve() }
 
@@ -100,4 +100,52 @@ describe('channel startup failure isolation', () => {
     expect(returned).toBe(true)
     expect(errors).toEqual([failure])
   })
+})
+
+describe('one shared follower for presence and requests', () => {
+  test('subscribes without creating a second process and preserves request acknowledgements', async () => {
+    let receive!: (text: string) => Promise<void>, end!: () => void
+    let spawns = 0, ensures = 0, unsubscribes = 0, actions = 0, notes = 0, acks = 0
+    const errors: unknown[] = []
+    const channel = new CompanionChannel({
+      exists: async () => true,
+      listen: (read, ended) => { receive = read; end = ended; return () => { unsubscribes++ } },
+      ensureRequests: async () => { ensures++ },
+      spawn: () => { spawns++; return sleepingChild() },
+      now: async () => 1000,
+      authorize: async () => true, submit: async () => { actions++ }, clear: async () => {},
+    }, 'session', FOLDER, { note: () => { notes++ }, running: () => {}, seen: () => {}, ack: async () => { acks++ }, changed: async () => {}, error: e => errors.push(e) })
+    await channel.start()
+    expect(typeof receive).toBe('function');expect(typeof end).toBe('function')
+    const line = JSON.stringify({ v: 1, id: '0123456789abcdef', kind: 'submit', session: 'session', at: 1000, text: 'hello' }) + '\n'
+    await receive(line.slice(0, 20)); await receive(line.slice(20))
+    expect(actions).toBe(0); expect(notes).toBe(1); expect(acks).toBe(1)
+    expect(spawns).toBe(0); expect(ensures).toBe(0)
+    end(); await drain()
+    expect(channel.isRunning).toBe(false); expect(unsubscribes).toBe(1)
+    expect(errors).toEqual([])
+  })
+  test('a shared request clock rejection stops only its subscription and reports once', async () => {
+    let receive!: (text: string) => Promise<void>
+    let unsubscribes = 0, spawns = 0, changes = 0, actions = 0
+    const failure = new Error('request clock unavailable'), errors: unknown[] = []
+    const cb = callbacks(errors,async()=>{changes++})
+    const channel = new CompanionChannel({
+      exists: async()=>true,
+      listen: read=>{receive=read;return()=>{unsubscribes++}},
+      spawn: ()=>{spawns++;return sleepingChild()},
+      now: async()=>{throw failure},
+      submit: async()=>{actions++},clear:async()=>{},
+    },'session',FOLDER,cb)
+    await channel.start()
+    expect(typeof receive).toBe('function')
+    await expect(receive(JSON.stringify({v:1,id:'0123456789abcdef',kind:'submit',session:'session',at:1000,text:'hello'})+'\n')).resolves.toBeUndefined()
+    await drain()
+    expect(channel.isRunning).toBe(false)
+    expect(cb.active()).toBe(false)
+    expect(unsubscribes).toBe(1)
+    expect(spawns).toBe(0);expect(actions).toBe(0);expect(changes).toBe(1)
+    expect(errors).toEqual([failure])
+  })
+
 })

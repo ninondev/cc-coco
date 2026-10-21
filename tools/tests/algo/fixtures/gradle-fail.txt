@@ -1,0 +1,27 @@
+> Task :compileJava UP-TO-DATE
+> Task :compileKotlin UP-TO-DATE
+> Task :processResources UP-TO-DATE
+> Task :classes UP-TO-DATE
+> Task :compileTestKotlin
+> Task :compileTestJava
+> Task :test
+
+BillingServiceTest > computes invoice totals() FAILED
+    org.opentest4j.AssertionFailedError at BillingServiceTest.kt:42
+
+BillingServiceTest > rounds cents() PASSED
+
+    org.opentest4j.AssertionFailedError at BillingServiceTest.kt:42
+
+12 tests completed, 1 failed
+
+> Task :test FAILED
+
+FAILURE: Build failed with an exception.
+* What went wrong:
+Execution failed for task ':test'.
+* Try:
+> Run with --stacktrace option to get the stack trace.
+BUILD FAILED in 8s
+
+7 actionable tasks: 7 executed, 1 up-to-date

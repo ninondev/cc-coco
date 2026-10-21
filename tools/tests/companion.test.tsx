@@ -3,15 +3,20 @@ import { samePath } from './file-paths'
 // The companion feed: written only while the companion is installed, only when his record changes.
 
 import { describe, expect, test } from 'claude-code/testing'
-import { RECENT, band, world } from './world'
+import { settleLegacyStart, RECENT, band, world } from './world'
 import { atomicFeed, PROCESS_OK } from './shared-world'
 
 const START = { cwd: '/tmp/project', surface: 'terminal' as const, isInteractive: true }
-const FEED = '/tmp/x/Library/Application Support/Claude-sama/view.json'
+const FEED = '/tmp/x/Library/Application Support/Coco/view.json'
+const FOLDER = '/tmp/x/Library/Application Support/Coco'
+function companionFile(path: string): boolean {
+  return [FOLDER, `${FOLDER}/requests.jsonl`, '/tmp/x/Applications/Coco Pet.app/Contents/MacOS/coco-companion']
+    .some(own => samePath(path, own))
+}
 
 function companion(on: Parameters<typeof world>[0], installed: boolean): string[] {
   const writes: string[] = []
-  on('fs.exists', ($, e) => ({ value: !/[\\/]diagnostics$/.test(e.path) && (samePath(e.path, '/System/Library/CoreServices/SystemVersion.plist') || samePath(e.path, '/usr/bin/tail') || installed) }))
+  on('fs.exists', ($, e) => ({ value: samePath(e.path, '/System/Library/CoreServices/SystemVersion.plist') || samePath(e.path, '/usr/bin/tail') || installed && companionFile(e.path) }))
   on('fs.write', ($, e) => {
     writes.push(e.path)
     return { value: undefined }
@@ -30,7 +35,7 @@ describe('the companion feed', () => {
   test('a new mood reaches the companion; blinks never do', async ($, on) => {
     const w = world(on, { store: RECENT, env: { LANG: 'en_US.UTF-8', TERM: 'xterm-256color', HOME: '/tmp/x' } })
     const writes = companion(on, true)
-    await $.session.start(START)
+    await $.session.start(START); await settleLegacyStart($,w);
     await drainFeed($)
     await $.ui.mount({ surface: 'terminal', ...band(100) })
     const before = writes.length
@@ -46,7 +51,7 @@ describe('the companion feed', () => {
     const w = world(on, { store: RECENT, env: { LANG: 'en_US.UTF-8', TERM: 'xterm-256color', HOME: '/tmp/x' } })
     let installed = true
     const after: string[] = []
-    on('fs.exists', ($, e) => ({ value: !/[\\/]diagnostics$/.test(e.path) && (samePath(e.path, '/System/Library/CoreServices/SystemVersion.plist') || samePath(e.path, '/usr/bin/tail') || installed) }))
+    on('fs.exists', ($, e) => ({ value: samePath(e.path, '/System/Library/CoreServices/SystemVersion.plist') || samePath(e.path, '/usr/bin/tail') || installed && companionFile(e.path) }))
     on('fs.write', ($, e) => {
       if (!installed) after.push(e.path)
       return { value: undefined }
@@ -58,11 +63,11 @@ describe('the companion feed', () => {
     })
     on('session.id', () => ({ value: 's1' }))
     on('session.surfaces', () => ({ value: ['desktop'] }))
-    await $.session.start(START)
+    await $.session.start(START); await settleLegacyStart($,w);
     await drainFeed($)
     await $.ui.mount({ surface: 'terminal', ...band(100) })
     await w.clock.advance(30_000)
-    await $.turn.start({ text: '/claudesama:companion uninstall', turnId: 't1' })
+    await $.turn.start({ text: '/coco:companion uninstall', turnId: 't1' })
     await drainFeed($)
     await $.tool.call({ tool: 'Bash', command: 'sh /x/bin/companion-macos.sh uninstall' })
     await drainFeed($)
@@ -79,7 +84,7 @@ describe('the companion feed', () => {
   test('without the companion nothing is written, ever', async ($, on) => {
     const w = world(on, { store: RECENT, env: { LANG: 'en_US.UTF-8', TERM: 'xterm-256color', HOME: '/tmp/x' } })
     const writes = companion(on, false)
-    await $.session.start(START)
+    await $.session.start(START); await settleLegacyStart($,w);
     await drainFeed($)
     await $.turn.start({ text: 'go', turnId: 't1' })
     await drainFeed($)

@@ -1,0 +1,48 @@
+[package]
+name = "talk-key"
+version = "0.1.0"
+edition = "2024"
+rust-version = "1.89"
+publish = false
+description = "Keeps one Anthropic API key in the system's store and sends Talk's Haiku calls with it"
+
+[features]
+# Lets tests point the socket at a local server and replace the trust roots, home and helpers.
+# Refused at compile time outside debug builds (src/main.rs), so a release binary has no such path.
+test-hooks = []
+
+[dependencies]
+rustls = { version = "=0.23.45", default-features = false, features = ["ring", "std", "tls12"] }
+serde_json = "=1.0.151"
+unicode-normalization = "=0.1.25"
+
+[target.'cfg(unix)'.dependencies]
+libc = "=0.2.190"
+
+[target.'cfg(target_os = "macos")'.dependencies]
+rustls-platform-verifier = "=0.7.1"
+security-framework = "=3.7.0"
+
+[target.'cfg(windows)'.dependencies]
+rustls-platform-verifier = "=0.7.1"
+windows-sys = { version = "=0.61.2", features = [
+  "Win32_Foundation",
+  "Win32_Graphics_Gdi",
+  "Win32_Security_Credentials",
+  "Win32_System_Com",
+  "Win32_System_Console",
+  "Win32_System_Time",
+  "Win32_UI_Shell",
+] }
+
+[dev-dependencies]
+rustls = { version = "=0.23.45", default-features = false, features = ["ring", "std", "tls12"] }
+rcgen = { version = "=0.14.10", default-features = false, features = ["crypto", "pem", "ring"] }
+libc = "=0.2.190"
+
+[profile.release]
+opt-level = "s"
+lto = true
+codegen-units = 1
+panic = "abort"
+strip = true

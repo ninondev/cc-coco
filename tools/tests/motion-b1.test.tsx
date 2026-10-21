@@ -1,0 +1,60 @@
+import { describe, expect, test } from 'claude-code/testing'
+import { generateMotion, sampleMotion, sampleTouch, samplePoints, MOTION2 } from '../hooks/motion'
+
+describe('B1 shared motion', () => {
+  test('work blinks away from strokes, think shifts registered poses, and entry blink is soon', () => {
+    for (const variant of [0, 1, 2] as const) {
+      const work = generateMotion('work', variant), think = generateMotion('think', variant), idle = generateMotion('idle', variant)
+      expect(work.blinks.length).toBeGreaterThan(15)
+      for (const blink of work.blinks) for (const swap of work.swaps) expect(Math.abs(blink - swap)).toBeGreaterThanOrEqual(80)
+      expect(think.swaps).toEqual([])
+      expect(think.deepThoughts.length).toBeGreaterThan(5)
+      expect(idle.blinks[0]!).toBeLessThanOrEqual(4500)
+      expect(sampleMotion('think', 0, variant).frame).toBe('think-a')
+      expect(think.shift.length).toBeGreaterThan(0)
+      expect(sampleMotion('think', think.shift[0]!+56, variant).frame).toBe('think-b')
+    }
+  })
+  test('poke preserves pose, pat differs, wake precedes every reaction, and repetition continues', () => {
+    expect(sampleTouch('poke', 0).face).toBe('squeeze')
+    expect(sampleTouch('poke', 60).sy).toBeLessThan(0.945)
+    expect(sampleTouch('pat', 120).face).toBe('closed')
+    expect(sampleTouch('pat', 260).sy).toBeGreaterThan(0.965)
+    expect(sampleTouch('pat', 700).sy).toBeLessThan(0.964)
+    const smile = sampleTouch('poke', 450)
+    expect(sampleTouch('poke', 0, smile).face).toBe('smile')
+    const wake = generateMotion('idle', 0, { waking: true, touch: 'burst' })
+    expect(wake.reactionAt).toBe(450)
+    expect(wake.frameAt(0)).toBe('sleep')
+    expect(wake.frameAt(100)).toBe('idle-reading')
+    expect(sampleMotion('idle',100,0,{waking:true}).face).toBe('closed')
+    expect(wake.frameAt(449)).toBe('idle-reading')
+    expect(sampleMotion('idle',449,0,{waking:true}).face).toBe('half')
+    expect(wake.frameAt(451)).toBe('flustered')
+    expect(MOTION2.wake.lineAt).toBe(220)
+  })
+  test('a continuation retains the displayed body and face, and urgent touches end at their cap', () => {
+    const before=sampleMotion('idle',450,0,{touch:'poke',moodElapsedMs:450})
+    const after=sampleMotion('idle',0,0,{touch:'poke',continuation:before,moodElapsedMs:450})
+    expect(Math.abs(after.sy-before.sy)).toBeLessThan(0.00001)
+    expect(Math.abs(after.sx-before.sx)).toBeLessThan(0.00001)
+    expect(after.faces?.smile).toBe(before.faces?.smile)
+    expect(after.frame).toBe('idle-reading')
+    const capped=generateMotion('work',0,{touch:'pat',reactionDurationMs:900})
+    for(const layer of capped.layers.filter(layer=>!layer.loop))expect(samplePoints(layer.points,900)).toBe(0)
+    const afterBlink=capped.layers.find(layer=>!layer.loop&&layer.name==='face:blink')!
+    expect(afterBlink.points.some(point=>point.at>=1233&&point.at<=1533&&point.value===1)).toBe(true)
+    const wake=sampleMotion('idle',50,0,{waking:true})
+    expect(wake.sy).toBeLessThan(0.970)
+    expect(wake.face).toBe('closed')
+  })
+  test('calming preserves its two held poses and returns to reading after wild', () => {
+    const calm=generateMotion('idle',0,{entryFrom:'wild-a'})
+    expect(calm.frameAt(0)).toBe('wild-a')
+    expect(calm.frameAt(100)).toBe('calm-a')
+    expect(calm.frameAt(600)).toBe('calm-b')
+    expect(calm.frameAt(1450)).toBe('idle-reading')
+    expect(calm.layers.some(layer=>layer.name==='calm-a')).toBe(true)
+    expect(calm.layers.some(layer=>layer.name==='calm-b')).toBe(true)
+  })
+})

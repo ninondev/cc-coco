@@ -1,0 +1,1165 @@
+{
+  "scope": "Four exact frozen production engine captures for renderer regression drafts; no rendering or test execution",
+  "captureLogSha256": "15b255c78f23e8fc7a9646ec089b0560a535fcbfc89ddedda249b35b49eef8cb",
+  "bandSha256": "272cd10209115529077d7f991f360e9d19a0a5507e9c47ba26c01a7f5983f716",
+  "rendererBeforeSha256": "1c390956fb0c4dc8ba35d2f254b336db1912ba16cb5dfdef42a78b9d24c90760",
+  "captures": [
+    {
+      "surface": "desktop",
+      "mode": "light",
+      "theme": "light",
+      "requestedTheme": "light",
+      "layout": "rest",
+      "lang": "zh",
+      "scene": "budget-crossed",
+      "width": 300,
+      "columns": 38,
+      "original": false,
+      "hover": false,
+      "pixel": false,
+      "numericSlots": [
+        "80%"
+      ],
+      "numericKeptText": "5小时额度过了你设的线,80%",
+      "speechText": "5小时额度过了你设的线,80%",
+      "speechParagraphs": [
+        "5小时额度过了你设的线,80%"
+      ],
+      "sourceLineKey": "budget",
+      "sourceSlots": [
+        {
+          "kind": "label",
+          "value": "5小时额度"
+        },
+        {
+          "kind": "value",
+          "value": "80%"
+        }
+      ],
+      "authoredSpeechText": "5小时额度过了你设的线,80%",
+      "numericOriginalText": "5小时额度过了你设的线,80%",
+      "method": "mounted engine Pane; shipping band renderer; fixture View; reduced motion snapshot; Painted frame uses the shipping padded SVG width",
+      "tree": {
+        "type": "Box",
+        "props": {
+          "key": "coco:band",
+          "backgroundColor": "composerSidebarBackground",
+          "position": "relative",
+          "flexDirection": "row",
+          "alignItems": "center",
+          "padding": 0
+        },
+        "children": [
+          {
+            "type": "Box",
+            "props": {
+              "flexShrink": 0,
+              "position": "relative"
+            },
+            "hover": {
+              "scope": "coco:touch"
+            },
+            "children": [
+              {
+                "type": "Svg",
+                "props": {
+                  "source": "<svg xmlns=\"http://www.w3.org/2000/svg\" viewBox=\"-4 0 159 128\" width=\"79.5\" height=\"64\"><image href=\"data:image/png;base64,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\" x=\"0\" y=\"0\" width=\"151\" height=\"128\"/></svg>",
+                  "alt": "小克, 练功中..., 摸摸他的头",
+                  "width": 79.5,
+                  "height": 64
+                }
+              }
+            ],
+            "group": {
+              "plugin": "test"
+            }
+          },
+          {
+            "type": "Box",
+            "props": {
+              "key": "coco:text-column",
+              "flexDirection": "column",
+              "alignSelf": "flex-start",
+              "flexGrow": 1,
+              "flexShrink": 1,
+              "minWidth": 0,
+              "height": 3,
+              "marginLeft": 1
+            },
+            "children": [
+              {
+                "type": "Box",
+                "props": {
+                  "flexDirection": "row",
+                  "minWidth": 0,
+                  "height": 1
+                },
+                "hover": {
+                  "scope": "coco:touch"
+                },
+                "children": [
+                  {
+                    "type": "Box",
+                    "props": {
+                      "flexShrink": 0
+                    },
+                    "hover": {
+                      "scope": "coco:touch"
+                    },
+                    "children": [
+                      {
+                        "type": "Text",
+                        "props": {
+                          "color": "#9E4123",
+                          "bold": true
+                        },
+                        "children": [
+                          "小克"
+                        ]
+                      }
+                    ],
+                    "group": {
+                      "plugin": "test"
+                    }
+                  }
+                ],
+                "group": {
+                  "plugin": "test"
+                }
+              },
+              {
+                "type": "Box",
+                "props": {
+                  "flexDirection": "row",
+                  "flexWrap": "wrap",
+                  "alignItems": "flex-end",
+                  "columnGap": 1
+                },
+                "children": [
+                  {
+                    "type": "Box",
+                    "props": {
+                      "flexShrink": 1,
+                      "minWidth": 0
+                    },
+                    "children": [
+                      {
+                        "type": "Text",
+                        "props": {
+                          "wrap": "wrap"
+                        },
+                        "children": [
+                          "5小时额度过了你设的线,",
+                          {
+                            "type": "Text",
+                            "props": {
+                              "bold": true,
+                              "wrap": "truncate-end"
+                            },
+                            "children": [
+                              "80%"
+                            ]
+                          }
+                        ]
+                      }
+                    ]
+                  }
+                ]
+              }
+            ]
+          },
+          {
+            "type": "Box",
+            "props": {
+              "flexDirection": "row",
+              "alignItems": "center",
+              "marginLeft": 2,
+              "columnGap": 1,
+              "flexShrink": 0
+            },
+            "children": [
+              {
+                "type": "Box",
+                "props": {
+                  "flexDirection": "row",
+                  "alignItems": "center",
+                  "flexShrink": 0
+                },
+                "children": [
+                  {
+                    "type": "Svg",
+                    "props": {
+                      "source": "<svg xmlns=\"http://www.w3.org/2000/svg\" viewBox=\"0 0 20 18\" width=\"20\" height=\"18\"><style>.o{stroke:#573A33}@media (prefers-color-scheme:dark){.o{stroke:#E68F6F}}</style><path class=\"o\" d=\"M3.5 1.5h13l2 3h-17z\" fill=\"#CC7556\" stroke-width=\"1\"/><path d=\"M6 2v2.5M9 2v2.5M12 2v2.5M15 2v2.5\" stroke=\"#572A1C\" stroke-width=\"1\"/><rect class=\"o\" x=\"2\" y=\"5\" width=\"16\" height=\"12\" fill=\"#AA5E47\" stroke-width=\"1\"/><rect x=\"4\" y=\"11\" width=\"12\" height=\"5\" fill=\"#FAEEE9\"/></svg>",
+                      "alt": "功德箱,装了56%(上下文窗口)",
+                      "width": 20,
+                      "height": 18
+                    }
+                  },
+                  {
+                    "type": "Text",
+                    "props": {
+                      "color": "inactive"
+                    },
+                    "children": [
+                      " 56%"
+                    ]
+                  }
+                ]
+              },
+              {
+                "type": "Svg",
+                "props": {
+                  "source": "<svg xmlns=\"http://www.w3.org/2000/svg\" viewBox=\"0 0 16 22\" width=\"16\" height=\"22\"><style>.stick{stroke:#846D57;stroke-width:1.4}.hot{stroke:#D2552D;stroke-width:1.4}.thread{fill:#8E3B22}.smoke{stroke:#6B665F;opacity:.45}.bowl{fill:#846D57}@media(prefers-color-scheme:dark){.stick{stroke:#C0A98E}.hot{stroke:#F0794C}.thread{fill:#EDE3D6}.smoke{stroke:#C5BEB1}.bowl{fill:#C0A98E}}</style><path d=\"M5 5V18\" class=\"stick\" opacity=\".3\"/><path d=\"M5 14.96V18\" class=\"stick\"/><path d=\"M5 14.96v2\" stroke=\"#DC755D\" stroke-width=\"2\"/><path d=\"M11 1V18\" class=\"stick\" opacity=\".3\"/><path d=\"M11 7.56V18\" class=\"stick\"/><rect class=\"thread\" x=\"9.2\" y=\"13.3\" width=\"3.6\" height=\"1\" rx=\".5\"/><path d=\"M11 7.56v2\" stroke=\"#DC755D\" stroke-width=\"2\"/><path class=\"bowl\" d=\"M2 18h12l-2 3H4z\"/></svg>",
+                  "alt": "5小时额度耗83%; 7天额度耗41%; 80%处提醒",
+                  "width": 16,
+                  "height": 22
+                }
+              }
+            ]
+          },
+          {
+            "type": "Box",
+            "props": {
+              "position": "absolute",
+              "top": 0,
+              "left": 0,
+              "marginLeft": 11.192307692307692,
+              "right": 0,
+              "display": "none",
+              "flexDirection": "column"
+            },
+            "hover": {
+              "scope": "coco:touch",
+              "display": "flex"
+            },
+            "children": [
+              {
+                "type": "Box",
+                "props": {
+                  "flexDirection": "row",
+                  "justifyContent": "flex-end",
+                  "alignItems": "center",
+                  "gap": 1,
+                  "backgroundColor": "composerSidebarBackground",
+                  "flexShrink": 0
+                },
+                "children": [
+                  {
+                    "type": "Button",
+                    "props": {
+                      "key": "coco:book:open",
+                      "label": "他的书",
+                      "plain": true
+                    },
+                    "press": {
+                      "plugin": "test",
+                      "handle": 828670038
+                    }
+                  },
+                  {
+                    "type": "Box",
+                    "props": {
+                      "marginLeft": 2,
+                      "flexShrink": 0
+                    },
+                    "children": [
+                      {
+                        "type": "Button",
+                        "props": {
+                          "key": "coco:band:close",
+                          "label": "关闭",
+                          "plain": true
+                        },
+                        "press": {
+                          "plugin": "test",
+                          "handle": 828670039
+                        }
+                      }
+                    ]
+                  }
+                ]
+              }
+            ],
+            "group": {
+              "plugin": "test"
+            }
+          }
+        ]
+      }
+    },
+    {
+      "surface": "desktop",
+      "mode": "light",
+      "theme": "light",
+      "requestedTheme": "light",
+      "layout": "rest",
+      "lang": "zh-Hant",
+      "scene": "budget-crossed",
+      "width": 300,
+      "columns": 38,
+      "original": false,
+      "hover": false,
+      "pixel": false,
+      "numericSlots": [
+        "80%"
+      ],
+      "numericKeptText": "5小時額度過了你設的線,80%",
+      "speechText": "5小時額度過了你設的線,80%",
+      "speechParagraphs": [
+        "5小時額度過了你設的線,80%"
+      ],
+      "sourceLineKey": "budget",
+      "sourceSlots": [
+        {
+          "kind": "label",
+          "value": "5小時額度"
+        },
+        {
+          "kind": "value",
+          "value": "80%"
+        }
+      ],
+      "authoredSpeechText": "5小時額度過了你設的線,80%",
+      "numericOriginalText": "5小時額度過了你設的線,80%",
+      "method": "mounted engine Pane; shipping band renderer; fixture View; reduced motion snapshot; Painted frame uses the shipping padded SVG width",
+      "tree": {
+        "type": "Box",
+        "props": {
+          "key": "coco:band",
+          "backgroundColor": "composerSidebarBackground",
+          "position": "relative",
+          "flexDirection": "row",
+          "alignItems": "center",
+          "padding": 0
+        },
+        "children": [
+          {
+            "type": "Box",
+            "props": {
+              "flexShrink": 0,
+              "position": "relative"
+            },
+            "hover": {
+              "scope": "coco:touch"
+            },
+            "children": [
+              {
+                "type": "Svg",
+                "props": {
+                  "source": "<svg xmlns=\"http://www.w3.org/2000/svg\" viewBox=\"-4 0 159 128\" width=\"79.5\" height=\"64\"><image href=\"data:image/png;base64,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\" x=\"0\" y=\"0\" width=\"151\" height=\"128\"/></svg>",
+                  "alt": "小克, 練功中..., 摸摸他的頭",
+                  "width": 79.5,
+                  "height": 64
+                }
+              }
+            ],
+            "group": {
+              "plugin": "test"
+            }
+          },
+          {
+            "type": "Box",
+            "props": {
+              "key": "coco:text-column",
+              "flexDirection": "column",
+              "alignSelf": "flex-start",
+              "flexGrow": 1,
+              "flexShrink": 1,
+              "minWidth": 0,
+              "height": 3,
+              "marginLeft": 1
+            },
+            "children": [
+              {
+                "type": "Box",
+                "props": {
+                  "flexDirection": "row",
+                  "minWidth": 0,
+                  "height": 1
+                },
+                "hover": {
+                  "scope": "coco:touch"
+                },
+                "children": [
+                  {
+                    "type": "Box",
+                    "props": {
+                      "flexShrink": 0
+                    },
+                    "hover": {
+                      "scope": "coco:touch"
+                    },
+                    "children": [
+                      {
+                        "type": "Text",
+                        "props": {
+                          "color": "#9E4123",
+                          "bold": true
+                        },
+                        "children": [
+                          "小克"
+                        ]
+                      }
+                    ],
+                    "group": {
+                      "plugin": "test"
+                    }
+                  }
+                ],
+                "group": {
+                  "plugin": "test"
+                }
+              },
+              {
+                "type": "Box",
+                "props": {
+                  "flexDirection": "row",
+                  "flexWrap": "wrap",
+                  "alignItems": "flex-end",
+                  "columnGap": 1
+                },
+                "children": [
+                  {
+                    "type": "Box",
+                    "props": {
+                      "flexShrink": 1,
+                      "minWidth": 0
+                    },
+                    "children": [
+                      {
+                        "type": "Text",
+                        "props": {
+                          "wrap": "wrap"
+                        },
+                        "children": [
+                          "5小時額度過了你設的線,",
+                          {
+                            "type": "Text",
+                            "props": {
+                              "bold": true,
+                              "wrap": "truncate-end"
+                            },
+                            "children": [
+                              "80%"
+                            ]
+                          }
+                        ]
+                      }
+                    ]
+                  }
+                ]
+              }
+            ]
+          },
+          {
+            "type": "Box",
+            "props": {
+              "flexDirection": "row",
+              "alignItems": "center",
+              "marginLeft": 2,
+              "columnGap": 1,
+              "flexShrink": 0
+            },
+            "children": [
+              {
+                "type": "Box",
+                "props": {
+                  "flexDirection": "row",
+                  "alignItems": "center",
+                  "flexShrink": 0
+                },
+                "children": [
+                  {
+                    "type": "Svg",
+                    "props": {
+                      "source": "<svg xmlns=\"http://www.w3.org/2000/svg\" viewBox=\"0 0 20 18\" width=\"20\" height=\"18\"><style>.o{stroke:#573A33}@media (prefers-color-scheme:dark){.o{stroke:#E68F6F}}</style><path class=\"o\" d=\"M3.5 1.5h13l2 3h-17z\" fill=\"#CC7556\" stroke-width=\"1\"/><path d=\"M6 2v2.5M9 2v2.5M12 2v2.5M15 2v2.5\" stroke=\"#572A1C\" stroke-width=\"1\"/><rect class=\"o\" x=\"2\" y=\"5\" width=\"16\" height=\"12\" fill=\"#AA5E47\" stroke-width=\"1\"/><rect x=\"4\" y=\"11\" width=\"12\" height=\"5\" fill=\"#FAEEE9\"/></svg>",
+                      "alt": "功德箱,裝了56%(上下文視窗)",
+                      "width": 20,
+                      "height": 18
+                    }
+                  },
+                  {
+                    "type": "Text",
+                    "props": {
+                      "color": "inactive"
+                    },
+                    "children": [
+                      " 56%"
+                    ]
+                  }
+                ]
+              },
+              {
+                "type": "Svg",
+                "props": {
+                  "source": "<svg xmlns=\"http://www.w3.org/2000/svg\" viewBox=\"0 0 16 22\" width=\"16\" height=\"22\"><style>.stick{stroke:#846D57;stroke-width:1.4}.hot{stroke:#D2552D;stroke-width:1.4}.thread{fill:#8E3B22}.smoke{stroke:#6B665F;opacity:.45}.bowl{fill:#846D57}@media(prefers-color-scheme:dark){.stick{stroke:#C0A98E}.hot{stroke:#F0794C}.thread{fill:#EDE3D6}.smoke{stroke:#C5BEB1}.bowl{fill:#C0A98E}}</style><path d=\"M5 5V18\" class=\"stick\" opacity=\".3\"/><path d=\"M5 14.96V18\" class=\"stick\"/><path d=\"M5 14.96v2\" stroke=\"#DC755D\" stroke-width=\"2\"/><path d=\"M11 1V18\" class=\"stick\" opacity=\".3\"/><path d=\"M11 7.56V18\" class=\"stick\"/><rect class=\"thread\" x=\"9.2\" y=\"13.3\" width=\"3.6\" height=\"1\" rx=\".5\"/><path d=\"M11 7.56v2\" stroke=\"#DC755D\" stroke-width=\"2\"/><path class=\"bowl\" d=\"M2 18h12l-2 3H4z\"/></svg>",
+                  "alt": "5小時額度耗83%; 7天額度耗41%; 80%處提醒",
+                  "width": 16,
+                  "height": 22
+                }
+              }
+            ]
+          },
+          {
+            "type": "Box",
+            "props": {
+              "position": "absolute",
+              "top": 0,
+              "left": 0,
+              "marginLeft": 11.192307692307692,
+              "right": 0,
+              "display": "none",
+              "flexDirection": "column"
+            },
+            "hover": {
+              "scope": "coco:touch",
+              "display": "flex"
+            },
+            "children": [
+              {
+                "type": "Box",
+                "props": {
+                  "flexDirection": "row",
+                  "justifyContent": "flex-end",
+                  "alignItems": "center",
+                  "gap": 1,
+                  "backgroundColor": "composerSidebarBackground",
+                  "flexShrink": 0
+                },
+                "children": [
+                  {
+                    "type": "Button",
+                    "props": {
+                      "key": "coco:book:open",
+                      "label": "他的書",
+                      "plain": true
+                    },
+                    "press": {
+                      "plugin": "test",
+                      "handle": 828671646
+                    }
+                  },
+                  {
+                    "type": "Box",
+                    "props": {
+                      "marginLeft": 2,
+                      "flexShrink": 0
+                    },
+                    "children": [
+                      {
+                        "type": "Button",
+                        "props": {
+                          "key": "coco:band:close",
+                          "label": "關閉",
+                          "plain": true
+                        },
+                        "press": {
+                          "plugin": "test",
+                          "handle": 828671647
+                        }
+                      }
+                    ]
+                  }
+                ]
+              }
+            ],
+            "group": {
+              "plugin": "test"
+            }
+          }
+        ]
+      }
+    },
+    {
+      "surface": "desktop",
+      "mode": "light",
+      "theme": "light",
+      "requestedTheme": "light",
+      "layout": "rest",
+      "lang": "ja",
+      "scene": "budget-crossed",
+      "width": 420,
+      "columns": 53,
+      "original": false,
+      "hover": false,
+      "pixel": false,
+      "numericSlots": [
+        "80%"
+      ],
+      "numericKeptText": "5時間の枠がきみの目安を超えた。80%",
+      "speechText": "5時間の枠がきみの目安を超えた。80%",
+      "speechParagraphs": [
+        "5時間の枠がきみの目安を超えた。80%"
+      ],
+      "sourceLineKey": "budget",
+      "sourceSlots": [
+        {
+          "kind": "label",
+          "value": "5時間の枠"
+        },
+        {
+          "kind": "value",
+          "value": "80%"
+        }
+      ],
+      "authoredSpeechText": "5時間の枠がきみの目安を超えた。80%",
+      "numericOriginalText": "5時間の枠がきみの目安を超えた。80%",
+      "method": "mounted engine Pane; shipping band renderer; fixture View; reduced motion snapshot; Painted frame uses the shipping padded SVG width",
+      "tree": {
+        "type": "Box",
+        "props": {
+          "key": "coco:band",
+          "backgroundColor": "composerSidebarBackground",
+          "position": "relative",
+          "flexDirection": "row",
+          "alignItems": "center",
+          "padding": 0
+        },
+        "children": [
+          {
+            "type": "Box",
+            "props": {
+              "flexShrink": 0,
+              "position": "relative"
+            },
+            "hover": {
+              "scope": "coco:touch"
+            },
+            "children": [
+              {
+                "type": "Svg",
+                "props": {
+                  "source": "<svg xmlns=\"http://www.w3.org/2000/svg\" viewBox=\"-4 0 159 128\" width=\"79.5\" height=\"64\"><image href=\"data:image/png;base64,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\" x=\"0\" y=\"0\" width=\"151\" height=\"128\"/></svg>",
+                  "alt": "クロードさま, 学習中..., 頭をなでる",
+                  "width": 79.5,
+                  "height": 64
+                }
+              }
+            ],
+            "group": {
+              "plugin": "test"
+            }
+          },
+          {
+            "type": "Box",
+            "props": {
+              "key": "coco:text-column",
+              "flexDirection": "column",
+              "alignSelf": "flex-start",
+              "flexGrow": 1,
+              "flexShrink": 1,
+              "minWidth": 0,
+              "height": 3,
+              "marginLeft": 1
+            },
+            "children": [
+              {
+                "type": "Box",
+                "props": {
+                  "flexDirection": "row",
+                  "minWidth": 0,
+                  "height": 1
+                },
+                "hover": {
+                  "scope": "coco:touch"
+                },
+                "children": [
+                  {
+                    "type": "Box",
+                    "props": {
+                      "flexShrink": 0
+                    },
+                    "hover": {
+                      "scope": "coco:touch"
+                    },
+                    "children": [
+                      {
+                        "type": "Text",
+                        "props": {
+                          "color": "#9E4123",
+                          "bold": true
+                        },
+                        "children": [
+                          "クロードさま"
+                        ]
+                      }
+                    ],
+                    "group": {
+                      "plugin": "test"
+                    }
+                  }
+                ],
+                "group": {
+                  "plugin": "test"
+                }
+              },
+              {
+                "type": "Box",
+                "props": {
+                  "flexDirection": "row",
+                  "flexWrap": "wrap",
+                  "alignItems": "flex-end",
+                  "columnGap": 1
+                },
+                "children": [
+                  {
+                    "type": "Box",
+                    "props": {
+                      "flexShrink": 1,
+                      "minWidth": 0
+                    },
+                    "children": [
+                      {
+                        "type": "Text",
+                        "props": {
+                          "wrap": "wrap"
+                        },
+                        "children": [
+                          "5時間の枠がきみの目安を超えた。",
+                          {
+                            "type": "Text",
+                            "props": {
+                              "bold": true,
+                              "wrap": "truncate-end"
+                            },
+                            "children": [
+                              "80%"
+                            ]
+                          }
+                        ]
+                      }
+                    ]
+                  }
+                ]
+              }
+            ]
+          },
+          {
+            "type": "Box",
+            "props": {
+              "flexDirection": "row",
+              "alignItems": "center",
+              "marginLeft": 2,
+              "columnGap": 1,
+              "flexShrink": 0
+            },
+            "children": [
+              {
+                "type": "Box",
+                "props": {
+                  "flexDirection": "row",
+                  "alignItems": "center",
+                  "flexShrink": 0
+                },
+                "children": [
+                  {
+                    "type": "Svg",
+                    "props": {
+                      "source": "<svg xmlns=\"http://www.w3.org/2000/svg\" viewBox=\"0 0 20 18\" width=\"20\" height=\"18\"><style>.o{stroke:#573A33}@media (prefers-color-scheme:dark){.o{stroke:#E68F6F}}</style><path class=\"o\" d=\"M3.5 1.5h13l2 3h-17z\" fill=\"#CC7556\" stroke-width=\"1\"/><path d=\"M6 2v2.5M9 2v2.5M12 2v2.5M15 2v2.5\" stroke=\"#572A1C\" stroke-width=\"1\"/><rect class=\"o\" x=\"2\" y=\"5\" width=\"16\" height=\"12\" fill=\"#AA5E47\" stroke-width=\"1\"/><rect x=\"4\" y=\"11\" width=\"12\" height=\"5\" fill=\"#FAEEE9\"/></svg>",
+                      "alt": "お賽銭箱、56%たまっている(コンテキストウィンドウ)",
+                      "width": 20,
+                      "height": 18
+                    }
+                  },
+                  {
+                    "type": "Text",
+                    "props": {
+                      "color": "inactive"
+                    },
+                    "children": [
+                      " 56% コンテキスト"
+                    ]
+                  }
+                ]
+              },
+              {
+                "type": "Svg",
+                "props": {
+                  "source": "<svg xmlns=\"http://www.w3.org/2000/svg\" viewBox=\"0 0 16 22\" width=\"16\" height=\"22\"><style>.stick{stroke:#846D57;stroke-width:1.4}.hot{stroke:#D2552D;stroke-width:1.4}.thread{fill:#8E3B22}.smoke{stroke:#6B665F;opacity:.45}.bowl{fill:#846D57}@media(prefers-color-scheme:dark){.stick{stroke:#C0A98E}.hot{stroke:#F0794C}.thread{fill:#EDE3D6}.smoke{stroke:#C5BEB1}.bowl{fill:#C0A98E}}</style><path d=\"M5 5V18\" class=\"stick\" opacity=\".3\"/><path d=\"M5 14.96V18\" class=\"stick\"/><path d=\"M5 14.96v2\" stroke=\"#DC755D\" stroke-width=\"2\"/><path d=\"M11 1V18\" class=\"stick\" opacity=\".3\"/><path d=\"M11 7.56V18\" class=\"stick\"/><rect class=\"thread\" x=\"9.2\" y=\"13.3\" width=\"3.6\" height=\"1\" rx=\".5\"/><path d=\"M11 7.56v2\" stroke=\"#DC755D\" stroke-width=\"2\"/><path class=\"bowl\" d=\"M2 18h12l-2 3H4z\"/></svg>",
+                  "alt": "5時間の枠 83%使用; 7日間の枠 41%使用; 80%でお知らせ",
+                  "width": 16,
+                  "height": 22
+                }
+              }
+            ]
+          },
+          {
+            "type": "Box",
+            "props": {
+              "position": "absolute",
+              "top": 0,
+              "left": 0,
+              "marginLeft": 11.192307692307692,
+              "right": 0,
+              "display": "none",
+              "flexDirection": "column"
+            },
+            "hover": {
+              "scope": "coco:touch",
+              "display": "flex"
+            },
+            "children": [
+              {
+                "type": "Box",
+                "props": {
+                  "flexDirection": "row",
+                  "justifyContent": "flex-end",
+                  "alignItems": "center",
+                  "gap": 1,
+                  "backgroundColor": "composerSidebarBackground",
+                  "flexShrink": 0
+                },
+                "children": [
+                  {
+                    "type": "Button",
+                    "props": {
+                      "key": "coco:band:poke",
+                      "label": "つつく",
+                      "plain": true
+                    },
+                    "press": {
+                      "plugin": "test",
+                      "handle": 828672780
+                    }
+                  },
+                  {
+                    "type": "Button",
+                    "props": {
+                      "key": "coco:band:pat",
+                      "label": "なでる",
+                      "plain": true
+                    },
+                    "press": {
+                      "plugin": "test",
+                      "handle": 828672781
+                    }
+                  },
+                  {
+                    "type": "Button",
+                    "props": {
+                      "key": "coco:book:open",
+                      "label": "かれの本",
+                      "plain": true
+                    },
+                    "press": {
+                      "plugin": "test",
+                      "handle": 828672782
+                    }
+                  },
+                  {
+                    "type": "Box",
+                    "props": {
+                      "marginLeft": 2,
+                      "flexShrink": 0
+                    },
+                    "children": [
+                      {
+                        "type": "Button",
+                        "props": {
+                          "key": "coco:band:close",
+                          "label": "閉じる",
+                          "plain": true
+                        },
+                        "press": {
+                          "plugin": "test",
+                          "handle": 828672783
+                        }
+                      }
+                    ]
+                  }
+                ]
+              }
+            ],
+            "group": {
+              "plugin": "test"
+            }
+          }
+        ]
+      }
+    },
+    {
+      "surface": "desktop",
+      "mode": "light",
+      "theme": "light",
+      "requestedTheme": "light",
+      "layout": "rest",
+      "lang": "ja",
+      "scene": "budget-crossed",
+      "width": 300,
+      "columns": 38,
+      "original": false,
+      "hover": false,
+      "pixel": false,
+      "numericSlots": [
+        "80%"
+      ],
+      "numericKeptText": "枠がきみの目安を超えた。80%…",
+      "speechText": "枠がきみの目安を超えた。80%…",
+      "speechParagraphs": [
+        "枠がきみの目安を超えた。80%…"
+      ],
+      "sourceLineKey": "budget",
+      "sourceSlots": [
+        {
+          "kind": "label",
+          "value": "5時間の枠"
+        },
+        {
+          "kind": "value",
+          "value": "80%"
+        }
+      ],
+      "authoredSpeechText": "5時間の枠がきみの目安を超えた。80%",
+      "numericOriginalText": "5時間の枠がきみの目安を超えた。80%",
+      "method": "mounted engine Pane; shipping band renderer; fixture View; reduced motion snapshot; Painted frame uses the shipping padded SVG width",
+      "tree": {
+        "type": "Box",
+        "props": {
+          "key": "coco:band",
+          "backgroundColor": "composerSidebarBackground",
+          "position": "relative",
+          "flexDirection": "row",
+          "alignItems": "center",
+          "padding": 0
+        },
+        "children": [
+          {
+            "type": "Box",
+            "props": {
+              "flexShrink": 0,
+              "position": "relative"
+            },
+            "hover": {
+              "scope": "coco:touch"
+            },
+            "children": [
+              {
+                "type": "Svg",
+                "props": {
+                  "source": "<svg xmlns=\"http://www.w3.org/2000/svg\" viewBox=\"-4 0 159 128\" width=\"79.5\" height=\"64\"><image href=\"data:image/png;base64,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\" x=\"0\" y=\"0\" width=\"151\" height=\"128\"/></svg>",
+                  "alt": "クロードさま, 学習中..., 頭をなでる",
+                  "width": 79.5,
+                  "height": 64
+                }
+              }
+            ],
+            "group": {
+              "plugin": "test"
+            }
+          },
+          {
+            "type": "Box",
+            "props": {
+              "key": "coco:text-column",
+              "flexDirection": "column",
+              "alignSelf": "flex-start",
+              "flexGrow": 1,
+              "flexShrink": 1,
+              "minWidth": 0,
+              "height": 3,
+              "marginLeft": 1
+            },
+            "children": [
+              {
+                "type": "Box",
+                "props": {
+                  "flexDirection": "row",
+                  "minWidth": 0,
+                  "height": 1
+                },
+                "hover": {
+                  "scope": "coco:touch"
+                },
+                "children": [
+                  {
+                    "type": "Box",
+                    "props": {
+                      "flexShrink": 0
+                    },
+                    "hover": {
+                      "scope": "coco:touch"
+                    },
+                    "children": [
+                      {
+                        "type": "Text",
+                        "props": {
+                          "color": "#9E4123",
+                          "bold": true
+                        },
+                        "children": [
+                          "クロードさま"
+                        ]
+                      }
+                    ],
+                    "group": {
+                      "plugin": "test"
+                    }
+                  }
+                ],
+                "group": {
+                  "plugin": "test"
+                }
+              },
+              {
+                "type": "Box",
+                "props": {
+                  "flexDirection": "row",
+                  "flexWrap": "wrap",
+                  "alignItems": "flex-end",
+                  "columnGap": 1
+                },
+                "children": [
+                  {
+                    "type": "Box",
+                    "props": {
+                      "flexShrink": 1,
+                      "minWidth": 0
+                    },
+                    "children": [
+                      {
+                        "type": "Text",
+                        "props": {
+                          "wrap": "wrap"
+                        },
+                        "children": [
+                          "枠がきみの目安を超えた。",
+                          {
+                            "type": "Text",
+                            "props": {
+                              "bold": true,
+                              "wrap": "truncate-end"
+                            },
+                            "children": [
+                              "80%"
+                            ]
+                          },
+                          "…"
+                        ]
+                      }
+                    ]
+                  }
+                ]
+              }
+            ]
+          },
+          {
+            "type": "Box",
+            "props": {
+              "flexDirection": "row",
+              "alignItems": "center",
+              "marginLeft": 2,
+              "columnGap": 1,
+              "flexShrink": 0
+            },
+            "children": [
+              {
+                "type": "Box",
+                "props": {
+                  "flexDirection": "row",
+                  "alignItems": "center",
+                  "flexShrink": 0
+                },
+                "children": [
+                  {
+                    "type": "Svg",
+                    "props": {
+                      "source": "<svg xmlns=\"http://www.w3.org/2000/svg\" viewBox=\"0 0 20 18\" width=\"20\" height=\"18\"><style>.o{stroke:#573A33}@media (prefers-color-scheme:dark){.o{stroke:#E68F6F}}</style><path class=\"o\" d=\"M3.5 1.5h13l2 3h-17z\" fill=\"#CC7556\" stroke-width=\"1\"/><path d=\"M6 2v2.5M9 2v2.5M12 2v2.5M15 2v2.5\" stroke=\"#572A1C\" stroke-width=\"1\"/><rect class=\"o\" x=\"2\" y=\"5\" width=\"16\" height=\"12\" fill=\"#AA5E47\" stroke-width=\"1\"/><rect x=\"4\" y=\"11\" width=\"12\" height=\"5\" fill=\"#FAEEE9\"/></svg>",
+                      "alt": "お賽銭箱、56%たまっている(コンテキストウィンドウ)",
+                      "width": 20,
+                      "height": 18
+                    }
+                  },
+                  {
+                    "type": "Text",
+                    "props": {
+                      "color": "inactive"
+                    },
+                    "children": [
+                      " 56%"
+                    ]
+                  }
+                ]
+              },
+              {
+                "type": "Svg",
+                "props": {
+                  "source": "<svg xmlns=\"http://www.w3.org/2000/svg\" viewBox=\"0 0 16 22\" width=\"16\" height=\"22\"><style>.stick{stroke:#846D57;stroke-width:1.4}.hot{stroke:#D2552D;stroke-width:1.4}.thread{fill:#8E3B22}.smoke{stroke:#6B665F;opacity:.45}.bowl{fill:#846D57}@media(prefers-color-scheme:dark){.stick{stroke:#C0A98E}.hot{stroke:#F0794C}.thread{fill:#EDE3D6}.smoke{stroke:#C5BEB1}.bowl{fill:#C0A98E}}</style><path d=\"M5 5V18\" class=\"stick\" opacity=\".3\"/><path d=\"M5 14.96V18\" class=\"stick\"/><path d=\"M5 14.96v2\" stroke=\"#DC755D\" stroke-width=\"2\"/><path d=\"M11 1V18\" class=\"stick\" opacity=\".3\"/><path d=\"M11 7.56V18\" class=\"stick\"/><rect class=\"thread\" x=\"9.2\" y=\"13.3\" width=\"3.6\" height=\"1\" rx=\".5\"/><path d=\"M11 7.56v2\" stroke=\"#DC755D\" stroke-width=\"2\"/><path class=\"bowl\" d=\"M2 18h12l-2 3H4z\"/></svg>",
+                  "alt": "5時間の枠 83%使用; 7日間の枠 41%使用; 80%でお知らせ",
+                  "width": 16,
+                  "height": 22
+                }
+              }
+            ]
+          },
+          {
+            "type": "Box",
+            "props": {
+              "position": "absolute",
+              "top": 0,
+              "left": 0,
+              "marginLeft": 11.192307692307692,
+              "right": 0,
+              "display": "none",
+              "flexDirection": "column"
+            },
+            "hover": {
+              "scope": "coco:touch",
+              "display": "flex"
+            },
+            "children": [
+              {
+                "type": "Box",
+                "props": {
+                  "flexDirection": "row",
+                  "justifyContent": "flex-end",
+                  "alignItems": "center",
+                  "gap": 1,
+                  "backgroundColor": "composerSidebarBackground",
+                  "flexShrink": 0
+                },
+                "children": [
+                  {
+                    "type": "Button",
+                    "props": {
+                      "key": "coco:book:open",
+                      "label": "かれの本",
+                      "plain": true
+                    },
+                    "press": {
+                      "plugin": "test",
+                      "handle": 828673242
+                    }
+                  },
+                  {
+                    "type": "Box",
+                    "props": {
+                      "marginLeft": 2,
+                      "flexShrink": 0
+                    },
+                    "children": [
+                      {
+                        "type": "Button",
+                        "props": {
+                          "key": "coco:band:close",
+                          "label": "閉じる",
+                          "plain": true
+                        },
+                        "press": {
+                          "plugin": "test",
+                          "handle": 828673243
+                        }
+                      }
+                    ]
+                  }
+                ]
+              }
+            ],
+            "group": {
+              "plugin": "test"
+            }
+          }
+        ]
+      }
+    }
+  ]
+}

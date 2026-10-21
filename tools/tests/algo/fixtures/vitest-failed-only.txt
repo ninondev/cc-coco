@@ -1,0 +1,18 @@
+ RUN  v3.0.0 /home/user/src/finch
+
+ ❯ src/billing.test.ts (2 tests | 1 failed) 15ms
+   × totals an invoice 8ms
+     → expected 4200 to be 4201
+   ✓ rounds to cents 2ms
+
+ Test Files  1 failed (1)
+      Tests  1 failed (1)
+   Start at  11:22:33
+   Duration  0.40s
+
+⎯⎯⎯⎯⎯ Failed Tests 1 ⎯⎯⎯⎯⎯⎯⎯⎯⎯
+
+ FAIL  src/billing.test.ts > totals an invoice [8.00ms]
+AssertionError: expected 4200 to be 4201
+ ❯ src/billing.test.ts:9:5
+

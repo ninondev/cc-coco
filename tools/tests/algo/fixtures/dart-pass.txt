@@ -1,0 +1,5 @@
+00:00 +0: loading tests/parser_test.dart
+00:00 +1: wren parser parses a header
+00:00 +2: wren parser rejects an empty body
+00:00 +3: wren parser writes nested output
+00:00 +3: All tests passed!

@@ -1,0 +1,12 @@
+src/orders.ts:12:7 - error TS2322: Type 'number' is not assignable to type 'string'.
+
+12   const id: string = 42;
+         ~~
+
+src/users.ts:31:10 - error TS2339: Property 'naem' does not exist on type 'User'. Did you mean 'name'?
+
+Found 2 errors in 2 files.
+
+Errors  Files
+     1  src/orders.ts:12
+     1  src/users.ts:31

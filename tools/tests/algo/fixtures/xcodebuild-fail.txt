@@ -1,0 +1,21 @@
+Test Suite 'All tests' started at 2025-10-04 09:00:01.234
+Test Suite 'KiwiTests.xctest' started at 2025-10-04 09:00:01.235
+Test Suite 'ParserTests' started at 2025-10-04 09:00:01.236
+Test Case '-[KiwiTests.ParserTests testParsesHeader]' started.
+Test Case '-[KiwiTests.ParserTests testParsesHeader]' failed (0.021 seconds).
+Test Case '-[KiwiTests.ParserTests testRejectsEmpty]' passed (0.002 seconds).
+Test Suite 'ParserTests' failed at 2025-10-04 09:00:01.260 (0.025 seconds).
+Test Suite 'KiwiTests.xctest' failed at 2025-10-04 09:00:01.261 (0.027 seconds).
+Test Suite 'All tests' failed at 2025-10-04 09:00:01.261 (0.028 seconds).
+
+Executed 2 tests, with 1 failure (0 expectations) in 0.028 (0.031) seconds
+
+Test Suite 'All tests' failed at 2025-10-04 09:00:01.261.
+
+** TEST FAILED **
+
+The following tests failed:
+ParserTests.testParsesHeader (0.021 seconds)
+Failing tests:
+
+	Test Case '-[KiwiTests.ParserTests testParsesHeader]' failed (0.021 seconds).

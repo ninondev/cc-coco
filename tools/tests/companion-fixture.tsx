@@ -6,7 +6,7 @@ export type CompanionScene = 'corner' | 'following' | 'absent'
 export const COMPANION_HOME = '/tmp/companion-fit'
 
 export function companionScene(on: On, state: CompanionScene): void {
-  on('fs.exists', ($, e) => ({ value: samePath(e.path, '/System/Library/CoreServices/SystemVersion.plist') || (state !== 'absent' && (samePath(e.path, `${COMPANION_HOME}/Library/Application Support/Claude-sama`) || samePath(e.path, `${COMPANION_HOME}/Applications/Claude-sama Companion.app/Contents/MacOS/claudesama-companion`))) }))
+  on('fs.exists', ($, e) => ({ value: samePath(e.path, '/System/Library/CoreServices/SystemVersion.plist') || (state !== 'absent' && (samePath(e.path, `${COMPANION_HOME}/Library/Application Support/Coco`) || samePath(e.path, `${COMPANION_HOME}/Applications/Coco Pet.app/Contents/MacOS/coco-companion`))) }))
   on('fs.read', { path: /[\\/]\.claude-plugin[\\/]plugin\.json$/ }, () => ({ value: JSON.stringify({ version: '0.1.0' }) }))
-  on('fs.read', { path: pathPattern(`${COMPANION_HOME}/Library/Application Support/Claude-sama/companion.json`) }, () => ({ value: JSON.stringify({ running: true, accessibility: state === 'following', size: 'medium', version: '0.1.0', hiddenUntil: 0 }) }))
+  on('fs.read', { path: pathPattern(`${COMPANION_HOME}/Library/Application Support/Coco/companion.json`) }, () => ({ value: JSON.stringify({ running: true, accessibility: state === 'following', size: 'medium', version: '0.1.0', hiddenUntil: 0 }) }))
 }

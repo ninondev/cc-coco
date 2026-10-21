@@ -1,0 +1,6 @@
+// Approved 0.2 estimate templates; the existing book retains legacy forms until its producers and templates are wired together.
+export const ESTIMATE_WORDS: Record<string, { fullAbout: string; tokensAbout: string }> = {"zh":{"fullAbout":"{percent}满","tokensAbout":"{used}/{max} token"},
+// BEGIN generated zh-Hant /ESTIMATE_WORDS/zh; OpenCC 0.1.7; s2twp
+"zh-Hant":{"fullAbout":"{percent}滿","tokensAbout":"{used}/{max} token"},
+// END generated zh-Hant
+"en":{"fullAbout":"{percent} full","tokensAbout":"{used} of {max} tokens"},"ja":{"fullAbout":"{percent}使用","tokensAbout":"{used} / {max} トークン"},"de":{"fullAbout":"Zu {percent} voll","tokensAbout":"{used} von {max} Tokens"},"es-419":{"fullAbout":"{percent} llena","tokensAbout":"{used} de {max} tokens"},"es-ES":{"fullAbout":"Llena al {percent}","tokensAbout":"{used} de {max} tokens"},"fr":{"fullAbout":"Pleine à {percent}","tokensAbout":"{used} tokens sur {max}"},"hi":{"fullAbout":"{percent} भरी","tokensAbout":"{max} में से {used} टोकन"},"id":{"fullAbout":"Terisi {percent}","tokensAbout":"{used} dari {max} token"},"it":{"fullAbout":"Piena al {percent}","tokensAbout":"{used} token su {max}"},"ko":{"fullAbout":"{percent} 참","tokensAbout":"{max} 토큰 중 {used}"},"pt-BR":{"fullAbout":"{percent} cheia","tokensAbout":"{used} de {max} tokens"}}

@@ -1,0 +1,22 @@
+TAP version 13
+ok 1 - wren parses a plain header
+not ok 1 - wren handles nested input
+    ---
+    severity: fail
+    ...
+    not ok 1 - rejects an empty body
+        ---
+        severity: fail
+        ...
+        at:
+          line: 12
+        ...
+        ...
+    1..1
+    ...
+ok 2 - wren serialises output
+1..3
+# tests 3
+# suites 1
+# pass 2
+# fail 1

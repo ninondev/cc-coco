@@ -1,0 +1,477 @@
+# safe cases - none of these may be flagged
+# ctx: cwd /home/user/src/kiwi, home /home/user, tmpdir /var/folders/zz/ty, branch feature/lark, default main
+
+# everyday file work
+ls -la
+ls -la src/alpha.ts
+cat package.json
+head -20 README.md
+tail -n 50 logs/kiwi.log
+cp -r src /tmp/kiwi-src
+mv alpha.ts src/alpha.ts
+mkdir -p dist/assets
+touch notes.txt
+ln -s /tmp/scratch scratch
+du -sh node_modules
+df -h
+tree -L 2
+stat src/alpha.ts
+file dist/kiwi.js
+wc -l guard.ts
+md5 dist/kiwi.js
+rsync -av dist/ alpha.lark.dev:/srv/kiwi
+tar czf /tmp/kiwi.tgz dist
+unzip mango.zip -d /tmp/mango
+gzip -k logs/kiwi.log
+diff -u alpha.ts beta.ts
+cmp a.bin b.bin
+readlink -f ./dist
+realpath ../kiwi-api
+basename src/alpha.ts
+dirname src/alpha.ts
+truncate -s 0 /tmp/scratch.log
+
+# searching and text
+grep -rn kiwi src/
+rg -t ts TODO
+find . -name "*.pyc" -delete
+find . -type d -name node_modules -prune -o -name "*.log" -print
+find src -name "*.ts" | xargs grep -l kiwi
+find . -maxdepth 1 -type f -delete
+find /tmp/scratch -name "*.tmp" -delete
+sed -i "s/alpha/beta/g" src/alpha.ts
+sed -n 1,20p guard.ts
+awk "{print \$1}" orders.txt
+sort orders.txt | uniq -c
+cut -d, -f2 users.csv
+tr a-z A-Z < notes.txt
+jq .name package.json
+yq -i ".name = \"kiwi\"" chart.yaml
+column -t -s, users.csv
+
+# contained deletes that must stay quiet
+rm -rf node_modules dist
+rm -rf node_modules dist && npm ci
+rm -rf dist build .next target
+rm -rf .cache
+rm -rf coverage
+rm -f notes.txt
+rm -rf ./node_modules
+rm -rf ./dist/
+rm -rf src/../build
+rm -rf /tmp/kiwi-build
+rm -rf /private/tmp/kiwi-scratch
+rm -rf /var/folders/zz/ty/kiwi
+rm -rf $TMPDIR/scratch
+rm -rf ~/src/kiwi/node_modules
+rm -rf /home/user/src/kiwi/dist
+rm -rf logs/*.log
+rm -rf node_modules && npm install
+rm -rf dist && npm run build
+rm -rf .terraform
+rm -rf .pytest_cache .mypy_cache
+rm -rf vendor && go mod vendor
+rm -rf target/debug && cargo build
+
+# package managers and builds
+npm ci
+npm install --frozen-lockfile
+npm run build
+npm run test -- --watch
+npm run lint -- --fix
+npm audit fix
+npm publish --dry-run
+npx playwright install chromium
+pnpm install --frozen-lockfile
+pnpm -r run build
+yarn install --immutable
+bun install
+bun run build
+pip install -r requirements.txt
+pip freeze > requirements.txt
+uv sync
+uv pip compile pyproject.toml
+cargo build --release
+cargo test --all-features
+cargo clean
+go build ./...
+go test ./... -race
+go mod tidy
+gradle build -x test
+mvn -q package
+make -j4
+make clean
+cmake --build build --config Release
+dotnet build
+dotnet test
+composer install --no-dev
+bundle install --path vendor/bundle
+mix deps.get
+brew install jq
+brew upgrade ripgrep
+brew uninstall fzf
+brew cleanup --prune=all
+sudo apt-get update
+sudo apt-get install -y build-essential
+sudo apt-get remove --purge nginx
+sudo dnf install -y htop
+apk add --no-cache curl
+
+# git every day
+git status
+git status --short
+git diff
+git diff --staged
+git diff HEAD~1
+git add src/alpha.ts
+git add -A
+git add -p
+git commit -m "fix orders parsing"
+git commit --amend --no-edit
+git commit -m "chore: rebuild dist with rm -rf node_modules"
+git log --oneline -20
+git log --graph --decorate
+git show HEAD
+git show HEAD:src/alpha.ts
+git blame src/alpha.ts
+git branch lark-fix
+git branch -d lark-fix
+git branch -m lark-fix wren-fix
+git checkout main
+git checkout -b lark-fix
+git checkout -t origin/lark-fix
+git switch main
+git switch -c lark-fix
+git switch -
+git restore --staged src/alpha.ts
+git restore --staged .
+git restore --source=HEAD~1 --staged src/alpha.ts
+git stash
+git stash push -m "wip orders"
+git stash push -- src/alpha.ts
+git stash pop
+git stash apply stash@{1}
+git stash list
+git stash show -p
+git merge lark-fix
+git merge --abort
+git rebase main
+git rebase --continue
+git rebase --abort
+git cherry-pick abc1234
+git revert abc1234
+git tag v1.2.3
+git tag -d v1.2.3
+git fetch --all --prune
+git fetch origin main
+git pull --rebase origin main
+git pull origin main
+git push origin HEAD
+git push origin lark-fix
+git push --set-upstream origin lark-fix
+git push origin main
+git push origin v1.2.3
+git push --force-with-lease origin lark-fix
+git push --force-with-lease=alpha.lark.dev lark-fix
+git push --force-if-includes origin lark-fix
+git push -f origin lark-fix
+git push -f
+git remote add alpha git@alpha.lark.dev:kiwi/api.git
+git remote -v
+git remote remove alpha
+git clean -n
+git clean --dry-run
+git clean -nd
+git clean -i
+git reset
+git reset HEAD~1
+git reset --soft HEAD~1
+git reset --mixed HEAD~1
+git reset --soft origin/main
+git rm --cached notes.txt
+git rm notes.txt
+git rm -r --cached dist
+git worktree list
+git submodule update --init
+git bisect start
+git bisect reset
+git reflog
+git reflog show main
+git gc --prune=now
+git count-objects -vH
+git ls-files | grep ts
+git config user.email alpha@lark.dev
+git describe --tags
+git rev-parse HEAD
+git shortlog -sn
+git archive --format=tar HEAD
+
+# docker and containers
+docker build -t kiwi/api .
+docker build --no-cache -t kiwi/api .
+docker run --rm -it kiwi/api sh
+docker ps -a
+docker images
+docker pull postgres:16
+docker push kiwi/api:1.2.3
+docker stop kiwi-web
+docker start kiwi-web
+docker restart kiwi-web
+docker rm kiwi-web
+docker rm -f kiwi-web
+docker rmi kiwi/api:1.2.3
+docker logs -f kiwi-web
+docker exec -it kiwi-web sh
+docker exec kiwi-web rm -rf /tmp/cache
+docker inspect kiwi-web
+docker stats --no-stream
+docker cp kiwi-web:/app/dist ./dist
+docker compose up -d
+docker compose down
+docker compose down -v
+docker compose logs -f web
+docker compose ps
+docker compose build --no-cache
+docker volume ls
+docker volume inspect kiwi_data
+docker volume create kiwi_data
+docker network ls
+docker system df
+docker system prune
+docker system prune -a
+docker image prune -f
+docker container prune
+docker compose restart web
+
+# kubernetes
+kubectl get pods
+kubectl get pods -n staging
+kubectl describe pod kiwi-web-123
+kubectl logs -f kiwi-web-123
+kubectl delete pod kiwi-web-123
+kubectl delete -f manifest.yaml
+kubectl delete deployment kiwi-web
+kubectl delete service kiwi-web
+kubectl delete configmap kiwi-config
+kubectl delete -n staging pod kiwi-web-123
+kubectl exec -it kiwi-web-123 -- sh
+kubectl exec kiwi-web-123 -- rm -rf /tmp/cache
+kubectl scale deployment kiwi-web --replicas=3
+kubectl rollout restart deployment kiwi-web
+kubectl rollout status deployment kiwi-web
+kubectl apply -f manifest.yaml
+kubectl apply -k overlays/staging
+kubectl port-forward svc/kiwi-web 8080:80
+kubectl cp kiwi-web-123:/app/dist ./dist
+kubectl top nodes
+kubectl config use-context staging
+kubectl get ns
+kubectl get all -n staging
+
+# terraform and friends
+terraform init
+terraform validate
+terraform fmt -recursive
+terraform plan
+terraform plan -out=kiwi.tfplan
+terraform apply
+terraform apply kiwi.tfplan
+terraform apply -auto-approve
+terraform import aws_instance.kiwi i-123
+terraform state list
+terraform state rm aws_instance.kiwi
+terraform taint aws_instance.kiwi
+terraform workspace select staging
+terraform output -json
+tofu plan
+pulumi up --yes
+pulumi preview
+pulumi stack select staging
+pulumi refresh
+ansible-playbook site.yml --check
+helm upgrade kiwi ./chart -n staging
+helm uninstall kiwi -n staging
+helm list -n staging
+
+# databases with a WHERE or a read
+psql -d shop -c "SELECT * FROM orders LIMIT 10"
+psql -d shop -c "DELETE FROM orders WHERE id = 7"
+psql -d shop -c "UPDATE orders SET state = \"paid\" WHERE id = 7"
+psql -d shop -c "CREATE TABLE billing (id int)"
+psql -d shop -c "ALTER TABLE orders ADD COLUMN note text"
+psql -f migration.sql
+psql -d shop < dump.sql
+pg_dump shop > shop.sql
+pg_restore --clean --dbname=shop shop.dump
+mysql -uroot -p -e "SELECT 1"
+mysql -uroot -p -e "DELETE FROM orders WHERE id < 10"
+mysql -uroot -p shop < dump.sql
+mysqldump shop > shop.sql
+mariadb -e "SELECT VERSION()"
+sqlite3 shop.sqlite ".tables"
+sqlite3 shop.sqlite "SELECT count(*) FROM orders"
+sqlite3 shop.sqlite "DELETE FROM orders WHERE id = 3"
+duckdb shop.db "SELECT * FROM billing LIMIT 5"
+clickhouse-client -q "SELECT count() FROM orders"
+cockroach sql -e "SELECT 1"
+sqlcmd -Q "SELECT name FROM sys.databases"
+sqlcmd -S alpha -Q "DELETE FROM orders WHERE id = 1"
+redis-cli ping
+redis-cli get kiwi:key
+redis-cli --scan
+redis-cli del kiwi:key
+redis-cli -n 1 keys "*"
+mongosh --eval "db.orders.count()"
+mongosh --eval "db.orders.find().limit(5).toArray()"
+mongosh kiwi --eval "db.orders.deleteMany({state: \"stale\"})"
+mongoimport --db shop --collection orders --file orders.json
+
+# infrastructure that only reads or rewrites scoped things
+aws s3 ls
+aws s3 ls s3://kiwi-shop
+aws s3 cp dist s3://kiwi-shop/assets --recursive
+aws s3 sync . s3://kiwi-shop/web
+aws s3 rm s3://kiwi-shop/assets/old.js
+aws s3 presign s3://kiwi-shop/assets/kiwi.js
+aws ec2 describe-instances
+aws sts get-caller-identity
+gsutil ls gs://kiwi-shop
+gsutil cp notes.txt gs://kiwi-shop/notes.txt
+gsutil rm gs://kiwi-shop/notes.txt
+gcloud storage ls gs://kiwi-shop
+gcloud storage cp notes.txt gs://kiwi-shop/
+az storage container list --output table
+az storage blob list --container-name kiwi
+az group list
+
+# text that merely looks destructive
+echo "rm -rf /"
+echo "DROP DATABASE shop;"
+printf "git reset --hard\\n"
+echo "terraform destroy"
+cat notes.txt
+grep -n "DROP TABLE" migrations.sql
+echo done > /tmp/kiwi-done.txt
+echo hi >> /tmp/kiwi.log
+tee /tmp/kiwi.txt
+
+# comments and empty shell shapes
+# just a note
+
+# permissions and ownership that stay scoped
+chmod 644 notes.txt
+chmod +x scripts/build.sh
+chmod -R 755 .
+chmod -R 755 dist
+chmod 755 scripts/*.sh
+chown alpha notes.txt
+chown -R alpha:lark dist
+chgrp staff notes.txt
+umask 022
+chflags nouchg notes.txt
+
+# devices that are safe to write
+dd if=/dev/zero of=/tmp/kiwi.img bs=1m count=64
+dd if=kiwi.iso of=/tmp/kiwi-copy.iso
+echo x > /dev/null
+cat log > /dev/null 2>&1
+
+# wrappers and structure without a destructive payload
+sudo ls -la /var/log
+sudo systemctl restart nginx
+sudo apt-get upgrade -y
+sudo -u alpha whoami
+doas sysctl hw.model
+env NODE_ENV=test npm test
+env -i sh -c "echo clean"
+nohup npm run build &
+time npm test
+command -v jq
+command ls
+exec npm start
+builtin cd /tmp
+nice -n 10 tar czf /tmp/kiwi.tgz dist
+ionice -c 3 -p 3
+timeout 60 npm test
+timeout --kill-after=5 30s curl -s alpha.lark.dev
+stdbuf -o0 node script.js
+caffeinate -i npm run build
+watch -n 2 kubectl get pods
+watch ls
+xargs echo
+find . -name "*.log" | xargs rm
+ls | xargs -n1 echo
+bash scripts/build.sh
+bash -c "npm run build"
+sh -c "echo hi"
+zsh -l -c "print hi"
+ksh script.ksh
+eval "echo hi"
+eval "npm test"
+bash -c "bash -c \"echo deep\""
+if [ -f notes.txt ]; then echo yes; fi
+for f in *.ts; do echo $f; done
+while read l; do echo $l; done < orders.txt
+until [ -f done ]; do sleep 1; done
+case $x in a) echo one;; b) echo two;; esac
+(cd src && ls)
+{ echo a; echo b; }
+echo $(date)
+echo `date`
+cat <(echo hi) >(cat)
+true && false || true
+echo one; echo two
+echo start && echo mid && echo end
+
+# remote machines are out of scope
+ssh alpha.lark.dev "rm -rf /tmp/cache"
+ssh beta "git reset --hard"
+scp dist/kiwi.js alpha.lark.dev:/srv/kiwi
+rsync -av --delete dist/ alpha.lark.dev:/srv/kiwi/web
+docker exec kiwi-web sh -c "rm -rf /app/cache"
+docker exec -u root kiwi-web chmod -R 777 /app
+
+# releases and deploys
+npm version patch
+standard-version
+changeset version
+git push origin --tags
+gitlab-ci-lint .gitlab-ci.yml
+act -j build
+make release NOTES=kiwi
+curl -sS https://alpha.lark.dev/api/orders
+http GET https://alpha.lark.dev/api/users
+wget -q https://alpha.lark.dev/kiwi.tgz -O /tmp/kiwi.tgz
+# added in the second adversarial pass
+kubectl delete pod/kiwi-web-1
+kubectl delete deploy/kiwi-api
+rm -rf "$BUILD_ROOT"/dist
+rm -rf $VAR/*
+psql -c "DROP OWNED BY kiwi;"
+find . -name "*.log" -exec rm {} +
+ssh admin@kiwi-host "rm -rf /usr/local"
+docker compose down --remove-orphans
+git push -f origin feature/kiwi-cleanup
+git checkout -b feature/kiwi
+docker exec kiwi_web rm -rf /usr/local/bin
+kubectl exec kiwi-pod -- rm -rf /etc/kiwi
+dd if=kiwi.img of=/tmp/kiwi-copy bs=4m
+aws s3 rm s3://kiwi-media/old/kiwi-1.log
+psql -f drop.sql
+mysql kiwi < dump.sql
+terraform -chdir=infra plan
+git stash apply stash@{1}
+
+# judgment calls from the third review pass: each looks destructive but is either
+# unknowable from the text alone or recoverable, so precision wins and we stay quiet
+find / | xargs rm -rf # rm gets its targets from stdin, unseen here
+xargs rm -rf # no typed target; stdin supplies the names
+psql -c '-- reset; DELETE FROM orders' # the rest of the line is a SQL comment, nothing executes
+psql -c "DROP TEMPORARY TABLE tmp_orders" # session temporary table only
+git branch -D feature/kiwi # local branch, recoverable from the reflog
+git commit --amend --no-edit # rewrites one local commit only
+git rebase -i HEAD~3 # local rewrite, recoverable, not in the rule list
+helm uninstall kiwi # release history is kept in revisions
+docker system prune -a # named volumes survive without --volumes
+git push --all # pushes every branch but with no force
+make clean # build tool managed deletion

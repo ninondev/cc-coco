@@ -1,0 +1,21 @@
+ RUN  v2.1.8 /home/user/src/shop
+
+ ❯ src/calc.test.ts (3 tests | 1 failed) 9ms
+   × adds numbers 5ms
+     → expected 5 to be 6
+   ✓ subtracts numbers 2ms
+   ✓ multiplies numbers 2ms
+
+ ❯ src/writer.test.ts (2 tests | 1 failed) 30ms
+   × Writer > flushes the buffer 21ms
+     → Error: buffer closed
+
+ Test Files  2 failed (2)
+      Tests  2 failed | 3 passed (5)
+   Start at  10:12:31
+   Duration  1.21s (transform 200ms, setup 30ms)
+
+ FAIL  src/calc.test.ts > adds numbers [5.00ms]
+ Error: expected 5 to be 6
+ ❯ src/calc.test.ts:8:12
+

@@ -1,0 +1,11 @@
+=== RUN   TestParserNested
+=== RUN   TestParserNested/empty_body
+panic: runtime error: index out of range [5] with length 3
+
+goroutine 19 [running]:
+testing.tRunner.func1.2({0x100e6e3c0, 0x100e6f460})
+	/usr/local/go/src/testing/testing.go:1545 +0x24c
+testing.tRunner.func1()
+	/usr/local/go/src/testing/testing.go:1488 +0x36a
+created by testing.tRunner in goroutine 8
+	/usr/local/go/src/testing/testing.go:1138 +0x1da

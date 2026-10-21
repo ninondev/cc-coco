@@ -1,0 +1,17 @@
+============================= test session starts ==============================
+platform linux -- Python 3.12.4, pytest-8.2.2
+collected 12 items
+tests/test_users.py ...E........                                           [100%]
+
+==================================== ERRORS ====================================
+____________________ ERROR at setup of test_fetch_user_by_id ___________________
+
+    @pytest.fixture
+    def db_conn():
+>       raise RuntimeError("database not reachable")
+E       RuntimeError: database not reachable
+
+tests/conftest.py:9: RuntimeError
+=========================== short test summary info ============================
+ERROR tests/test_users.py::test_fetch_user_by_id
+========================= 1 passed, 1 error in 0.3s ===========================

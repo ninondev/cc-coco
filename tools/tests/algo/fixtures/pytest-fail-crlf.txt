@@ -1,0 +1,23 @@
+============================= test session starts ==============================
+platform win32 -- Python 3.12.4, pytest-8.2.2, pluggy-1.5.0
+rootdir: C:\Users\user\src\mango
+collected 9 items
+
+tests\test_users.py ...
+WARNING:root: deprecated call in users module
+tests\test_billing.py ..F.
+
+=================================== FAILURES ===================================
+_______________________ TestBilling.test_totals_invoice _______________________
+
+self = <tests.test_billing.TestBilling object at 0x000001A2B3C4D5E6>
+
+    def test_totals_invoice(self):
+        total = billing.total_for(self.invoice)
+>       assert total == 4200
+E       assert 4199 == 4200
+
+C:\Users\user\src\mango\tests\test_billing.py:42: AssertionError
+=========================== short test summary info ============================
+FAILED tests/test_billing.py::TestBilling::test_totals_invoice - assert 4199 == 4200
+========================= 1 failed, 8 passed, 1 warning in 0.9s =================

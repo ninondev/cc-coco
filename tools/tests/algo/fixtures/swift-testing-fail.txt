@@ -1,0 +1,9 @@
+◇ Test run started.
+◇ Suite "Parser tests" started.
+◈ Suite "Parser tests" skipped after a failing test. (.../ParserTests.swift:12:3)
+✔ Test parses a header() passed after 0.004 seconds
+✘ Test writes nested output() recorded an issue at .../ParserTests.swift:41:5: Expectation failed: (actual -> 2) == (expected -> 3)
+✘ Test writes nested output() recorded an issue at .../ParserTests.swift:42:5: Expectation failed: (keys.count -> 1) == (keys.count -> 2)
+✔ Test rejects an empty body() passed after 0.001 seconds
+✔ Suite "Parser tests" passed after 0.012 seconds
+✘ Test run with 3 tests failed after 0.031 seconds: 1 test failed

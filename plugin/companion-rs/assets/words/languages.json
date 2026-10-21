@@ -1,0 +1,80 @@
+[
+  {
+    "code": "en",
+    "locale": "en-US",
+    "native": "English",
+    "english": "English"
+  },
+  {
+    "code": "fr",
+    "locale": "fr-FR",
+    "native": "Français",
+    "english": "French"
+  },
+  {
+    "code": "de",
+    "locale": "de-DE",
+    "native": "Deutsch",
+    "english": "German"
+  },
+  {
+    "code": "hi",
+    "locale": "hi-IN",
+    "native": "हिन्दी",
+    "english": "Hindi"
+  },
+  {
+    "code": "id",
+    "locale": "id-ID",
+    "native": "Bahasa Indonesia",
+    "english": "Indonesian"
+  },
+  {
+    "code": "it",
+    "locale": "it-IT",
+    "native": "Italiano",
+    "english": "Italian"
+  },
+  {
+    "code": "ja",
+    "locale": "ja-JP",
+    "native": "日本語",
+    "english": "Japanese"
+  },
+  {
+    "code": "ko",
+    "locale": "ko-KR",
+    "native": "한국어",
+    "english": "Korean"
+  },
+  {
+    "code": "pt-BR",
+    "locale": "pt-BR",
+    "native": "Português (Brasil)",
+    "english": "Portuguese (Brazil)"
+  },
+  {
+    "code": "es-419",
+    "locale": "es-419",
+    "native": "Español (Latinoamérica)",
+    "english": "Spanish (Latin America)"
+  },
+  {
+    "code": "es-ES",
+    "locale": "es-ES",
+    "native": "Español (España)",
+    "english": "Spanish (Spain)"
+  },
+  {
+    "code": "zh",
+    "locale": "zh-SG",
+    "native": "华文",
+    "english": "Chinese (Simplified)"
+  },
+  {
+    "code": "zh-Hant",
+    "locale": "zh-TW",
+    "native": "國語",
+    "english": "Chinese (Traditional)"
+  }
+]

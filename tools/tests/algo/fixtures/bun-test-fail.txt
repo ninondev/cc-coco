@@ -1,0 +1,16 @@
+bun test v1.1.29
+
+src/calc.test.ts:
+✓ Calculator > adds numbers [0.03ms]
+✓ Calculator > subtracts numbers [0.02ms]
+(fail) Calculator > multiplies by zero
+error: expect(received).toEqual(expected)
+
+at /home/user/src/kiwi/src/calc.test.ts:18:5
+      expect(mul(0, 7)).toEqual(0)
+                received: 7
+
+ 87 pass
+ 1 fail
+ 3 skip
+Ran 91 tests across 4 files. [0.18s]

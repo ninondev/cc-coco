@@ -1,0 +1,2 @@
+// Generated live public facade. Authoritative implementation: hooks-source/motion-stills.ts
+export {motion_stills__FRAME_OVERLAY_OFFSET_X as FRAME_OVERLAY_OFFSET_X,motion_stills__PREBUILT_FRAME_NAMES as PREBUILT_FRAME_NAMES,motion_stills__STILL_ANIMATION_MODE as STILL_ANIMATION_MODE,motion_stills__STILL_FRAME_METADATA as STILL_FRAME_METADATA,motion_stills__STILL_FRAME_NAMES as STILL_FRAME_NAMES,motion_stills__STILL_SIZES as STILL_SIZES,motion_stills__STILL_TERMINAL_SIZE as STILL_TERMINAL_SIZE} from './m1-compiled/motion_stills.js'

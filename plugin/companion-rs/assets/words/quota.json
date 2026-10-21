@@ -1,0 +1,197 @@
+{
+  "en": {
+    "kinds": {
+      "five_hour": "5-hour window",
+      "seven_day": "7-day window",
+      "spend_limit": "Spend limit"
+    },
+    "resets": "resets {time}",
+    "used": "{percent}% used",
+    "narrow": {
+      "five_hour": "5h",
+      "seven_day": "7d",
+      "spend_limit": "Spend limit"
+    },
+    "narrowUsed": "{p}% used"
+  },
+  "fr": {
+    "kinds": {
+      "five_hour": "Fenêtre de 5 heures",
+      "seven_day": "Fenêtre de 7 jours",
+      "spend_limit": "Plafond de dépenses"
+    },
+    "resets": "remise à zéro : {time}",
+    "used": "{percent} % utilisés",
+    "narrow": {
+      "five_hour": "5h",
+      "seven_day": "7j",
+      "spend_limit": "Plafond de dépenses"
+    },
+    "narrowUsed": "{p} % utilisés"
+  },
+  "de": {
+    "kinds": {
+      "five_hour": "5-Stunden-Fenster",
+      "seven_day": "7-Tage-Fenster",
+      "spend_limit": "Ausgabenlimit"
+    },
+    "resets": "neu ab {time}",
+    "used": "{percent} % genutzt",
+    "narrow": {
+      "five_hour": "5h",
+      "seven_day": "7T",
+      "spend_limit": "Ausgabenlimit"
+    },
+    "narrowUsed": "{p} % genutzt"
+  },
+  "hi": {
+    "kinds": {
+      "five_hour": "5 घंटे की विंडो",
+      "seven_day": "7 दिन की विंडो",
+      "spend_limit": "ख़र्च की सीमा"
+    },
+    "resets": "{time} पर रीसेट",
+    "used": "{percent}% इस्तेमाल",
+    "narrow": {
+      "five_hour": "5 घंटे",
+      "seven_day": "7 दिन",
+      "spend_limit": "ख़र्च की सीमा"
+    },
+    "narrowUsed": "{p}% इस्तेमाल"
+  },
+  "id": {
+    "kinds": {
+      "five_hour": "Periode 5 jam",
+      "seven_day": "Periode 7 hari",
+      "spend_limit": "Batas pengeluaran"
+    },
+    "resets": "diatur ulang {time}",
+    "used": "terpakai {percent}%",
+    "narrow": {
+      "five_hour": "5j",
+      "seven_day": "7h",
+      "spend_limit": "Batas pengeluaran"
+    },
+    "narrowUsed": "{p}% terpakai"
+  },
+  "it": {
+    "kinds": {
+      "five_hour": "Finestra di 5 ore",
+      "seven_day": "Finestra di 7 giorni",
+      "spend_limit": "Tetto di spesa"
+    },
+    "resets": "azzeramento: {time}",
+    "used": "{percent}% usato",
+    "narrow": {
+      "five_hour": "5h",
+      "seven_day": "7g",
+      "spend_limit": "Tetto di spesa"
+    },
+    "narrowUsed": "{p}% usato"
+  },
+  "ja": {
+    "kinds": {
+      "five_hour": "5時間の枠",
+      "seven_day": "7日間の枠",
+      "spend_limit": "支出の上限"
+    },
+    "resets": "{time}にリセット",
+    "used": "{percent}%使用",
+    "narrow": {
+      "five_hour": "5時間",
+      "seven_day": "7日",
+      "spend_limit": "支出の上限"
+    },
+    "narrowUsed": "{p}%使用"
+  },
+  "ko": {
+    "kinds": {
+      "five_hour": "5시간 한도",
+      "seven_day": "7일 한도",
+      "spend_limit": "지출 한도"
+    },
+    "resets": "{time}에 초기화",
+    "used": "{percent}% 사용",
+    "narrow": {
+      "five_hour": "5시간",
+      "seven_day": "7일",
+      "spend_limit": "지출 한도"
+    },
+    "narrowUsed": "{p}% 사용"
+  },
+  "pt-BR": {
+    "kinds": {
+      "five_hour": "Janela de 5 horas",
+      "seven_day": "Janela de 7 dias",
+      "spend_limit": "Limite de gastos"
+    },
+    "resets": "renovação: {time}",
+    "used": "{percent}% usado",
+    "narrow": {
+      "five_hour": "5h",
+      "seven_day": "7d",
+      "spend_limit": "Limite de gastos"
+    },
+    "narrowUsed": "{p}% usado"
+  },
+  "es-419": {
+    "kinds": {
+      "five_hour": "Ventana de 5 horas",
+      "seven_day": "Ventana de 7 días",
+      "spend_limit": "Límite de gasto"
+    },
+    "resets": "se reinicia: {time}",
+    "used": "{percent} % usado",
+    "narrow": {
+      "five_hour": "5h",
+      "seven_day": "7d",
+      "spend_limit": "Límite de gasto"
+    },
+    "narrowUsed": "{p} % usado"
+  },
+  "es-ES": {
+    "kinds": {
+      "five_hour": "Ventana de 5 horas",
+      "seven_day": "Ventana de 7 días",
+      "spend_limit": "Límite de gasto"
+    },
+    "resets": "se reinicia: {time}",
+    "used": "{percent} % usado",
+    "narrow": {
+      "five_hour": "5h",
+      "seven_day": "7d",
+      "spend_limit": "Límite de gasto"
+    },
+    "narrowUsed": "{p} % usado"
+  },
+  "zh": {
+    "kinds": {
+      "five_hour": "5小时额度",
+      "seven_day": "7天额度",
+      "spend_limit": "花费上限"
+    },
+    "resets": "{time}重置",
+    "used": "耗{percent}%",
+    "narrow": {
+      "five_hour": "5小时",
+      "seven_day": "7天",
+      "spend_limit": "花费上限"
+    },
+    "narrowUsed": "耗{p}%"
+  },
+  "zh-Hant": {
+    "kinds": {
+      "five_hour": "5小時額度",
+      "seven_day": "7天額度",
+      "spend_limit": "花費上限"
+    },
+    "resets": "{time}重置",
+    "used": "耗{percent}%",
+    "narrow": {
+      "five_hour": "5小時",
+      "seven_day": "7天",
+      "spend_limit": "花費上限"
+    },
+    "narrowUsed": "耗{p}%"
+  }
+}

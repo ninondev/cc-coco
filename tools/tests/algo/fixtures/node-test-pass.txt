@@ -1,0 +1,12 @@
+▶ billing service
+  ✔ totals an invoice (0.7ms)
+  ✔ applies tax (0.3ms)
+▶ billing service (1.4ms)
+ℹ tests 2
+ℹ suites 1
+ℹ pass 2
+ℹ fail 0
+ℹ cancelled 0
+ℹ skipped 0
+ℹ todo 0
+ℹ duration_ms 12.55

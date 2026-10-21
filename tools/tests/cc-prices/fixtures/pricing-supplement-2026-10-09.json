@@ -1,0 +1,15 @@
+{
+  "note": "Rows the saved page of 2026-10-06 does not have. Only the figures the design records are stored here; cache prices are derived by the multipliers the pricing page states for every model (5 minute write 1.25x, 1 hour write 2x, read 0.1x of the input price).",
+  "asOf": "2026-10-09",
+  "source": "The pricing page, fetched on 2026-10-09: Claude Haiku 5.5 is $0.10 in and $0.50 out per million tokens up to a 100,000-token prompt and $0.50 in and $2.50 out above it; the prompt counts cache reads and cache writes, and each request is priced on its own. The page itself is not saved in this repository.",
+  "multipliers": { "write5m": 1.25, "write1h": 2, "read": 0.1 },
+  "insertBefore": "claude-haiku-4-5",
+  "models": [
+    {
+      "name": "Claude Haiku 5.5",
+      "status": "current",
+      "upTo": { "input": 0.1, "output": 0.5 },
+      "over": { "input": 0.5, "output": 2.5, "above": 100000 }
+    }
+  ]
+}

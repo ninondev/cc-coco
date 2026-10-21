@@ -1,0 +1,126 @@
+{
+ "version": 1,
+ "builds": {
+  "linux-aarch64": {
+   "file": "talk-key-linux-aarch64",
+   "triple": "aarch64-unknown-linux-gnu",
+   "toolchain": [
+    "rustc 1.97.0 (2d8144b78 2026-07-07)",
+    "zig 0.13.0",
+    "cargo-zigbuild 0.19.8",
+    "glibc 2.28"
+   ],
+   "bytes": 1353480,
+   "sha256": "adcedf542b4dea191c2db3251ffe84f1440f1a87670d38df06c307cd0382cddd",
+   "sources": {
+    "plugin/talk-key/Cargo.lock": "0b3e83768292ca93d14c98137fe3919ea155ecd4cb7ac6c9d56c76b21a4f5b56",
+    "plugin/talk-key/Cargo.toml": "963d25d67ec0785e72909a7e167e487d20b898ab808f29902a4c30bfce2f8d4e",
+    "plugin/talk-key/src/child.rs": "a3b3d09e508f12ced9fa909fada20e82b17fd81ad6799dd82ab5fb88d2e3f4ba",
+    "plugin/talk-key/src/counter.rs": "c5667da3c3aaedac75060518a1d6f76625f7a19109ac4597c794c2eebbc79a69",
+    "plugin/talk-key/src/deadline.rs": "e6d2a6a694f97476f1d05fccab48814ebb69c02d1f946361693734a4ca0ebbbe",
+    "plugin/talk-key/src/endpoint.rs": "d121d2e9ee52dffcf93f8dc19d067cbd2d3aed5075505edc48842945919b77c1",
+    "plugin/talk-key/src/hooks.rs": "96320bdf4f6492b3a7068c71bb523a25410e503c9e1e5ef33905b5d1388d6541",
+    "plugin/talk-key/src/http.rs": "26ca453665690f587850149a4d162a9c76a576f7074db5c528d14cb50a831e37",
+    "plugin/talk-key/src/input.rs": "d5b1de2d7d617f0732eab181b66853a7b973b696834aabe13ee4bf245f64bd2c",
+    "plugin/talk-key/src/main.rs": "c6cca6afbd11c38f50359ce9dc7d4931f1880b9eb3fcae9f4bcf70c0ad9ac075",
+    "plugin/talk-key/src/out.rs": "71b26449cea32cc940d443edefa514886666187368a31e5f3f5aabf9daafdd51",
+    "plugin/talk-key/src/paths.rs": "ee9704a747ee2523e871d042d1d6b86a2340658ea6e6abc3f6f26d97607318ef",
+    "plugin/talk-key/src/request.rs": "6d6f4073764d0f421f1d3e0c4095b6856d779926d6fa55c2936aca66f27e8aee",
+    "plugin/talk-key/src/secret.rs": "16b432bf8a38ec35d3aeca23f8ad9c88510eed58b5f519d1b23942b3b34c1d41",
+    "plugin/talk-key/src/store/linux.rs": "8cf922481ca26b8c51a63ba9cdd9e14a65324901228e9f68606a85f276167178",
+    "plugin/talk-key/src/store/mod.rs": "2571c187477c78fd8c7507f2553368a8b8da97201683195122c04abe6df26507",
+    "plugin/talk-key/src/trust.rs": "d07aad057745133c30cd6ca6b5ad519fc7fd64c62d20304069e328b41ed8dbda"
+   }
+  },
+  "linux-x86_64": {
+   "file": "talk-key-linux-x86_64",
+   "triple": "x86_64-unknown-linux-gnu",
+   "toolchain": [
+    "rustc 1.97.0 (2d8144b78 2026-07-07)",
+    "zig 0.13.0",
+    "cargo-zigbuild 0.19.8",
+    "glibc 2.28"
+   ],
+   "bytes": 1579864,
+   "sha256": "6128add1337a105fcd05dd4b369be5bd455d760e01b9e466a273f889152e6b0d",
+   "sources": {
+    "plugin/talk-key/Cargo.lock": "0b3e83768292ca93d14c98137fe3919ea155ecd4cb7ac6c9d56c76b21a4f5b56",
+    "plugin/talk-key/Cargo.toml": "963d25d67ec0785e72909a7e167e487d20b898ab808f29902a4c30bfce2f8d4e",
+    "plugin/talk-key/src/child.rs": "a3b3d09e508f12ced9fa909fada20e82b17fd81ad6799dd82ab5fb88d2e3f4ba",
+    "plugin/talk-key/src/counter.rs": "c5667da3c3aaedac75060518a1d6f76625f7a19109ac4597c794c2eebbc79a69",
+    "plugin/talk-key/src/deadline.rs": "e6d2a6a694f97476f1d05fccab48814ebb69c02d1f946361693734a4ca0ebbbe",
+    "plugin/talk-key/src/endpoint.rs": "d121d2e9ee52dffcf93f8dc19d067cbd2d3aed5075505edc48842945919b77c1",
+    "plugin/talk-key/src/hooks.rs": "96320bdf4f6492b3a7068c71bb523a25410e503c9e1e5ef33905b5d1388d6541",
+    "plugin/talk-key/src/http.rs": "26ca453665690f587850149a4d162a9c76a576f7074db5c528d14cb50a831e37",
+    "plugin/talk-key/src/input.rs": "d5b1de2d7d617f0732eab181b66853a7b973b696834aabe13ee4bf245f64bd2c",
+    "plugin/talk-key/src/main.rs": "c6cca6afbd11c38f50359ce9dc7d4931f1880b9eb3fcae9f4bcf70c0ad9ac075",
+    "plugin/talk-key/src/out.rs": "71b26449cea32cc940d443edefa514886666187368a31e5f3f5aabf9daafdd51",
+    "plugin/talk-key/src/paths.rs": "ee9704a747ee2523e871d042d1d6b86a2340658ea6e6abc3f6f26d97607318ef",
+    "plugin/talk-key/src/request.rs": "6d6f4073764d0f421f1d3e0c4095b6856d779926d6fa55c2936aca66f27e8aee",
+    "plugin/talk-key/src/secret.rs": "16b432bf8a38ec35d3aeca23f8ad9c88510eed58b5f519d1b23942b3b34c1d41",
+    "plugin/talk-key/src/store/linux.rs": "8cf922481ca26b8c51a63ba9cdd9e14a65324901228e9f68606a85f276167178",
+    "plugin/talk-key/src/store/mod.rs": "2571c187477c78fd8c7507f2553368a8b8da97201683195122c04abe6df26507",
+    "plugin/talk-key/src/trust.rs": "d07aad057745133c30cd6ca6b5ad519fc7fd64c62d20304069e328b41ed8dbda"
+   }
+  },
+  "windows-aarch64": {
+   "file": "talk-key-windows-aarch64.exe",
+   "triple": "aarch64-pc-windows-gnullvm",
+   "toolchain": [
+    "rustc 1.97.0 (2d8144b78 2026-07-07)",
+    "zig 0.13.0",
+    "cargo-zigbuild 0.19.8"
+   ],
+   "bytes": 1147392,
+   "sha256": "e7adc1375c77163ed6e541da10906bf6283f74adcc9478beb5582bbae919a2cb",
+   "sources": {
+    "plugin/talk-key/Cargo.lock": "0b3e83768292ca93d14c98137fe3919ea155ecd4cb7ac6c9d56c76b21a4f5b56",
+    "plugin/talk-key/Cargo.toml": "963d25d67ec0785e72909a7e167e487d20b898ab808f29902a4c30bfce2f8d4e",
+    "plugin/talk-key/src/child.rs": "a3b3d09e508f12ced9fa909fada20e82b17fd81ad6799dd82ab5fb88d2e3f4ba",
+    "plugin/talk-key/src/counter.rs": "c5667da3c3aaedac75060518a1d6f76625f7a19109ac4597c794c2eebbc79a69",
+    "plugin/talk-key/src/deadline.rs": "e6d2a6a694f97476f1d05fccab48814ebb69c02d1f946361693734a4ca0ebbbe",
+    "plugin/talk-key/src/endpoint.rs": "d121d2e9ee52dffcf93f8dc19d067cbd2d3aed5075505edc48842945919b77c1",
+    "plugin/talk-key/src/hooks.rs": "96320bdf4f6492b3a7068c71bb523a25410e503c9e1e5ef33905b5d1388d6541",
+    "plugin/talk-key/src/http.rs": "26ca453665690f587850149a4d162a9c76a576f7074db5c528d14cb50a831e37",
+    "plugin/talk-key/src/input.rs": "d5b1de2d7d617f0732eab181b66853a7b973b696834aabe13ee4bf245f64bd2c",
+    "plugin/talk-key/src/main.rs": "c6cca6afbd11c38f50359ce9dc7d4931f1880b9eb3fcae9f4bcf70c0ad9ac075",
+    "plugin/talk-key/src/out.rs": "71b26449cea32cc940d443edefa514886666187368a31e5f3f5aabf9daafdd51",
+    "plugin/talk-key/src/paths.rs": "ee9704a747ee2523e871d042d1d6b86a2340658ea6e6abc3f6f26d97607318ef",
+    "plugin/talk-key/src/request.rs": "6d6f4073764d0f421f1d3e0c4095b6856d779926d6fa55c2936aca66f27e8aee",
+    "plugin/talk-key/src/secret.rs": "16b432bf8a38ec35d3aeca23f8ad9c88510eed58b5f519d1b23942b3b34c1d41",
+    "plugin/talk-key/src/store/mod.rs": "2571c187477c78fd8c7507f2553368a8b8da97201683195122c04abe6df26507",
+    "plugin/talk-key/src/store/windows.rs": "a6a17dea3e2d1619b5923d4ab1e9715c168f60853dd580851eaf904acbff3f6b",
+    "plugin/talk-key/src/trust.rs": "d07aad057745133c30cd6ca6b5ad519fc7fd64c62d20304069e328b41ed8dbda"
+   }
+  },
+  "windows-x86_64": {
+   "file": "talk-key-windows-x86_64.exe",
+   "triple": "x86_64-pc-windows-gnu",
+   "toolchain": [
+    "rustc 1.97.0 (2d8144b78 2026-07-07)",
+    "x86_64-w64-mingw32-gcc (GCC) 16.2.0"
+   ],
+   "bytes": 1353728,
+   "sha256": "d5368fa7010ddc3f7da066d76d4aeb9c9b132d913353e6396aba727b929b4fed",
+   "sources": {
+    "plugin/talk-key/Cargo.lock": "0b3e83768292ca93d14c98137fe3919ea155ecd4cb7ac6c9d56c76b21a4f5b56",
+    "plugin/talk-key/Cargo.toml": "963d25d67ec0785e72909a7e167e487d20b898ab808f29902a4c30bfce2f8d4e",
+    "plugin/talk-key/src/child.rs": "a3b3d09e508f12ced9fa909fada20e82b17fd81ad6799dd82ab5fb88d2e3f4ba",
+    "plugin/talk-key/src/counter.rs": "c5667da3c3aaedac75060518a1d6f76625f7a19109ac4597c794c2eebbc79a69",
+    "plugin/talk-key/src/deadline.rs": "e6d2a6a694f97476f1d05fccab48814ebb69c02d1f946361693734a4ca0ebbbe",
+    "plugin/talk-key/src/endpoint.rs": "d121d2e9ee52dffcf93f8dc19d067cbd2d3aed5075505edc48842945919b77c1",
+    "plugin/talk-key/src/hooks.rs": "96320bdf4f6492b3a7068c71bb523a25410e503c9e1e5ef33905b5d1388d6541",
+    "plugin/talk-key/src/http.rs": "26ca453665690f587850149a4d162a9c76a576f7074db5c528d14cb50a831e37",
+    "plugin/talk-key/src/input.rs": "d5b1de2d7d617f0732eab181b66853a7b973b696834aabe13ee4bf245f64bd2c",
+    "plugin/talk-key/src/main.rs": "c6cca6afbd11c38f50359ce9dc7d4931f1880b9eb3fcae9f4bcf70c0ad9ac075",
+    "plugin/talk-key/src/out.rs": "71b26449cea32cc940d443edefa514886666187368a31e5f3f5aabf9daafdd51",
+    "plugin/talk-key/src/paths.rs": "ee9704a747ee2523e871d042d1d6b86a2340658ea6e6abc3f6f26d97607318ef",
+    "plugin/talk-key/src/request.rs": "6d6f4073764d0f421f1d3e0c4095b6856d779926d6fa55c2936aca66f27e8aee",
+    "plugin/talk-key/src/secret.rs": "16b432bf8a38ec35d3aeca23f8ad9c88510eed58b5f519d1b23942b3b34c1d41",
+    "plugin/talk-key/src/store/mod.rs": "2571c187477c78fd8c7507f2553368a8b8da97201683195122c04abe6df26507",
+    "plugin/talk-key/src/store/windows.rs": "a6a17dea3e2d1619b5923d4ab1e9715c168f60853dd580851eaf904acbff3f6b",
+    "plugin/talk-key/src/trust.rs": "d07aad057745133c30cd6ca6b5ad519fc7fd64c62d20304069e328b41ed8dbda"
+   }
+  }
+ }
+}

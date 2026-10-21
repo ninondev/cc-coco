@@ -1,12 +1,12 @@
 {
-  "name": "claudesama",
-  "displayName": "Claude-sama",
-  "version": "0.1.1",
-  "description": "My unofficial fan mod that makes Claude Code cute. Claude-sama, a small kami of words, reads along above your prompt, keeps an offering box for your context window and draws you one omen a day. Terminal and desktop. Not affiliated with Anthropic.",
+  "name": "coco",
+  "displayName": "Coco",
+  "version": "1.0.0",
+  "description": "Unofficial fan mod for Claude Code. A small character who lives in the band above your prompt.",
   "author": {
     "name": "ninondev"
   },
-  "repository": "https://github.com/ninondev/claude-sama",
+  "repository": "https://github.com/ninondev/cc-coco",
   "license": "SEE LICENSE IN LICENSE AND ART-LICENSE.md",
   "keywords": [
     "skin",
@@ -15,5 +15,64 @@
     "mod",
     "moe"
   ],
-  "types": "./types/index.d.ts"
+  "types": "./types/index.d.ts",
+  "userConfig": {
+    "band": {
+      "type": "string",
+      "title": "Coco above the prompt",
+      "description": "on: Coco's band with pictures. compact: one line. off: put away, with a small door to call Coco back.",
+      "options": [
+        "on",
+        "compact",
+        "text",
+        "off"
+      ],
+      "default": "on"
+    },
+    "language": {
+      "type": "string",
+      "title": "Coco's language",
+      "description": "auto: follows Claude Code's language setting, otherwise your system's.",
+      "options": [
+        "auto",
+        "en",
+        "fr",
+        "de",
+        "hi",
+        "id",
+        "it",
+        "ja",
+        "ko",
+        "pt-BR",
+        "es-419",
+        "es-ES",
+        "zh",
+        "zh-Hant"
+      ],
+      "default": "auto"
+    },
+    "resolvedLanguage": {
+      "type": "string",
+      "title": "Coco's resolved language",
+      "description": "Kept by Coco for a fast start. To change Coco's language, use the language row above.",
+      "options": [
+        "en",
+        "fr",
+        "de",
+        "hi",
+        "id",
+        "it",
+        "ja",
+        "ko",
+        "pt-BR",
+        "es-419",
+        "es-ES",
+        "zh",
+        "zh-Hant"
+      ],
+      "default": "en"
+    }
+  },
+  "documentationUrl": "https://github.com/ninondev/cc-coco#readme",
+  "supportUrl": "https://github.com/ninondev/cc-coco/issues"
 }

@@ -3,12 +3,12 @@ import { samePath } from './file-paths'
 // The activity feed is exercised through the mod's actual session/tool hooks.
 import { describe, expect, test } from 'claude-code/testing'
 import type { On } from 'claude-code'
-import { MORNING, RECENT, band, world } from './world'
+import { settleLegacyStart, MORNING, RECENT, band, world } from './world'
 import { atomicFeed, PROCESS_OK } from './shared-world'
 
 const START = { cwd: '/tmp/project', surface: 'terminal' as const, isInteractive: true }
 const HOME = '/tmp/activity-test'
-const FOLDER = `${HOME}/Library/Application Support/Claude-sama`
+const FOLDER = `${HOME}/Library/Application Support/Coco`
 const FEED = `${FOLDER}/view.json`
 type Record = { project: string; task: string | null; done: number | null; waitAt: number | null; reply: { text: string; at: number } | null; notice: { kind: string; text: string; at: number } | null; ack: string | null; channel: boolean; ended?: boolean }
 
@@ -35,9 +35,9 @@ function ended(answer: string) { return { answer, durationMs: 1000, isAborted: f
   test('tool boundaries carry localized phrases; programs never expose their arguments', { timeoutMs: 60_000 }, async ($, on) => {
     let current: ReturnType<typeof feed>
     const starts: string[] = []
-    world(on, { store: RECENT, env: { HOME, LANG: 'en_US.UTF-8' }, onTool: () => starts.push(current.latest().task ?? '') })
+    const setupWorld=world(on, { store: RECENT, env: { HOME, LANG: 'en_US.UTF-8' }, onTool: () => starts.push(current.latest().task ?? '') })
     current = feed(on)
-    await $.session.start(START)
+    await $.session.start(START); await settleLegacyStart($,setupWorld);
     await drainFeed($)
     await $.turn.start({ text: 'go', turnId: 't1' })
     await drainFeed($)
@@ -75,9 +75,9 @@ function ended(answer: string) { return { answer, durationMs: 1000, isAborted: f
   test('zh task phrases follow the selected session language', async ($, on) => {
     let current: ReturnType<typeof feed>
     let during = ''
-    world(on, { store: RECENT, env: { HOME, LANG: 'zh_CN.UTF-8' }, onTool: () => { during = current.latest().task ?? '' } })
+    const setupWorld=world(on, { store: RECENT, env: { HOME, LANG: 'zh_CN.UTF-8' }, onTool: () => { during = current.latest().task ?? '' } })
     current = feed(on)
-    await $.session.start(START)
+    await $.session.start(START); await settleLegacyStart($,setupWorld);
     await drainFeed($)
     await $.turn.start({ text: 'go', turnId: 't1' })
     await drainFeed($)
@@ -90,13 +90,14 @@ function ended(answer: string) { return { answer, durationMs: 1000, isAborted: f
   test('permission and question waits retain their starting timestamp until resolved', async ($, on) => {
     let current: ReturnType<typeof feed>
     let question: Record | undefined
-    const w = world(on, { store: RECENT, ask: true, env: { HOME, LANG: 'en_US.UTF-8' }, onTool: tool => { if (tool === 'AskUserQuestion') question = current.latest() } })
+    const w = world(on, { store: RECENT, ask: true, stepTools:[{id:'main-call',name:'Bash'}], env: { HOME, LANG: 'en_US.UTF-8' }, onTool: tool => { if (tool === 'AskUserQuestion') question = current.latest() } })
     current = feed(on)
     // A call-bound permission check carries tool_use_id; a standalone query does not.
-    await $.session.start(START)
+    await $.session.start(START); await settleLegacyStart($,w);
     await drainFeed($)
     await $.turn.start({ text: 'go', turnId: 't1' })
     await drainFeed($)
+    for await (const chunk of $.turn.step({turnId:'t1',index:0,model:'test',messageCount:1})) {}
     await $.tool.check({ tool: 'Bash', input: { command: 'echo ok' }, tool_use_id: 'main-call' } as never)
     await drainFeed($)
     expect(current.latest().task).toBe('waiting for your OK')
@@ -117,7 +118,7 @@ function ended(answer: string) { return { answer, durationMs: 1000, isAborted: f
   test('project is read once and middle-cut; unchanged state and blinking never write', async ($, on) => {
     const w = world(on, { store: RECENT, env: { HOME, LANG: 'en_US.UTF-8' } })
     const current = feed(on, '/tmp/abcdefghijklmnopqrstuvwxyz0123456789')
-    await $.session.start(START)
+    await $.session.start(START); await settleLegacyStart($,w);
     await drainFeed($)
     const project = current.latest().project
     expect(Array.from(project).length).toBe(24)
@@ -140,9 +141,9 @@ function ended(answer: string) { return { answer, durationMs: 1000, isAborted: f
   })
 
   test('reply excerpt removes Markdown and line breaks while preserving the words and punctuation', async ($, on) => {
-    world(on, { store: RECENT, env: { HOME, LANG: 'en_US.UTF-8' } })
+    const setupWorld=world(on, { store: RECENT, env: { HOME, LANG: 'en_US.UTF-8' } })
     const current = feed(on)
-    await $.session.start(START)
+    await $.session.start(START); await settleLegacyStart($,setupWorld);
     await drainFeed($)
     await $.turn.start({ text: 'go', turnId: 't1' })
     await drainFeed($)
@@ -164,14 +165,15 @@ function ended(answer: string) { return { answer, durationMs: 1000, isAborted: f
     await $.turn.complete(ended('A final reply.'))
     await drainFeed($)
     await $.session.end({ reason: 'prompt_input_exit' } as never)
+    await drainFeed($)
     expect(current.latest().reply).toBe(null)
     expect(current.latest().task).toBe(null)
   })
 
   test('helper turn completions do not replace the main loop task or reply', async ($, on) => {
-    world(on, { store: RECENT, env: { HOME, LANG: 'en_US.UTF-8' } })
+    const setupWorld=world(on, { store: RECENT, env: { HOME, LANG: 'en_US.UTF-8' } })
     const current = feed(on)
-    await $.session.start(START)
+    await $.session.start(START); await settleLegacyStart($,setupWorld);
     await drainFeed($)
     await $.turn.start({ text: 'main task', turnId: 'main' })
     await drainFeed($)
@@ -185,9 +187,9 @@ function ended(answer: string) { return { answer, durationMs: 1000, isAborted: f
   })
 
   test('CJK emphasis and link URLs preserve Claude punctuation and literal hashes', async ($, on) => {
-    world(on, { store: RECENT, env: { HOME, LANG: 'en_US.UTF-8' } })
+    const setupWorld=world(on, { store: RECENT, env: { HOME, LANG: 'en_US.UTF-8' } })
     const current = feed(on)
-    await $.session.start(START)
+    await $.session.start(START); await settleLegacyStart($,setupWorld);
     await drainFeed($)
     await $.turn.start({ text: 'go', turnId: 't1' })
     await drainFeed($)
@@ -197,9 +199,9 @@ function ended(answer: string) { return { answer, durationMs: 1000, isAborted: f
   })
 
   test('code excerpts retain literal links, nested backticks and Markdown-looking punctuation', async ($, on) => {
-    world(on, { store: RECENT, env: { HOME, LANG: 'en_US.UTF-8' } })
+    const setupWorld=world(on, { store: RECENT, env: { HOME, LANG: 'en_US.UTF-8' } })
     const current = feed(on)
-    await $.session.start(START)
+    await $.session.start(START); await settleLegacyStart($,setupWorld);
     await drainFeed($)
     const cases = [
       ['`[x](y)`', '[x](y)'],
@@ -216,15 +218,16 @@ function ended(answer: string) { return { answer, durationMs: 1000, isAborted: f
   })
 
   test('classic notifications retain their kind and a 140-character excerpt', async ($, on) => {
-    world(on, { store: RECENT, env: { HOME, LANG: 'en_US.UTF-8' } })
+    const setupWorld=world(on, { store: RECENT, env: { HOME, LANG: 'en_US.UTF-8' } })
     const current = feed(on)
     on('classic.Notification', () => ({}))
-    await $.session.start(START)
+    await $.session.start(START); await settleLegacyStart($,setupWorld);
     await drainFeed($)
     await $.classic.Notification({ message: '🔔'.repeat(150), title: 'Do not use the title', notification_type: 'permission_prompt' })
     await drainFeed($)
     expect(current.latest().notice).toEqual({ kind: 'permission_prompt', text: '🔔'.repeat(140), at: MORNING })
     await $.session.end({ reason: 'prompt_input_exit' } as never)
+    await drainFeed($)
     expect(current.latest().notice).toBe(null)
   })
 })

@@ -1,0 +1,2 @@
+// Generated live public facade. Authoritative implementation: hooks-source/desktop-safe.ts
+export {desktop_safe__DESKTOP_LIMITS as DESKTOP_LIMITS,desktop_safe__DesktopTreeError as DesktopTreeError,desktop_safe__normalizeCostSurface as normalizeCostSurface,desktop_safe__normalizeDesktopSettings as normalizeDesktopSettings,desktop_safe__normalizeDesktopView as normalizeDesktopView,desktop_safe__safeDesktopTree as safeDesktopTree,desktop_safe__validateDesktopTree as validateDesktopTree} from './m1-compiled/presence.js'

@@ -1,0 +1,12 @@
+==> finch
+Compiling 2 files (.ex)
+Generated finch app
+
+Finch.ParserTest
+  * test parses a header (0.01ms)
+  * test writes nested output (0.02ms)
+  * test rejects an empty body (0.01ms)
+
+
+Finished in 0.02 seconds
+1 doctest, 3 tests, 0 failures

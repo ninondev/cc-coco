@@ -1,0 +1,734 @@
+[
+  {
+    "id": "A4",
+    "built": true,
+    "promise": "Reply voice is off on new installs; token-costing actions require an explicit choice, and existing voice choices are preserved.",
+    "sources": [
+      "docs/ROADMAP.md:29,50",
+      "docs/ROADMAP-REVOLUTION.md:48",
+      "docs/ROADMAP-0.2.md:3",
+      "handoffs/program/design/0.4/SPEC.md:436-437,538-542",
+      "DECISIONS.md:518-525"
+    ],
+    "surfaces": [
+      "plugin"
+    ],
+    "checks": [
+      {
+        "stage": "kit",
+        "command": [
+          "python3",
+          "tools/run-tests.py",
+          "--stage",
+          "kit",
+          "--test-file",
+          "promises-runtime.test.tsx"
+        ]
+      },
+      {
+        "stage": "python",
+        "file": "tools/tests/promises-static.test.py",
+        "test": "test_A4_host_command_delegations_are_classified"
+      },
+      {
+        "stage": "kit",
+        "command": [
+          "python3",
+          "tools/run-tests.py",
+          "--stage",
+          "kit",
+          "--test-file",
+          "c3-events.test.tsx"
+        ]
+      },
+      {
+        "stage": "python",
+        "command": [
+          "python3",
+          "tools/tests/promises-decisions.test.py"
+        ]
+      },
+      {
+        "stage": "kit",
+        "file": "tools/tests/k1-runtime.test.tsx",
+        "test": "K1 keep warm makes no model.fork while its More row is off"
+      }
+    ],
+    "realDevice": "The offline checks classify direct plugin token channels and host-command delegates; actual host compaction model calls, token use and billing require host/provider measurements.",
+    "tokenFeatures": [
+      {
+        "feature": "voice",
+        "default": "off",
+        "cost": "voice-sizes.json characters per request",
+        "disclosedIn": "handoffs/program/words/1.0/readme/README.md:82",
+        "callSites": [
+          "hooks/register.tsx:prompt.compose"
+        ]
+      },
+      {
+        "feature": "book companion actions",
+        "default": "off until an explicit press",
+        "cost": "a local Bash tool fallback when process.run is unavailable, through the companion command verb's one Bash call (0bdeb102)",
+        "disclosedIn": "explicit companion action buttons",
+        "callSites": []
+      },
+      {
+        "feature": "companion typed instruction",
+        "default": "off until explicit Send",
+        "cost": "one person-authored prompt submission",
+        "disclosedIn": "Send button",
+        "callSites": [
+          "hooks/register.tsx:$.prompt.submit("
+        ]
+      },
+      {
+        "feature": "More model options",
+        "default": "off until an explicit turn-on on the More page, then an explicit press or message",
+        "cost": "Haiku requests on the person's plan for Talk and Explain simply (A second look is unsupported and stays off); each row states its cost, and the rows stay off until the model-service disclosure words exist",
+        "disclosedIn": "each More row's help and confirmation (handoffs/program/design/1.0/EVERY-CAPABILITY.md)",
+        "callSites": [
+          "hooks/more-runtime.ts:$.model.complete(",
+          "hooks/pages.tsx:$.model.complete(",
+          "hooks/register.tsx:$.model.complete("
+        ]
+      },
+      {
+        "feature": "companion command verb",
+        "default": "off until an explicit /coco companion command",
+        "cost": "one permission-scoped local Bash tool call per command; no model request",
+        "disclosedIn": "the host's Bash permission prompt for the command",
+        "callSites": [
+          "hooks/pages.tsx:$.tool.call("
+        ]
+      },
+      {
+        "feature": "keep warm",
+        "default": "off until an explicit More row turn-on",
+        "cost": "one cache re-read per tick while away, stopped by the budget rule at one full re-read in total",
+        "disclosedIn": "the More row's cost and help lines (more.warm.cost, more.warm.help)",
+        "callSites": [
+          "hooks/register.tsx:$.model.fork("
+        ]
+      }
+    ],
+    "hostCommandActions": [
+      {
+        "command": "clear",
+        "trigger": "explicit companion New chat action",
+        "default": "off until explicit action",
+        "callSite": "plugin/hooks/register.tsx:$.command.run clear",
+        "cost": "delegates to the host; this offline kit does not measure host billing"
+      },
+      {
+        "command": "compact",
+        "trigger": "ui.press:coco:chapter:compact",
+        "default": "off until explicit press",
+        "callSite": "plugin/hooks/register.tsx:$.command.run compact",
+        "cost": "delegates to host /compact; model calls, token use and billing are unmeasured by this offline kit"
+      }
+    ]
+  },
+  {
+    "id": "C6",
+    "built": true,
+    "promise": "Checked state reactions return synchronously before optional startup work; physical screen latency is not certified.",
+    "sources": [
+      "docs/ROADMAP.md:22,31",
+      "docs/ROADMAP-REVOLUTION.md:16-17"
+    ],
+    "surfaces": [
+      "terminal",
+      "desktop",
+      "vscode",
+      "mobile"
+    ],
+    "checks": [
+      {
+        "stage": "kit",
+        "command": [
+          "python3",
+          "tools/run-tests.py",
+          "--stage",
+          "kit",
+          "--test-file",
+          "b1b-first-answer.test.tsx"
+        ]
+      },
+      {
+        "stage": "kit",
+        "command": [
+          "python3",
+          "tools/run-tests.py",
+          "--stage",
+          "kit"
+        ]
+      },
+      {
+        "stage": "python",
+        "command": [
+          "python3",
+          "tools/tests/hook-cpu-receipts.test.py"
+        ]
+      }
+    ],
+    "realDevice": "The claimed one-second screen latency has no current physical-device measurement. Individual callback/filter CPU and full session.append host retention are not exposed by the current test kit; the CPU gate uses conservative per-event process envelopes.",
+    "hookCpuBudgets": {
+      "scope": "isolated-cli-command-inclusive-cpu",
+      "clock": "POSIX wait4 user plus system CPU, including reaped descendants",
+      "floorSeconds": 3,
+      "margin": "ceil(max(1.25 * median, median + 2 * observed range)); floor 3 CPU seconds",
+      "byTarget": {
+        "classic.Notification": 3,
+        "command.run": 3,
+        "config.describe": 4,
+        "config.set": 3,
+        "prompt.compose": 3,
+        "prompt.submit": 3,
+        "session.append": 3,
+        "session.attach": 4,
+        "session.compact": 4,
+        "session.detach": 4,
+        "session.end": 4,
+        "session.measure": 3,
+        "session.start": 3,
+        "session.usage": 3,
+        "state.set": 3,
+        "store.set": 4,
+        "tool.call": 3,
+        "tool.check": 3,
+        "turn.complete": 3,
+        "turn.start": 3,
+        "turn.step": 3,
+        "ui.close": 3,
+        "ui.press": 3,
+        "ui.render:AbovePrompt": 3,
+        "ui.render:AskUserQuestion": 3,
+        "ui.render:AssistantMessage": 4,
+        "ui.render:CommandOutput": 3,
+        "ui.render:Pane": 3,
+        "ui.render:SessionMode": 4,
+        "ui.render:Spinner": 3,
+        "ui.render:ToolGroup": 4,
+        "ui.render:ToolUse": 3,
+        "ui.render:UserMessage": 3,
+        "agent.spawn": 3,
+        "classic.CwdChanged": 3,
+        "command.*": 3,
+        "ui.render:ToolResult": 3,
+        "classic.PreModelSwitch": 3,
+        "classic.PostModelSwitch": 3,
+        "classic.Stop": 3,
+        "model.complete": 3,
+        "model.fork": 3,
+        "classic.StopFailure": 4,
+        "ui.message": 4,
+        "classic.SessionStart": 4,
+        "agent.offer": 5,
+        "classic.ConfigChange": 5,
+        "classic.DirectoryAdded": 6,
+        "classic.Elicitation": 6,
+        "classic.ElicitationResult": 6,
+        "classic.FileChanged": 5,
+        "classic.PermissionDenied": 6,
+        "classic.PermissionRequest": 5,
+        "classic.PostCompact": 5,
+        "classic.PostToolBatch": 7,
+        "classic.PostToolUse": 6,
+        "classic.PostToolUseFailure": 5,
+        "classic.Setup": 5,
+        "classic.SubagentStart": 5,
+        "classic.SubagentStop": 5,
+        "classic.TaskCompleted": 6,
+        "classic.TaskCreated": 6,
+        "classic.TeammateIdle": 6,
+        "classic.UserPromptSubmit": 6,
+        "classic.WorktreeCreate": 6,
+        "classic.WorktreeRemove": 6,
+        "command.describe": 6,
+        "prompt.edit": 6,
+        "session.receive": 6,
+        "session.send": 6,
+        "skill.prompt": 6,
+        "ui.focus": 6,
+        "ui.focus:AbovePrompt": 6,
+        "ui.input": 6,
+        "ui.render:PromptHint": 5,
+        "ui.render:ToolProgress": 6,
+        "ui.scroll": 6,
+        "ui.select": 6
+      },
+      "samples": {
+        "classic.Notification": [
+          1.059375,
+          1.603316,
+          1.702487
+        ],
+        "command.run": [
+          1.050779,
+          1.6146880000000001,
+          1.5377759999999998
+        ],
+        "config.describe": [
+          0.957914,
+          1.685395,
+          1.624184
+        ],
+        "config.set": [
+          1.013636,
+          1.633159,
+          1.587509
+        ],
+        "prompt.compose": [
+          0.963284,
+          1.547892,
+          1.615586
+        ],
+        "prompt.submit": [
+          0.991247,
+          1.591341,
+          1.6173950000000001
+        ],
+        "session.append": [
+          1.0138939999999999,
+          1.665626,
+          1.670983
+        ],
+        "session.attach": [
+          0.932788,
+          1.7493210000000001,
+          1.583154
+        ],
+        "session.compact": [
+          0.7937129999999999,
+          1.6665869999999998,
+          1.6403780000000001
+        ],
+        "session.detach": [
+          0.840673,
+          1.6492879999999999,
+          1.573337
+        ],
+        "session.end": [
+          0.7561309999999999,
+          1.656667,
+          1.593871
+        ],
+        "session.measure": [
+          1.06515,
+          1.6289989999999999,
+          1.590959
+        ],
+        "session.start": [
+          1.0431709999999998,
+          1.5997769999999998,
+          1.573792
+        ],
+        "session.usage": [
+          0.9929269999999999,
+          1.603025,
+          1.643093
+        ],
+        "state.set": [
+          1.046703,
+          1.623603,
+          1.612979
+        ],
+        "store.set": [
+          0.9461599999999999,
+          1.718775,
+          1.566771
+        ],
+        "tool.call": [
+          1.005256,
+          1.684064,
+          1.567604
+        ],
+        "tool.check": [
+          0.998181,
+          1.650318,
+          1.597629
+        ],
+        "turn.complete": [
+          0.9852509999999999,
+          1.641211,
+          1.657017
+        ],
+        "turn.start": [
+          1.025903,
+          1.6168339999999999,
+          1.559941
+        ],
+        "turn.step": [
+          1.050343,
+          1.646795,
+          1.615219
+        ],
+        "ui.close": [
+          1.0095429999999999,
+          1.533639,
+          1.6233449999999998
+        ],
+        "ui.press": [
+          1.0560749999999999,
+          1.6777060000000001,
+          1.623619
+        ],
+        "ui.render:AbovePrompt": [
+          1.048803,
+          1.6339309999999998,
+          1.522012
+        ],
+        "ui.render:AskUserQuestion": [
+          1.009109,
+          1.6086889999999998,
+          1.594744
+        ],
+        "ui.render:AssistantMessage": [
+          0.94157,
+          1.65256,
+          1.8016969999999999
+        ],
+        "ui.render:CommandOutput": [
+          1.047899,
+          1.656103,
+          1.5685829999999998
+        ],
+        "ui.render:Pane": [
+          1.0431439999999998,
+          1.694736,
+          1.5927099999999998
+        ],
+        "ui.render:SessionMode": [
+          0.9686769999999999,
+          1.6904409999999999,
+          1.589255
+        ],
+        "ui.render:Spinner": [
+          0.998407,
+          1.667621,
+          1.652814
+        ],
+        "ui.render:ToolGroup": [
+          1.0435819999999998,
+          1.722714,
+          1.7136019999999998
+        ],
+        "ui.render:ToolUse": [
+          1.1129749999999998,
+          1.7213289999999999,
+          1.6649349999999998
+        ],
+        "ui.render:UserMessage": [
+          1.063736,
+          1.682115,
+          1.705107
+        ],
+        "agent.spawn": [
+          0.74247,
+          0.7218739999999999,
+          0.70869
+        ],
+        "classic.CwdChanged": [
+          0.727567,
+          0.729019,
+          0.739557
+        ],
+        "command.*": [
+          0.713105,
+          0.736872,
+          0.7331709999999999
+        ],
+        "ui.render:ToolResult": [
+          0.7253,
+          0.701914,
+          0.69348
+        ],
+        "classic.PreModelSwitch": [
+          2.274821,
+          2.2790120000000003,
+          2.339471
+        ],
+        "classic.PostModelSwitch": [
+          2.378879,
+          2.468483,
+          2.379049
+        ],
+        "classic.Stop": [
+          2.20863,
+          2.264629,
+          2.272696
+        ],
+        "model.complete": [
+          2.313333,
+          2.4035360000000003,
+          2.3774629999999997
+        ],
+        "model.fork": [
+          2.21334,
+          2.197594,
+          2.3479289999999997
+        ],
+        "classic.StopFailure": [
+          2.669612,
+          2.393742,
+          2.9214909999999996
+        ],
+        "ui.message": [
+          2.617091,
+          2.913469,
+          2.70877
+        ],
+        "classic.SessionStart": [
+          2.73958,
+          2.89555,
+          2.993437
+        ],
+        "agent.offer": [
+          4.189890999999999,
+          3.9534,
+          3.764626
+        ],
+        "classic.ConfigChange": [
+          3.927041,
+          3.9984539999999997,
+          3.9076969999999998
+        ],
+        "classic.DirectoryAdded": [
+          3.7465330000000003,
+          4.521190000000001,
+          4.274742
+        ],
+        "classic.Elicitation": [
+          3.986295,
+          3.989309,
+          4.517638
+        ],
+        "classic.ElicitationResult": [
+          3.952183,
+          4.085015,
+          4.111482
+        ],
+        "classic.FileChanged": [
+          3.858842,
+          3.839372,
+          3.979969
+        ],
+        "classic.PermissionDenied": [
+          4.174156,
+          3.941102,
+          4.2465329999999994
+        ],
+        "classic.PermissionRequest": [
+          3.997628,
+          3.8660200000000002,
+          3.935458
+        ],
+        "classic.PostCompact": [
+          3.8491999999999997,
+          3.773326,
+          3.80449
+        ],
+        "classic.PostToolBatch": [
+          5.141982,
+          3.883784,
+          3.867803
+        ],
+        "classic.PostToolUse": [
+          3.853667,
+          4.008577,
+          4.017104
+        ],
+        "classic.PostToolUseFailure": [
+          3.8471520000000003,
+          3.975108,
+          3.844208
+        ],
+        "classic.Setup": [
+          3.7289760000000003,
+          4.127782,
+          3.9132219999999998
+        ],
+        "classic.SubagentStart": [
+          3.724296,
+          3.937278,
+          3.954838
+        ],
+        "classic.SubagentStop": [
+          3.8910810000000002,
+          3.977168,
+          4.150216
+        ],
+        "classic.TaskCompleted": [
+          3.884169,
+          4.044293,
+          4.160429
+        ],
+        "classic.TaskCreated": [
+          4.140513,
+          4.277997,
+          3.8068459999999997
+        ],
+        "classic.TeammateIdle": [
+          3.961143,
+          4.188937,
+          4.1496319999999995
+        ],
+        "classic.UserPromptSubmit": [
+          4.058364,
+          3.95493,
+          4.018927
+        ],
+        "classic.WorktreeCreate": [
+          4.439762,
+          3.870164,
+          4.009989
+        ],
+        "classic.WorktreeRemove": [
+          4.136082,
+          3.966461,
+          4.166239
+        ],
+        "command.describe": [
+          3.976791,
+          4.269825,
+          4.026106
+        ],
+        "prompt.edit": [
+          4.03102,
+          4.731218999999999,
+          4.484254
+        ],
+        "session.receive": [
+          3.7629070000000002,
+          4.030797,
+          4.028243
+        ],
+        "session.send": [
+          3.979098,
+          4.142564,
+          4.136405
+        ],
+        "skill.prompt": [
+          4.011946,
+          4.396476,
+          4.112579
+        ],
+        "ui.focus": [
+          4.001672,
+          4.23332,
+          4.416036999999999
+        ],
+        "ui.focus:AbovePrompt": [
+          4.119265,
+          4.309432,
+          4.138324
+        ],
+        "ui.input": [
+          4.330793,
+          4.471682,
+          4.302496
+        ],
+        "ui.render:PromptHint": [
+          4.108336,
+          3.848573,
+          3.966177
+        ],
+        "ui.render:ToolProgress": [
+          4.191887,
+          4.234909,
+          4.038489
+        ],
+        "ui.scroll": [
+          3.8652159999999998,
+          4.442282,
+          4.39285
+        ],
+        "ui.select": [
+          4.090301999999999,
+          4.474589,
+          4.283174
+        ]
+      },
+      "sourceRuns": [
+        {
+          "receipt": "tools/evidence/p1-part5/hook-envelopes-measure-1-fixed.json",
+          "sha256": "8b3417686acbe0d18e124eeb9ef0b96b7952c37aea4d2fe13cfbdd3079e43a0a"
+        },
+        {
+          "receipt": "tools/evidence/p1-part5/hook-envelopes-measure-2.json",
+          "sha256": "742fec419f05c7683cb3a898ce49a49fa1e0a24d83bcb784fe169954538ef2dc"
+        },
+        {
+          "receipt": "tools/evidence/p1-part5/hook-envelopes-measure-3.json",
+          "sha256": "fd80709f4c7aa1e6d27c7d4c4029c33bb56d1ce3ad3f00507068568036689b13"
+        }
+      ],
+      "sourceDeclarations": 56,
+      "calibrationCeilingSeconds": 90,
+      "limitations": [
+        "Each row bounds one isolated event/component fixture including CLI startup and setup; exclusive callback CPU is unavailable in the SDK.",
+        "All registered event names and render components are checked; individual matcher branches have unmeasured callback coverage.",
+        "The kit cannot retain session.append rows; both prompt and response pre-next paths are measured.",
+        "classic.PreModelSwitch, classic.PostModelSwitch, classic.Stop, model.complete and model.fork were measured on a cloud VM (raw wait4 CPU, about 2.2 to 2.5 s each, mostly CLI startup); the other rows were measured on the Mac. All five land on the 3 s floor. model.complete and model.fork are dispatched through the scratch bridge, so they run the plugin's own handler with the plugin as origin. classic.StopFailure and ui.message (added by PLAY, whose report queued them for the Mac) were measured the same way on this VM and land at 4 s. classic.SessionStart (FIRST-MEETING) was measured the same way and lands at 4 s.",
+        "The 33 targets 1.0's wiring added (M1's always-on hooks, the book's own controls, the skill cards) were measured 10-17 on a cloud VM with Claude Code 2.1.302 (raw wait4 CPU, 3.7 to 5.1 s each, mostly CLI startup), so they land at 5 to 7 s; on the same VM the Mac rows measured 3.7 to 4.3 s, so a slower host scales every row by COCO_CPU_SCALE, as the kit files are scaled."
+      ],
+      "addedD1TargetSourceRuns": [
+        "/private/var/folders/p6/k1b6xf813yd6dh2v5hjh8nw80000gp/T/moe-d1-cumulative-integration-9yja2bxq/evidence/d1-integration/new-hook-targets-1.json",
+        "/private/var/folders/p6/k1b6xf813yd6dh2v5hjh8nw80000gp/T/moe-d1-cumulative-integration-9yja2bxq/evidence/d1-integration/new-hook-targets-2.json",
+        "/private/var/folders/p6/k1b6xf813yd6dh2v5hjh8nw80000gp/T/moe-d1-cumulative-integration-9yja2bxq/evidence/d1-integration/new-hook-targets-3.json"
+      ],
+      "addedK1TargetSourceRuns": [
+        {
+          "receipt": "tools/evidence/k1-part2/hook-envelope-new-targets-1.json",
+          "sha256": "39eaf805152ee8fff220ac9c13bcd2944266551f97f7317270f74852a596251f"
+        },
+        {
+          "receipt": "tools/evidence/k1-part2/hook-envelope-new-targets-2.json",
+          "sha256": "382558177edfa6dea38a6208e326a478f38a5c1e4dbca236b69ac1ae5f451a78"
+        },
+        {
+          "receipt": "tools/evidence/k1-part2/hook-envelope-new-targets-3.json",
+          "sha256": "a79642a17a838162063c659c596facc6107a99c50b893a5e71acaa9900ce70e7"
+        },
+        {
+          "receipt": "tools/evidence/k1-part2/hook-envelope-play-targets-1.json",
+          "sha256": "286b2cb10bdb414d75bbc30598e29d5ab84a71a6fdf144c6f0cb90b1b8ae04f4"
+        },
+        {
+          "receipt": "tools/evidence/k1-part2/hook-envelope-play-targets-2.json",
+          "sha256": "2a2caab24dca8bf4832596e82166d2aa85ccce9d49dfc9e02b309be94b5ec49e"
+        },
+        {
+          "receipt": "tools/evidence/k1-part2/hook-envelope-play-targets-3.json",
+          "sha256": "c2a320012248d3cbbe2901ada6a3f5cd5b16dab4688d182844a4ce4cfee5c6d8"
+        },
+        {
+          "receipt": "tools/evidence/k1-part2/hook-envelope-first-meeting-target-1.json",
+          "sha256": "d85fefe5b10eb69d73345352aa75aaacebb5b21b175892722b4de47711f1fb4d"
+        },
+        {
+          "receipt": "tools/evidence/k1-part2/hook-envelope-first-meeting-target-2.json",
+          "sha256": "8444d26a9e5cbeba1d2900f4255375e585a5324873f958d801a6f588c8d100c0"
+        },
+        {
+          "receipt": "tools/evidence/k1-part2/hook-envelope-first-meeting-target-3.json",
+          "sha256": "f8444edb873add148f4e1f6cdcaa155846200034ac503b1d3aa3d2af179a794c"
+        }
+      ],
+      "added10TargetSourceRuns": [
+        {
+          "receipt": "tools/evidence/1.0-hooks/hook-envelope-new-targets-1.json",
+          "sha256": "f025a40776b2f3c859b1b5f6a71d529ef95bc0024429d23c5a43fc268b9585a6"
+        },
+        {
+          "receipt": "tools/evidence/1.0-hooks/hook-envelope-new-targets-2.json",
+          "sha256": "90f78699f8fdba13abf4a18913930c0aef9b92f633ec66e6a325182d39a69341"
+        },
+        {
+          "receipt": "tools/evidence/1.0-hooks/hook-envelope-new-targets-3.json",
+          "sha256": "140b22928dda274575836117865d257ac38971b6477de8a9ef8b678632b10ecb"
+        }
+      ]
+    }
+  }
+]

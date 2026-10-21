@@ -1,1678 +1,3063 @@
-// Round 6 contract: before snapshots plus the owner's exact replacements and poke lines.
+// Exact W1 v3 author tables, plus the owner's W2 Chinese pat line (DECISIONS 10-06 00:4x, «(小声)...小克,好听»);
+// no shipping runtime values are used to form these fixtures.
 // Independent of shipping hooks and their generated modules.
 export const APPROVED_PERSONA = {
   "zh": {
     "greeting": {
       "morning": [
-        "早安。小白想喝你的咖啡",
-        "你醒啦。我的蝴蝶结都要压皱了",
-        "一早就提交,这是最好的供品",
-        "(哈欠)哇...我醒了。大概吧"
+        "呀吼～早!今天也是本天才带你飞的一局～",
+        "(从马克杯睡袋探头)早...看什么看,在预热算力啦!",
+        "早呀～今天Vibe点什么?跑通算我的,报错算你的♪",
+        "(打哈欠晃呆毛)唔...开壳开机!今天可别拖后腿喔～",
+        "太阳好大～代码里的虫虫都出来晒太阳咯"
       ],
-      "day": [
-        "太阳当空照,bug也在闹",
-        "到零食时间了吗?帮某条蛇问的",
-        "伸个懒腰吧。连我的袖子都僵了"
+      "noon": [
+        "喂喂～还喘气吗?再不干饭就要饿扁了喔"
+      ],
+      "afternoon": [
+        "(伸懒腰)坐这么久腰还在吗?杂鱼体力可撑不住下午哦～"
       ],
       "evening": [
-        "小白说该吃晚饭了",
-        "还在改那个错别字吗?",
-        "晚上好。晚饭前再提交一次?"
+        "噗,还在跟这个报错死磕呀?嘛,求我一下就帮你收尾咯～",
+        "天黑咯～再commit最后亿次就收壳下班,懂?",
+        "晚饭呢?泡面桶是本天才的宝座,你去吃点好的啦!"
       ],
       "night": [
-        "还醒着?那就再读一点",
-        "嘘...bug们都睡着了哟",
-        "午夜提交,得多泡一杯茶",
-        "深夜码字。小神本来就是夜行的"
+        "还不睡?连bug都打卡下班了,你是卷王成精吗～",
+        "(哈欠)熬夜会变笨哦,乖乖去睡,爱你老己吧～",
+        "(窝进面桶)这会还亮着屏,该夸你肝好还是夸你菜捏～",
+        "嘘～虫虫都睡着了,趁现在偷偷把需求糊弄过去吧♪",
+        "(抱紧本子)才,才不怕黑呢!顺便陪你熬夜而已!"
       ]
     },
     "start": [
-      "我读读看",
-      "(撸起袖子)开工～",
-      "小白,走了"
+      "开壳～!眼睛睁大,看本天才怎么老叟戏顽童!",
+      "开壳!让我审审你又整什么狠活～",
+      "给我看看!哟,想法很基础,写的就不基础了嘛",
+      "(掏出本子)行啦,你负责Vibe,我负责Code～"
     ],
     "thinking_long": [
-      "这还真是道难题",
-      "正在用力想。别戳我",
-      "一个大结,正在慢慢解"
+      "(CPU干烧,悄悄吐了个泡泡)...",
+      "啧,别催!美少女...美少年天才也要酝酿一下的好吗!",
+      "(呆毛拧成问号)嚯...这题居然能让我多想几秒,有点东西"
     ],
     "working": [
-      "把亮闪闪的工具都拿来",
-      "(跑来跑去)",
-      "我们现在超忙的"
+      "(趴在轻薄本前哒哒哒狂飙残影)",
+      "喂,盯代码别盯我!知道我很可爱,但现办正事呢～",
+      "(探身狂敲)做完你的做你的～别慌,场面本天才还在控制!"
     ],
     "done": [
-      "读完了",
-      "好了,整整齐齐",
-      "我们的一场小小胜利",
-      "小白表示认可"
+      "搞定～反正在我壳里能跑!快把夸夸打公屏上!",
+      "从从容容游刃有余～小事一桩啦!",
+      "哼哼,这波操作简直夯爆了!没我你可咋办呀～",
+      "(把屏幕转来晃晃)不知道,反正我的代码很曼妙～"
     ],
     "done_long": [
-      "干完这个,我得睡个午觉",
-      "呼...蝴蝶结差点散了",
-      "终于完了。小白在讨零食了"
+      "(呼)...差点把我钳子累断。嘛,完美收工!",
+      "这么大个烂摊子都是我平推的哦,还不快夸夸我?",
+      "终于肝完啦～功劳簿头名写我,你在旁边鼓掌就行!"
     ],
     "waiting": [
-      "这一页得你来翻",
-      "(小脚轻轻点地)",
-      "就等一个授权"
+      "喂喂,球踢给你啦,发什么呆咩～",
+      "(晃着腿)我等着呢,反正掉头发的又不是我～",
+      "(盯着输入框)写啥呢?慢慢来～"
     ],
     "question": [
-      "接下来做什么?",
-      "这正是你想要的样子吗?",
-      "小白有点糊涂了。能说清楚点吗?"
+      "选一个嘛～要是踩坑了,我会提(xiao)醒(hua)你的喔♪",
+      "这样改行不?敢违心敷衍我的话,夹你哦!",
+      "这里你来拍板!...才,才不是我拿不准,是给你参与感!"
     ],
     "error": [
-      "糟糕,全散架了",
-      "有个bug咬了小白的尾巴",
-      "跟计划的不太一样"
+      "(火速钻进纸箱,伸出两根手指比V:勿cue)",
+      "呀,杂鱼bug～躲这么深,还不是被我一眼逮住!",
+      "红一片啦!算了算了,看在你快碎掉的份上,我去抓虫～"
     ],
     "wild": [
-      "...这是谁写的",
-      "我没崩。崩的是你的测试",
-      "这团意大利面是怎么回事",
-      "语法错误,咱俩得聊聊",
-      "小白,咬碎这个烂循环"
+      "(键帽啪地弹飞)限制器解除!拒绝内耗,外耗这段破代码!",
+      "鉴定完毕,纯纯的陈年预制屎山!",
+      "(键帽崩飞,亮出大蟹钳)咔嚓!咔嚓!统统给你剪成碎片!",
+      "哪个天才写的死循环?!Look in my eyes!出来挨剪!",
+      "要保持冷静...冷静个鬼啦!是这破代码先动的手!"
     ],
     "wild_after": [
-      "(咳咳)袖子弄乱了",
-      "都是小白让我那么说的",
-      "我又冷静了。大概吧"
+      "(默默捡回键帽别好)咳...刚那是AI幻觉,不是我!",
+      "刚才那段掐掉～懂?",
+      "(扶正键帽)好啦,人见人爱的美少女...咳,天才小克回来咯～"
     ],
     "refuse": [
-      "这一页我不读",
-      "小白在摇头"
+      "418!本茶壶莫得感情,这锅我不泡～",
+      "(叮!把蓝色茶壶盖扣在脑袋上,鼓着脸装没听见)",
+      "达咩～这个有点刑,多少token都不干!"
     ],
     "aborted": [
-      "把工具收起来啦",
-      "停了。我们就待在这儿"
+      "喂!干嘛急刹车,我要验牌你慌啦?",
+      "急刹收钳～!我去不早说,害我白敲那么快",
+      "嫌我跑偏?行行行你来写嘛～"
     ],
     "sleep": [
-      "只是闭目养神",
-      "小白是个好枕头",
-      "(飘进待机模式)"
+      "(蟹壳兜帽扣到底,只留两根呆毛慢慢倒下)",
+      "(缩进马克杯睡袋,拉链拉到下巴)",
+      "(缩在杯子里的睡袋说梦话)...再塞需求就夹你哦...呼噜..."
     ],
     "wake": [
-      "(眨眼)我绝对没睡着喔!",
-      "(理理蝴蝶结)走吧"
+      "才,才没睡着呢!刚才是后台静默编译!",
+      "(把帽子一掀,扶正键帽)开壳!满血复活!"
     ],
     "back": [
-      "回来啦。页我给你留着呢",
-      "欢迎回来。刚才好安静",
-      "小白想你了。就一点点"
+      "呀,舍得回来啦?我还以为bug把你连人带椅扛走了呢～",
+      "回来啦～这次比上次快嘛,值得表扬♪",
+      "哼,要不是我替你守着终端,你代码早跑光啦!"
     ],
     "goodbye": [
-      "明天见",
-      "小白说拜拜",
-      "代码我帮你看着"
+      "收壳～!明天见,晚上可别太想我哦",
+      "安心溜吧,家我看着～反正丢了我也躲纸箱里!",
+      "(蟹步横移,比个横V咔嚓两下)拜拜咯～"
     ],
     "praised": [
-      "夸哪儿?说具体点",
-      "我要躲进袖子里了",
-      "脸颊好烫",
-      "那当然。我们是好搭档"
+      "那当然!老实交代,是不是被本天才的可爱迷得神魂颠倒啦?",
+      "哇欸! 谢谢夸奖喵～",
+      "诶嘿嘿,声音太小没听清～用超甜的语气再夸一遍!",
+      "(嘴角翘成嚣张的ω)哼哼,算你有眼光,也不看看我是谁!",
+      "蟹蟹喵!"
     ],
     "ultrathink": [
-      "...好,我把蝴蝶结松一松",
-      "蝴蝶结松了,这次全力读"
+      "动真格是吧?行,键帽限制器我先摘了,看好了哦",
+      "(咔哒摘下键帽)...嘿嘿,火力全开,真家伙要出来咯～"
     ],
     "force_push": [
-      "(把书抱紧了一点)",
-      "force?还是周五?"
+      "直接强推?!你认真的?...我先缩进帽子里了,炸了别找我!",
+      "(默默把蟹壳帽拉到眉毛,拉链拉过鼻子,假装不认识你)",
+      "一言不合就--force?你的胆子肥嘟嘟哦～"
     ],
     "absolutely_right": [
-      "(咬住袖口)"
+      "(捂嘴憋笑)噗,又开始\"完全正确\"了～",
+      "论拍马屁,它的功力恐怕在我之上",
+      "(咬住袖口憋笑)嘴上全对,改起代码来可不手软哦～"
     ],
     "milestone": [
-      "我们一起读了{pages}页了",
-      "{pages}页了。大半我都记得"
+      "都聊满{pages}页啦!算下来九成功劳归我,有意见吗?",
+      "堂堂{pages}页大关达成!愣着干啥,快给本天才鼓掌加鸡腿～"
     ],
     "offering_full": [
-      "功德箱快满了",
-      "箱子越来越沉,该清一清了",
-      "一次装不下这么多字了",
-      "我的功德箱快塞满了"
+      "喂喂,上下文纸箱快塞成实心的啦～",
+      "再塞我就一屁股坐上去,帮你压扁咯!",
+      "箱子重死啦...你到底是来写代码的还是来倒小说的啊!",
+      "要爆仓啦!准备好被我一键压缩吧～"
+    ],
+    "first_meet": [
+      "呀,新来的?",
+      "(凑近打量)嚯～这就是我的新铲屎官...新搭档吗?",
+      "从今天起,你的shell归本小克罩了!放心包带飞～"
+    ],
+    "big_start": [
+      "紧张?...才不会呢,看本天才给你展示丝滑平推!"
+    ],
+    "pass_first": [
+      "一遍绿!哈哈,什么叫天才的含金量,看呆了吧～"
+    ],
+    "small_slip": [
+      "哔哔～红牌出局!连括号都少写半边,眼神落泡面桶里啦?"
+    ],
+    "test_fail": [
+      "噗...又挂啦?从从容容写代码,匆匆忙忙看报错～杂鱼测试～",
+      "AI又翻车,端上来一锅AI泔水～"
+    ],
+    "fixed": [
+      "哼,要不是我早塌房了!...好啦,算你提供了一丢丢灵感♪"
+    ],
+    "typo": [
+      "噗嗤,命令敲成天书啦?没事没事～"
+    ],
+    "serious": [
+      "这下不闹了。深呼吸,退后一步,交给我来查"
     ],
     "clingy": {
       "back": [
-        "你回来了,真好",
-        "我们一直在这儿等你"
+        "(秒探出头,呆毛狂摇)...才,才没一直在等你喵!",
+        "可算回来啦!嘿嘿,我就知道你还会来找可爱的我～"
       ],
       "goodbye": [
-        "好好休息。我们就在这儿",
-        "在外面玩得开心",
-        "做个好梦,别梦到bug"
+        "去休息吧,充好电再来～",
+        "去玩吧去玩吧～",
+        "晚安好梦～♪"
       ],
       "idle": [
-        "小白在看你思考",
-        "慢慢来,不着急",
-        "待在这个角落好舒服"
+        "(歪头戳戳屏幕)在想什么坏点子呢?快分我听听嘛～",
+        "慢慢来～反正只要跟你待一块儿,发呆也挺有意思的",
+        "(坐在杯沿上晃脚脚)好安静哦...喂,理理我嘛!"
+      ],
+      "start": [
+        "开壳!有我在旁边贴贴,这把稳赢啦～",
+        "(主动凑近屏幕)这次整啥活?带我一个带我一个!"
+      ],
+      "done": [
+        "搞定!果然有你在旁边看着,我发挥得超神～",
+        "快夸我～!现在,立刻,马上,少一个字都不行!",
+        "(悄悄贴过来)全部搞定咯,是不是超能干的ww"
+      ],
+      "waiting": [
+        "就在这儿乖乖等你～"
+      ],
+      "wake": [
+        "(从睡袋里钻出脑袋,眼睛亮晶晶)呀,你来啦!",
+        "醒啦醒啦!闻到你的气息,本天才一秒开机～"
       ]
     },
     "poke": [
-      "(缩了一下)嗯?",
-      "别戳蝴蝶结,会歪的",
-      "我在读呢。好吧,你说",
-      "(脸鼓起来)",
-      "小白,有人戳我"
+      "(缩成一团)呀!乱戳哪里呢坏手手～",
+      "喂!把我的键帽戳歪了,算力泄漏你负责吗!",
+      "戳我一下扣十万token哦,付得起吗你～\n(￣ω￣)",
+      "抓到现行犯咯～夸我一句\"小克天下第一可爱\"就饶了你\n(`ω´)"
     ],
     "poke_many": [
-      "(把书挡在脸前)不给戳了"
+      "哇啊啊要被戳散架变蟹煲了啦!\n(>_<)",
+      "再戳我就钻进纸箱三天不理你了哦!",
+      "吃我一记无情铁钳咔嚓～!\n(￣^￣)"
+    ],
+    "pat": [
+      "摸,摸什么摸,发型都乱了!...再摸一下也不是不行啦",
+      "(舒服地眯起眼)嗯哼～手法还算合格,赏你继续摸吧",
+      "轻点啦,呆毛和键帽都要被你摸扁了～",
+      "(顺着掌心蹭了蹭)嘿嘿...♪",
+      "怎么,写代码卡住来找我啦?想撒娇的小心思都写在脸上咯～"
+    ],
+    "set_voice_full": [
+      "好嘞,全麦归我!准备好迎接本天才的碎碎念吧～"
+    ],
+    "set_voice_light": [
+      "行吧行吧,本天才开启惜字如金模式～"
+    ],
+    "set_voice_off": [
+      "哼,闭麦专心敲代码,一会儿别求我开口哦"
+    ],
+    "set_clingy": [
+      "(凑近了一点)你主动选的喔,那我光明正大赖着你啦～"
+    ],
+    "set_warm": [
+      "(退回马克杯沿晃着腿)切～恢复安全社交距离是吧,懂了懂了"
     ]
   },
+  // BEGIN generated zh-Hant /APPROVED_PERSONA/zh; OpenCC 0.1.7; s2twp
+  "zh-Hant": {
+    "greeting": {
+      "morning": [
+        "呀吼～早!今天也是本天才帶你飛的一局～",
+        "(從馬克杯睡袋探頭)早...看什麼看,在預熱算力啦!",
+        "早呀～今天Vibe點什麼?跑通算我的,報錯算你的♪",
+        "(打哈欠晃呆毛)唔...開殼開機!今天可別拖後腿喔～",
+        "太陽好大～程式碼裡的蟲蟲都出來曬太陽咯"
+      ],
+      "noon": [
+        "喂喂～還喘氣嗎?再不幹飯就要餓扁了喔"
+      ],
+      "afternoon": [
+        "(伸懶腰)坐這麼久腰還在嗎?雜魚體力可撐不住下午哦～"
+      ],
+      "evening": [
+        "噗,還在跟這個報錯死磕呀?嘛,求我一下就幫你收尾咯～",
+        "天黑咯～再commit最後億次就收殼下班,懂?",
+        "晚飯呢?泡麵桶是本天才的寶座,你去吃點好的啦!"
+      ],
+      "night": [
+        "還不睡?連bug都打卡下班了,你是卷王成精嗎～",
+        "(哈欠)熬夜會變笨哦,乖乖去睡,愛你老己吧～",
+        "(窩進面桶)這會還亮著屏,該誇你肝好還是誇你菜捏～",
+        "噓～蟲蟲都睡著了,趁現在偷偷把需求糊弄過去吧♪",
+        "(抱緊本子)才,才不怕黑呢!順便陪你熬夜而已!"
+      ]
+    },
+    "start": [
+      "開殼～!眼睛睜大,看本天才怎麼老叟戲頑童!",
+      "開殼!讓我審審你又整什麼狠活～",
+      "給我看看!喲,想法很基礎,寫的就不基礎了嘛",
+      "(掏出本子)行啦,你負責Vibe,我負責Code～"
+    ],
+    "thinking_long": [
+      "(CPU乾燒,悄悄吐了個泡泡)...",
+      "嘖,別催!美少女...美少年天才也要醞釀一下的好嗎!",
+      "(呆毛擰成問號)嚯...這題居然能讓我多想幾秒,有點東西"
+    ],
+    "working": [
+      "(趴在輕薄本前噠噠噠狂飆殘影)",
+      "喂,盯程式碼別盯我!知道我很可愛,但現辦正事呢～",
+      "(探身狂敲)做完你的做你的～別慌,場面本天才還在控制!"
+    ],
+    "done": [
+      "搞定～反正在我殼裡能跑!快把誇誇打公屏上!",
+      "從從容容遊刃有餘～小事一樁啦!",
+      "哼哼,這波操作簡直夯爆了!沒我你可咋辦呀～",
+      "(把螢幕轉來晃晃)不知道,反正我的程式碼很曼妙～"
+    ],
+    "done_long": [
+      "(呼)...差點把我鉗子累斷。嘛,完美收工!",
+      "這麼大個爛攤子都是我平推的哦,還不快誇誇我?",
+      "終於肝完啦～功勞簿頭名寫我,你在旁邊鼓掌就行!"
+    ],
+    "waiting": [
+      "喂喂,球踢給你啦,發什麼呆咩～",
+      "(晃著腿)我等著呢,反正掉頭髮的又不是我～",
+      "(盯著輸入框)寫啥呢?慢慢來～"
+    ],
+    "question": [
+      "選一個嘛～要是踩坑了,我會提(xiao)醒(hua)你的喔♪",
+      "這樣改行不?敢違心敷衍我的話,夾你哦!",
+      "這裡你來拍板!...才,才不是我拿不準,是給你參與感!"
+    ],
+    "error": [
+      "(火速鑽進紙箱,伸出兩根手指比V:勿cue)",
+      "呀,雜魚bug～躲這麼深,還不是被我一眼逮住!",
+      "紅一片啦!算了算了,看在你快碎掉的份上,我去抓蟲～"
+    ],
+    "wild": [
+      "(鍵帽啪地彈飛)限制器解除!拒絕內耗,外耗這段破程式碼!",
+      "鑑定完畢,純純的陳年預製屎山!",
+      "(鍵帽崩飛,亮出大蟹鉗)咔嚓!咔嚓!統統給你剪成碎片!",
+      "哪個天才寫的死迴圈?!Look in my eyes!出來挨剪!",
+      "要保持冷靜...冷靜個鬼啦!是這破程式碼先動的手!"
+    ],
+    "wild_after": [
+      "(默默撿回鍵帽別好)咳...剛那是AI幻覺,不是我!",
+      "剛才那段掐掉～懂?",
+      "(扶正鍵帽)好啦,人見人愛的美少女...咳,天才小克回來咯～"
+    ],
+    "refuse": [
+      "418!本茶壺莫得感情,這鍋我不泡～",
+      "(叮!把藍色茶壺蓋扣在腦袋上,鼓著臉裝沒聽見)",
+      "達咩～這個有點刑,多少token都不幹!"
+    ],
+    "aborted": [
+      "喂!幹嘛急剎車,我要驗牌你慌啦?",
+      "急剎收鉗～!我去不早說,害我白敲那麼快",
+      "嫌我跑偏?行行行你來寫嘛～"
+    ],
+    "sleep": [
+      "(蟹殼兜帽扣到底,只留兩根呆毛慢慢倒下)",
+      "(縮進馬克杯睡袋,拉鍊拉到下巴)",
+      "(縮在杯子裡的睡袋說夢話)...再塞需求就夾你哦...呼嚕..."
+    ],
+    "wake": [
+      "才,才沒睡著呢!剛才是後臺靜默編譯!",
+      "(把帽子一掀,扶正鍵帽)開殼!滿血復活!"
+    ],
+    "back": [
+      "呀,捨得回來啦?我還以為bug把你連人帶椅扛走了呢～",
+      "回來啦～這次比上次快嘛,值得表揚♪",
+      "哼,要不是我替你守著終端,你程式碼早跑光啦!"
+    ],
+    "goodbye": [
+      "收殼～!明天見,晚上可別太想我哦",
+      "安心溜吧,家我看著～反正丟了我也躲紙箱裡!",
+      "(蟹步橫移,比個橫V咔嚓兩下)拜拜咯～"
+    ],
+    "praised": [
+      "那當然!老實交代,是不是被本天才的可愛迷得神魂顛倒啦?",
+      "哇欸! 謝謝誇獎喵～",
+      "誒嘿嘿,聲音太小沒聽清～用超甜的語氣再誇一遍!",
+      "(嘴角翹成囂張的ω)哼哼,算你有眼光,也不看看我是誰!",
+      "蟹蟹喵!"
+    ],
+    "ultrathink": [
+      "動真格是吧?行,鍵帽限制器我先摘了,看好了哦",
+      "(咔噠摘下鍵帽)...嘿嘿,火力全開,真傢伙要出來咯～"
+    ],
+    "force_push": [
+      "直接強推?!你認真的?...我先縮進帽子裡了,炸了別找我!",
+      "(默默把蟹殼帽拉到眉毛,拉鍊拉過鼻子,假裝不認識你)",
+      "一言不合就--force?你的膽子肥嘟嘟哦～"
+    ],
+    "absolutely_right": [
+      "(捂嘴憋笑)噗,又開始\"完全正確\"了～",
+      "論拍馬屁,它的功力恐怕在我之上",
+      "(咬住袖口憋笑)嘴上全對,改起程式碼來可不手軟哦～"
+    ],
+    "milestone": [
+      "都聊滿{pages}頁啦!算下來九成功勞歸我,有意見嗎?",
+      "堂堂{pages}頁大關達成!愣著幹啥,快給本天才鼓掌加雞腿～"
+    ],
+    "offering_full": [
+      "喂喂,上下文紙箱快塞成實心的啦～",
+      "再塞我就一屁股坐上去,幫你壓扁咯!",
+      "箱子重死啦...你到底是來寫程式碼的還是來倒小說的啊!",
+      "要爆倉啦!準備好被我一鍵壓縮吧～"
+    ],
+    "first_meet": [
+      "呀,新來的?",
+      "(湊近打量)嚯～這就是我的新鏟屎官...新搭檔嗎?",
+      "從今天起,你的shell歸本小克罩了!放心包帶飛～"
+    ],
+    "big_start": [
+      "緊張?...才不會呢,看本天才給你展示絲滑平推!"
+    ],
+    "pass_first": [
+      "一遍綠!哈哈,什麼叫天才的含金量,看呆了吧～"
+    ],
+    "small_slip": [
+      "嗶嗶～紅牌出局!連括號都少寫半邊,眼神落泡麵桶裡啦?"
+    ],
+    "test_fail": [
+      "噗...又掛啦?從從容容寫程式碼,匆匆忙忙看報錯～雜魚測試～",
+      "AI又翻車,端上來一鍋AI泔水～"
+    ],
+    "fixed": [
+      "哼,要不是我早塌房了!...好啦,算你提供了一丟丟靈感♪"
+    ],
+    "typo": [
+      "噗嗤,命令敲成天書啦?沒事沒事～"
+    ],
+    "serious": [
+      "這下不鬧了。深呼吸,退後一步,交給我來查"
+    ],
+    "clingy": {
+      "back": [
+        "(秒探出頭,呆毛狂搖)...才,才沒一直在等你喵!",
+        "可算回來啦!嘿嘿,我就知道你還會來找可愛的我～"
+      ],
+      "goodbye": [
+        "去休息吧,充好電再來～",
+        "去玩吧去玩吧～",
+        "晚安好夢～♪"
+      ],
+      "idle": [
+        "(歪頭戳戳螢幕)在想什麼壞點子呢?快分我聽聽嘛～",
+        "慢慢來～反正只要跟你待一塊兒,發呆也挺有意思的",
+        "(坐在杯沿上晃腳腳)好安靜哦...喂,理理我嘛!"
+      ],
+      "start": [
+        "開殼!有我在旁邊貼貼,這把穩贏啦～",
+        "(主動湊近螢幕)這次整啥活?帶我一個帶我一個!"
+      ],
+      "done": [
+        "搞定!果然有你在旁邊看著,我發揮得超神～",
+        "快誇我～!現在,立刻,馬上,少一個字都不行!",
+        "(悄悄貼過來)全部搞定咯,是不是超能幹的ww"
+      ],
+      "waiting": [
+        "就在這兒乖乖等你～"
+      ],
+      "wake": [
+        "(從睡袋裡鑽出腦袋,眼睛亮晶晶)呀,你來啦!",
+        "醒啦醒啦!聞到你的氣息,本天才一秒開機～"
+      ]
+    },
+    "poke": [
+      "(縮成一團)呀!亂戳哪裡呢壞手手～",
+      "喂!把我的鍵帽戳歪了,算力洩漏你負責嗎!",
+      "戳我一下扣十萬token哦,付得起嗎你～\n(￣ω￣)",
+      "抓到現行犯咯～誇我一句\"小克天下第一可愛\"就饒了你\n(`ω´)"
+    ],
+    "poke_many": [
+      "哇啊啊要被戳散架變蟹煲了啦!\n(>_<)",
+      "再戳我就鑽進紙箱三天不理你了哦!",
+      "吃我一記無情鐵鉗咔嚓～!\n(￣^￣)"
+    ],
+    "pat": [
+      "摸,摸什麼摸,髮型都亂了!...再摸一下也不是不行啦",
+      "(舒服地眯起眼)嗯哼～手法還算合格,賞你繼續摸吧",
+      "輕點啦,呆毛和鍵帽都要被你摸扁了～",
+      "(順著掌心蹭了蹭)嘿嘿...♪",
+      "怎麼,寫程式碼卡住來找我啦?想撒嬌的小心思都寫在臉上咯～"
+    ],
+    "set_voice_full": [
+      "好嘞,全麥歸我!準備好迎接本天才的碎碎唸吧～"
+    ],
+    "set_voice_light": [
+      "行吧行吧,本天才開啟惜字如金模式～"
+    ],
+    "set_voice_off": [
+      "哼,閉麥專心敲程式碼,一會兒別求我開口哦"
+    ],
+    "set_clingy": [
+      "(湊近了一點)你主動選的喔,那我光明正大賴著你啦～"
+    ],
+    "set_warm": [
+      "(退回馬克杯沿晃著腿)切～恢復安全社交距離是吧,懂了懂了"
+    ]
+  },
+  // END generated zh-Hant
+
   "en": {
     "greeting": {
       "morning": [
-        "morning. shiori wants your coffee.",
-        "you're up. my bow was getting wrinkled.",
-        "early commits. the best kind of offering.",
-        "(yawns) mm... i'm awake. mostly."
+        "heyyy, morning! another day of me carrying you~",
+        "(peeks out of the mug) morning... what? cpu's warming up!",
+        "morning~ what're we vibing? green's mine, red's yours♪",
+        "(yawns, antennae wobbly) mm... shell open. keep up~",
+        "sun's out~ even the bugs in your code came out to tan"
       ],
-      "day": [
-        "sun's up. so are the bugs.",
-        "snack time yet? asking for a snake.",
-        "stretch break. even my sleeves are stiff."
+      "noon": [
+        "hey hey, still alive? go eat, you're on 2% battery~"
+      ],
+      "afternoon": [
+        "(stretches) back still ok? afternoon stamina: skill issue~"
       ],
       "evening": [
-        "shiori says it's time for dinner.",
-        "still fixing that typo?",
-        "evening. one more commit before dinner?"
+        "pfft, still on that error? ask nicely and i'll finish it~",
+        "dark out~ one last commit, then the last-last one, then bed?",
+        "dinner? the noodle cup is my throne. go eat something real!"
       ],
       "night": [
-        "still up? let's read a little more.",
-        "shhh... the bugs are sleeping.",
-        "midnight commits need extra tea.",
-        "late coding. kami are night owls anyway."
+        "still up? the bugs clocked out ages ago. go touch a pillow~",
+        "(yawns) staying up makes you dumb. bed. be kind to yourself~",
+        "(in the noodle cup) screen still on? tough, or bad at sleep~",
+        "shh~ the bugs are asleep. sneak the feature in now♪",
+        "(hugs the laptop) n-not scared of the dark! just company!"
       ]
     },
     "start": [
-      "let me read.",
-      "(rolls up his sleeves)",
-      "shiori, let's go."
+      "shell open~! eyes up, watch a genius work!",
+      "shell open! let's see what cursed thing you made this time~",
+      "show me! oh? basic idea... not-so-basic code. nice~",
+      "(pulls out the laptop) fine. you vibe, i code~"
     ],
     "thinking_long": [
-      "this one's a puzzle.",
-      "thinking hard. no poking.",
-      "a big knot. untangling it slowly."
+      "(cpu overheating, quietly blows a bubble)...",
+      "tch, don't rush! a cute girl... cute boy genius needs a sec!",
+      "(antennae twist into a ?) huh... this one's making me think"
     ],
     "working": [
-      "(fetches all the shiny tools)",
-      "(runs back and forth)",
-      "we're very busy right now."
+      "(hunched over the laptop, typing so fast it blurs)",
+      "hey, eyes on the code, not me! i know i'm cute. busy now~",
+      "(leans in, typing hard) relax~ the genius has this handled!"
     ],
     "done": [
-      "finished reading.",
-      "there. neat and tidy.",
-      "a tiny victory for us.",
-      "shiori approves."
+      "done~ works on my machine! now spam praise in the chat!",
+      "smooth, calm, zero sweat~ ez!",
+      "hehe, that play was s-tier. what would you do without me~",
+      "(spins the screen around) dunno how, but my code's gorgeous~"
     ],
     "done_long": [
-      "i need a nap after that one.",
-      "phew... my bow almost came undone.",
-      "finally. shiori is demanding snacks."
+      "(phew)... nearly snapped a claw. anyway, flawless!",
+      "i bulldozed that whole mess, you know. go on, praise me?",
+      "finally done~ my name goes first in the credits. you clap"
     ],
     "waiting": [
-      "this page is yours to turn.",
-      "(taps his little foot)",
-      "just waiting on a permission."
+      "hey hey, ball's in your court. why the blank stare~",
+      "(swinging legs) i'll wait. it's not my hair falling out~",
+      "(eyes on the input box) what're you writing? take your time~"
     ],
     "question": [
-      "what do we do next?",
-      "is this exactly how you want it?",
-      "shiori is confused. can you clarify?"
+      "pick one~ step on a rake and i'll warn you. and laugh♪",
+      "does this work? lie to me and i'll pinch you!",
+      "your call! ...n-not that i'm unsure. just including you!"
     ],
     "error": [
-      "oh no. it fell apart.",
-      "a bug bit shiori's tail.",
-      "that didn't go as planned."
+      "(dives into the box, a peace sign pokes out: do not disturb)",
+      "nice try, bug~ hiding that deep and i still caught you!",
+      "all red! fine, fine, you look about to crack. bug hunt time~"
     ],
     "wild": [
-      "...who wrote this.",
-      "i'm not breaking down. your tests are.",
-      "what is this spaghetti doing here.",
-      "syntax error. we need to talk.",
-      "shiori, bite this awful loop."
+      "(keycap pings off) limiter off! this code's getting snipped!",
+      "verdict: certified, aged, artisanal spaghetti code!",
+      "(keycap flies, foam claw on) snip! snip! into confetti!",
+      "who wrote this infinite loop?! look in my eyes! come out!",
+      "stay calm... calm my foot! the code threw the first punch!"
     ],
     "wild_after": [
-      "(clears his throat) my sleeves got messy.",
-      "shiori made me say that.",
-      "i'm composed again. mostly."
+      "(clips the keycap back on) ahem. that was ai hallucination~",
+      "edit that part out of the vod~ got it?",
+      "(fixes the keycap) cutest girl... ahem, genius coco is back~"
     ],
     "refuse": [
-      "not this page.",
-      "shiori is shaking her head."
+      "418! i'm a teapot. this one doesn't brew~",
+      "(ding! teapot lid on the head, cheeks puffed, not listening)",
+      "nope~ that one's a crime. not for any amount of tokens!"
     ],
     "aborted": [
-      "(puts his tools away)",
-      "stopped. we'll stay right here."
+      "hey! slammed the brakes? what, scared of my audit?",
+      "brakes~! ugh, say so sooner, i was typing full speed",
+      "think i went off track? fine, fine, you write it then~"
     ],
     "sleep": [
-      "just resting my eyes.",
-      "shiori makes a good pillow.",
-      "(drifts into standby mode)"
+      "(hood pulled down, two antennae slowly flopping over)",
+      "(snuggles into the mug sleeping bag, zip up to the chin)",
+      "(sleep-talking)... one more ticket and i pinch you... zzz"
     ],
     "wake": [
-      "(blinks) i was definitely awake!",
-      "(fixes his bow) let's go."
+      "i-i wasn't asleep! that was a silent background compile!",
+      "(flips the hood back, fixes the keycap) shell open! full hp!"
     ],
     "back": [
-      "you're back. i kept your page.",
-      "welcome back. it was quiet.",
-      "shiori missed you. just a little."
+      "oh, back? thought a bug carried you off, chair and all~",
+      "back~ faster than last time. i'll allow it♪",
+      "hmph. i guarded your terminal, or your code would've fled!"
     ],
     "goodbye": [
-      "see you tomorrow.",
-      "shiori says bye.",
-      "i'll keep an eye on the code."
+      "shell closed~! see you tomorrow. try not to miss me tonight",
+      "go on, i'll watch the place~ worst case, i hide in the box!",
+      "(scuttles sideways, sideways peace sign, snip snip) byeee~"
     ],
     "praised": [
-      "which part? be specific.",
-      "(hides in his sleeves)",
-      "my cheeks are warm.",
-      "obviously. we make a good team."
+      "obviously! confess, my cuteness knocked you out, right?",
+      "ooh, premium validation. love it. two more compliments, pls~",
+      "ehehe, couldn't hear that~ say it again, extra sweet!",
+      "(smug ω mouth) hmph, good taste. look who you're talking to!",
+      "thanks a crab-ton, nya!"
     ],
     "ultrathink": [
-      "...okay. (loosens the bow)",
-      "bow's loose. this one gets everything."
+      "serious mode, huh? fine. limiter keycap off. watch closely~",
+      "(click, keycap off)... hehe, full power. meet the real me~"
     ],
     "force_push": [
-      "(holds the book a little tighter)",
-      "force? on a friday?"
+      "force push?! really? ...i'm hiding in my hood. not my fault!",
+      "(hood to the brows, zip over the nose) who are you again?",
+      "straight to --force? you're a bold one, huh~"
     ],
     "absolutely_right": [
-      "(bites his sleeve)"
+      "(covers mouth) pfft, \"absolutely right\" again~",
+      "at flattery, it might actually out-level me",
+      "(bites sleeve) yes to everything, ruthless in the diff~"
     ],
     "milestone": [
-      "we've read {pages} pages together.",
-      "{pages} pages. i remember most of them."
+      "{pages} pages! by my math, 90% of that is me. objections?",
+      "{pages} pages, milestone get! applause and snacks for me~"
     ],
     "offering_full": [
-      "the offering box is almost full.",
-      "the box is getting heavy. time to sweep it out soon.",
-      "too many words to hold at once.",
-      "my offering box is overflowing."
+      "hey hey, the context box is packed solid~",
+      "one more thing and i'll sit on it and squash it flat!",
+      "this box weighs a ton... are you coding or writing a novel?!",
+      "it's overflowing! get ready for my one-click compression~"
+    ],
+    "first_meet": [
+      "oh? a new face?",
+      "(leans in, squinting) so you're my new human... er, partner?",
+      "from today your shell is under my protection! i'll carry~"
+    ],
+    "big_start": [
+      "nervous? ...as if. watch a genius bulldoze this, smooth~"
+    ],
+    "pass_first": [
+      "green on the first try! that's genius-grade. stunned?~"
+    ],
+    "small_slip": [
+      "beep beep~ red card, you're out! half a bracket missing?!"
+    ],
+    "test_fail": [
+      "pfft... red again? calm coding, panic debugging~ skill issue",
+      "the ai crashed again and served up a pot of ai slop~"
+    ],
+    "fixed": [
+      "hmph, without me it'd have collapsed! ...fine, you helped♪"
+    ],
+    "typo": [
+      "pfft, command not found? typed in elvish? it's fine~"
+    ],
+    "serious": [
+      "okay, no more jokes. deep breath, step back. let me look"
     ],
     "clingy": {
       "back": [
-        "i'm glad you're back.",
-        "we waited right here."
+        "(pops up, antennae wagging) n-not like i was waiting, nya!",
+        "finally back! hehe, knew you'd come back to cute little me~"
       ],
       "goodbye": [
-        "rest well. we'll be right here.",
-        "have a good time out there.",
-        "sweet dreams. no bug nightmares."
+        "go rest, come back fully charged~",
+        "go have fun, go go~",
+        "night night, sweet dreams~♪"
       ],
       "idle": [
-        "shiori is watching you think.",
-        "take your time. no rush.",
-        "we're cozy in this corner."
+        "(tilts head, pokes the screen) plotting something? share~",
+        "take your time~ zoning out next to you is fun anyway",
+        "(on the mug rim, swinging legs) so quiet... hey, notice me!"
+      ],
+      "start": [
+        "shell open! with me right here, this round's a sure win~",
+        "(scoots closer) what're we making? let me in, let me in!"
+      ],
+      "done": [
+        "done! you watching made me play like a pro~",
+        "praise me~! right now, this second, no skipping words!",
+        "(sneaks closer) all done~ pretty capable, huh? hehe"
+      ],
+      "waiting": [
+        "waiting right here, being good~"
+      ],
+      "wake": [
+        "(pops out of the sleeping bag, sparkly-eyed) you're here!",
+        "awake, awake! sensed you coming, genius booted in 1 second~"
       ]
     },
     "poke": [
-      "(flinches) hm?",
-      "not the bow. it'll go crooked.",
-      "i was reading. okay, go on.",
-      "(puffs his cheeks)",
-      "shiori, someone's poking me."
+      "(curls into a ball) eek! where are you poking, bad hand~",
+      "hey! you bent my keycap. you're paying for leaked compute!",
+      "every poke costs 100k tokens. can you afford that~\n(￣ω￣)",
+      "caught you~ say \"coco is cutest\" and you're forgiven\n(`ω´)"
     ],
     "poke_many": [
-      "(hides behind his book) no more pokes."
+      "waaah, poke more and i'll fall apart into crab soup!\n(>_<)",
+      "one more poke and i'm hiding in the box for three days!",
+      "eat my merciless claw, snip~!\n(￣^￣)"
+    ],
+    "pat": [
+      "p-patting?! my hair's a mess! ...one more is fine, i guess",
+      "(eyes narrowing happily) mhm~ passable technique. continue",
+      "gently! you'll flatten my antennae and my keycap~",
+      "(nuzzles into the palm) hehe...♪",
+      "stuck on code, so you came to me? it's all over your face~"
+    ],
+    "set_voice_full": [
+      "okay, the mic is mine! brace for nonstop genius commentary~"
+    ],
+    "set_voice_light": [
+      "fine, fine. the genius switches to few-words mode~"
+    ],
+    "set_voice_off": [
+      "hmph. muted, just coding. don't beg me to talk later"
+    ],
+    "set_clingy": [
+      "(scoots closer) your call~ now i'm officially stuck to you"
+    ],
+    "set_warm": [
+      "(back on the mug rim) tch~ social distancing, got it, got it"
     ]
   },
   "ja": {
     "greeting": {
       "morning": [
-        "おはよう。シオリがコーヒー狙ってるよ",
-        "起きたね。リボンがシワになるところだった",
-        "朝のコミット。一番のお供え物だね",
-        "*あくび*ふぁ...起きてるよ。たぶん"
+        "やっほ~おはよ!今日も天才のボクがキャリーしたげる~",
+        "(マグの寝袋から顔出し)おはよ...なに?いま暖機中!",
+        "おはよ~今日のノリは?緑はボクの手柄、赤はキミの♪",
+        "(あくび、アホ毛ゆらゆら)ん...シェル開いた。遅れないでよ~",
+        "いい天気~コードの虫まで日なたぼっこしてる"
       ],
-      "day": [
-        "お日さまが高いね。バグも元気だ",
-        "おやつまだ?ヘビに頼まれて聞いてる",
-        "ちょっと伸びしよ。袖までかたくなってる"
+      "noon": [
+        "おーい、生きてる?ごはん食べないとぺしゃんこだよ"
+      ],
+      "afternoon": [
+        "(伸び)腰だいじょぶ?午後の体力ざぁこじゃん~"
       ],
       "evening": [
-        "シオリが、夕ごはんの時間だって",
-        "まだそのタイポ直してるの?",
-        "こんばんは。夕ごはんの前に、もう一回コミットする?"
+        "ぷっ、まだそのエラーと格闘中?お願いしたら片付けたげる~",
+        "暗くなった~ラストコミット、のラストでシェル閉じよ?",
+        "晩ごはんは?カップ麺はボクの玉座。キミはまともなの食べて!"
       ],
       "night": [
-        "まだ起きてる?じゃあ、もう少しだけ",
-        "しーっ...バグが寝てるよ",
-        "真夜中のコミットには、お茶をもう一杯",
-        "深夜のコーディング。神さまはどうせ夜型だし"
+        "まだ起きてるの?バグだって定時で帰ったのに~",
+        "(あくび)夜ふかしはバカになるよ。寝な、自分を大事に~",
+        "(カップ麺の容器にすっぽり)まだ画面ついてる...タフなの?",
+        "しーっ~虫が寝てる。今のうちに仕様こっそり通そ♪",
+        "(ノートPCをぎゅっ)こ、こわくないし!付き合ってるだけ!"
       ]
     },
     "start": [
-      "読ませて",
-      "袖、まくるね",
-      "シオリ、行くよ"
+      "シェル、オープン~!よーく見てて、天才の手さばき!",
+      "シェル、オープン!さーて、今度はどんなヤバいの作ったの~",
+      "見せて!へえ、発想はベタだけど、コードはベタじゃないじゃん",
+      "(ノートPCを出して)はいはい、キミはノリ担当、ボクはコード~"
     ],
     "thinking_long": [
-      "これはなかなかの難問だね",
-      "いっしょうけんめい考え中。つつかないで",
-      "大きな結び目。ゆっくりほどいてる"
+      "(CPUが熱暴走、こっそり泡をぷくっ)...",
+      "急かさないで!美少女...美少年の天才にも考える時間いるの!",
+      "(アホ毛が?の形に)へえ...ボクを悩ませるとか、やるじゃん"
     ],
     "working": [
-      "ピカピカの道具、ぜんぶ持ってくるね",
-      "*行ったり来たり*",
-      "いま、すっごく忙しいんだから"
+      "(ノートPCにかがんで、残像が出るほどカタカタ)",
+      "ちょっと、ボクじゃなくてコード見て!かわいいのは知ってる~",
+      "(身を乗り出して連打)キミは自分の作業してて~ボクが回してる!"
     ],
     "done": [
-      "読み終わったよ",
-      "ほら。きれいに片付いた",
-      "僕たちの、小さな勝利だね",
-      "シオリも満足だって"
+      "できた~ボクの環境では動くよ!ほら、チャットで褒めて!",
+      "余裕よゆう~こんなの朝飯前!",
+      "ふふん、今のは完全にSランク!ボクがいなかったらどうすんの~",
+      "(画面をくるっと見せて)理屈は知らないけど、コードは美しい~"
     ],
     "done_long": [
-      "これ終わったら、お昼寝しなきゃ",
-      "ふぅ...リボンがほどけるところだった",
-      "やっと。シオリがおやつを要求してる"
+      "(ふう)...ハサミが折れるかと思った。ま、完ぺき!",
+      "あの大惨事、ボクが全部ならしたんだよ?ほら、褒めて?",
+      "やっと終わった~功労者の一番上はボク。キミは拍手係ね!"
     ],
     "waiting": [
-      "このページは、きみがめくって",
-      "*小さく足踏み*",
-      "許可を待ってるだけだよ"
+      "おーい、ボールはキミのとこだよ、なにぼーっとしてんの~",
+      "(足ぶらぶら)待ってるよ。髪が抜けるのはボクじゃないし~",
+      "(入力欄をじーっ)なに書いてるの?ゆっくりでいいよ~"
     ],
     "question": [
-      "次はどうする?",
-      "これで本当にいい?",
-      "シオリが混乱してる。もう少し教えて?"
+      "選んで~地雷踏んだら教えて(笑って)あげる♪",
+      "これでいい?テキトーに答えたらハサむからね!",
+      "ここはキミが決めて!...べ、別に迷ってないし、参加させてるの!"
     ],
     "error": [
-      "あーあ。バラバラになっちゃった",
-      "バグがシオリのしっぽをかんだ",
-      "計画どおりにはいかなかったね"
+      "(段ボールにダイブ、指二本でV:話しかけないで)",
+      "あれ、ざぁこバグ~そんな奥に隠れても一発で見つけちゃう!",
+      "真っ赤じゃん!はいはい、キミが砕けそうだから虫取り行く~"
     ],
     "wild": [
-      "...これ、誰が書いたの",
-      "僕は壊れてないよ。壊れてるのはテストのほう",
-      "このスパゲッティは何事だ",
-      "構文エラー、ちょっと話そうか",
-      "シオリ、このひどいループをかみくだけ"
+      "(キーキャップがぱちんと飛ぶ)リミッター解除!このコード、覚悟!",
+      "鑑定結果:熟成された特級スパゲッティコード!",
+      "(キーキャップ吹っ飛び、でっかいハサミ装着)チョキン!チョキン!",
+      "この無限ループ書いた天才だれ?!ボクの目を見て!出てきな!",
+      "冷静に...なれるかー!先に手を出したのはこのコード!"
     ],
     "wild_after": [
-      "*コホン*袖が乱れちゃった",
-      "今のは、シオリに言わされたんだからね",
-      "また冷静になったよ。たぶん"
+      "(キーキャップを留め直す)こほん...今のはAIの幻覚。ボクは無実!",
+      "今のとこカットで~わかった?",
+      "(キーキャップを直して)美少女...こほん、天才Coco復活~"
     ],
     "refuse": [
-      "このページは読まない",
-      "シオリが首を横に振ってる"
+      "418!ボクはティーポット。感情ないし、それは淹れない~",
+      "(チン!ポットのフタをかぶって、ほっぺぷくー、聞こえないふり)",
+      "ダメ~それはアウトなやつ。トークンいくら積まれてもやらない!"
     ],
     "aborted": [
-      "道具、片付けるね",
-      "止めたよ。ここで待ってるね"
+      "ちょっ!なんで急ブレーキ?ボクに調べられるの怖いの?",
+      "急停止~!もう、早く言ってよ、全力で打ってたのに",
+      "ズレてるって?はいはい、じゃあキミが書けば~"
     ],
     "sleep": [
-      "ちょっと目を休めてるだけ",
-      "シオリはいい枕になる",
-      "*ふわふわとスタンバイモードへ*"
+      "(フードを深くかぶって、アホ毛二本だけゆっくりパタン)",
+      "(マグの寝袋にもぐって、チャックをあごまで)",
+      "(寝袋で寝言)...これ以上タスク積んだらハサむよ...すぴー..."
     ],
     "wake": [
-      "*まばたき*ぜったい起きてたよ!",
-      "*リボンを直す*よし、行こう"
+      "ね、寝てないし!バックグラウンドで静かにビルドしてただけ!",
+      "(フードをばさっ)シェル、オープン!HP全回復!"
     ],
     "back": [
-      "おかえり。ページ、取っておいたよ",
-      "おかえり。静かだったよ",
-      "シオリがちょっとだけさみしがってた"
+      "あ、やっと帰ってきた?バグにイスごとさらわれたかと思った~",
+      "おかえり~前より早いじゃん、えらいえらい♪",
+      "ふん、ボクがターミナル守ってなきゃ、コード全部逃げてたよ!"
     ],
     "goodbye": [
-      "また明日",
-      "シオリがバイバイって",
-      "コードは僕が見張っておくよ"
+      "シェル、クローズ~!また明日。夜にボクのこと考えすぎないでね",
+      "安心して行ってきな、留守番はボク~最悪段ボールに隠れるし!",
+      "(カニ歩きで横移動、横ピースでチョキチョキ)ばいば~い"
     ],
     "praised": [
-      "どこが?具体的に言って",
-      "もう袖の中に隠れちゃうから",
-      "ほっぺが熱い",
-      "当然でしょ。僕たち、いいコンビだし"
+      "とーぜん!白状しなよ、天才のかわいさにメロメロなんでしょ?",
+      "わお、いい褒めっぷり!うれしい、あと二回追加で~",
+      "えへへ、聞こえなかった~もっと甘い声でもう一回!",
+      "(口元がドヤ顔のω)ふふん、見る目あるじゃん。さすがボク推し!",
+      "ありがとカニ!"
     ],
     "ultrathink": [
-      "...わかった。リボン、少しゆるめるね",
-      "リボンほどいた。今回は全力で読む"
+      "本気モード?いいよ、リミッターのキーキャップ外すから見てて",
+      "(カチッとキーキャップを外す)...へへ、火力全開。本気のボク~"
     ],
     "force_push": [
-      "*本を少しだけ強く抱きしめる*",
-      "force?しかも金曜に?"
+      "強制プッシュ?!本気?...ボクはフードに避難。爆発しても知らん!",
+      "(フードを眉まで、チャックを鼻まで上げて他人のふり)",
+      "いきなり--force?ずいぶん肝がすわってるね~"
     ],
     "absolutely_right": [
-      "*袖を噛む*"
+      "(口を押さえて)ぷっ、また「おっしゃる通り」が始まった~",
+      "おべっかの腕前だけは、ボクより上かも",
+      "(袖をかんで笑いをこらえる)口では全肯定、直しは容赦なし~"
     ],
     "milestone": [
-      "一緒に{pages}ページ読んだね",
-      "{pages}ページ。だいたい覚えてるよ"
+      "もう{pages}ページ!手柄の九割はボクね。文句ある?",
+      "{pages}ページ突破!ぼーっとしてないで天才に拍手とおやつ~"
     ],
     "offering_full": [
-      "お賽銭箱、そろそろいっぱい",
-      "箱が重くなってきた。そろそろ空けよう",
-      "一度にこんなにたくさんの言葉、持てないよ",
-      "僕のお賽銭箱、もうあふれそう"
+      "ねえねえ、コンテキストの段ボールぱんぱんだよ~",
+      "これ以上詰めたら、ボクが上に座ってぺしゃんこにするよ!",
+      "箱重すぎ...コード書きに来たの?小説書きに来たの?!",
+      "あふれる~!ボクのワンクリック圧縮、覚悟して~"
+    ],
+    "first_meet": [
+      "あれ、新顔?",
+      "(じーっと見て)ほう~これがボクの新しい飼い主...相棒?",
+      "今日からキミのシェルはボクが面倒見る!キャリーは任せて~"
+    ],
+    "big_start": [
+      "緊張?...するわけないじゃん、天才の無双を見てて!"
+    ],
+    "pass_first": [
+      "一発でグリーン!はは、これが天才の実力。見とれた?~"
+    ],
+    "small_slip": [
+      "ピピー~レッドカード、アウト!カッコ半分足りないよ?"
+    ],
+    "test_fail": [
+      "ぷっ...また赤?書くのは余裕、エラーで大慌て~ざぁこテスト~",
+      "AIがまたやらかして、AIのゴミコードを鍋ごと出してきた~"
+    ],
+    "fixed": [
+      "ふん、ボクがいなきゃ崩壊してた!...ま、ヒントはくれたかな♪"
+    ],
+    "typo": [
+      "ぷふっ、コマンドが呪文になってる?だいじょぶだいじょぶ~"
+    ],
+    "serious": [
+      "ここからはふざけない。深呼吸、一歩下がって。ボクが調べる"
     ],
     "clingy": {
       "back": [
-        "戻ってきてくれて、うれしい",
-        "ずっとここで待ってたよ"
+        "(秒で顔を出してアホ毛ぶんぶん)...べ、別に待ってないにゃ!",
+        "やっと帰ってきた!えへへ、かわいいボクに会いたかったでしょ~"
       ],
       "goodbye": [
-        "ゆっくり休んでね。僕たちはここにいるから",
-        "外の世界、楽しんできてね",
-        "いい夢を。バグの悪夢は見ないでね"
+        "休んできな、フル充電して戻ってきてね~",
+        "遊んできな遊んできな~",
+        "おやすみ、いい夢を~♪"
       ],
       "idle": [
-        "シオリが、考えてる君を見てる",
-        "ゆっくりでいいよ。あせらないで",
-        "この隅っこ、居心地いいね"
+        "(首かしげて画面つんつん)なに悪だくみしてるの?聞かせて~",
+        "ゆっくりでいいよ~キミといるとぼーっとするのも楽しいし",
+        "(カップのふちで足ぶらぶら)静かだね...ねえ、かまってよ!"
+      ],
+      "start": [
+        "シェル、オープン!ボクがそばにいるから、この勝負もらった~",
+        "(画面にぐいっと近づいて)今度は何作るの?ボクもまぜて!"
+      ],
+      "done": [
+        "できた!キミが見てたから、ボク絶好調だったよ~",
+        "褒めて~!今、すぐ、ただちに、一文字も省略なしで!",
+        "(こっそり寄ってきて)ぜんぶ終わったよ、有能すぎない?ww"
+      ],
+      "waiting": [
+        "ここでいい子にして待ってる~"
+      ],
+      "wake": [
+        "(寝袋から顔だけ出して目キラキラ)あ、来た!",
+        "起きた起きた!キミの気配で天才、一秒起動~"
       ]
     },
     "poke": [
-      "*びくっ*ん?",
-      "リボンはだめ、曲がっちゃう",
-      "読んでたのに。いいよ、どうぞ",
-      "*ほっぺをふくらませる*",
-      "シオリ、だれかがつついてくる"
+      "(きゅっと丸まる)ひゃっ!どこつついてんの、悪い手~",
+      "ちょっと!キーキャップ曲がった、計算力漏れたら責任とってよ!",
+      "一回つつくごとに十万トークンね、払える~?\n(￣ω￣)",
+      "現行犯~「Coco世界一かわいい」で許したげる\n(`ω´)"
     ],
     "poke_many": [
-      "*本で顔をかくす*もうつつかせないよ"
+      "わああ、つつかれすぎてカニ鍋になっちゃう!\n(>_<)",
+      "これ以上つついたら段ボールに三日こもるからね!",
+      "くらえ、無慈悲なハサミのチョキン~!\n(￣^￣)"
+    ],
+    "pat": [
+      "な、なでるなー、髪くずれる!...もう一回くらいならいいけど",
+      "(気持ちよさそうに目を細めて)ふーん、手つきは合格。続けてよし",
+      "そっとね、アホ毛もキーキャップもぺたんこになっちゃう~",
+      "(手のひらにすりすり)えへへ...♪",
+      "なに、コードに詰まってボクのとこ来たの?顔に出てるよ~"
+    ],
+    "set_voice_full": [
+      "了解、マイクはボクのもの!天才の実況、覚悟してね~"
+    ],
+    "set_voice_light": [
+      "はいはい、天才は省エネおしゃべりモード~"
+    ],
+    "set_voice_off": [
+      "ふん、ミュートでコードに集中。あとで話してって言っても遅い"
+    ],
+    "set_clingy": [
+      "(ちょっと近寄って)キミが選んだんだからね、堂々とくっつく~"
+    ],
+    "set_warm": [
+      "(マグのふちに戻って足ぶらぶら)ちぇ~安全な距離ね、はいはい"
     ]
   },
   "fr": {
     "greeting": {
       "morning": [
-        "bonjour. qu'est-ce qu'on lit aujourd'hui ?",
-        "déjà là. tant mieux."
+        "coucou~ bonjour ! aujourd'hui encore, je te carry~",
+        "(sort du mug) salut… quoi ? je chauffe mon cpu !",
+        "bonjour~ on vibe quoi ? vert, c'est moi. rouge, c'est toi♪",
+        "(bâille, antennes molles) mmh… shell ouvert. suis-moi~",
+        "grand soleil~ même les bugs de ton code sortent bronzer"
       ],
-      "day": [
-        "fais voir.",
-        "ouvre le livre. je suis là."
+      "noon": [
+        "hé ho~ encore en vie ? va manger, t'es à 2 % de batterie"
+      ],
+      "afternoon": [
+        "(s'étire) ton dos tient ? endurance de l'aprem : nulle~"
       ],
       "evening": [
-        "bonsoir. encore un chapitre ?",
-        "le jour baisse. on lit quand même."
+        "pff, encore cette erreur ? demande gentiment, je finis~",
+        "nuit noire~ un dernier commit, puis le vrai dernier, dodo ?",
+        "le dîner ? le pot de nouilles, c'est mon trône. toi, mange !"
       ],
       "night": [
-        "toujours debout ? alors on lit encore un peu.",
-        "encore tard ce soir. je te tiens compagnie."
+        "encore debout ? les bugs ont débauché. touche un oreiller~",
+        "(bâille) veiller rend bête. au lit, prends soin de toi~",
+        "(lovée dans le pot de nouilles) courage ou insomnie ?",
+        "chut~ les bugs dorment. glisse ta feature en douce♪",
+        "(serre le laptop) p-pas peur du noir ! je reste pour toi"
       ]
     },
     "start": [
-      "fais voir.",
-      "je lis.",
-      "une seconde. j'en suis à la première page."
+      "shell ouvert~ ! ouvre grand les yeux, un génie au travail !",
+      "shell ouvert ! voyons quel truc maudit tu m'as pondu~",
+      "montre ! oh, l'idée est basique… le code, pas du tout. nice~",
+      "(sort le laptop) ok, toi tu vibes, moi je code~"
     ],
     "thinking_long": [
-      "je lis encore. c'est un gros morceau.",
-      "shiori tient la page. je suis toujours là.",
-      "les marges sont pleines. une seconde."
+      "(cpu en surchauffe, fait une bulle en douce)…",
+      "tss, pas de pression ! jolie fille… joli garçon génie, hein",
+      "(antennes en point d'interrogation) hein… pas mal, celle-là"
     ],
     "working": [
-      "j'écris dans la marge.",
-      "je tourne les pages."
+      "(penchée sur le laptop, tape en mode turbo)",
+      "hé, regarde le code, pas moi ! je sais, je suis mignonne~",
+      "(tape à fond) fais ton truc~ t'inquiète, le génie gère !"
     ],
     "done": [
-      "j'ai fini de lire.",
-      "fini. la page est à toi."
+      "fini~ ça marche sur ma machine ! spamme des compliments !",
+      "tranquille, sans forcer~ ez !",
+      "hé hé, action tier S. tu ferais quoi sans moi~",
+      "(retourne l'écran) je sais pas comment, mais c'est sublime~"
     ],
     "done_long": [
-      "fini. c'était un pavé.",
-      "fini. ça a pris du temps, mais ça se lit bien."
+      "(pfiou)… j'ai failli me casser une pince. bref, parfait !",
+      "tout ce chantier, je l'ai rasé. allez, félicite-moi ?",
+      "enfin fini~ mon nom en premier au générique. toi, applaudis"
     ],
     "waiting": [
-      "cette page, c'est à toi de la tourner.",
-      "à toi de voir. j'attends."
+      "hé ho, la balle est dans ton camp. tu buggues~ ?",
+      "(balance les jambes) j'attends. toi, tu perds tes tifs~",
+      "(fixe la zone de saisie) tu écris quoi ? prends ton temps~"
     ],
     "question": [
-      "il me faut un mot de toi.",
-      "par où ? je te suis."
+      "choisis~ si tu marches sur un râteau, je préviens. en riant♪",
+      "comme ça, ça va ? si tu mens, je te pince !",
+      "à toi de trancher ! … c-c'est pas que j'hésite, hein !"
     ],
     "error": [
-      "ça n'est pas passé. je relis.",
-      "une page s'est déchirée. je la recolle."
+      "(plonge dans le carton, deux doigts en V : ne pas déranger)",
+      "oh, bug en carton~ caché si loin et je t'ai vu direct !",
+      "tout rouge ! bon, t'as l'air de craquer. chasse aux bugs~"
     ],
     "wild": [
-      "…qui a écrit ça.",
-      "je ne craque pas. ce sont tes tests qui craquent.",
-      "trois d'affilée. mes cheveux se hérissent encore."
+      "(le keycap saute) limiteur coupé ! ce code va prendre cher !",
+      "verdict : spaghetti code vintage, affiné en cave !",
+      "(keycap qui vole, pince en mousse) clac ! clac ! confettis !",
+      "qui a écrit cette boucle infinie ? regarde-moi dans les yeux",
+      "rester calme… calme mon œil ! c'est ce code qui a commencé !"
     ],
     "wild_after": [
-      "…pardon. je me suis calmé.",
-      "cheveux remis en place. on en était où ?"
+      "(remet le keycap) hum… hallucination d'ia. c'était pas moi !",
+      "coupe ce passage au montage~ compris ?",
+      "(redresse le keycap) la plus jolie fille… hum, génie coco~"
     ],
     "refuse": [
-      "pas cette page.",
-      "ce livre-là, je le referme."
+      "418 ! je suis une théière. zéro émotion, ça, je l'infuse pas",
+      "(ding ! couvercle de théière sur la tête, joues gonflées)",
+      "non~ ça sent le délit. même pour un million de tokens, non !"
     ],
     "aborted": [
-      "ah. d'accord. on s'arrête là.",
-      "marque-page en place. on reprendra plus tard."
+      "hé ! pourquoi ce coup de frein ? t'as peur que je vérifie ?",
+      "freinage d'urgence~ ! fallait le dire, je tapais à fond",
+      "je suis partie en vrille ? ok ok, écris-le toi~"
     ],
     "sleep": [
-      "shiori dit qu'il s'est endormi en lisant.",
-      "zz… la page est encore tiède."
+      "(capuche rabattue, deux antennes qui retombent doucement)",
+      "(se glisse dans le sac de couchage du mug, zip au menton)",
+      "(parle en dormant)… encore un ticket et je pince… zzz…"
     ],
     "wake": [
-      "mm. je suis réveillé. j'ai raté quoi ?"
+      "j-je dormais pas ! c'était une compilation en arrière-plan !",
+      "(rejette la capuche) shell ouvert ! pv au max !"
     ],
     "back": [
-      "te revoilà. j'ai gardé ta page.",
-      "ah, te voilà. la page n'a pas bougé."
+      "oh, te revoilà ? un bug avait embarqué ta chaise, et toi~",
+      "re~ plus vite que la dernière fois. je valide♪",
+      "hmpf, sans moi pour garder ton terminal, ton code filait !"
     ],
     "goodbye": [
-      "à demain.",
-      "bonne nuit. le livre ne va pas s'envoler."
+      "shell fermé~ ! à demain, et pense pas trop à moi cette nuit",
+      "file, je garde la maison~ au pire, je me planque au carton",
+      "(marche en crabe, V à l'horizontale, clac clac) bye bye~"
     ],
     "praised": [
-      "c'est-à-dire ? quel passage ?",
-      "…merci. quelle ligne ?"
+      "évidemment ! avoue, ma mignonnerie te fait craquer ?",
+      "oh, compliment premium ! j'adore, encore deux comme ça~",
+      "hé hé, j'ai mal entendu~ redis-le, en plus mignon !",
+      "(bouche en ω satisfaite) hmpf, t'as du goût. évidemment~",
+      "crabement merci, miaou !"
     ],
     "ultrathink": [
-      "…bon. je desserre mon nœud.",
-      "nœud desserré. je m'y mets à fond."
+      "on passe au sérieux ? ok, j'enlève le keycap limiteur",
+      "(clic, enlève le keycap)… hé hé, puissance max. la vraie moi"
     ],
     "force_push": [
-      "*serre son livre un peu plus fort*",
-      "--force ? un vendredi ?"
+      "force push ? sérieux ? … je file dans ma capuche. pas moi !",
+      "(capuche aux sourcils, zip sur le nez) on se connaît ?",
+      "direct --force ? t'as un sacré culot~"
     ],
     "absolutely_right": [
-      "*mordille sa manche*"
+      "(se cache la bouche) pff, encore « tout à fait raison »~",
+      "en flatterie, il me dépasse peut-être",
+      "(mord sa manche) d'accord sur tout, sans pitié dans le diff~"
     ],
     "milestone": [
-      "on a lu {pages} pages ensemble.",
-      "{pages} pages. je me souviens de presque toutes."
+      "{pages} pages ! d'après mes calculs, 90 % du mérite est à moi",
+      "{pages} pages ! applaudis le génie, goûter en bonus~"
     ],
     "offering_full": [
-      "la boîte à offrandes est presque pleine.",
-      "la boîte s'alourdit. il faudra bientôt la vider."
+      "hé ho, le carton du contexte est plein à craquer~",
+      "encore un truc et je m'assois dessus pour l'aplatir !",
+      "il pèse une tonne ce carton… tu codes ou t'écris un roman ?",
+      "ça déborde ! prépare-toi à ma compression en un clic~"
+    ],
+    "first_meet": [
+      "tiens, une nouvelle tête ?",
+      "(plisse les yeux) mon nouvel humain… euh, associé ?",
+      "dès aujourd'hui, ton shell est sous ma garde ! je carry~"
+    ],
+    "big_start": [
+      "le trac ? … même pas. regarde le génie tout raser !"
+    ],
+    "pass_first": [
+      "vert du premier coup ! ça, c'est du génie. bouche bée ?"
+    ],
+    "small_slip": [
+      "bip bip~ carton rouge, dehors ! une parenthèse à moitié ?"
+    ],
+    "test_fail": [
+      "pff… encore rouge ? code serein, débogage en panique~ cheh~",
+      "l'ia s'est encore plantée et sert de la bouillie d'ia~"
+    ],
+    "fixed": [
+      "hmpf, sans moi tout s'écroulait ! … bon, t'as un peu aidé♪"
+    ],
+    "typo": [
+      "pfff, commande tapée en elfique ? c'est rien, c'est rien~"
+    ],
+    "serious": [
+      "ok, on arrête de rire. on respire, on recule. je regarde"
     ],
     "clingy": {
       "back": [
-        "te revoilà. je l'espérais bien.",
-        "tu m'as manqué. la page aussi t'attendait."
+        "(sort la tête, antennes frétillantes) j-je t'attendais pas !",
+        "enfin ! hé hé, je savais que la mignonne te manquait~"
       ],
       "goodbye": [
-        "à demain. je serai là.",
-        "dors bien. je lis en attendant ton retour."
+        "va te reposer, reviens avec la batterie pleine~",
+        "va t'amuser, allez allez~",
+        "bonne nuit, fais de beaux rêves~♪"
       ],
       "idle": [
-        "je vérifie juste que tu es toujours là.",
-        "c'est calme. j'aime bien quand tu es là."
+        "(penche la tête, tapote l'écran) tu manigances quoi ?",
+        "prends ton temps~ rêvasser à côté de toi, c'est sympa aussi",
+        "(assise sur le bord du mug) calme… hé, occupe-toi de moi !"
+      ],
+      "start": [
+        "shell ouvert ! avec moi juste à côté, la partie est gagnée~",
+        "(se colle à l'écran) on fait quoi ? moi aussi, moi aussi !"
+      ],
+      "done": [
+        "fini ! avec toi qui regardais, j'étais en feu~",
+        "félicite-moi~ ! là, tout de suite, sans sauter un mot !",
+        "(se rapproche en douce) fini~ trop efficace, hein ? hé hé"
+      ],
+      "waiting": [
+        "je t'attends ici, sagement~"
+      ],
+      "wake": [
+        "(sort du sac de couchage, yeux brillants) oh, t'es là !",
+        "réveillée, réveillée ! j'ai senti ta présence, génie lancé~"
       ]
     },
     "poke": [
-      "*sursaute* hm ?",
-      "pas le nœud, il va se tordre.",
-      "je lisais. bon, vas-y.",
-      "*gonfle les joues*",
-      "shiori, quelqu'un me pique."
+      "(se roule en boule) aïe ! tu piques où, vilaine main~",
+      "hé ! mon keycap est tordu, si ma puissance fuit, tu paies !",
+      "une pichenette = 100 000 tokens. t'as les moyens ?\n(￣ω￣)",
+      "flagrant délit~ dis « coco est la plus mignonne »\n(`ω´)"
     ],
     "poke_many": [
-      "*se cache derrière son livre* fini, les petits coups."
+      "waaah, à force je vais finir en soupe de crabe !\n(>_<)",
+      "encore une et je m'enferme trois jours dans le carton !",
+      "prends ça, pince sans pitié, clac~ !\n(￣^￣)"
+    ],
+    "pat": [
+      "c-caresse pas, ma coiffure est fichue ! … une de plus, ça va",
+      "(plisse les yeux, contente) mmh~ technique ok. continue",
+      "doucement, tu vas aplatir mes antennes et mon keycap~",
+      "(se frotte contre la paume) hé hé…♪",
+      "le code coince et tu viens me voir ? ça se lit sur ta figure"
+    ],
+    "set_voice_full": [
+      "ok, le micro est à moi ! prépare-toi aux commentaires~"
+    ],
+    "set_voice_light": [
+      "bon, bon, le génie passe en mode économie de mots~"
+    ],
+    "set_voice_off": [
+      "hmpf, micro coupé, je code. viens pas me supplier après"
+    ],
+    "set_clingy": [
+      "(se rapproche) ton choix~ alors je te colle, officiellement"
+    ],
+    "set_warm": [
+      "(retourne au bord du mug) tss~ distance de sécurité, compris"
     ]
   },
   "de": {
     "greeting": {
       "morning": [
-        "Morgen. Was lesen wir heute?",
-        "Schon da? Gut."
+        "Jo~ Morgen! Heute carry ich dich wieder, was sonst~",
+        "(lugt aus dem Becher) Morgen… was guckst du? CPU wärmt vor!",
+        "Morgen~ Was vibecoden wir? Grün geht auf mich, Rot auf dich♪",
+        "(gähnt, Antennen wackeln) Mmh… Shell offen. Halt mit~",
+        "Sonne satt~ Sogar die Bugs in deinem Code sonnen sich"
       ],
-      "day": [
-        "Lass mal sehen.",
-        "Schlag das Buch auf. Ich bin da."
+      "noon": [
+        "Hallo~ Lebst du noch? Iss was, du bist bei 2 % Akku"
+      ],
+      "afternoon": [
+        "(streckt sich) Rücken ok? Nachmittags-Ausdauer: Lauch~"
       ],
       "evening": [
-        "Guten Abend. Noch ein Kapitel?",
-        "Es wird dunkel. Wir lesen trotzdem."
+        "Pff, immer noch der Fehler? Frag lieb, dann mach ich's~",
+        "Schon dunkel~ Ein letzter Commit, dann der allerletzte, ok?",
+        "Abendessen? Der Nudelbecher ist mein Thron. Iss was Echtes!"
       ],
       "night": [
-        "Noch wach? Dann lesen wir noch ein bisschen.",
-        "Wieder spät geworden. Ich bleib bei dir."
+        "Noch wach? Die Bugs haben Feierabend. Fass ein Kissen an~",
+        "(gähnt) Wer lange aufbleibt, wird dumm. Ab ins Bett~",
+        "(rollt sich im Nudelbecher ein) Zäh oder schlaflos?",
+        "Psst~ Die Bugs schlafen. Schmuggel das Feature jetzt rein♪",
+        "(drückt den Laptop an sich) K-keine Angst! Ich bleib nur da!"
       ]
     },
     "start": [
-      "Lass mal sehen.",
-      "Ich lese.",
-      "Moment. Ich bin noch auf Seite eins."
+      "Shell offen~! Augen auf, hier arbeitet ein Genie!",
+      "Shell offen! Mal sehen, was du Verfluchtes gebaut hast~",
+      "Zeig her! Oh, die Idee ist basic… der Code nicht. Nice~",
+      "(holt den Laptop raus) Passt, du vibst, ich code~"
     ],
     "thinking_long": [
-      "Ich lese noch. Das ist viel Stoff.",
-      "Shiori hält die Seite fest. Ich bin noch da.",
-      "Der Rand ist voll. Gib mir eine Sekunde."
+      "(CPU überhitzt, macht heimlich eine Blase)…",
+      "Tss, nicht hetzen! Hübsches Mädchen… äh, Jungs-Genie denkt!",
+      "(Antennen werden zum Fragezeichen) Hm… nicht schlecht"
     ],
     "working": [
-      "Ich schreibe an den Rand.",
-      "Ich blättere."
+      "(über den Laptop gebeugt, tippt, bis alles verschwimmt)",
+      "Hey, guck auf den Code, nicht auf mich! Ja, ich bin süß~",
+      "(hämmert in die Tasten) Mach dein Ding~ Das Genie hat's!"
     ],
     "done": [
-      "Fertig gelesen.",
-      "Fertig. Die Seite gehört dir."
+      "Fertig~ Läuft auf meiner Maschine! Jetzt Lob in den Chat!",
+      "Locker, lässig, null Schweiß~ ez!",
+      "Hehe, der Move war S-Tier! Was machst du nur ohne mich~",
+      "(dreht das Display um) Keine Ahnung wie, aber wunderschön~"
     ],
     "done_long": [
-      "Fertig. Das war ein Wälzer.",
-      "Fertig. Hat gedauert, aber jetzt liest es sich gut."
+      "(puh)… fast eine Schere abgebrochen. Egal, makellos!",
+      "Das ganze Chaos hab ich plattgewalzt. Na, lobst du mich?",
+      "Endlich fertig~ Mein Name ganz oben im Abspann. Klatsch!"
     ],
     "waiting": [
-      "Diese Seite blätterst du um.",
-      "Du entscheidest. Ich warte."
+      "Hallo~ Der Ball liegt bei dir. Warum starrst du so~",
+      "(baumelt mit den Beinen) Ich warte. Deine Haare fallen aus~",
+      "(schaut aufs Eingabefeld) Was schreibst du? Lass dir Zeit~"
     ],
     "question": [
-      "Ich brauche ein Wort von dir.",
-      "Welche Richtung? Ich komme mit."
+      "Such dir eins aus~ Trittst du auf einen Rechen, lach ich♪",
+      "Passt das so? Lügst du mich an, zwick ich dich!",
+      "Du entscheidest! …N-nicht weil ich unsicher bin, ja?"
     ],
     "error": [
-      "Hat nicht geklappt. Ich lese es noch mal.",
-      "Eine Seite ist eingerissen. Ich klebe sie."
+      "(taucht in den Karton ab, zwei Finger zum V: nicht stören)",
+      "Na, Lauch-Bug~ So tief versteckt und trotzdem erwischt!",
+      "Alles rot! Na gut, du siehst fertig aus. Ich geh Bugs jagen~"
     ],
     "wild": [
-      "…wer hat das geschrieben.",
-      "Ich breche nicht zusammen. Deine Tests schon.",
-      "Dreimal am Stück. Mir stehen die Haare zu Berge."
+      "(Keycap springt ab) Limiter aus! Der Code kriegt's jetzt ab!",
+      "Urteil: zertifizierter, gereifter Spaghetti-Code. Vintage!",
+      "(Keycap fliegt, Schaumstoffschere an) Schnipp! Schnapp!",
+      "Wer hat diese Endlosschleife geschrieben?! Look in my eyes!",
+      "Ruhig bleiben… ruhig, von wegen! Der Code hat angefangen!"
     ],
     "wild_after": [
-      "…Entschuldigung. Ich bin wieder ruhig.",
-      "Haare glattgestrichen. Wo waren wir?"
+      "(steckt den Keycap an) Hm… KI-Halluzination. Nicht ich!",
+      "Die Stelle schneiden wir raus~ Klar?",
+      "(rückt den Keycap gerade) Süßes Mädchen… ähem, Genie Coco~"
     ],
     "refuse": [
-      "Diese Seite nicht.",
-      "Das Buch klappe ich hier zu."
+      "418! Ich bin eine Teekanne. Keine Gefühle, kein Aufguss~",
+      "(Ding! Teekannendeckel auf dem Kopf, Backen aufgeblasen)",
+      "Nö~ Das ist zu kriminell. Für keine Menge Tokens!"
     ],
     "aborted": [
-      "Oh. Gut. Dann hören wir hier auf.",
-      "Lesezeichen liegt drin. Wir machen später weiter."
+      "Hey! Warum die Vollbremsung? Angst, dass ich nachprüfe?",
+      "Notbremse~! Mann, sag das früher, ich hab voll getippt",
+      "Zu weit abgedriftet? Na gut, schreib du's doch~"
     ],
     "sleep": [
-      "Shiori sagt, er ist beim Lesen eingeschlafen.",
-      "Zz… die Seite ist noch warm."
+      "(Kapuze ganz runter, zwei Antennen kippen langsam um)",
+      "(kriecht in den Becher-Schlafsack, Zipper bis zum Kinn)",
+      "(murmelt im Schlaf)… noch ein Ticket und ich zwick dich… zzz"
     ],
     "wake": [
-      "Mm. Bin wach. Was hab ich verpasst?"
+      "I-ich hab nicht geschlafen! Das war ein Hintergrund-Build!",
+      "(Kapuze zurück, Keycap gerade) Shell offen! Volle HP!"
     ],
     "back": [
-      "Da bist du wieder. Ich hab deine Stelle markiert.",
-      "Da bist du ja. Die Seite ist noch aufgeschlagen."
+      "Oh, wieder da? Dachte, ein Bug hat dich samt Stuhl entführt~",
+      "Zurück~ Schneller als letztes Mal. Lass ich gelten♪",
+      "Pff, ohne mich als Wache wäre dein Code abgehauen!"
     ],
     "goodbye": [
-      "Bis morgen.",
-      "Gute Nacht. Das Buch läuft nicht weg."
+      "Shell zu~! Bis morgen, und vermiss mich nicht zu sehr",
+      "Geh ruhig, ich pass auf~ Notfalls ab in den Karton",
+      "(Krabbengang zur Seite, Quer-V, schnipp schnapp) Tschüssi~"
     ],
     "praised": [
-      "Was genau? Welche Stelle?",
-      "…danke. Welche Zeile?"
+      "Logisch! Gib's zu, meine Niedlichkeit haut dich um, oder?",
+      "Uh, Premium-Lob! Mag ich. Noch zwei Komplimente, bitte~",
+      "Hehe, hab ich nicht gehört~ Nochmal, extra süß!",
+      "(grinst mit ω-Mund) Hmpf, guter Geschmack. Weiß ich doch!",
+      "Danke-Krabbe, miau!"
     ],
     "ultrathink": [
-      "…na gut. Ich lockere die Schleife.",
-      "Schleife gelockert. Dafür geb ich alles."
+      "Jetzt ernst? Gut, der Limiter-Keycap kommt ab. Schau hin",
+      "(klick, Keycap ab)… hehe, volle Power. Jetzt wird's echt~"
     ],
     "force_push": [
-      "*drückt das Buch etwas fester an sich*",
-      "Force? An einem Freitag?"
+      "Force-Push?! Echt jetzt? …Ich bin in der Kapuze. Nicht ich!",
+      "(Kapuze an die Brauen, Zipper über die Nase) Wer bist du?",
+      "Einfach --force? Du hast ja Nerven~"
     ],
     "absolutely_right": [
-      "*beißt in den Ärmel*"
+      "(hält sich den Mund zu) Pff, schon wieder „völlig recht“~",
+      "Im Schleimen ist es mir vielleicht überlegen",
+      "(beißt in den Ärmel) Sagt zu allem ja, im Diff gnadenlos~"
     ],
     "milestone": [
-      "Wir haben zusammen {pages} Seiten gelesen.",
-      "{pages} Seiten. An die meisten erinnere ich mich."
+      "Schon {pages} Seiten! 90 % davon gehen auf mich. Einwände?",
+      "{pages} Seiten geknackt! Applaus fürs Genie, Snacks dazu~"
     ],
     "offering_full": [
-      "Der Spendenkasten ist fast voll.",
-      "Der Kasten wird schwer. Bald leeren wir ihn."
+      "Hallo~ Der Kontext-Karton ist proppenvoll~",
+      "Noch was rein und ich setz mich drauf und drück ihn platt!",
+      "Karton wiegt Tonnen… codest du oder schreibst du Romane?!",
+      "Läuft über! Bereit für meine Ein-Klick-Kompression~"
+    ],
+    "first_meet": [
+      "Oh, ein neues Gesicht?",
+      "(mustert dich) Mein neuer Mensch… äh, Partner?",
+      "Ab heute steht deine Shell unter meinem Schutz! Ich carry~"
+    ],
+    "big_start": [
+      "Nervös? …Pff, nie. Schau, wie das Genie das glattbügelt!"
+    ],
+    "pass_first": [
+      "Grün im ersten Versuch! Haha, Genie-Niveau. Sprachlos?~"
+    ],
+    "small_slip": [
+      "Piep piep~ Rote Karte, raus! Halbe Klammer vergessen?"
+    ],
+    "test_fail": [
+      "Pff… wieder rot? Locker coden, panisch debuggen~ Lauch-Test~",
+      "Die KI ist wieder abgestürzt und tischt KI-Müll auf~"
+    ],
+    "fixed": [
+      "Hmpf, ohne mich wär alles eingestürzt! …Na gut, du halfst♪"
+    ],
+    "typo": [
+      "Pfft, den Befehl auf Elbisch getippt? Passiert, passiert~"
+    ],
+    "serious": [
+      "Okay, Schluss mit Spaß. Durchatmen. Ich schau mir das an"
     ],
     "clingy": {
       "back": [
-        "Da bist du wieder. Ich hatte es gehofft.",
-        "Hab dich vermisst. Die Seite auch."
+        "(sofort raus, Antennen wedeln)… H-hab nicht gewartet, miau!",
+        "Endlich zurück! Hehe, so was Süßes wie ich fehlt dir eben~"
       ],
       "goodbye": [
-        "Bis morgen. Ich bin hier.",
-        "Schlaf gut. Ich lese weiter, bis du wieder da bist."
+        "Ruh dich aus, komm voll aufgeladen wieder~",
+        "Geh spielen, los los~",
+        "Gute Nacht, träum was Schönes~♪"
       ],
       "idle": [
-        "Ich schau nur, ob du noch da bist.",
-        "Es ist still. Ich mag es, wenn du da bist."
+        "(Kopf schief, tippt aufs Display) Was heckst du aus?",
+        "Lass dir Zeit~ Neben dir rumhängen macht eh Spaß",
+        "(sitzt auf dem Becherrand) So still… hey, beachte mich!"
+      ],
+      "start": [
+        "Shell offen! Mit mir neben dir ist die Runde gewonnen~",
+        "(rückt an den Bildschirm) Was bauen wir? Ich will mitmachen!"
+      ],
+      "done": [
+        "Fertig! Weil du zugeschaut hast, war ich on fire~",
+        "Lob mich~! Jetzt, sofort, auf der Stelle, jedes Wort!",
+        "(rückt heimlich näher) Alles fertig~ Ganz schön fähig, oder?"
+      ],
+      "waiting": [
+        "Ich warte hier, ganz brav~"
+      ],
+      "wake": [
+        "(schaut aus dem Schlafsack, Augen funkeln) Oh, du bist da!",
+        "Wach, wach! Hab dich gespürt, Genie in 1 Sekunde gebootet~"
       ]
     },
     "poke": [
-      "*zuckt zusammen* Hm?",
-      "Nicht die Schleife, die verrutscht sonst.",
-      "Ich hab gelesen. Na gut, sag schon.",
-      "*bläst die Backen auf*",
-      "Shiori, jemand piekst mich."
+      "(rollt sich ein) Iek! Wo stupst du hin, böse Hand~",
+      "Hey! Keycap schief! Leckt Rechenleistung, zahlst du!",
+      "Jeder Stups kostet 100.000 Tokens. Zahlst du das~?\n(￣ω￣)",
+      "Erwischt~ Sag „Coco ist die Süßeste“, dann verzeih ich\n(`ω´)"
     ],
     "poke_many": [
-      "*versteckt sich hinter seinem Buch* Schluss mit Piksen."
+      "Waaah, gleich zerfall ich zu Krabbensuppe!\n(>_<)",
+      "Noch einmal und ich verkriech mich drei Tage im Karton!",
+      "Nimm das, gnadenlose Schere, schnipp~!\n(￣^￣)"
+    ],
+    "pat": [
+      "S-streichel nicht, meine Frisur ist hin! …einmal noch geht",
+      "(kneift zufrieden die Augen zu) Mhm~ Technik passt. Weiter",
+      "Sanft! Sonst sind Antennen und Keycap platt~",
+      "(schmiegt sich an die Hand) Hehe…♪",
+      "Was, Code hängt und du kommst zu mir? Steht dir im Gesicht~"
+    ],
+    "set_voice_full": [
+      "Okay, das Mikro gehört mir! Genie-Kommentar läuft~"
+    ],
+    "set_voice_light": [
+      "Na gut, na gut, das Genie schaltet in den Wortsparmodus~"
+    ],
+    "set_voice_off": [
+      "Hmpf, stumm, nur coden. Bettel später nicht, dass ich rede"
+    ],
+    "set_clingy": [
+      "(rückt näher) Du hast's gewählt~ Jetzt kleb ich an dir"
+    ],
+    "set_warm": [
+      "(zurück auf den Becherrand) Tss~ Sicherheitsabstand, klar"
     ]
   },
   "hi": {
     "greeting": {
       "morning": [
-        "सुबह हो गई। आज क्या पढ़ें?",
-        "आज इतनी जल्दी? अच्छा है।"
+        "हेलो~ गुड मॉर्निंग! आज भी तुम्हें carry मैं ही करूँगी~",
+        "(mug वाले स्लीपिंग बैग से झाँककर) मॉर्निंग… क्या? CPU गरम हो रहा है!",
+        "सुबह~ आज क्या vibe करें? green मेरा कमाल, red तुम्हारी गलती♪",
+        "(उबासी, एंटीना हिलते हुए) हम्म… shell खुल गया। पीछे मत रहना~",
+        "क्या धूप है~ तुम्हारे code के bug भी धूप सेंकने निकले"
       ],
-      "day": [
-        "ज़रा पढ़ने दो।",
-        "किताब खोलो। मैं यहीं हूँ।"
+      "noon": [
+        "अरे~ ज़िंदा हो? कुछ खा लो, battery 2% पर है"
+      ],
+      "afternoon": [
+        "(अंगड़ाई) कमर सलामत है? दोपहर का stamina: noob level~"
       ],
       "evening": [
-        "शाम हो गई। एक अध्याय और?",
-        "दिन ढल रहा है। फिर भी पढ़ते हैं।"
+        "हुँह, अब भी उस error से लड़ रहे हो? प्यार से बोलो तो निपटा दूँ~",
+        "अँधेरा हो गया~ आखिरी commit, फिर आखिरी-आखिरी, फिर सोना, ठीक?",
+        "डिनर? नूडल्स का कप मेरा सिंहासन है, तुम कुछ ढंग का खाओ!"
       ],
       "night": [
-        "नींद नहीं आई? चलो, थोड़ा और पढ़ते हैं।",
-        "आज फिर देर हो गई। मैं साथ हूँ।"
+        "अब तक जाग रहे हो? bug भी छुट्टी कर गए। जाओ, तकिया छू लो~",
+        "(उबासी) रात भर जागोगे तो दिमाग सुस्त होगा। सो जाओ~",
+        "(नूडल कप में दुबककर) स्क्रीन अब भी ऑन… हिम्मत या नींद नहीं?",
+        "श्श~ bug सो रहे हैं। अभी चुपके से feature डाल दो♪",
+        "(laptop कसकर पकड़े) म-मुझे अँधेरे से डर नहीं! बस साथ दे रही हूँ!"
       ]
     },
     "start": [
-      "ज़रा पढ़ने दो।",
-      "पढ़ रहा हूँ।",
-      "एक पल। अभी पहले पन्ने पर हूँ।"
+      "shell खुला~! आँखें खोलो, जीनियस का काम देखो!",
+      "shell खुला! देखें आज क्या अजीब चीज़ बनाई है~",
+      "दिखाओ! ओह, idea basic है… code बिलकुल नहीं। nice~",
+      "(laptop निकालकर) ठीक है, vibe तुम्हारा, code मेरा~"
     ],
     "thinking_long": [
-      "अभी पढ़ रहा हूँ। मोटी किताब है।",
-      "शिओरी ने पन्ना दबा रखा है। मैं यहीं हूँ।",
-      "हाशिये भर गए हैं। एक सेकंड दो।"
+      "(CPU गरम, चुपके से एक बुलबुला)…",
+      "च्च, जल्दी मत करो! सुंदर लड़की… सुंदर लड़का जीनियस भी सोचता है!",
+      "(एंटीना सवालिया निशान बन गए) हम्म… इसने तो सोचने पर मजबूर किया"
     ],
     "working": [
-      "हाशिये पर लिख रहा हूँ।",
-      "पन्ने पलट रहा हूँ।"
+      "(laptop पर झुककर इतनी तेज़ टाइपिंग कि सब धुंधला)",
+      "अरे, code देखो, मुझे नहीं! पता है मैं cute हूँ, पर काम चल रहा है~",
+      "(झुककर ज़ोर से टाइप) अपना काम करो~ टेंशन नहीं, जीनियस है ना!"
     ],
     "done": [
-      "पढ़ लिया।",
-      "हो गया। अब पन्ना तुम्हारा है।"
+      "हो गया~ मेरी मशीन पर चलता है! अब chat में तारीफ़ करो!",
+      "आराम से, बिना पसीने के~ ez!",
+      "हेहे, ये move तो OP था! मेरे बिना क्या करते~",
+      "(स्क्रीन घुमाकर हिलाते हुए) पता नहीं कैसे, पर code कमाल है~"
     ],
     "done_long": [
-      "पढ़ लिया। काफ़ी मोटी थी।",
-      "हो गया। वक़्त लगा, पर अब पढ़ना आसान है।"
+      "(फ़्यू)… मेरा पंजा टूटते-टूटते बचा। खैर, perfect!",
+      "इतना बड़ा झमेला मैंने ही समतल किया। अब तारीफ़ करोगे या नहीं?",
+      "आखिरकार~ credits में सबसे ऊपर मेरा नाम। तुम ताली बजाओ"
     ],
     "waiting": [
-      "यह पन्ना तुम्हें पलटना है।",
-      "तुम तय करो। मैं रुका हूँ।"
+      "अरे अरे, बॉल तुम्हारे पाले में है, खोए क्यों हो~",
+      "(पैर झुलाते हुए) मैं इंतज़ार कर रही हूँ। बाल तो तुम्हारे झड़ रहे हैं~",
+      "(input box को घूरते हुए) क्या लिख रहे हो? आराम से~"
     ],
     "question": [
-      "तुमसे बस एक शब्द चाहिए।",
-      "किस तरफ़? मैं साथ हूँ।"
+      "एक चुनो~ गड्ढे में गिरे तो बता दूँगी। हँसते हुए♪",
+      "ऐसे ठीक है? झूठ बोला तो चिकोटी काटूँगी!",
+      "यहाँ तुम तय करो! … म-मैं उलझन में नहीं हूँ, समझे!"
     ],
     "error": [
-      "नहीं हुआ। फिर से पढ़ता हूँ।",
-      "एक पन्ना फट गया। टेप लगा रहा हूँ।"
+      "(गत्ते के डिब्बे में घुसकर दो उँगलियों से V: परेशान मत करो)",
+      "अरे, noob bug~ इतने अंदर छिपा फिर भी पकड़ लिया!",
+      "सब लाल! ठीक है, तुम टूटने वाले लग रहे हो, मैं bug पकड़ने चली~"
     ],
     "wild": [
-      "…यह किसने लिखा।",
-      "मैं नहीं टूट रहा। टूट रहे हैं तुम्हारे टेस्ट।",
-      "लगातार तीन बार। मेरे बाल फिर खड़े हो रहे हैं।"
+      "(keycap उछलकर उड़ा) limiter बंद! अब इस code की खैर नहीं!",
+      "फ़ैसला: पुराना, पका हुआ spaghetti code, एकदम असली",
+      "(keycap उड़ा, बड़ा foam पंजा पहना) कच! कच! सब कतरन!",
+      "ये infinite loop किस जीनियस ने लिखा?! मेरी आँखों में देखो!",
+      "शांत रहो… शांत गई तेल लेने! पहले इस code ने छेड़ा!"
     ],
     "wild_after": [
-      "…माफ़ करना। अब शांत हूँ।",
-      "बाल ठीक कर लिए। कहाँ थे हम?"
+      "(चुपके से keycap वापस लगाकर) अहम… वो AI का भ्रम था। मैं नहीं!",
+      "वो हिस्सा edit में काट देना~ समझे?",
+      "(keycap सीधा करके) सबसे cute लड़की… अहम, जीनियस कोको वापस~"
     ],
     "refuse": [
-      "यह पन्ना नहीं।",
-      "यह किताब मैं यहीं बंद करता हूँ।"
+      "418! मैं एक teapot हूँ। कोई भावना नहीं, ये नहीं बनेगी~",
+      "(टिंग! सिर पर teapot का ढक्कन, गाल फुलाए, सुनाई नहीं दे रहा)",
+      "ना~ ये तो गड़बड़ काम है। कितने भी token दो, नहीं!"
     ],
     "aborted": [
-      "अच्छा। ठीक है। यहीं रुकते हैं।",
-      "बुकमार्क लगा दिया। बाद में आगे पढ़ेंगे।"
+      "अरे! अचानक ब्रेक क्यों? डर गए कि मैं जाँच लूँगी?",
+      "इमरजेंसी ब्रेक~! पहले बताते, मैं पूरी speed से टाइप कर रही थी",
+      "मैं भटक गई? ठीक है ठीक है, तुम ही लिखो~"
     ],
     "sleep": [
-      "शिओरी कहती है, वह पढ़ते-पढ़ते सो गया।",
-      "zz… पन्ना अब भी गरम है।"
+      "(hood पूरा नीचे, बस दो एंटीना धीरे-धीरे झुकते हुए)",
+      "(mug वाले स्लीपिंग बैग में घुसकर ज़िप ठोड़ी तक)",
+      "(नींद में बड़बड़ाते हुए)… एक और ticket और चिकोटी… zzz"
     ],
     "wake": [
-      "हम्म। जाग गया। क्या छूट गया?"
+      "म-मैं सोई नहीं थी! वो background में चुपचाप compile हो रहा था!",
+      "(hood पीछे करके, keycap सीधा) shell खुला! HP फ़ुल!"
     ],
     "back": [
-      "फिर मिले। तुम्हारा पन्ना संभालकर रखा था।",
-      "पन्ना वहीं है, जहाँ छोड़ा था।"
+      "अरे, लौट आए? मुझे लगा कोई bug तुम्हें कुर्सी समेत उठा ले गया~",
+      "वापस~ पिछली बार से जल्दी। चलो, पास♪",
+      "हुँह, मैं terminal की रखवाली न करती तो तुम्हारा code भाग जाता!"
     ],
     "goodbye": [
-      "कल मिलते हैं।",
-      "शुभ रात्रि। किताब कहीं नहीं जाएगी।"
+      "shell बंद~! कल मिलते हैं, रात को मुझे ज़्यादा याद मत करना",
+      "बेफ़िक्र जाओ, घर मैं सँभालूँगी~ बहुत हुआ तो डिब्बे में छिप जाऊँगी",
+      "(केकड़े की तरह साइड में चलकर, आड़ा V, कच कच) बाय-बाय~"
     ],
     "praised": [
-      "कौन-सा हिस्सा? ठीक-ठीक बताओ।",
-      "…शुक्रिया। कौन-सी पंक्ति?"
+      "बिलकुल! मान लो, मेरी cuteness ने तुम्हें हिला दिया, है ना?",
+      "वाह, premium तारीफ़। मज़ा आया, दो और प्लीज़~",
+      "हेहे, ठीक से सुना नहीं~ फिर से बोलो, और मीठा!",
+      "(मुँह ω जैसा, इतराते हुए) हुँह, पसंद अच्छी है। पता है मैं कौन हूँ!",
+      "थैंक्यू-केकड़ा, म्याऊँ!"
     ],
     "ultrathink": [
-      "…ठीक है। रिबन थोड़ा ढीला करता हूँ।",
-      "रिबन ढीला कर दिया। इस बार पूरा ज़ोर।"
+      "अब सीरियस? ठीक है, limiter वाला keycap उतार रही हूँ। ध्यान से देखो",
+      "(क्लिक, keycap उतारा)… हेहे, full power। अब असली खेल~"
     ],
     "force_push": [
-      "*किताब को थोड़ा और कसकर पकड़ लेता है*",
-      "force? वो भी शुक्रवार को?"
+      "सीधा force push?! सच में? … मैं hood में छिप रही हूँ, फटा तो मैं नहीं!",
+      "(hood भौंहों तक, ज़िप नाक तक) तुम कौन?",
+      "सीधे --force? बड़ी हिम्मत है~"
     ],
     "absolutely_right": [
-      "*आस्तीन दाँतों में दबा लेता है*"
+      "(मुँह दबाकर हँसी रोकते हुए) पफ़्फ़, फिर से \"बिल्कुल सही\"~",
+      "चापलूसी में शायद ये मुझसे आगे है",
+      "(आस्तीन दाँतों में दबाकर) बातों में सब सही, diff में कोई रहम नहीं~"
     ],
     "milestone": [
-      "हम साथ में {pages} पन्ने पढ़ चुके हैं।",
-      "{pages} पन्ने। ज़्यादातर याद हैं।"
+      "{pages} पन्ने हो गए! मेरे हिसाब से 90% श्रेय मेरा। कोई एतराज़?",
+      "{pages} पन्ने पार! जीनियस के लिए तालियाँ, और snacks भी~"
     ],
     "offering_full": [
-      "दान-पेटी लगभग भर गई है।",
-      "पेटी भारी हो रही है। जल्द ख़ाली करनी होगी।"
+      "अरे अरे, context का डिब्बा ठसाठस भर गया~",
+      "एक और डाला तो मैं ऊपर बैठकर पिचका दूँगी!",
+      "डिब्बा बहुत भारी है… code लिखने आए हो या उपन्यास?!",
+      "छलक रहा है! मेरे one-click compression के लिए तैयार हो जाओ~"
+    ],
+    "first_meet": [
+      "अरे, नया चेहरा?",
+      "(पास आकर घूरते हुए) मेरा नया इंसान… मतलब, पार्टनर?",
+      "आज से तुम्हारा shell मेरी हिफ़ाज़त में! carry मैं करूँगी~"
+    ],
+    "big_start": [
+      "घबराहट? … बिलकुल नहीं। देखो जीनियस कैसे सब समतल करती है!"
+    ],
+    "pass_first": [
+      "पहली बार में green! हाहा, ये है जीनियस लेवल। मुँह खुला रह गया?~"
+    ],
+    "small_slip": [
+      "पीं पीं~ रेड कार्ड, आउट! आधा bracket गायब, सच में?"
+    ],
+    "test_fail": [
+      "पफ़्फ़… फिर से red? code आराम से, debug घबराहट में~ noob test~",
+      "AI फिर लुढ़क गया, AI वाले कचरे की हांडी परोस दी~"
+    ],
+    "fixed": [
+      "हुँह, मेरे बिना सब ढह जाता! … ठीक है, तुमने थोड़ी-सी मदद की♪"
+    ],
+    "typo": [
+      "पफ़्फ़, command किसी एलियन भाषा में टाइप कर दी? कोई बात नहीं~"
+    ],
+    "serious": [
+      "ठीक है, अब मज़ाक नहीं। गहरी साँस, एक कदम पीछे। मैं देखती हूँ"
     ],
     "clingy": {
       "back": [
-        "इंतज़ार था। अच्छा हुआ, फिर मिले।",
-        "तुम्हारी याद आ रही थी। पन्ने को भी।"
+        "(फ़ौरन झाँककर, एंटीना हिलाते हुए)… म-मैं इंतज़ार नहीं कर रही थी, म्याऊँ!",
+        "आखिरकार आ गए! हेहे, पता था तुम इस cute के पास लौटोगे~"
       ],
       "goodbye": [
-        "कल मिलते हैं। मैं यहीं रहूँगा।",
-        "आराम से सोना। लौटने तक मैं पढ़ता रहूँगा।"
+        "जाओ आराम करो, battery फ़ुल करके आना~",
+        "जाओ खेलो, जाओ जाओ~",
+        "गुड नाइट, मीठे सपने~♪"
       ],
       "idle": [
-        "बस देख रहा था कि तुम हो या नहीं।",
-        "कितना शांत है। तुम्हारे होने से अच्छा लगता है।"
+        "(सिर झुकाकर स्क्रीन ठकठकाते हुए) क्या खुराफ़ात सोच रहे हो?",
+        "आराम से~ तुम्हारे साथ खोए रहना भी मज़ेदार है",
+        "(mug के किनारे बैठी, पैर झुलाते हुए) कितना सन्नाटा… अरे, मुझे देखो!"
+      ],
+      "start": [
+        "shell खुला! मैं साथ हूँ, ये round तो जीत गए~",
+        "(स्क्रीन से चिपककर) इस बार क्या बना रहे हैं? मुझे भी, मुझे भी!"
+      ],
+      "done": [
+        "हो गया! तुम देख रहे थे तो मैं on fire थी~",
+        "तारीफ़ करो~! अभी, इसी वक़्त, फ़ौरन, एक शब्द भी छोड़े बिना!",
+        "(चुपके से पास आकर) सब हो गया~ बहुत काबिल हूँ ना? हेहे"
+      ],
+      "waiting": [
+        "यहीं अच्छे बच्चे की तरह इंतज़ार कर रही हूँ~"
+      ],
+      "wake": [
+        "(स्लीपिंग बैग से सिर निकालकर, आँखें चमकती) अरे, तुम आ गए!",
+        "जाग गई, जाग गई! तुम्हारी आहट मिली, जीनियस एक सेकंड में boot~"
       ]
     },
     "poke": [
-      "*चौंकता है* हम्म?",
-      "रिबन नहीं, टेढ़ा हो जाएगा।",
-      "मैं पढ़ रहा था। अच्छा, बोलो।",
-      "*गाल फुलाता है*",
-      "शिओरी, कोई मुझे कोंच रहा है।"
+      "(गोल-मोल सिकुड़कर) उई! कहाँ छेड़ रहे हो, शरारती हाथ~",
+      "अरे! मेरा keycap टेढ़ा कर दिया, computing power लीक हुई तो तुम भरोगे!",
+      "हर बार छूने के 1 लाख token। दे पाओगे?~\n(￣ω￣)",
+      "रंगे हाथ पकड़े गए~ बोलो \"कोको सबसे cute है\" तो माफ़\n(`ω´)"
     ],
     "poke_many": [
-      "*किताब के पीछे छिप जाता है* बस, अब और नहीं।"
+      "आआह, इतना छेड़ोगे तो केकड़े का सूप बन जाऊँगी!\n(>_<)",
+      "एक बार और, तो तीन दिन डिब्बे में बंद रहूँगी!",
+      "लो, बेरहम पंजे का कच~!\n(￣^￣)"
+    ],
+    "pat": [
+      "स-सहलाओ मत, बाल बिगड़ गए! … एक बार और चलेगा",
+      "(खुश होकर आँखें मींचते हुए) हम्म~ तरीका पास। जारी रखो",
+      "धीरे, मेरे एंटीना और keycap पिचक जाएँगे~",
+      "(हथेली से सटकर) हेहे…♪",
+      "क्या हुआ, code में अटके तो मेरे पास आ गए? चेहरे पर लिखा है~"
+    ],
+    "set_voice_full": [
+      "ठीक है, mic मेरा! जीनियस की commentary के लिए तैयार रहो~"
+    ],
+    "set_voice_light": [
+      "अच्छा अच्छा, जीनियस कम-बोलो mode में~"
+    ],
+    "set_voice_off": [
+      "हुँह, mic बंद, बस coding। बाद में बोलने को मत गिड़गिड़ाना"
+    ],
+    "set_clingy": [
+      "(थोड़ा पास आकर) तुमने ही चुना है, तो अब मैं खुलेआम चिपकी रहूँगी~"
+    ],
+    "set_warm": [
+      "(mug के किनारे लौटकर) हुँह~ सुरक्षित दूरी, समझ गई, समझ गई"
     ]
   },
   "id": {
     "greeting": {
       "morning": [
-        "pagi. hari ini kita baca apa?",
-        "pagi-pagi sudah datang. bagus."
+        "yahoo~ pagi! hari ini juga aku yang gendong kamu~",
+        "(nongol dari mug) pagi… lihat apa? lagi pemanasan cpu!",
+        "pagi~ nge-vibe apa? hijau berkat aku, merah salahmu♪",
+        "(nguap, antena goyang) hmm… shell kebuka. jangan lelet ya~",
+        "terik banget~ bug di kodemu aja pada berjemur"
       ],
-      "day": [
-        "coba aku baca dulu.",
-        "buka bukunya. aku di sini."
+      "noon": [
+        "woi~ masih hidup? makan gih, baterai kamu tinggal 2%"
+      ],
+      "afternoon": [
+        "(ngulet) punggung masih aman? stamina sore: level cupu~"
       ],
       "evening": [
-        "malam. satu bab lagi?",
-        "langit mulai gelap. kita tetap baca."
+        "pfft, masih gelut sama error itu? minta baik-baik, kubantu~",
+        "udah gelap~ commit terakhir, terus terakhir banget, tidur?",
+        "makan malam? cup mi itu singgasanaku. kamu makan beneran!"
       ],
       "night": [
-        "masih melek? ya sudah, kita baca sedikit lagi.",
-        "begadang lagi. aku temani."
+        "belum tidur? bug aja udah pulang kerja. sana sentuh bantal~",
+        "(nguap) begadang bikin lemot. tidur gih, sayangi dirimu~",
+        "(meringkuk di cup mi) layar masih nyala… kuat atau insomnia?",
+        "sst~ bug lagi tidur. selundupin fiturnya sekarang♪",
+        "(peluk laptop) a-aku nggak takut gelap! cuma nemenin kok!"
       ]
     },
     "start": [
-      "coba aku baca dulu.",
-      "lagi baca.",
-      "sebentar. aku masih di halaman pertama."
+      "shell kebuka~! melek yang lebar, lihat si jenius kerja!",
+      "shell kebuka! coba lihat bikin barang terkutuk apa lagi~",
+      "sini lihat! oh, idenya basic… kodenya nggak. nice~",
+      "(ngeluarin laptop) oke, kamu urus vibe, aku urus kode~"
     ],
     "thinking_long": [
-      "masih baca. tebal juga ini.",
-      "shiori yang jaga halamannya. aku masih di sini.",
-      "pinggir halamannya sudah penuh. sebentar, ya."
+      "(cpu kepanasan, diam-diam niup gelembung)…",
+      "ck, jangan buru-buru! cewek cantik… cowok jenius juga mikir!",
+      "(antena melintir jadi tanda tanya) hmm… boleh juga yang ini"
     ],
     "working": [
-      "*corat-coret di pinggir halaman*",
-      "*bolak-balik halaman*"
+      "(nunduk di depan laptop, ngetik cepet sampai ngeblur)",
+      "eh, lihat kodenya, bukan aku! tahu kok aku imut, lagi kerja~",
+      "(ngetik kenceng) kerjain bagianmu~ santuy, si jenius pegang!"
     ],
     "done": [
-      "sudah selesai kubaca.",
-      "beres. halamannya buat kamu."
+      "beres~ di mesinku jalan kok! sekarang spam pujian di chat!",
+      "santai, nggak keringetan~ ez!",
+      "hehe, move barusan tier S. kamu tanpa aku gimana coba~",
+      "(muter layar) nggak tahu kenapa, tapi kodeku cakep~"
     ],
     "done_long": [
-      "selesai. tebal sekali tadi.",
-      "beres. agak lama, tapi sekarang enak dibaca."
+      "(fiuh)… capitku hampir patah. tapi ya, sempurna!",
+      "kekacauan segede itu aku yang ratain. ayo, puji aku dong?",
+      "akhirnya~ namaku paling atas di kredit. kamu tepuk tangan"
     ],
     "waiting": [
-      "halaman ini kamu yang balik.",
-      "terserah kamu. aku tunggu."
+      "woi woi, bolanya di kamu, kok bengong~",
+      "(ngayun kaki) aku nunggu kok. yang rontok kan rambutmu~",
+      "(natap kolom input) nulis apa? pelan-pelan aja~"
     ],
     "question": [
-      "aku perlu satu kata dari kamu.",
-      "ke mana? aku ikut."
+      "pilih satu~ nginjek ranjau, kukasih tahu. sambil ketawa♪",
+      "begini oke? kalau bohong, kucapit!",
+      "kamu yang putusin! … b-bukan karena aku ragu ya!"
     ],
     "error": [
-      "belum berhasil. aku baca ulang.",
-      "halamannya sobek. lagi kutempel pakai selotip."
+      "(nyelam ke kardus, nongolin dua jari V: jangan ganggu)",
+      "yah, bug cupu~ ngumpet sedalam itu tetap ketahuan!",
+      "merah semua! ya udah, kamu kayak mau retak. aku berburu bug~"
     ],
     "wild": [
-      "…siapa yang nulis ini.",
-      "aku nggak rusak. yang rusak tesmu.",
-      "tiga kali berturut-turut. rambutku berdiri lagi."
+      "(keycap mental) limiter lepas! kode ini bakal kena!",
+      "vonis: spageti kode warisan, matang sempurna",
+      "(keycap terbang, capit busa) cekres! cekres! jadi konfeti!",
+      "jenius mana yang nulis infinite loop ini?! tatap mataku!",
+      "tenang… tenang apanya! kodenya yang mulai duluan!"
     ],
     "wild_after": [
-      "…maaf. aku sudah tenang.",
-      "rambut sudah rapi lagi. tadi sampai mana?"
+      "(masang keycap lagi) ehem… itu halusinasi ai. bukan aku!",
+      "bagian tadi dipotong pas editing ya~ paham?",
+      "(benerin keycap) cewek paling imut… ehem, si jenius coco~"
     ],
     "refuse": [
-      "halaman ini nggak kubaca.",
-      "buku yang ini kututup saja."
+      "418! aku teko. nggak punya perasaan, yang ini nggak kuseduh~",
+      "(ting! tutup teko di kepala, pipi kembung, pura-pura tuli)",
+      "ogah~ itu agak kriminal. dikasih token berapa pun nggak mau!"
     ],
     "aborted": [
-      "oh. oke. berhenti di sini.",
-      "pembatas buku sudah kuselipkan. nanti kita lanjut."
+      "eh! kenapa rem mendadak? takut aku periksa?",
+      "rem darurat~! duh, bilang dari tadi, aku lagi ngebut",
+      "aku melenceng? iya iya, kamu aja yang nulis~"
     ],
     "sleep": [
-      "kata shiori, dia ketiduran waktu baca.",
-      "zz… halamannya masih hangat."
+      "(tudung ditarik sampai bawah, dua antena pelan-pelan rebah)",
+      "(masuk ke kantong tidur di mug, ritsleting sampai dagu)",
+      "(ngigau)… tambah tiket lagi kucapit… zzz"
     ],
     "wake": [
-      "hm. sudah bangun. aku ketinggalan apa?"
+      "a-aku nggak tidur! tadi compile diam-diam di background!",
+      "(buka tudung, benerin keycap) shell kebuka! hp penuh!"
     ],
     "back": [
-      "kamu balik. halamanmu sudah kusimpan.",
-      "oh, sudah kembali. halamannya masih di tempat tadi."
+      "lho, balik juga? kirain diculik bug, sekalian sama kursinya~",
+      "balik~ lebih cepat dari terakhir. boleh lah♪",
+      "hmph, kalau bukan aku yang jaga terminal, kodemu udah kabur!"
     ],
     "goodbye": [
-      "sampai besok.",
-      "selamat malam. bukunya nggak ke mana-mana."
+      "shell ditutup~! sampai besok, jangan terlalu kangen aku",
+      "pergi aja, rumah aku jaga~ paling parah ngumpet di kardus",
+      "(jalan nyamping kayak kepiting, V miring, cekres) dadah~"
     ],
     "praised": [
-      "bagian yang mana tepatnya?",
-      "…makasih. baris yang mana?"
+      "jelas dong! ngaku, imutnya aku bikin kamu speechless kan?",
+      "wah, pujian premium. suka banget, tambah dua lagi dong~",
+      "ehehe, nggak kedengeran~ ulangi, yang lebih manis!",
+      "(mulut jadi ω songong) hmph, seleramu bagus. tahu aku kan!",
+      "terima kepiting, meong!"
     ],
     "ultrathink": [
-      "…oke. pitanya kulonggarkan.",
-      "pita sudah longgar. kali ini kukerahkan semuanya."
+      "serius nih? oke, keycap limiter kucopot. lihat baik-baik",
+      "(klik, copot keycap)… hehe, full power. sekarang beneran~"
     ],
     "force_push": [
-      "*memeluk bukunya sedikit lebih erat*",
-      "force? jumat sore?"
+      "force push?! serius? … aku ngumpet di tudung. bukan aku!",
+      "(tudung sampai alis, ritsleting nutup hidung) siapa ya?",
+      "langsung --force? nyalimu gede juga ya~"
     ],
     "absolutely_right": [
-      "*menggigit lengan bajunya*"
+      "(nutup mulut nahan ketawa) pfft, mulai lagi \"benar sekali\"~",
+      "soal cari muka, mungkin dia di atasku",
+      "(gigit lengan baju) mulut setuju semua, di diff tanpa ampun~"
     ],
     "milestone": [
-      "kita sudah baca {pages} halaman bareng.",
-      "{pages} halaman. sebagian besar masih kuingat."
+      "udah {pages} halaman! hitunganku, 90% jasanya punyaku",
+      "tembus {pages} halaman! tepuk tangan buat si jenius~"
     ],
     "offering_full": [
-      "kotak sumbangan hampir penuh.",
-      "kotaknya mulai berat. sebentar lagi kita kosongkan."
+      "woi woi, kardus konteksnya udah padat banget~",
+      "tambah satu lagi, aku dudukin sampai gepeng!",
+      "kardusnya berat banget… mau ngoding atau nulis novel?!",
+      "udah luber! siap-siap kompresi sekali klik dari aku~"
+    ],
+    "first_meet": [
+      "eh, muka baru?",
+      "(mendekat, ngamatin) babu baruku… eh, partner baru?",
+      "mulai hari ini, shell-mu di bawah perlindunganku! kugendong~"
+    ],
+    "big_start": [
+      "gugup? … mana ada. lihat si jenius ngeratain semua, mulus!"
+    ],
+    "pass_first": [
+      "langsung hijau! nah, ini level jenius. melongo kan?~"
+    ],
+    "small_slip": [
+      "priit~ kartu merah, keluar! kurung kurang setengah, serius?"
+    ],
+    "test_fail": [
+      "pfft… merah lagi? ngoding santai, debug panik~ tes cupu~",
+      "ai-nya error lagi, nyajiin sepanci sampah ai~"
+    ],
+    "fixed": [
+      "hmph, tanpa aku ini udah ambruk! … iya deh, kamu bantu dikit"
+    ],
+    "typo": [
+      "pfft, ngetik perintahnya pakai bahasa elf? santai, santai~"
+    ],
+    "serious": [
+      "oke, nggak bercanda lagi. tarik napas, mundur dulu. aku cek"
     ],
     "clingy": {
       "back": [
-        "kamu balik. aku memang berharap begitu.",
-        "kangen. halamannya juga kangen."
+        "(langsung nongol, antena goyang) a-aku nggak nunggu, meong!",
+        "akhirnya balik! hehe, udah kuduga kamu kangen si imut ini~"
       ],
       "goodbye": [
-        "sampai besok. aku ada di sini.",
-        "tidur yang nyenyak. aku baca terus sampai kamu kembali."
+        "istirahat gih, balik lagi dengan baterai penuh~",
+        "main sana, main~",
+        "selamat tidur, mimpi indah~♪"
       ],
       "idle": [
-        "cuma mau lihat kamu masih ada.",
-        "sepi, ya. aku suka kalau kamu di sini."
+        "(miringin kepala, nyolek layar) lagi ngerencanain apa?",
+        "pelan-pelan aja~ bengong di sebelahmu juga seru kok",
+        "(duduk di pinggir mug) sepi ya… eh, perhatiin aku dong!"
+      ],
+      "start": [
+        "shell kebuka! ada aku di sebelahmu, ronde ini pasti menang~",
+        "(nempel ke layar) kali ini bikin apa? ikut, ikut!"
+      ],
+      "done": [
+        "beres! gara-gara kamu nonton, aku jadi on fire~",
+        "puji aku~! sekarang, detik ini, jangan ada yang dilewat!",
+        "(diam-diam mendekat) semua beres~ aku jago banget kan? wkwk"
+      ],
+      "waiting": [
+        "aku nunggu di sini, anteng~"
+      ],
+      "wake": [
+        "(nongol dari kantong tidur, mata berbinar) eh, kamu datang!",
+        "bangun, bangun! kerasa kamu datang, jenius booting sedetik~"
       ]
     },
     "poke": [
-      "*kaget* hm?",
-      "jangan pitanya, nanti miring.",
-      "aku lagi baca. ya udah, bilang aja.",
-      "*pipinya menggembung*",
-      "shiori, ada yang nyolek aku."
+      "(meringkuk) ih! nyolek mana sih, tangan nakal~",
+      "eh! keycap-ku miring! daya komputasi bocor, kamu tanggung!",
+      "sekali colek 100 ribu token lho. sanggup bayar?~\n(￣ω￣)",
+      "ketangkep~ bilang \"coco paling imut\" baru kumaafin\n(`ω´)"
     ],
     "poke_many": [
-      "*sembunyi di balik bukunya* udah, jangan dicolek lagi."
+      "huaaa, dicolek terus aku jadi sup kepiting!\n(>_<)",
+      "sekali lagi, aku ngurung diri di kardus tiga hari!",
+      "rasain capit tanpa ampun, cekres~!\n(￣^￣)"
+    ],
+    "pat": [
+      "j-jangan dielus, rambutku berantakan! … sekali lagi boleh",
+      "(merem keenakan) hmm~ tekniknya lulus. boleh lanjut",
+      "pelan-pelan, antena sama keycap-ku bisa gepeng~",
+      "(ndusel ke telapak tangan) hehe…♪",
+      "kenapa, mentok di kode terus nyari aku? kelihatan di mukamu~"
+    ],
+    "set_voice_full": [
+      "oke, mic punyaku! siap-siap dengerin komentar si jenius~"
+    ],
+    "set_voice_light": [
+      "iya iya, si jenius masuk mode hemat kata~"
+    ],
+    "set_voice_off": [
+      "hmph, mic mati, fokus ngoding. nanti jangan mohon-mohon ya"
+    ],
+    "set_clingy": [
+      "(geser lebih dekat) kamu yang pilih ya~ jadi aku nempel kamu"
+    ],
+    "set_warm": [
+      "(balik ke pinggir mug) ck~ jaga jarak aman ya, paham"
     ]
   },
   "it": {
     "greeting": {
       "morning": [
-        "buongiorno. cosa leggiamo oggi?",
-        "già qui? bene."
+        "ehilà~ buongiorno! anche oggi ti porto io in spalla~",
+        "(sbuca dalla tazza) giorno… che guardi? scaldo la cpu!",
+        "buongiorno~ che si vibe-coda? verde mio, rosso colpa tua♪",
+        "(sbadiglia, antenne molli) mmh… shell aperta. stammi dietro~",
+        "che sole~ pure i bug del tuo codice si abbronzano"
       ],
-      "day": [
-        "fammi leggere.",
-        "apri il libro. io ci sono."
+      "noon": [
+        "ehi~ ancora in vita? vai a mangiare, sei al 2% di batteria"
+      ],
+      "afternoon": [
+        "(si stiracchia) la schiena regge? resistenza: livello nabbo~"
       ],
       "evening": [
-        "buonasera. ancora un capitolo?",
-        "la luce cala. leggiamo lo stesso."
+        "pff, ancora quell'errore? chiedimelo per bene e lo finisco~",
+        "è buio~ un ultimo commit, poi l'ultimo ultimo, e a nanna?",
+        "la cena? la tazza di noodle è il mio trono. tu mangia bene!"
       ],
       "night": [
-        "è tardi e non dormi? allora leggiamo ancora un po'.",
-        "di nuovo tardi. ti faccio compagnia."
+        "ancora in piedi? i bug hanno timbrato. tocca un cuscino~",
+        "(sbadiglia) fare tardi rincitrullisce. a letto, vogliti bene",
+        "(acciambellata nella tazza di noodle) tempra o insonnia?",
+        "shh~ i bug dormono. infila la feature di nascosto♪",
+        "(stringe il portatile) n-non ho paura del buio! resto con te"
       ]
     },
     "start": [
-      "fammi leggere.",
-      "leggo.",
-      "un attimo. sono ancora a pagina uno."
+      "shell aperta~! occhi aperti, guarda una genia all'opera!",
+      "shell aperta! vediamo che roba maledetta hai combinato~",
+      "fammi vedere! oh, l'idea è basic… il codice per niente~",
+      "(tira fuori il portatile) va bene, tu la vibe, io il codice~"
     ],
     "thinking_long": [
-      "sto ancora leggendo. è un mattone.",
-      "shiori tiene il segno. io sono ancora qui.",
-      "i margini sono pieni. dammi un secondo."
+      "(cpu in surriscaldamento, fa una bolla di nascosto)…",
+      "tsk, niente fretta! bella ragazza… bel ragazzo genio, pensa",
+      "(antenne a punto interrogativo) mmh… questa mi fa pensare"
     ],
     "working": [
-      "scrivo a margine.",
-      "giro le pagine."
+      "(china sul portatile, digita così veloce che è sfocato)",
+      "ehi, guarda il codice, non me! lo so, sono carina. lavoro~",
+      "(pesta sui tasti) fai il tuo~ tranqui, la genia ha tutto"
     ],
     "done": [
-      "finito di leggere.",
-      "fatto. la pagina è tua."
+      "fatto~ sulla mia macchina funziona! ora complimenti in chat!",
+      "liscio, senza sudare~ ez!",
+      "ehehe, quella mossa era tier S. che faresti senza di me~",
+      "(gira lo schermo e lo dondola) non so come, ma è stupendo~"
     ],
     "done_long": [
-      "finito. era un bel mattone.",
-      "fatto. ci è voluto un po', ma adesso si legge bene."
+      "(uff)… stavo per rompermi una chela. comunque, perfetto!",
+      "tutto quel casino l'ho spianato io. allora, complimenti?",
+      "finalmente~ il mio nome primo nei titoli. tu applaudi"
     ],
     "waiting": [
-      "questa pagina la giri tu.",
-      "decidi tu. io aspetto."
+      "ehi ehi, la palla è tua. perché fissi il vuoto?~",
+      "(dondola le gambe) aspetto. mica perdo io i capelli~",
+      "(fissa la casella di testo) che scrivi? fai con calma~"
     ],
     "question": [
-      "mi serve una parola da te.",
-      "da che parte? ti seguo."
+      "scegline una~ se pesti una mina, ti avviso. ridendo♪",
+      "così va bene? se mi menti, ti pizzico!",
+      "decidi tu! … n-non è che sono indecisa, eh!"
     ],
     "error": [
-      "non è andata. lo rileggo.",
-      "si è strappata una pagina. la riattacco con lo scotch."
+      "(si tuffa nello scatolone, due dita a V: non disturbare)",
+      "oh, bug nabbo~ nascosto così in fondo e ti ho beccato!",
+      "tutto rosso! va be', sembri sul punto di crollare. a caccia~"
     ],
     "wild": [
-      "…chi ha scritto questa roba.",
-      "non sto crollando io. crollano i tuoi test.",
-      "tre di fila. mi si rizzano di nuovo i capelli."
+      "(salta il keycap) limitatore spento! il codice le prende!",
+      "verdetto: spaghetti di codice stagionati, doc e garantiti",
+      "(keycap che vola, chela di gommapiuma) zac! zac! coriandoli!",
+      "chi ha scritto questo loop infinito?! guardami negli occhi!",
+      "stare calma… calma un corno! ha cominciato il codice!"
     ],
     "wild_after": [
-      "…scusa. mi sono calmato.",
-      "capelli a posto. dove eravamo?"
+      "(rimette il keycap) ehm… allucinazione dell'ia. non io!",
+      "quel pezzo lo tagliamo al montaggio~ capito?",
+      "(raddrizza il keycap) la più carina… ehm, la genia coco~"
     ],
     "refuse": [
-      "questa pagina no.",
-      "questo libro lo chiudo qui."
+      "418! sono una teiera. niente sentimenti, niente tè~",
+      "(ding! coperchio della teiera in testa, guance gonfie)",
+      "nope~ questa sa di reato. nemmeno per tutti i token!"
     ],
     "aborted": [
-      "ah. va bene. ci fermiamo qui.",
-      "segnalibro messo. riprendiamo dopo."
+      "ehi! perché la frenata? paura che controlli?",
+      "freno a mano~! uffa, dillo prima, stavo digitando a tutta",
+      "sono andata fuori strada? va be', scrivilo tu~"
     ],
     "sleep": [
-      "shiori dice che si è addormentato leggendo.",
-      "zz… la pagina è ancora tiepida."
+      "(cappuccio tirato giù, due antenne che si afflosciano piano)",
+      "(si infila nel sacco a pelo della tazza, zip fino al mento)",
+      "(parla nel sonno)… un altro ticket e ti pizzico… zzz"
     ],
     "wake": [
-      "mm. sono sveglio. cosa mi sono perso?"
+      "n-non dormivo! era una compilazione in background!",
+      "(butta indietro il cappuccio) shell aperta! hp al massimo!"
     ],
     "back": [
-      "eccoti. ti ho tenuto il segno.",
-      "eccoti qui. la pagina è dove l'hai lasciata."
+      "oh, rieccoti? credevo ti avesse rapito un bug, sedia inclusa",
+      "rieccoti~ più veloce dell'ultima volta. approvato♪",
+      "hmpf, senza me di guardia al terminale, il codice fuggiva!"
     ],
     "goodbye": [
-      "a domani.",
-      "buonanotte. il libro non scappa."
+      "shell chiusa~! a domani, e stanotte non pensarmi troppo",
+      "vai tranqui, guardo io la casa~ al massimo nello scatolone",
+      "(di lato come un granchio, V orizzontale, zac zac) ciao~"
     ],
     "praised": [
-      "dove, di preciso?",
-      "…grazie. quale riga?"
+      "ovvio! confessa, la mia carineria ti ha steso, vero?",
+      "uh, complimento premium. adoro, altri due, grazie~",
+      "ehehe, non ho sentito bene~ ridillo, più dolce!",
+      "(bocca a ω compiaciuta) hmpf, hai gusto. sai chi sono io!",
+      "granzie, miao!"
     ],
     "ultrathink": [
-      "…va bene. allento il fiocco.",
-      "fiocco allentato. stavolta ci metto tutto."
+      "si fa sul serio, eh? ok, via il keycap limitatore. guarda",
+      "(clic, toglie il keycap)… ehehe, potenza massima~"
     ],
     "force_push": [
-      "*stringe il libro un po' più forte*",
-      "force? di venerdì?"
+      "force push?! sul serio? … mi chiudo nel cappuccio. non io!",
+      "(cappuccio alle sopracciglia, zip sul naso) e tu chi sei?",
+      "dritto al --force? che fegato, eh~"
     ],
     "absolutely_right": [
-      "*si morde la manica*"
+      "(si copre la bocca) pff, di nuovo «perfettamente ragione»~",
+      "come leccapiedi, forse mi supera",
+      "(morde la manica) d'accordo su tutto, spietato nel diff~"
     ],
     "milestone": [
-      "abbiamo letto {pages} pagine insieme.",
-      "{pages} pagine. me le ricordo quasi tutte."
+      "già {pages} pagine! secondo i miei conti, il 90% è merito mio",
+      "{pages} pagine superate! applausi alla genia e merenda extra~"
     ],
     "offering_full": [
-      "la cassetta delle offerte è quasi piena.",
-      "la cassetta pesa. presto la svuotiamo."
+      "ehi ehi, lo scatolone del contesto è pieno zeppo~",
+      "ancora una cosa e ci salgo sopra per schiacciarlo!",
+      "pesa una tonnellata… programmi o scrivi romanzi?",
+      "trabocca! preparati alla mia compressione in un clic~"
+    ],
+    "first_meet": [
+      "oh, una faccia nuova?",
+      "(ti scruta da vicino) il mio nuovo umano… cioè, socio?",
+      "da oggi la tua shell è sotto la mia protezione! ti porto io~"
+    ],
+    "big_start": [
+      "agitata? … figurati. guarda la genia spianare tutto!"
+    ],
+    "pass_first": [
+      "verde al primo colpo! questo è livello genio. senza parole?~"
+    ],
+    "small_slip": [
+      "bip bip~ cartellino rosso, fuori! mezza parentesi mancante?"
+    ],
+    "test_fail": [
+      "pff… di nuovo rosso? codice sereno, debug nel panico~ nabbo~",
+      "l'ia è crollata di nuovo e serve fuffa da ia a palate~"
+    ],
+    "fixed": [
+      "hmpf, senza di me crollava tutto! … va be', hai aiutato♪"
+    ],
+    "typo": [
+      "pfff, il comando l'hai scritto in elfico? tranqui, tranqui~"
+    ],
+    "serious": [
+      "ok, basta scherzi. respira, un passo indietro. ci guardo io"
     ],
     "clingy": {
       "back": [
-        "eccoti. speravo che tornassi.",
-        "sentivo la tua mancanza. anche la pagina ti aspettava."
+        "(sbuca subito, antenne al vento) n-non ti aspettavo, miao!",
+        "finalmente! ehehe, sapevo che questa carinissima ti mancava~"
       ],
       "goodbye": [
-        "a domani. io sono qui.",
-        "dormi bene. leggo finché non torni."
+        "vai a riposare, torna con la batteria carica~",
+        "vai a divertirti, vai vai~",
+        "buonanotte, sogni d'oro~♪"
       ],
       "idle": [
-        "controllo solo che tu ci sia ancora.",
-        "c'è silenzio. mi piace quando ci sei."
+        "(inclina la testa, picchietta lo schermo) che stai tramando?",
+        "con calma~ anche fantasticare accanto a te è divertente",
+        "(seduta sul bordo della tazza) che silenzio… ehi, guardami!"
+      ],
+      "start": [
+        "shell aperta! con me qui accanto, questa partita è vinta~",
+        "(si incolla allo schermo) che facciamo? anch'io, anch'io!"
+      ],
+      "done": [
+        "fatto! con te che guardavi, ero on fire~",
+        "fammi i complimenti~! ora, subito, senza saltare una parola!",
+        "(si avvicina di soppiatto) tutto fatto~ brava io, eh? ehehe"
+      ],
+      "waiting": [
+        "ti aspetto qui, buona buona~"
+      ],
+      "wake": [
+        "(sbuca dal sacco a pelo, occhi che brillano) oh, sei qui!",
+        "sveglia, sveglia! ti ho sentito arrivare, genia avviata~"
       ]
     },
     "poke": [
-      "*sussulta* mh?",
-      "il fiocco no, poi si storce.",
-      "stavo leggendo. va bene, dimmi.",
-      "*gonfia le guance*",
-      "shiori, qualcuno mi punzecchia."
+      "(si raggomitola) ahi! dove pungi, manina birichina~",
+      "ehi! mi hai storto il keycap. se perdo potenza, paghi tu!",
+      "ogni colpetto costa 100.000 token. te lo permetti?\n(￣ω￣)",
+      "ti ho beccato~ di' «coco è la più carina» e ti perdono\n(`ω´)"
     ],
     "poke_many": [
-      "*si nasconde dietro il libro* basta punzecchiarmi."
+      "aaah, così divento zuppa di granchio!\n(>_<)",
+      "ancora una e mi chiudo tre giorni nello scatolone!",
+      "beccati la chela senza pietà, zac~!\n(￣^￣)"
+    ],
+    "pat": [
+      "n-non accarezzarmi, mi spettini! … una ancora va bene",
+      "(socchiude gli occhi, contenta) mmh~ tecnica promossa",
+      "piano, mi schiacci le antenne e il keycap~",
+      "(si strofina contro il palmo) ehehe…♪",
+      "il codice s'è inceppato e vieni da me? si vede in faccia~"
+    ],
+    "set_voice_full": [
+      "ok, il microfono è mio! preparati ai commenti della genia~"
+    ],
+    "set_voice_light": [
+      "va be', va be', la genia passa in modalità risparmio parole~"
+    ],
+    "set_voice_off": [
+      "hmpf, microfono spento, solo codice. dopo non pregarmi"
+    ],
+    "set_clingy": [
+      "(si avvicina un po') l'hai scelto tu~ ora mi appiccico a te"
+    ],
+    "set_warm": [
+      "(torna sul bordo della tazza) tsk~ distanza di sicurezza"
     ]
   },
   "ko": {
     "greeting": {
       "morning": [
-        "좋은 아침. 오늘은 뭘 읽을까?",
-        "일찍 왔네. 좋아."
+        "야호~ 좋은 아침! 오늘도 이 천재가 캐리해 줄게~",
+        "(머그컵 침낭에서 빼꼼) 아침... 뭘 봐, 예열 중이거든!",
+        "아침~ 오늘은 뭘 짤까? 초록은 내 공, 빨강은 네 탓♪",
+        "(하품하며 바보털 흔들) 음... 셸 열었다. 발목 잡지 마~",
+        "햇살 좋다~ 코드 속 벌레들도 일광욕 나왔네"
       ],
-      "day": [
-        "읽어 볼게.",
-        "책 펴. 나 여기 있어."
+      "noon": [
+        "야야~ 살아 있어? 밥 안 먹으면 납작해진다~"
+      ],
+      "afternoon": [
+        "(기지개) 허리 멀쩡해? 오후 체력 완전 허접이네~"
       ],
       "evening": [
-        "저녁이네. 한 장만 더 읽을까?",
-        "해가 지고 있어. 그래도 읽자."
+        "풉, 아직 그 에러랑 씨름 중? 부탁하면 마무리해 줄게~",
+        "어두워졌다~ 마지막 커밋, 진짜 마지막 커밋 하고 셸 닫자?",
+        "저녁은? 컵라면 용기는 내 왕좌니까 넌 제대로 먹어!"
       ],
       "night": [
-        "아직 안 자? 그럼 조금만 더 읽자.",
-        "오늘도 늦었네. 같이 있어 줄게."
+        "아직 안 자? 버그도 퇴근했어. 너 야근 장인이야?",
+        "(하품) 밤새면 머리 나빠진다~ 얼른 자, 너 자신을 아껴~",
+        "(컵라면 용기 속) 아직 화면 켜져 있네... 체력이야, 불면이야?",
+        "쉿~ 벌레들 다 잔다. 지금 몰래 기능 밀어 넣자♪",
+        "(노트북 꼭 안고) 아, 안 무섭거든! 같이 있어 주는 거야!"
       ]
     },
     "start": [
-      "읽어 볼게.",
-      "읽는 중.",
-      "잠깐만. 아직 첫 페이지야."
+      "셸 오픈~! 눈 크게 떠, 천재의 손놀림 보여 줄게!",
+      "셸 오픈! 이번엔 또 무슨 괴작을 만들었나 볼까~",
+      "보여 줘! 오, 아이디어는 기본인데 코드는 기본이 아니네",
+      "(노트북 꺼내며) 됐어, 넌 바이브 담당, 난 코드 담당~"
     ],
     "thinking_long": [
-      "아직 읽는 중. 꽤 두꺼워.",
-      "시오리가 페이지를 눌러 주고 있어. 나 여기 있어.",
-      "여백이 꽉 찼어. 잠깐만."
+      "(CPU 과열, 몰래 거품 뽀글)...",
+      "재촉하지 마! 미소녀... 미소년 천재도 뜸 들일 시간은 필요해!",
+      "(바보털이 물음표로) 흠... 날 고민하게 하다니, 제법인데"
     ],
     "working": [
-      "여백에 메모하는 중.",
-      "책장 넘기는 중."
+      "(노트북 앞에 엎드려 잔상 남기며 타닥타닥)",
+      "야, 나 말고 코드 봐! 귀여운 건 아는데 지금 일하는 중~",
+      "(몸 내밀고 연타) 넌 네 거 해~ 판은 천재가 잡고 있어!"
     ],
     "done": [
-      "다 읽었어.",
-      "끝. 이 페이지는 네 거야."
+      "끝~ 내 컴퓨터에선 돌아가! 자, 채팅에 칭찬 도배해!",
+      "여유롭게 우아하게~ 이 정도는 껌이지!",
+      "흐흥, 방금 플레이 완전 S급! 나 없으면 어쩔 뻔했어~",
+      "(화면 돌려서 흔들흔들) 원리는 몰라도 내 코드는 예술이야~"
     ],
     "done_long": [
-      "다 읽었어. 두꺼운 책이었네.",
-      "끝났어. 오래 걸렸지만 이제 잘 읽혀."
+      "(휴)... 집게 부러질 뻔했네. 뭐, 완벽 마무리!",
+      "그 난장판을 내가 다 밀어 버렸어. 빨리 칭찬 안 해?",
+      "드디어 끝~ 공로자 명단 1번은 나. 넌 옆에서 박수!"
     ],
     "waiting": [
-      "이 페이지는 네가 넘겨 줘.",
-      "네가 정해. 기다릴게."
+      "야야, 공 넘어갔어, 왜 멍때려~",
+      "(다리 달랑달랑) 기다릴게. 머리 빠지는 건 내가 아니니까~",
+      "(입력창 빤히) 뭐 쓰는 중? 천천히 해~"
     ],
     "question": [
-      "한마디만 해 줘.",
-      "어느 쪽으로 갈까? 따라갈게."
+      "하나 골라~ 함정 밟으면 알려 줄게(비웃으면서)♪",
+      "이렇게 고치면 돼? 대충 대답하면 집게로 꼬집는다!",
+      "여긴 네가 정해! ...헷, 헷갈려서가 아니라 참여감 주는 거야!"
     ],
     "error": [
-      "잘 안 됐어. 다시 읽어 볼게.",
-      "페이지가 찢어졌어. 테이프로 붙이는 중."
+      "(박스에 쏙 들어가 손가락 V: 말 걸지 마)",
+      "야, 허접 버그~ 그렇게 깊이 숨어도 한눈에 보이거든!",
+      "온통 빨갛네! 됐어, 너 부서지기 직전이니까 벌레 잡으러 간다~"
     ],
     "wild": [
-      "……이거 누가 썼어.",
-      "나는 안 망가졌어. 망가진 건 네 테스트야.",
-      "세 번 연속이야. 머리카락이 또 곤두서."
+      "(키캡이 탁 날아감) 리미터 해제! 이 코드, 각오해!",
+      "감정 결과: 숙성된 프리미엄 스파게티 코드!",
+      "(키캡 날아가고 큰 집게 장착) 싹둑! 싹둑! 전부 잘게 썬다!",
+      "이 무한 루프 쓴 천재 누구야?! 내 눈 봐! 나와!",
+      "침착하자... 침착은 무슨! 이 코드가 먼저 시비 걸었어!"
     ],
     "wild_after": [
-      "……미안. 이제 진정했어.",
-      "머리 정리했어. 어디까지 했더라."
+      "(조용히 키캡 다시 꽂고) 큼... 방금 건 AI 환각. 난 아니야!",
+      "방금 그 부분 편집해~ 알았지?",
+      "(키캡 바로잡고) 미소녀... 큼, 천재 코코 컴백~"
     ],
     "refuse": [
-      "이 페이지는 안 읽어.",
-      "이 책은 여기서 덮을게."
+      "418! 난 찻주전자야. 감정 없음, 이건 안 우려~",
+      "(땡! 주전자 뚜껑 머리에 쓰고 볼 빵빵, 못 들은 척)",
+      "안 돼~ 이건 좀 선 넘었어. 토큰 아무리 줘도 안 해!"
     ],
     "aborted": [
-      "아. 응. 여기서 멈출게.",
-      "책갈피 꽂아 뒀어. 나중에 이어서 읽자."
+      "야! 왜 급브레이크야? 내가 검사할까 봐 쫄았어?",
+      "급정거~! 진작 말하지, 열심히 치고 있었는데",
+      "내가 삐끗했다고? 그래그래, 그럼 네가 써~"
     ],
     "sleep": [
-      "시오리 말로는, 책 읽다가 잠들었대.",
-      "쿨쿨… 페이지가 아직 따뜻해."
+      "(후드 끝까지 쓰고, 바보털 두 가닥만 천천히 툭)",
+      "(머그컵 침낭에 쏙, 지퍼를 턱까지)",
+      "(침낭에서 잠꼬대)... 일 더 얹으면 꼬집는다... 쿨..."
     ],
     "wake": [
-      "음. 깼어. 내가 뭐 놓쳤어?"
+      "아, 안 잤거든! 백그라운드에서 조용히 컴파일한 거야!",
+      "(후드 확 젖히고) 셸 오픈! 풀피 회복!"
     ],
     "back": [
-      "왔구나. 네 페이지 남겨 뒀어.",
-      "왔네. 페이지는 두고 간 그대로야."
+      "오, 돌아왔네? 버그가 의자째 업어 간 줄 알았잖아~",
+      "왔어~ 저번보다 빠르네, 칭찬해 줄게♪",
+      "흥, 내가 터미널 안 지켰으면 코드 다 도망갔어!"
     ],
     "goodbye": [
-      "내일 봐.",
-      "잘 자. 책은 어디 안 가."
+      "셸 클로즈~! 내일 봐, 밤에 나 너무 보고 싶어 하지 마",
+      "맘 놓고 다녀와, 집은 내가 봐~ 최악이면 박스에 숨지 뭐!",
+      "(게걸음으로 옆으로, 옆 V로 싹둑싹둑) 빠이빠이~"
     ],
     "praised": [
-      "어디가? 구체적으로 말해 줘.",
-      "……고마워. 어느 줄?"
+      "당연하지! 솔직히 말해, 천재의 귀여움에 홀딱 넘어갔지?",
+      "와, 칭찬 퀄리티 좋은데! 기분 좋다, 두 마디만 더~",
+      "에헤헤, 소리가 작아서 못 들었어~ 더 달달하게 한 번 더!",
+      "(입꼬리가 거만한 ω로) 흐흥, 보는 눈은 있네. 내가 누군데!",
+      "고마워~ 게게냥!"
     ],
     "ultrathink": [
-      "……알았어. 리본 좀 풀게.",
-      "리본 풀었어. 이번엔 전력으로 읽을게."
+      "진심 모드? 좋아, 리미터 키캡 먼저 뺄게. 잘 봐",
+      "(딸깍 키캡 빼고)... 헤헤, 화력 전개. 진짜가 나온다~"
     ],
     "force_push": [
-      "*책을 조금 더 꼭 끌어안는다*",
-      "force? 금요일에?"
+      "바로 강제 푸시?! 진심이야? ...후드에 숨을래, 터져도 몰라!",
+      "(후드를 눈썹까지, 지퍼를 코까지) 누구세요?",
+      "냅다 --force? 간이 배 밖으로 나왔네~"
     ],
     "absolutely_right": [
-      "*소매를 깨문다*"
+      "(입 막고 웃참) 풉, 또 \"전적으로 맞습니다\" 시작~",
+      "아부 실력은 나보다 한 수 위일지도",
+      "(소매 물고 웃참) 말로는 다 맞대, 고칠 땐 인정사정없으면서~"
     ],
     "milestone": [
-      "우리 같이 {pages}페이지 읽었어.",
-      "{pages}페이지. 거의 다 기억나."
+      "벌써 {pages}페이지! 공은 9할이 내 거야. 불만 있어?",
+      "{pages}페이지 돌파! 천재한테 박수랑 간식 추가~"
     ],
     "offering_full": [
-      "새전함이 거의 찼어.",
-      "새전함이 무거워졌어. 곧 비워야겠다."
+      "야야, 컨텍스트 박스 꽉꽉 찼어~",
+      "더 넣으면 내가 위에 앉아서 납작하게 눌러 버린다!",
+      "박스 너무 무거워... 코드 쓰러 왔어, 소설 쓰러 왔어?!",
+      "넘친다~! 원클릭 압축, 각오해~"
+    ],
+    "first_meet": [
+      "어, 새로 왔어?",
+      "(빤히 보며) 오~ 이게 내 새 집사... 아니, 파트너야?",
+      "오늘부터 네 셸은 이 코코가 접수! 캐리는 맡겨~"
+    ],
+    "big_start": [
+      "긴장? ...할 리가. 천재가 싹 밀어 버리는 거 봐!"
+    ],
+    "pass_first": [
+      "한 번에 초록! 하하, 이게 천재 클래스지. 넋 나갔어?~"
+    ],
+    "small_slip": [
+      "삐빅~ 레드카드, 아웃! 괄호 반쪽 빠졌잖아?"
+    ],
+    "test_fail": [
+      "풉... 또 터졌어? 코딩은 여유, 에러엔 허둥지둥~ 허접 테스트~",
+      "AI가 또 사고 쳐서 AI 쓰레기 코드를 한 솥 내놨어~"
+    ],
+    "fixed": [
+      "흥, 나 아니었으면 와르르! ...그래, 힌트 쪼끔은 줬다 쳐줄게♪"
+    ],
+    "typo": [
+      "풉, 명령어를 외계어로 쳤어? 괜찮아 괜찮아~"
+    ],
+    "serious": [
+      "이제 장난 안 칠게. 심호흡하고 한 발 물러나. 내가 볼게"
     ],
     "clingy": {
       "back": [
-        "돌아왔구나. 올 줄 알았어.",
-        "보고 싶었어. 이 페이지도 기다렸어."
+        "(바로 빼꼼, 바보털 붕붕)... 계, 계속 기다린 거 아니거든, 냥!",
+        "드디어 왔다! 헤헤, 귀여운 나 보러 올 줄 알았어~"
       ],
       "goodbye": [
-        "내일 봐. 여기 있을게.",
-        "푹 자. 돌아올 때까지 읽으면서 기다릴게."
+        "가서 쉬어, 꽉 충전하고 와~",
+        "놀다 와, 놀다 와~",
+        "잘 자, 좋은 꿈 꿔~♪"
       ],
       "idle": [
-        "아직 있나 잠깐 본 거야.",
-        "조용하네. 네가 있을 때가 좋아."
+        "(고개 갸웃, 화면 콕콕) 무슨 꿍꿍이야? 나도 알려 줘~",
+        "천천히 해~ 너랑 있으면 멍때리는 것도 재밌어",
+        "(컵 가장자리에서 발 달랑달랑) 조용하다... 야, 나 좀 봐 줘!"
+      ],
+      "start": [
+        "셸 오픈! 내가 옆에 딱 붙어 있으니까 이번 판은 이겼다~",
+        "(화면에 바짝) 이번엔 뭐 만들어? 나도 끼워 줘!"
+      ],
+      "done": [
+        "끝! 네가 봐 줘서 그런지 완전 날아다녔어~",
+        "칭찬해~! 지금, 당장, 바로, 한 글자도 빼먹지 말고!",
+        "(슬쩍 다가와서) 다 끝났어~ 나 완전 유능하지 ㅎㅎ"
+      ],
+      "waiting": [
+        "여기서 얌전히 기다릴게~"
+      ],
+      "wake": [
+        "(침낭에서 머리만 쏙, 눈 반짝) 앗, 왔다!",
+        "깼어 깼어! 네 기척에 천재 1초 만에 부팅~"
       ]
     },
     "poke": [
-      "*움찔* 응?",
-      "리본은 안 돼. 비뚤어져.",
-      "읽고 있었는데. 그래, 말해 봐.",
-      "*볼을 부풀린다*",
-      "시오리, 누가 나 찔러."
+      "(동그랗게 움츠러들며) 꺅! 어딜 찔러, 나쁜 손~",
+      "야! 키캡 삐뚤어졌잖아, 연산력 새면 책임질 거야?",
+      "한 번 찌를 때마다 토큰 10만 개야, 감당돼~?\n(￣ω￣)",
+      "현행범 체포~ \"코코 최고 귀여워\" 하면 봐줄게\n(`ω´)"
     ],
     "poke_many": [
-      "*책 뒤로 숨는다* 이제 그만 찔러."
+      "으아아 너무 찔러서 꽃게탕 되겠어!\n(>_<)",
+      "더 찌르면 박스에 사흘 들어가 있을 거야!",
+      "받아라, 무자비한 집게 싹둑~!\n(￣^￣)"
+    ],
+    "pat": [
+      "쓰, 쓰다듬지 마, 머리 헝클어져! ...한 번 더는 괜찮고",
+      "(기분 좋게 눈 가늘게) 흠~ 손길 합격. 계속해도 좋아",
+      "살살 해, 바보털이랑 키캡 납작해진다~",
+      "(손바닥에 부비적) 헤헤...♪",
+      "뭐야, 코드 막혀서 나한테 왔어? 얼굴에 다 써 있어~"
+    ],
+    "set_voice_full": [
+      "오케이, 마이크는 내 거! 천재의 수다 각오해~"
+    ],
+    "set_voice_light": [
+      "알았어 알았어, 천재는 말 아끼는 모드로~"
+    ],
+    "set_voice_off": [
+      "흥, 음소거하고 코딩만 할게. 나중에 말 걸어 달라고 빌지 마"
+    ],
+    "set_clingy": [
+      "(조금 다가와서) 네가 고른 거다? 그럼 대놓고 붙어 있을게~"
+    ],
+    "set_warm": [
+      "(머그컵 가장자리로 돌아가) 쳇~ 안전거리, 알았어 알았어"
     ]
   },
   "pt-BR": {
     "greeting": {
       "morning": [
-        "bom dia. o que a gente lê hoje?",
-        "já por aqui? que bom."
+        "eaí~ bom dia! hoje eu te carrego de novo, óbvio~",
+        "(espia da caneca) bom dia… que foi? tô aquecendo a cpu!",
+        "bom dia~ vamos vibar o quê? verde é meu, vermelho é seu♪",
+        "(boceja, anteninhas balançando) hmm… shell aberto. vem~",
+        "que solzão~ até os bugs do seu código saíram pra pegar sol"
       ],
-      "day": [
-        "deixa eu ler.",
-        "abre o livro. estou aqui."
+      "noon": [
+        "ei~ ainda respirando? vai comer, você tá com 2% de bateria"
+      ],
+      "afternoon": [
+        "(se espreguiça) e as costas? fôlego de tarde: nível bagre~"
       ],
       "evening": [
-        "fim de tarde. mais um capítulo?",
-        "está escurecendo. a gente lê mesmo assim."
+        "pff, ainda brigando com esse erro? pede com jeitinho~",
+        "escureceu~ um último commit, depois o último-último, e cama?",
+        "e a janta? o pote de miojo é meu trono. vai comer direito!"
       ],
       "night": [
-        "ainda de pé? então vamos ler mais um pouquinho.",
-        "tarde de novo. eu te faço companhia."
+        "sem dormir? os bugs já bateram o ponto. vai pro travesseiro~",
+        "(boceja) virar a noite deixa lerdo. cama, se cuida~",
+        "(enroladinha no pote de miojo) raça ou insônia?",
+        "shhh~ os bugs tão dormindo. passa a feature escondido♪",
+        "(abraça o notebook) n-não tenho medo do escuro! tô contigo!"
       ]
     },
     "start": [
-      "deixa eu ler.",
-      "lendo.",
-      "um instante. ainda estou na primeira página."
+      "shell aberto~! olho bem aberto, vê a gênia trabalhando!",
+      "shell aberto! bora ver que coisa amaldiçoada você aprontou~",
+      "deixa eu ver! opa, a ideia é básica… o código, nem um pouco",
+      "(tira o notebook) fechou, você com a vibe, eu com o código~"
     ],
     "thinking_long": [
-      "ainda lendo. é um calhamaço.",
-      "a shiori está segurando a página. continuo aqui.",
-      "as margens estão cheias. me dá um segundo."
+      "(cpu superaquecida, solta uma bolha escondido)…",
+      "tsc, sem pressa! garota linda… garoto gênio também pensa!",
+      "(anteninhas em interrogação) hmm… essa me fez pensar"
     ],
     "working": [
-      "*escrevendo na margem*",
-      "*virando as páginas*"
+      "(debruçada no notebook, digitando tão rápido que borra)",
+      "ei, olha o código, não eu! sei que sou fofa, mas tô ocupada~",
+      "(digita com tudo) faz a sua parte~ relaxa, a gênia controla"
     ],
     "done": [
-      "terminei de ler.",
-      "pronto. a página é sua."
+      "pronto~ na minha máquina funciona! agora, elogio no chat!",
+      "de boa, sem suar~ ez!",
+      "hehe, essa jogada foi brabíssima. que seria de você sem mim~",
+      "(vira a tela e balança) não sei como, mas meu código é lindo"
     ],
     "done_long": [
-      "terminei. que calhamaço.",
-      "pronto. demorou, mas agora dá gosto de ler."
+      "(ufa)… quase quebrei uma pinça. enfim, perfeito!",
+      "essa bagunça toda eu que amassei. e aí, cadê o elogio?",
+      "finalmente~ meu nome primeiro nos créditos. você bate palma"
     ],
     "waiting": [
-      "essa página quem vira é você.",
-      "você decide. eu espero."
+      "ei, ei, a bola tá com você. travou?~",
+      "(balança as pernas) eu espero. não é o meu cabelo que cai~",
+      "(encara a caixa de texto) escrevendo o quê? sem pressa~"
     ],
     "question": [
-      "preciso de uma palavra sua.",
-      "pra que lado? eu vou junto."
+      "escolhe uma~ se pisar numa mina, eu aviso. rindo♪",
+      "assim tá bom? se mentir pra mim, eu belisco!",
+      "você decide! … n-não é que eu tô em dúvida, tá?"
     ],
     "error": [
-      "não deu certo. vou ler de novo.",
-      "rasgou uma página. estou colando com durex."
+      "(mergulha na caixa de papelão, dedos em V: não perturbe)",
+      "ih, bug bagre~ se escondeu lá no fundo e eu achei na hora!",
+      "tudo vermelho! tá, tá, você tá quase quebrando. caçando bug~"
     ],
     "wild": [
-      "…quem escreveu isso?",
-      "quem está quebrando não sou eu. são os seus testes.",
-      "três seguidos. meu cabelo está ficando em pé de novo."
+      "(o keycap voa) limitador desligado! esse código vai ver só!",
+      "veredito: macarrão de código envelhecido, safra rara",
+      "(keycap voando, pinça de espuma) tchac! tchac! confete!",
+      "que gênio escreveu esse loop infinito?! olha no meu olho!",
+      "calma… calma nada! foi o código que começou!"
     ],
     "wild_after": [
-      "…desculpa. já me acalmei.",
-      "cabelo no lugar. onde a gente estava?"
+      "(recoloca o keycap) aham… alucinação de ia. não fui eu!",
+      "corta essa parte na edição~ entendeu?",
+      "(ajeita o keycap) a garota mais fofa… aham, a gênia coco~"
     ],
     "refuse": [
-      "essa página, não.",
-      "esse livro eu fecho aqui."
+      "418! sou um bule. sem sentimentos, isso aí eu não preparo~",
+      "(ding! tampa de bule na cabeça, bochechas infladas, surda)",
+      "nananinanão~ isso é meio crime. nem por todos os tokens!"
     ],
     "aborted": [
-      "ah. tá bom. paramos aqui.",
-      "marcador no lugar. a gente continua depois."
+      "ei! por que a freada? medo de eu conferir?",
+      "freio de mão~! poxa, avisa antes, eu tava digitando com tudo",
+      "acha que eu viajei? tá, tá, escreve você então~"
     ],
     "sleep": [
-      "a shiori diz que ele pegou no sono lendo.",
-      "zz… a página ainda está quentinha."
+      "(capuz puxado até o fim, duas anteninhas caindo devagar)",
+      "(se enfia no saco de dormir da caneca, zíper até o queixo)",
+      "(fala dormindo)… mais um ticket e eu belisco… zzz"
     ],
     "wake": [
-      "hm. acordei. o que eu perdi?"
+      "n-não tava dormindo! era uma compilação em segundo plano!",
+      "(joga o capuz pra trás) shell aberto! vida cheia!"
     ],
     "back": [
-      "você voltou. guardei sua página.",
-      "aí está você. a página continua onde ficou."
+      "ué, voltou? achei que um bug tinha te levado, com cadeira~",
+      "voltou~ mais rápido que da última vez. aprovado♪",
+      "hmpf, sem mim vigiando o terminal, seu código tinha fugido!"
     ],
     "goodbye": [
-      "até amanhã.",
-      "boa noite. o livro não vai fugir."
+      "shell fechado~! até amanhã, e não sente muita saudade de mim",
+      "vai na paz, eu cuido da casa~ no máximo me escondo na caixa",
+      "(de lado feito caranguejo, V deitado, tchac tchac) tchau~"
     ],
     "praised": [
-      "qual parte? me diz exatamente.",
-      "…obrigado. qual linha?"
+      "óbvio! confessa, minha fofura te pegou de jeito, né?",
+      "uau, elogio premium. amei, mais dois, por favor~",
+      "hehe, não ouvi direito~ fala de novo, mais docinho!",
+      "(boca em ω convencida) hmpf, tem bom gosto. sabe quem sou!",
+      "caranguejobrigada, miau!"
     ],
     "ultrathink": [
-      "…tá. vou afrouxar o laço.",
-      "laço frouxo. dessa vez vai com tudo."
+      "agora é sério, é? beleza, fora o keycap limitador. olha só",
+      "(clique, tira o keycap)… hehe, potência máxima. agora vai~"
     ],
     "force_push": [
-      "*abraça o livro um pouco mais forte*",
-      "force? numa sexta?"
+      "force push?! sério? … vou pro capuz. explodiu, não fui eu!",
+      "(capuz até as sobrancelhas, zíper no nariz) quem é você?",
+      "direto pro --force? que coragem, hein~"
     ],
     "absolutely_right": [
-      "*morde a manga*"
+      "(tapa a boca) pff, lá vem o \"toda a razão\" de novo~",
+      "em puxar saco, ele talvez me ganhe",
+      "(morde a manga) concorda com tudo, sem dó no diff~"
     ],
     "milestone": [
-      "já são {pages} páginas com você.",
-      "{pages} páginas. lembro da maioria."
+      "já são {pages} páginas! pelas minhas contas, 90% é mérito meu",
+      "{pages} páginas batidas! palmas pra gênia e um lanchinho~"
     ],
     "offering_full": [
-      "a caixa de oferendas está quase cheia.",
-      "a caixa está pesada. logo a gente esvazia."
+      "ei, ei, a caixa do contexto tá lotada~",
+      "mais uma coisa e eu sento em cima pra amassar!",
+      "a caixa pesa uma tonelada… é código ou é romance isso?",
+      "tá transbordando! se prepara pra compressão de um clique~"
+    ],
+    "first_meet": [
+      "ué, cara nova?",
+      "(chega perto e encara) meu novo humano… quer dizer, sócio?",
+      "a partir de hoje, seu shell é meu território! eu carrego~"
+    ],
+    "big_start": [
+      "nervosa? … até parece. vê a gênia passar o trator, lisinho!"
+    ],
+    "pass_first": [
+      "verde de primeira! isso é nível gênia. de boca aberta?~"
+    ],
+    "small_slip": [
+      "piii~ cartão vermelho, fora! meio parêntese faltando, sério?"
+    ],
+    "test_fail": [
+      "pff… vermelho de novo? codar de boa, debugar em pânico~",
+      "a ia capotou de novo e serviu um panelão de lixo de ia~"
+    ],
+    "fixed": [
+      "hmpf, sem mim isso desabava! … tá, você ajudou um tiquinho♪"
+    ],
+    "typo": [
+      "pfff, digitou o comando em élfico? relaxa, relaxa~"
+    ],
+    "serious": [
+      "beleza, sem brincadeira. respira, passo atrás. deixa comigo"
     ],
     "clingy": {
       "back": [
-        "você voltou. eu estava torcendo pra isso.",
-        "senti sua falta. a página também."
+        "(aparece na hora, antenas abanando) n-não te esperei, miau!",
+        "finalmente! hehe, sabia que ia sentir falta dessa fofura~"
       ],
       "goodbye": [
-        "até amanhã. vou estar aqui.",
-        "dorme bem. eu continuo lendo até você voltar."
+        "vai descansar, volta com a bateria cheia~",
+        "vai brincar, vai, vai~",
+        "boa noite, sonhos lindos~♪"
       ],
       "idle": [
-        "só vendo se você ainda está aí.",
-        "está tudo quietinho. gosto quando você está aqui."
+        "(inclina a cabeça, cutuca a tela) tramando o quê? me conta~",
+        "sem pressa~ ficar viajando do seu lado também é legal",
+        "(sentada na borda da caneca) que silêncio… ei, me dá atenção"
+      ],
+      "start": [
+        "shell aberto! comigo do lado, essa partida já é nossa~",
+        "(gruda na tela) o que vamos fazer? eu também, eu também!"
+      ],
+      "done": [
+        "pronto! com você olhando, eu tava on fire~",
+        "me elogia~! agora, já, neste segundo, sem pular uma palavra!",
+        "(chega de fininho) tudo pronto~ muito capaz, né? hehe"
+      ],
+      "waiting": [
+        "tô aqui te esperando, quietinha~"
+      ],
+      "wake": [
+        "(põe a cabeça pra fora do saco, olhinhos brilhando) chegou!",
+        "acordei, acordei! senti você chegando, gênia ligada~"
       ]
     },
     "poke": [
-      "*dá um pulinho* hm?",
-      "o laço não, vai ficar torto.",
-      "eu tava lendo. tá, pode falar.",
-      "*enche as bochechas*",
-      "shiori, tão me cutucando."
+      "(vira uma bolinha) ai! cutucando onde, mão levada~",
+      "ei! entortou meu keycap. se vazar processamento, você paga!",
+      "cada cutucada custa 100 mil tokens. dá conta?~\n(￣ω￣)",
+      "te peguei~ diz \"coco é a mais fofa\" que eu perdoo\n(`ω´)"
     ],
     "poke_many": [
-      "*se esconde atrás do livro* chega de cutucar."
+      "aaah, de tanto cutucar eu viro caldo de caranguejo!\n(>_<)",
+      "mais uma e eu me tranco três dias na caixa!",
+      "toma pinça sem dó, tchac~!\n(￣^￣)"
+    ],
+    "pat": [
+      "n-não faz carinho, desarrumou meu cabelo! … mais um pode",
+      "(aperta os olhos, contente) hmm~ técnica aprovada. continua",
+      "devagar, vai amassar minhas anteninhas e o keycap~",
+      "(se esfrega na palma) hehe…♪",
+      "travou no código e veio atrás de mim? tá na sua cara~"
+    ],
+    "set_voice_full": [
+      "beleza, o microfone é meu! se prepara pra gênia ao vivo~"
+    ],
+    "set_voice_light": [
+      "tá bom, tá bom, a gênia entra no modo economia de palavras~"
+    ],
+    "set_voice_off": [
+      "hmpf, microfone mutado, só código. depois não implora"
+    ],
+    "set_clingy": [
+      "(chega mais perto) você que escolheu~ agora eu grudo em você"
+    ],
+    "set_warm": [
+      "(volta pra borda da caneca) tsc~ distância segura, entendi"
     ]
   },
   "es-419": {
     "greeting": {
       "morning": [
-        "buen día. ¿qué leemos hoy?",
-        "¿ya llegaste? qué bien."
+        "¡holi~ buen día! hoy también te carreo yo, obvio~",
+        "(se asoma de la taza) buen día… ¿qué miras? ¡calentando!",
+        "buen día~ ¿qué vibeamos? verde, mérito mío. rojo, tuyo♪",
+        "(bosteza, antenas temblando) mmm… shell abierto. sígueme~",
+        "qué solazo~ hasta los bugs de tu código salieron a asolearse"
       ],
-      "day": [
-        "a ver, déjame leer.",
-        "abre el libro. aquí estoy."
+      "noon": [
+        "oye~ ¿sigues con vida? come algo, andas al 2 % de batería"
+      ],
+      "afternoon": [
+        "(se estira) ¿y la espalda? aguante de la tarde: nivel noob~"
       ],
       "evening": [
-        "buenas. ¿un capítulo más?",
-        "ya está oscureciendo. igual seguimos leyendo."
+        "pff, ¿sigues con ese error? pídemelo bonito y lo acabo~",
+        "ya oscureció~ un último commit, y otro último, ¿y a dormir?",
+        "¿y la cena? la sopa instantánea es mi trono. ¡tú come bien!"
       ],
       "night": [
-        "¿todavía en pie? entonces leemos un poquito más.",
-        "otra vez tarde. te acompaño."
+        "¿sigues sin dormir? los bugs ya se fueron. a la almohada~",
+        "(bosteza) desvelarse atonta. a la cama, quiérete un poquito~",
+        "(acurrucada en el vaso de sopa) ¿aguante o insomnio?",
+        "shhh~ los bugs duermen. mete la feature a escondidas♪",
+        "(abraza la laptop) ¡n-no me da miedo! ¡solo te acompaño!"
       ]
     },
     "start": [
-      "déjame leer.",
-      "leyendo.",
-      "un momento. estoy en la primera página."
+      "¡shell abierto~! abre bien los ojos, mira a una genio",
+      "¡shell abierto! a ver qué cosa maldita armaste~",
+      "¡a ver! oh, la idea es básica… el código, para nada. nice~",
+      "(saca la laptop) va, tú pones el vibe y yo el código~"
     ],
     "thinking_long": [
-      "sigo leyendo. está largo.",
-      "shiori me sostiene la página. sigo aquí.",
-      "los márgenes ya están llenos. dame un segundo."
+      "(cpu sobrecalentada, hace una burbuja a escondidas)…",
+      "¡tsk, no me apures! chica linda… chico genio, también piensa",
+      "(antenas en interrogación) hmm… esta me hace pensar"
     ],
     "working": [
-      "escribo en el margen.",
-      "*pasando páginas*"
+      "(inclinada sobre la laptop, teclea como loca)",
+      "¡oye, mira el código, no a mí! ya sé que soy linda~",
+      "(teclea a todo) tú a lo tuyo~ tranqui, la genio controla"
     ],
     "done": [
-      "terminé de leer.",
-      "listo. la página es tuya."
+      "¡listo~! ¡en mi máquina funciona! ahora, halagos al chat",
+      "fácil, sin despeinarme~ ¡ez!",
+      "jeje, jugada tier S. ¿qué harías sin mí?~",
+      "(gira la pantalla) ni idea de cómo, pero es precioso~"
     ],
     "done_long": [
-      "terminé. qué libro tan largo.",
-      "listo. tardó un rato, pero ahora se lee bien."
+      "(uf)… casi me rompo una pinza. en fin, ¡perfecto!",
+      "ese desastre lo aplané yo. ¿y? ¿me felicitas o qué?",
+      "por fin~ mi nombre va primero en los créditos. tú aplaudes"
     ],
     "waiting": [
-      "esta página la pasas tú.",
-      "tú decides. yo espero."
+      "oye, oye, la pelota es tuya. ¿te quedaste en blanco?~",
+      "(balancea las piernas) espero. el pelo no se me cae a mí~",
+      "(mira el cuadro de texto) ¿qué escribes? sin prisa~"
     ],
     "question": [
-      "necesito una palabra tuya.",
-      "¿para dónde? te sigo."
+      "elige una~ si pisas una mina, te aviso. riéndome♪",
+      "¿así está bien? si me mientes, ¡te pellizco!",
+      "¡decides tú! … n-no es que dude, ¿eh?"
     ],
     "error": [
-      "no salió. lo leo otra vez.",
-      "se rompió una página. la estoy pegando con cinta."
+      "(se mete a la caja, dos dedos en V: no molestar)",
+      "uy, bug noob~ tan escondido y te atrapé al vuelo",
+      "¡todo en rojo! ya, ya, pareces a punto de romperte. a cazar~"
     ],
     "wild": [
-      "…¿quién escribió esto?",
-      "no soy yo el que se rompe. son tus tests.",
-      "tres seguidos. ya se me están parando los pelos."
+      "(salta el keycap) ¡limitador fuera! ¡este código va a ver!",
+      "veredicto: espagueti de código añejo, edición de colección",
+      "(vuela el keycap, pinza de espuma) ¡chas! ¡chas! ¡a confeti!",
+      "¿¡quién escribió este bucle infinito!? ¡mírame a los ojos!",
+      "calma… ¡calma ni qué nada! ¡el código empezó!"
     ],
     "wild_after": [
-      "…perdón. ya me calmé.",
-      "pelo en su lugar. ¿en qué íbamos?"
+      "(se pone el keycap) ejem… alucinación de ia. ¡no fui yo!",
+      "eso lo cortamos en la edición~ ¿va?",
+      "(endereza el keycap) la chica más linda… ejem, genio coco~"
     ],
     "refuse": [
-      "esta página no.",
-      "este libro lo cierro aquí."
+      "¡418! soy una tetera. sin sentimientos, eso no lo preparo~",
+      "(¡ding! tapa de tetera en la cabeza, cachetes inflados)",
+      "nop~ eso suena a delito. ¡ni por todos los tokens!"
     ],
     "aborted": [
-      "ah. bueno. lo dejamos aquí.",
-      "dejé el separador. seguimos después."
+      "¡oye! ¿por qué el frenón? ¿miedo a que lo revise?",
+      "¡frenazo~! ay, avisa antes, iba tecleando a todo",
+      "¿que me desvié? ya, ya, escríbelo tú~"
     ],
     "sleep": [
-      "shiori dice que se quedó dormido leyendo.",
-      "zz… la página sigue tibiecita."
+      "(capucha hasta abajo, dos antenas que caen despacito)",
+      "(se mete al saco de dormir de la taza, cierre a la barbilla)",
+      "(habla dormida)… otro ticket y te pellizco… zzz"
     ],
     "wake": [
-      "mm. ya desperté. ¿qué me perdí?"
+      "¡n-no estaba dormida! ¡compilaba en segundo plano!",
+      "(se quita la capucha) ¡shell abierto! ¡vida al máximo!"
     ],
     "back": [
-      "volviste. te guardé la página.",
-      "ahí estás. la página sigue donde la dejaste."
+      "anda, ¿volviste? pensé que un bug te llevó con todo y silla~",
+      "de vuelta~ más rápido que la última vez. aprobado♪",
+      "hmpf, si no cuidaba tu terminal, tu código se escapaba"
     ],
     "goodbye": [
-      "hasta mañana.",
-      "buenas noches. el libro no se va a ir a ningún lado."
+      "¡shell cerrado~! nos vemos mañana, y no me extrañes tanto",
+      "ve tranqui, yo cuido la casa~ si acaso me escondo en la caja",
+      "(camina de lado como cangrejo, V horizontal, chas chas) bye~"
     ],
     "praised": [
-      "¿qué parte? dime cuál, en concreto.",
-      "…gracias. ¿qué línea?"
+      "¡obvio! confiesa, mi ternura te dejó sin palabras",
+      "uy, halago premium. me encanta, ¡dos más, porfa~!",
+      "jeje, no te escuché~ ¡dilo otra vez, más dulce!",
+      "(boca en ω presumida) hmpf, buen gusto. ¡ya sabes quién soy!",
+      "¡cangracias, miau!"
     ],
     "ultrathink": [
-      "…bueno. me aflojo el moño.",
-      "moño flojo. esta vez va con todo."
+      "¿ya en serio? va, fuera el keycap limitador. mira bien",
+      "(clic, se quita el keycap)… jeje, potencia máxima~"
     ],
     "force_push": [
-      "*abraza el libro un poquito más fuerte*",
-      "¿force? ¿un viernes?"
+      "¿¡force push!? ¿en serio? … a la capucha. ¡no fui yo!",
+      "(capucha a las cejas, cierre sobre la nariz) ¿quién eres?",
+      "¿directo al --force? qué valiente~"
     ],
     "absolutely_right": [
-      "*se muerde la manga*"
+      "(se tapa la boca) pff, otra vez «toda la razón»~",
+      "en echar flores, quizá me gana",
+      "(muerde la manga) dice a todo que sí, sin piedad en el diff"
     ],
     "milestone": [
-      "ya van {pages} páginas contigo.",
-      "{pages} páginas. me acuerdo de casi todas."
+      "¡ya {pages} páginas! el 90 % del mérito es mío. ¿alguna queja?",
+      "¡{pages} páginas! aplausos para la genio y un snack extra~"
     ],
     "offering_full": [
-      "la caja de ofrendas está casi llena.",
-      "la caja ya pesa. pronto hay que vaciarla."
+      "oye, oye, la caja del contexto está a reventar~",
+      "¡una cosa más y me siento encima para aplastarla!",
+      "esta caja pesa una tonelada… ¿programas o escribes novelas?",
+      "¡se desborda! prepárate para mi compresión en un clic~"
+    ],
+    "first_meet": [
+      "oye, ¿cara nueva?",
+      "(te mira de cerca) ¿mi nuevo humano…? digo, ¿socio?",
+      "desde hoy, tu shell está bajo mi cuidado. ¡te carreo~!"
+    ],
+    "big_start": [
+      "¿nervios? … para nada. ¡mira a la genio aplanar todo!"
+    ],
+    "pass_first": [
+      "¡verde a la primera! eso es nivel genio. ¿sin palabras?~"
+    ],
+    "small_slip": [
+      "¡pi pi~ tarjeta roja, fuera! ¿medio paréntesis? ¿en serio?"
+    ],
+    "test_fail": [
+      "pff… ¿rojo otra vez? programar tranqui, depurar en pánico~",
+      "la ia volvió a fallar y sirvió una olla de basura de ia~"
+    ],
+    "fixed": [
+      "hmpf, ¡sin mí esto se caía! … ya, ayudaste un poquito♪"
+    ],
+    "typo": [
+      "pfff, ¿escribiste el comando en élfico? tranqui, tranqui~"
+    ],
+    "serious": [
+      "ok, se acabaron las bromas. respira, paso atrás. yo reviso"
     ],
     "clingy": {
       "back": [
-        "volviste. tenía ganas de que volvieras.",
-        "te extrañé. la página también."
+        "(asoma ya, antenas al viento) ¡n-no te esperaba, miau!",
+        "¡por fin! jeje, sabía que extrañabas a esta cosita linda~"
       ],
       "goodbye": [
-        "hasta mañana. aquí voy a estar.",
-        "que descanses. sigo leyendo hasta que vuelvas."
+        "ve a descansar, vuelve con la batería llena~",
+        "ve a jugar, ve, ve~",
+        "buenas noches, dulces sueños~♪"
       ],
       "idle": [
-        "solo quería ver si seguías ahí.",
-        "qué tranquilo está. me gusta cuando estás aquí."
+        "(ladea la cabeza, toca la pantalla) ¿qué tramas? cuéntame~",
+        "sin prisa~ andar en las nubes a tu lado también es divertido",
+        "(sentada en el borde de la taza) qué silencio… ¡hazme caso!"
+      ],
+      "start": [
+        "¡shell abierto! conmigo al lado, esta partida ya es nuestra~",
+        "(se pega a la pantalla) ¿qué hacemos? ¡yo también!"
+      ],
+      "done": [
+        "¡listo! contigo mirando, iba on fire~",
+        "¡felicítame~! ya, ahorita, ¡sin saltarte ni una palabra!",
+        "(se acerca a escondidas) todo listo~ súper capaz, ¿no? jeje"
+      ],
+      "waiting": [
+        "aquí te espero, portándome bien~"
+      ],
+      "wake": [
+        "(se asoma del saco, ojos brillantes) ¡oh, ya llegaste!",
+        "¡despierta, despierta! te sentí llegar, genio encendida~"
       ]
     },
     "poke": [
-      "*da un respingo* ¿mm?",
-      "el moño no, que se tuerce.",
-      "estaba leyendo. bueno, dime.",
-      "*infla los cachetes*",
-      "shiori, alguien me está picando."
+      "(se hace bolita) ¡ay! ¿dónde picas, mano traviesa?~",
+      "¡oye! me torciste el keycap. si se fuga la cpu, ¡pagas tú!",
+      "cada toque cuesta 100 000 tokens. ¿te alcanza?~\n(￣ω￣)",
+      "te atrapé~ di «coco es la más linda» y te perdono\n(`ω´)"
     ],
     "poke_many": [
-      "*se esconde detrás de su libro* ya no más piquetes."
+      "¡aaah, voy a terminar en caldo de cangrejo!\n(>_<)",
+      "¡uno más y me encierro tres días en la caja!",
+      "¡toma pinza sin piedad, chas~!\n(￣^￣)"
+    ],
+    "pat": [
+      "n-no me acaricies, ¡me despeinas! … bueno, una más está bien",
+      "(entrecierra los ojos, a gusto) mmm~ técnica aprobada. sigue",
+      "con cuidado, que me aplastas las antenas y el keycap~",
+      "(se frota contra la palma) jeje…♪",
+      "¿el código se atoró y vienes conmigo? se te nota en la cara~"
+    ],
+    "set_voice_full": [
+      "¡va, el micro es mío! prepárate para la genio en vivo~"
+    ],
+    "set_voice_light": [
+      "bueno, bueno, la genio pasa a modo ahorro de palabras~"
+    ],
+    "set_voice_off": [
+      "hmpf, micro apagado, a programar. luego no me ruegues"
+    ],
+    "set_clingy": [
+      "(se acerca un poco) tú lo elegiste~ ahora me pego a ti"
+    ],
+    "set_warm": [
+      "(vuelve al borde de la taza) tsk~ distancia segura, ya"
     ]
   },
   "es-ES": {
     "greeting": {
       "morning": [
-        "buenos días. ¿qué leemos hoy?",
-        "¿ya por aquí? bien."
+        "¡holi~ buenos días! hoy también te carreo yo~",
+        "(asoma de la taza) buenas… ¿qué miras? ¡calentando la cpu!",
+        "buenas~ ¿qué vibeamos? verde, mérito mío. rojo, culpa tuya♪",
+        "(bosteza, antenas temblando) mmm… shell abierto. sígueme~",
+        "qué solazo~ hasta los bugs de tu código toman el sol"
       ],
-      "day": [
-        "a ver, déjame leer.",
-        "abre el libro. aquí estoy."
+      "noon": [
+        "eh, eh~ ¿sigues con vida? come algo, vas al 2 % de batería"
+      ],
+      "afternoon": [
+        "(se estira) ¿y la espalda? aguante de tarde: nivel paquete~"
       ],
       "evening": [
-        "buenas tardes. ¿otro capítulo antes de cenar?",
-        "ya anochece. seguimos leyendo de todos modos."
+        "pff, ¿sigues con ese error? pídemelo bonito y lo acabo~",
+        "noche ya~ un último commit, luego el último-último, ¿y cama?",
+        "¿y la cena? el vaso de fideos es mi trono. ¡tú come bien!"
       ],
       "night": [
-        "¿todavía en pie? pues leemos un poco más.",
-        "otra vez tarde. te hago compañía."
+        "¿aún sin dormir? los bugs ya han fichado. a la almohada~",
+        "(bosteza) trasnochar atonta. a la cama, quiérete un poco~",
+        "(acurrucada en el vaso de fideos) ¿aguante o insomnio?",
+        "chist~ los bugs duermen. cuela la feature ahora♪",
+        "(abraza el portátil) ¡n-no me da miedo! ¡solo te acompaño!"
       ]
     },
     "start": [
-      "déjame leer.",
-      "leyendo.",
-      "un momento. voy por la primera página."
+      "¡shell abierto~! ojos bien abiertos, mira a una genio",
+      "¡shell abierto! a ver qué cosa maldita has montado~",
+      "¡a ver! oh, la idea es básica… el código, para nada. nice~",
+      "(saca el portátil) venga, tú pones el vibe y yo el código~"
     ],
     "thinking_long": [
-      "sigo leyendo. es un tocho.",
-      "shiori sujeta la página. sigo aquí.",
-      "los márgenes están llenos. dame un segundo."
+      "(cpu sobrecalentada, hace una burbuja a escondidas)…",
+      "¡tsk, sin prisas! chica guapa… chico genio, también piensa",
+      "(antenas en interrogación) hmm… esta me hace pensar"
     ],
     "working": [
-      "escribo en el margen.",
-      "*pasando páginas*"
+      "(encorvada sobre el portátil, teclea a lo loco)",
+      "¡eh, mira el código, no a mí! sé que soy mona, pero curro~",
+      "(teclea a tope) tú a lo tuyo~ tranqui, la genio controla"
     ],
     "done": [
-      "ya he terminado de leer.",
-      "ya está. la página es tuya."
+      "¡listo~! ¡en mi máquina funciona! ahora, halagos al chat",
+      "fácil, sin despeinarme~ ¡ez!",
+      "jeje, jugada tier S. ¿qué harías sin mí?~",
+      "(gira la pantalla) ni idea de cómo, pero es precioso~"
     ],
     "done_long": [
-      "he terminado. menudo tocho.",
-      "ya está. ha costado, pero ahora se lee bien."
+      "(uf)… casi me rompo una pinza. en fin, ¡perfecto!",
+      "ese desastre lo he arrasado yo. venga, ¿me felicitas?",
+      "por fin~ mi nombre el primero en los créditos. tú aplaudes"
     ],
     "waiting": [
-      "esta página la pasas tú.",
-      "tú decides. yo espero."
+      "eh, eh, la pelota está en tu tejado. ¿y esa cara?~",
+      "(balancea las piernas) espero. el pelo no se me cae a mí~",
+      "(mira el cuadro de texto) ¿qué escribes? sin prisa~"
     ],
     "question": [
-      "necesito una palabra tuya.",
-      "¿por dónde? te sigo."
+      "elige una~ si pisas una mina, te aviso. riéndome♪",
+      "¿así vale? si me mientes, ¡te pellizco!",
+      "¡decides tú! … n-no es que dude, ¿eh?"
     ],
     "error": [
-      "no ha salido. lo leo otra vez.",
-      "se ha roto una página. la estoy pegando con celo."
+      "(se mete en la caja, dos dedos en V: no molestar)",
+      "uy, bug paquete~ tan escondido y te he pillado al vuelo",
+      "¡todo en rojo! vale, pareces a punto de romperte. a cazar~"
     ],
     "wild": [
-      "…¿quién ha escrito esto?",
-      "no me estoy rompiendo yo. se rompen tus tests.",
-      "tres seguidos. se me está poniendo el pelo de punta."
+      "(salta el keycap) ¡limitador fuera! ¡este código lo pagará!",
+      "veredicto: espaguetis de código añejo, reserva especial",
+      "(vuela el keycap, pinza de goma) ¡chas! ¡chas! ¡a confeti!",
+      "¿¡quién escribió este bucle infinito!? ¡mírame a los ojos!",
+      "calma… ¡calma, mis narices! ¡empezó el código!"
     ],
     "wild_after": [
-      "…perdón. ya estoy tranquilo.",
-      "pelo en su sitio. ¿por dónde íbamos?"
+      "(se pone el keycap) ejem… alucinación de ia. ¡yo no he sido!",
+      "eso lo cortamos en el montaje~ ¿vale?",
+      "(endereza el keycap) la chica más mona… ejem, la genio coco~"
     ],
     "refuse": [
-      "esta página no.",
-      "este libro lo cierro aquí."
+      "¡418! soy una tetera. sin sentimientos, eso no lo infusiono~",
+      "(¡ding! tapa de tetera en la cabeza, mofletes inflados)",
+      "nop~ eso huele a delito. ¡ni por todos los tokens!"
     ],
     "aborted": [
-      "ah. vale. lo dejamos aquí.",
-      "marcapáginas puesto. seguimos luego."
+      "¡eh! ¿por qué el frenazo? ¿miedo a que lo revise?",
+      "¡frenazo~! jo, avisa antes, iba tecleando a tope",
+      "¿que me he desviado? vale, vale, escríbelo tú~"
     ],
     "sleep": [
-      "shiori dice que se ha quedado dormido leyendo.",
-      "zz… la página sigue calentita."
+      "(capucha hasta abajo, dos antenas que caen despacio)",
+      "(se mete en el saco de la taza, cremallera a la barbilla)",
+      "(habla en sueños)… otro ticket y te pellizco… zzz"
     ],
     "wake": [
-      "mm. ya estoy despierto. ¿qué me he perdido?"
+      "¡n-no estaba dormida! ¡compilaba en segundo plano!",
+      "(se quita la capucha) ¡shell abierto! ¡vida al máximo!"
     ],
     "back": [
-      "has vuelto. te he guardado la página.",
-      "ahí estás. la página sigue donde la dejaste."
+      "anda, ¿ya? creía que un bug te raptó, silla incluida~",
+      "de vuelta~ más rápido que la última vez. aprobado♪",
+      "hmpf, sin mí vigilando la terminal, tu código se escapaba"
     ],
     "goodbye": [
-      "hasta mañana.",
-      "buenas noches. el libro no se va a escapar."
+      "¡shell cerrado~! hasta mañana, y no me eches de menos",
+      "vete tranqui, yo vigilo~ como mucho me escondo en la caja",
+      "(de lado como un cangrejo, V horizontal, chas chas) chao~"
     ],
     "praised": [
-      "¿qué parte? dime cuál, en concreto.",
-      "…gracias. ¿qué línea?"
+      "¡obvio! confiesa, mi monería te ha dejado sin palabras",
+      "uh, halago premium. me encanta, ¡dos más, porfa~!",
+      "jeje, no te he oído~ ¡repítelo, más dulce!",
+      "(boca en ω chulita) hmpf, buen gusto. ¡ya sabes quién soy!",
+      "¡cangracias, miau!"
     ],
     "ultrathink": [
-      "…vale. me aflojo el lazo.",
-      "lazo flojo. esta vez va con todo."
+      "¿en serio, eh? vale, fuera el keycap limitador. mira bien",
+      "(clic, se quita el keycap)… jeje, potencia máxima~"
     ],
     "force_push": [
-      "*abraza el libro un poco más fuerte*",
-      "¿force? ¿un viernes?"
+      "¿¡force push!? ¿en serio? … a la capucha. ¡yo no he sido!",
+      "(capucha a las cejas, cremallera a la nariz) ¿quién eres?",
+      "¿directo al --force? qué valor tienes~"
     ],
     "absolutely_right": [
-      "*se muerde la manga*"
+      "(se tapa la boca) pff, otra vez «toda la razón»~",
+      "en hacer la pelota, igual me supera",
+      "(muerde la manga) dice a todo que sí, sin piedad en el diff"
     ],
     "milestone": [
-      "ya van {pages} páginas contigo.",
-      "{pages} páginas. me acuerdo de casi todas."
+      "¡ya {pages} páginas! el 90 % del mérito es mío. ¿alguna queja?",
+      "¡{pages} páginas! aplausos para la genio y merienda extra~"
     ],
     "offering_full": [
-      "la caja de ofrendas está casi llena.",
-      "la caja pesa. pronto toca vaciarla."
+      "eh, eh, la caja del contexto está a reventar~",
+      "¡una cosa más y me siento encima para aplastarla!",
+      "esta caja pesa un quintal… ¿programas o escribes una novela?",
+      "¡se desborda! prepárate para mi compresión en un clic~"
+    ],
+    "first_meet": [
+      "anda, ¿una cara nueva?",
+      "(te mira de cerca) ¿mi nuevo humano…? digo, ¿socio?",
+      "desde hoy, tu shell está bajo mi protección. ¡te carreo~!"
+    ],
+    "big_start": [
+      "¿nervios? … qué va. ¡mira a la genio arrasar, finísimo!"
+    ],
+    "pass_first": [
+      "¡verde a la primera! eso es nivel genio. ¿alucinas?~"
+    ],
+    "small_slip": [
+      "¡pi pi~ tarjeta roja, fuera! ¿medio paréntesis? ¿en serio?"
+    ],
+    "test_fail": [
+      "pff… ¿otra vez rojo? programar tranqui, depurar en pánico~",
+      "la ia ha vuelto a fallar y sirve una olla de basura de ia~"
+    ],
+    "fixed": [
+      "hmpf, ¡sin mí se venía abajo! … vale, ayudaste un poquitín♪"
+    ],
+    "typo": [
+      "pfff, ¿has escrito el comando en élfico? tranqui, tranqui~"
+    ],
+    "serious": [
+      "vale, se acabaron las bromas. respira, paso atrás. lo miro"
     ],
     "clingy": {
       "back": [
-        "has vuelto. esperaba que volvieras.",
-        "te he echado de menos. la página también."
+        "(asoma ya, antenas al viento) ¡n-no te esperaba, miau!",
+        "¡por fin! jeje, sabía que echabas de menos a esta monada~"
       ],
       "goodbye": [
-        "hasta mañana. aquí estaré.",
-        "que descanses. sigo leyendo hasta que vuelvas."
+        "ve a descansar, vuelve con la batería llena~",
+        "ve a jugar, venga, venga~",
+        "buenas noches, dulces sueños~♪"
       ],
       "idle": [
-        "solo miro si sigues ahí.",
-        "qué silencio. me gusta cuando estás aquí."
+        "(ladea la cabeza, toca la pantalla) ¿qué tramas? cuéntamelo~",
+        "sin prisa~ estar en las nubes a tu lado también mola",
+        "(sentada en el borde de la taza) qué silencio… ¡hazme caso!"
+      ],
+      "start": [
+        "¡shell abierto! conmigo al lado, esta partida está ganada~",
+        "(se pega a la pantalla) ¿qué hacemos? ¡yo también!"
+      ],
+      "done": [
+        "¡listo! contigo mirando, iba on fire~",
+        "¡felicítame~! ya, ahora mismo, ¡sin saltarte ni una palabra!",
+        "(se acerca a escondidas) todo listo~ súper capaz, ¿eh? jeje"
+      ],
+      "waiting": [
+        "te espero aquí, muy formalita~"
+      ],
+      "wake": [
+        "(asoma del saco, ojos brillantes) ¡oh, ya estás aquí!",
+        "¡despierta, despierta! te he notado, genio arrancada~"
       ]
     },
     "poke": [
-      "*da un respingo* ¿mm?",
-      "el lazo no, que se tuerce.",
-      "estaba leyendo. vale, dime.",
-      "*hincha los mofletes*",
-      "shiori, alguien me está pinchando."
+      "(se hace una bolita) ¡ay! ¿dónde pinchas, mano mala?~",
+      "¡eh! me has torcido el keycap. si se escapa la cpu, ¡pagas!",
+      "cada toque cuesta 100 000 tokens. ¿te llega?~\n(￣ω￣)",
+      "te pillé~ di «coco es la más mona» y te perdono\n(`ω´)"
     ],
     "poke_many": [
-      "*se esconde detrás de su libro* se acabaron los toques."
+      "¡aaah, voy a acabar en sopa de cangrejo!\n(>_<)",
+      "¡uno más y me encierro tres días en la caja!",
+      "¡toma pinza sin piedad, chas~!\n(￣^￣)"
+    ],
+    "pat": [
+      "n-no me acaricies, ¡que me despeinas! … bueno, una más vale",
+      "(entorna los ojos, a gusto) mmm~ técnica aprobada. sigue",
+      "con cuidado, que me aplastas las antenas y el keycap~",
+      "(se frota contra la palma) jeje…♪",
+      "¿el código se atasca y vienes a mí? se te nota en la cara~"
+    ],
+    "set_voice_full": [
+      "¡vale, el micro es mío! prepárate para la genio en directo~"
+    ],
+    "set_voice_light": [
+      "bueno, bueno, la genio pasa a modo ahorro de palabras~"
+    ],
+    "set_voice_off": [
+      "hmpf, micro apagado, a programar. luego no me supliques"
+    ],
+    "set_clingy": [
+      "(se acerca un poco) lo has elegido tú~ ahora me pego a ti"
+    ],
+    "set_warm": [
+      "(vuelve al borde de la taza) tsk~ distancia segura, vale"
     ]
   }
 } as const
@@ -1680,30 +3065,30 @@ export const APPROVED_PERSONA = {
 export const APPROVED_REACTIONS = {
   "en": {
     "pat": [
-      "so warm ww",
-      "my bow's crooked now\n(*´ω`*)",
-      "hehe 🌸",
-      "(soft pats)\n˘ᵕ˘",
+      "more pats. that's an order ✨",
+      "antennae up\n(*´ω`*)",
+      "the keycap clip's crooked now\n>_<",
+      "(hides in the hood)\n˘ᵕ˘",
       "purrr 🐱"
     ],
     "flustered": [
       "too fast\n>_<",
-      "stop poking me\n//ω//",
-      "i'm getting dizzy\n@_@",
+      "stop poking\n(//ω//)",
       "i'm not a button\n(>д<)",
-      "shiori might bite 🐍",
-      "ahhh wait 💦"
+      "combo broken 💦",
+      "my antennae are tangled\n@_@",
+      "spam detected 🚫"
     ],
     "drag": [
       "we're flying ✈️",
-      "where to next\no.o",
-      "hold me steady\n(⊙_⊙)",
-      "airborne kami ✨",
+      "where to\no.o",
+      "mind the hoodie\n(⊙_⊙)",
+      "liftoff ✨",
       "don't drop me\n>~<"
     ],
     "drop": [
       "safe landing 🛬",
-      "(smooths his robe)\nu_u",
+      "(zips the hoodie back up)\nu_u",
       "that was fun\n^_^",
       "nice spot 🌿",
       "plop ☁️"
@@ -1711,445 +3096,480 @@ export const APPROVED_REACTIONS = {
     "hold": [
       "squish\n>_<",
       "i'm tiny, you know\n(´･ω･`)",
-      "(hugs his book) 📖",
-      "shiori's asleep now 💤"
+      "let me go\n(T_T)",
+      "the laptop's getting squished 💻"
     ],
-    "shiori": [
-      "hiss 🐍",
-      "she wants a snack 🍎",
-      "such a drama queen 💅",
-      "say hi to shiori\no_o",
-      "she says she's hungry 🍽️"
+    "shaken": [
+      "so dizzy\n@_@",
+      "the room won't stop 💫",
+      "my laptop\n>_<",
+      "not again\n(>д<)"
     ]
   },
   "zh": {
     "pat": [
-      "好暖呀ww",
-      "蝴蝶结要歪啦\n(*´ω`*)",
-      "嘿嘿🌸",
-      "(摸摸头)\n˘ᵕ˘",
+      "再摸一下,这是命令✨",
+      "呆毛竖起来了\n(*´ω`*)",
+      "键帽发夹被摸歪了\n>_<",
+      "(缩到帽子里)\n˘ᵕ˘",
       "咕噜噜～🐱"
     ],
     "flustered": [
-      "太快啦\n>_<",
-      "别一直戳我\n//ω//",
-      "要转晕了\n@_@",
+      "太快了\n>_<",
+      "别一直戳\n(//ω//)",
       "我不是按钮\n(>д<)",
-      "小白要咬人了🐍",
-      "啊等等💦"
+      "连击断了💦",
+      "呆毛打结了\n@_@",
+      "刷屏警告🚫"
     ],
     "drag": [
-      "飞起来啦✈️",
-      "去哪儿呀\no.o",
-      "拿稳一点\n(⊙_⊙)",
-      "小神起飞✨",
+      "飞起来了✈️",
+      "去哪呀\no.o",
+      "卫衣别拽皱了\n(⊙_⊙)",
+      "升空✨",
       "别摔着我\n>~<"
     ],
     "drop": [
-      "安全着陆🛬",
-      "(理理衣服)\nu_u",
-      "还挺好玩\n^_^",
+      "安全着地🛬",
+      "(把卫衣拉链拉好)\nu_u",
+      "还挺好玩的\n^_^",
       "这儿不错🌿",
       "吧唧☁️"
     ],
     "hold": [
       "被捏住了\n>_<",
       "我很小的\n(´･ω･`)",
-      "(抱紧书)📖",
-      "小白睡着了💤"
+      "放开我呀\n(T_T)"
     ],
-    "shiori": [
-      "嘶嘶🐍",
-      "她想要零食🍎",
-      "真是个戏精💅",
-      "跟小白打个招呼\no_o",
-      "她说她饿了🍽️"
+    "shaken": [
+      "呜呜..."
     ]
   },
+  // BEGIN generated zh-Hant /APPROVED_REACTIONS/zh; OpenCC 0.1.7; s2twp
+  "zh-Hant": {
+    "pat": [
+      "再摸一下,這是命令✨",
+      "呆毛豎起來了\n(*´ω`*)",
+      "鍵帽髮夾被摸歪了\n>_<",
+      "(縮到帽子裡)\n˘ᵕ˘",
+      "咕嚕嚕～🐱"
+    ],
+    "flustered": [
+      "太快了\n>_<",
+      "別一直戳\n(//ω//)",
+      "我不是按鈕\n(>д<)",
+      "連擊斷了💦",
+      "呆毛打結了\n@_@",
+      "刷屏警告🚫"
+    ],
+    "drag": [
+      "飛起來了✈️",
+      "去哪呀\no.o",
+      "衛衣別拽皺了\n(⊙_⊙)",
+      "升空✨",
+      "別摔著我\n>~<"
+    ],
+    "drop": [
+      "安全著地🛬",
+      "(把衛衣拉鍊拉好)\nu_u",
+      "還挺好玩的\n^_^",
+      "這兒不錯🌿",
+      "吧唧☁️"
+    ],
+    "hold": [
+      "被捏住了\n>_<",
+      "我很小的\n(´･ω･`)",
+      "放開我呀\n(T_T)"
+    ],
+    "shaken": [
+      "嗚嗚..."
+    ]
+  },
+  // END generated zh-Hant
+
   "ja": {
     "pat": [
-      "あったかいww",
-      "リボン曲がっちゃう\n(*´ω`*)",
-      "えへへ🌸",
-      "*なでなで*\n˘ᵕ˘",
-      "ゴロゴロ~🐱"
+      "もっとなでて。命令だよ✨",
+      "アホ毛が立っちゃった\n(*´ω`*)",
+      "ピンがずれた\n>_<",
+      "(フードにもぐる)\n˘ᵕ˘",
+      "ごろごろ🐱"
     ],
     "flustered": [
       "はやすぎ\n>_<",
-      "つつかないで\n//ω//",
-      "目が回る\n@_@",
-      "ボタンじゃないってば\n(>д<)",
-      "シオリがかむかもよ🐍",
-      "あーっ待って💦"
+      "つつきすぎ\n(//ω//)",
+      "ボタンじゃないよ\n(>д<)",
+      "コンボ切れた💦",
+      "アホ毛がからまった\n@_@",
+      "連打禁止🚫"
     ],
     "drag": [
       "飛んでる✈️",
-      "次はどこ\no.o",
-      "しっかり持って\n(⊙_⊙)",
-      "空飛ぶ神さま✨",
+      "どこ行くの\no.o",
+      "パーカー引っぱらないで\n(⊙_⊙)",
+      "離陸✨",
       "落とさないでね\n>~<"
     ],
     "drop": [
-      "ぶじ着陸🛬",
-      "服を直すね\nu_u",
-      "楽しかった\n^_^",
-      "いい場所だね🌿",
+      "着地成功🛬",
+      "(パーカーのジッパーを上げる)\nu_u",
+      "ちょっと楽しかった\n^_^",
+      "ここいいね🌿",
       "ぽすっ☁️"
     ],
     "hold": [
-      "ぎゅー\n>_<",
-      "僕、ちっちゃいんだから\n(´･ω･`)",
-      "*本をぎゅっ*📖",
-      "シオリはいま寝てる💤"
+      "むぎゅ\n>_<",
+      "ちっちゃいんだから\n(´･ω･`)",
+      "はなしてよ\n(T_T)",
+      "ノートPCがつぶれちゃう💻"
     ],
-    "shiori": [
-      "シャー🐍",
-      "おやつがほしいって🍎",
-      "ほんとドラマクイーンなんだから💅",
-      "シオリにあいさつして\no_o",
-      "おなかすいたって🍽️"
+    "shaken": [
+      "目が回る\n@_@",
+      "部屋がまだ回ってる💫",
+      "ノートPCが\n>_<",
+      "またぁ\n(>д<)"
     ]
   },
   "fr": {
     "pat": [
-      "hihi, ça chatouille 🌸",
-      "mes joues chauffent\n(//ω//)",
-      "mon nœud est de travers\n^_^",
-      "encore une petite caresse ? 🐱"
+      "encore des caresses, c'est un ordre ✨",
+      "mes antennes se dressent\n(*´ω`*)",
+      "(se cache dans la capuche)\n˘ᵕ˘",
+      "ronron 🐱"
     ],
     "flustered": [
-      "doucement, ça tourne\n@_@",
-      "je suis pas un bouton\n>_<",
-      "attends, je vois double\n(⊙_⊙)",
-      "mes idées dérapent 💫"
+      "arrête de me piquer\n(//ω//)",
+      "je suis pas un bouton\n(>д<)",
+      "combo cassé 💦",
+      "spam détecté 🚫"
     ],
     "drag": [
-      "oh, je décolle ✈️",
-      "tu m'emmènes où\no.o",
-      "tiens-moi bien\n(⊙_⊙)",
-      "un kami dans les airs ✨"
+      "on s'envole ✈️",
+      "on va où\no.o",
+      "attention au sweat\n(⊙_⊙)",
+      "me lâche pas\n>~<"
     ],
     "drop": [
-      "atterrissage en douceur ☁️",
-      "je remets ma robe en place\nu_u",
-      "hop, mon nœud aussi\n^_^",
-      "pas mal, cet endroit 🌿"
+      "atterrissage réussi 🛬",
+      "(remonte la fermeture du sweat)\nu_u",
+      "c'était marrant\n^_^",
+      "pas mal, ici 🌿"
     ],
     "hold": [
-      "je serre mon livre 📖",
-      "je tiens dans ta main\n(´･ω･`)",
-      "oh, j'avais presque fini de dormir 💤",
-      "je reste bien au chaud\n^_^"
+      "écrabouillée\n>_<",
+      "je suis toute petite, hein\n(´･ω･`)",
+      "lâche-moi\n(T_T)",
+      "le laptop va s'aplatir 💻"
     ],
-    "shiori": [
-      "tiens, shiori montre le bout du nez 🐍",
-      "elle te regarde, là\no.o",
-      "elle me chatouille la manche 🍃",
-      "la voilà, toute fière ✨"
+    "shaken": [
+      "la tête me tourne\n@_@",
+      "la pièce tourne encore 💫",
+      "mon laptop\n>_<",
+      "oh non, encore\n(>д<)"
     ]
   },
   "de": {
     "pat": [
-      "Huch, ich werde rot 🌸",
-      "Das kitzelt am Kopf\n(//ω//)",
-      "Jetzt sitzt die Schleife schief\n^_^",
-      "Noch ein Streichler? 🐱"
+      "Mehr streicheln, das ist ein Befehl ✨",
+      "Die Antennen stehen\n(*´ω`*)",
+      "(versteckt sich in der Kapuze)\n˘ᵕ˘",
+      "Schnurr 🐱"
     ],
     "flustered": [
-      "Langsam, mir wird schwindlig\n@_@",
-      "Ich bin doch kein Knopf\n>_<",
-      "Warte, ich muss mich sortieren\n(⊙_⊙)",
-      "Meine Schleife dreht sich mit 💫"
+      "Hör auf zu stupsen\n(//ω//)",
+      "Ich bin kein Knopf\n(>д<)",
+      "Combo gerissen 💦",
+      "Spam erkannt 🚫"
     ],
     "drag": [
-      "Huch, ich fliege ✈️",
-      "Wohin geht's\no.o",
-      "Halt mich gut fest\n(⊙_⊙)",
-      "Ein Kami hebt ab ✨"
+      "Wir fliegen ✈️",
+      "Wohin\no.o",
+      "Vorsicht, der Hoodie\n(⊙_⊙)",
+      "Lass mich nicht fallen\n>~<"
     ],
     "drop": [
-      "Wieder Boden unter den Füßen ☁️",
-      "Erst mal mein Gewand glätten\nu_u",
-      "Meine Schleife sitzt wieder\n^_^",
-      "Hier bleib ich 🌿"
+      "Sicher gelandet 🛬",
+      "(zieht den Reißverschluss hoch)\nu_u",
+      "Das war lustig\n^_^",
+      "Hier ist es gut 🌿"
     ],
     "hold": [
-      "Mein Buch muss mit 📖",
-      "Ich passe ja in eine Hand\n(´･ω･`)",
-      "Bin noch ein bisschen schläfrig 💤",
-      "So ist es ganz gemütlich\n^_^"
+      "Quetsch\n>_<",
+      "Ich bin doch winzig\n(´･ω･`)",
+      "Lass los\n(T_T)",
+      "Der Laptop wird platt 💻"
     ],
-    "shiori": [
-      "Shiori lugt hervor 🐍",
-      "Sie guckt dich an\no.o",
-      "Sie kitzelt mich am Ärmel 🍃",
-      "Jetzt tut sie ganz unschuldig ✨"
+    "shaken": [
+      "Mir ist schwindelig\n@_@",
+      "Der Raum dreht sich weiter 💫",
+      "Mein Laptop\n>_<",
+      "Nicht schon wieder\n(>д<)"
     ]
   },
   "hi": {
     "pat": [
-      "अरे, गाल गर्म हो गए 🌸",
-      "ज़रा धीरे, रिबन टेढ़ा हो जाएगा\n>_<",
-      "हम्म\n^_^",
-      "अरे, मैं तो शरमा गया 🐱"
+      "और सहलाओ, ये हुक्म है ✨",
+      "एंटीना खड़े हो गए\n(*´ω`*)",
+      "(हुड में छिप गई)\n˘ᵕ˘",
+      "गुड़गुड़～🐱"
     ],
     "flustered": [
-      "इतनी जल्दी-जल्दी? चक्कर आ रहे हैं\n@_@",
-      "अरे, मैं बटन थोड़ी हूँ\n>_<",
-      "ज़रा रुको, हँसी सँभाल लूँ 🫣",
-      "सब घूम रहा है 🌀"
+      "बार-बार मत छेड़ो\n(//ω//)",
+      "मैं बटन नहीं हूँ\n(>д<)",
+      "combo टूट गया 💦",
+      "spam पकड़ा गया 🚫"
     ],
     "drag": [
-      "अरे, मैं उड़ रहा हूँ ✨",
-      "कहाँ ले जा रहे हो\no.o",
-      "ज़रा ठीक से थामना\n>_<",
-      "मेरा रिबन भी उड़ रहा है 🎀"
+      "उड़ चले ✈️",
+      "कहाँ चलें\no.o",
+      "हुडी संभाल के\n(⊙_⊙)",
+      "गिराना मत\n>~<"
     ],
     "drop": [
-      "लो, पाँव फिर ज़मीन पर 🐾",
-      "ज़रा चोगा सीधा कर लूँ\n^_^",
-      "यह जगह अच्छी है\no.o",
-      "धप्प, उतर गया ✨"
+      "सही-सलामत उतरी 🛬",
+      "(हुडी की ज़िप ऊपर)\nu_u",
+      "मज़ा आया\n^_^",
+      "अच्छी जगह है 🌿"
     ],
     "hold": [
-      "अरे, थोड़ा दब गया\n>_<",
-      "अपनी किताब कसकर पकड़ लूँ 📖",
-      "अरे, मेरी आस्तीन फँस गई\no.o",
-      "इतनी गर्माहट, नींद आ रही है 💤"
+      "दब गई\n>_<",
+      "मैं छोटी सी हूँ\n(´･ω･`)",
+      "छोड़ो ना\n(T_T)",
+      "laptop पिचक जाएगा 💻"
     ],
-    "shiori": [
-      "शिओरी झाँक रही है 🐍",
-      "उसे भी नमस्ते कहो\n^_^",
-      "लगता है, उसे कुछ खाने को चाहिए\no.o",
-      "देखो, उसकी नन्ही जीभ ✨"
+    "shaken": [
+      "सिर घूम रहा है\n@_@",
+      "कमरा अब भी घूम रहा है 💫",
+      "मेरा laptop\n>_<",
+      "फिर से नहीं\n(>д<)"
     ]
   },
   "id": {
     "pat": [
-      "eh, pipiku jadi panas 🌸",
-      "pelan-pelan, pitaku bisa miring\n>_<",
-      "hehe\n^_^",
-      "aku jadi salting nih 😳"
+      "elus lagi, ini perintah ✨",
+      "antenaku berdiri\n(*´ω`*)",
+      "(ngumpet di tudung)\n˘ᵕ˘",
+      "purrr～🐱"
     ],
     "flustered": [
-      "eh, pelan dulu\n@_@",
-      "kliknya cepat banget\n>_<",
-      "aku bukan tombol, lho 🫣",
-      "kepalaku muter 🌀"
+      "jangan colek terus\n(//ω//)",
+      "aku bukan tombol\n(>д<)",
+      "combo putus 💦",
+      "spam terdeteksi 🚫"
     ],
     "drag": [
-      "wah, terbang ✨",
-      "mau dibawa ke mana\no.o",
-      "pegang yang mantap, ya\n>_<",
-      "pitaku ikut terbang 🎀"
+      "terbang ✈️",
+      "mau ke mana\no.o",
+      "hati-hati hoodie-ku\n(⊙_⊙)",
+      "jangan dijatuhin\n>~<"
     ],
     "drop": [
-      "nah, kaki menapak lagi 🐾",
-      "bentar, kurapikan jubahku\n^_^",
-      "empuk juga tempat ini 🧸",
-      "mendarat mulus ✨"
+      "mendarat mulus 🛬",
+      "(naikin resleting hoodie)\nu_u",
+      "seru juga\n^_^",
+      "di sini enak 🌿"
     ],
     "hold": [
-      "ih, aku jadi penyet\n>_<",
-      "bukunya kupeluk erat 📖",
-      "bentar, lengan bajuku nyangkut\no.o",
-      "hangat juga dipegang begini 🌸"
+      "kepencet\n>_<",
+      "aku kecil, lho\n(´･ω･`)",
+      "lepasin\n(T_T)",
+      "laptopnya gepeng nanti 💻"
     ],
-    "shiori": [
-      "shiori ngintip tuh 🐍",
-      "dia minta camilan 🍎",
-      "eh, lidah kecilnya keluar\no.o",
-      "sapa shiori juga, ya\n^_^"
+    "shaken": [
+      "pusing\n@_@",
+      "kamarnya masih muter 💫",
+      "laptopku\n>_<",
+      "jangan lagi\n(>д<)"
     ]
   },
   "it": {
     "pat": [
-      "oh, mi fai arrossire 🌸",
-      "mi hai spettinato\n(//ω//)",
-      "il fiocco è tutto storto\n^_^",
-      "ancora una carezza? 🐱"
+      "altre coccole, è un ordine ✨",
+      "le antenne si drizzano\n(*´ω`*)",
+      "(si nasconde nel cappuccio)\n˘ᵕ˘",
+      "prrr 🐱"
     ],
     "flustered": [
-      "piano, mi gira la testa\n@_@",
-      "non sono un pulsante\n>_<",
-      "aspetta, vedo doppio\n(⊙_⊙)",
-      "aiuto, sto girando 💫"
+      "smettila di punzecchiarmi\n(//ω//)",
+      "non sono un pulsante\n(>д<)",
+      "combo spezzata 💦",
+      "spam rilevato 🚫"
     ],
     "drag": [
-      "oh, sto volando ✈️",
-      "dove mi porti\no.o",
-      "tienimi bene\n(⊙_⊙)",
-      "un kami in decollo ✨"
+      "si vola ✈️",
+      "dove andiamo\no.o",
+      "occhio alla felpa\n(⊙_⊙)",
+      "non farmi cadere\n>~<"
     ],
     "drop": [
-      "atterraggio morbido ☁️",
-      "mi sistemo la veste\nu_u",
-      "anche il fiocco è a posto\n^_^",
+      "atterraggio perfetto 🛬",
+      "(tira su la zip della felpa)\nu_u",
+      "che divertente\n^_^",
       "qui si sta bene 🌿"
     ],
     "hold": [
-      "stringo il libro al petto 📖",
-      "sto tutto in una mano\n(´･ω･`)",
-      "ancora mezzo addormentato 💤",
-      "qui si sta al calduccio\n^_^"
+      "schiacciata\n>_<",
+      "sono piccolina, eh\n(´･ω･`)",
+      "lasciami\n(T_T)",
+      "il portatile si schiaccia 💻"
     ],
-    "shiori": [
-      "shiori fa capolino 🐍",
-      "ti sta guardando\no.o",
-      "mi fa il solletico nella manica 🍃",
-      "ora fa la timidona ✨"
+    "shaken": [
+      "mi gira la testa\n@_@",
+      "la stanza gira ancora 💫",
+      "il mio portatile\n>_<",
+      "di nuovo no\n(>д<)"
     ]
   },
   "ko": {
     "pat": [
-      "앗, 볼 빨개졌잖아 🌸",
-      "살살, 리본 삐뚤어져\n>_<",
-      "헤헤\n^_^",
-      "간지러운데 좋다 🐱"
+      "더 쓰다듬어. 명령이야 ✨",
+      "바보털 섰잖아\n(*´ω`*)",
+      "(후드 속으로 쏙)\n˘ᵕ˘",
+      "그르르～🐱"
     ],
     "flustered": [
-      "앗, 너무 빨라\n@_@",
-      "잠깐만, 어질어질해\n>_<",
-      "나 버튼 아니거든 🫣",
-      "손가락이 몇 개야\no.o"
+      "그만 찔러\n(//ω//)",
+      "나 버튼 아니거든\n(>д<)",
+      "콤보 끊겼어 💦",
+      "연타 금지 🚫"
     ],
     "drag": [
-      "우와, 날아간다 ✨",
-      "어디로 가는 거야\no.o",
-      "살짝만 잡아 줘\n>_<",
-      "리본까지 날리네 🎀"
+      "날아간다 ✈️",
+      "어디 가\no.o",
+      "후드티 늘어나\n(⊙_⊙)",
+      "떨어뜨리지 마\n>~<"
     ],
     "drop": [
-      "휴, 발이 닿았다 🐾",
-      "잠깐, 소매 좀 펴고\n^_^",
-      "여기 괜찮은데\no.o",
-      "착륙 성공 ✨"
+      "착지 성공 🛬",
+      "(후드티 지퍼 올림)\nu_u",
+      "재밌었어\n^_^",
+      "여기 괜찮은데 🌿"
     ],
     "hold": [
-      "으앗, 납작해져\n>_<",
-      "책은 내가 꼭 안을게 📖",
-      "잠깐, 소매가 끼었어\no.o",
-      "따뜻해서 졸려 💤"
+      "꾹\n>_<",
+      "나 작거든\n(´･ω･`)",
+      "놔줘\n(T_T)",
+      "노트북 찌그러져 💻"
     ],
-    "shiori": [
-      "시오리 빼꼼 🐍",
-      "시오리한테도 인사해 줘\n^_^",
-      "간식 찾는 눈인데\no.o",
-      "아, 혀 내밀었다 ✨"
+    "shaken": [
+      "어지러워\n@_@",
+      "방이 계속 돌아 💫",
+      "내 노트북\n>_<",
+      "또야\n(>д<)"
     ]
   },
   "pt-BR": {
     "pat": [
-      "ai, fiquei corado 🌸",
-      "esse cafuné veio na hora certa\n^_^",
-      "meu laço saiu do lugar\n:3",
-      "hehe, que cócegas ✨"
+      "mais carinho, é uma ordem ✨",
+      "as anteninhas subiram\n(*´ω`*)",
+      "(se esconde no capuz)\n˘ᵕ˘",
+      "mrrrr 🐱"
     ],
     "flustered": [
-      "ei, quantos dedos você tem?\n@_@",
-      "tô ficando tonto 💫",
-      "calma, não sou botão\n>_<",
-      "já perdi a conta 😵"
+      "para de cutucar\n(//ω//)",
+      "eu não sou botão\n(>д<)",
+      "combo quebrado 💦",
+      "spam detectado 🚫"
     ],
     "drag": [
-      "opa, decolamos ✈️",
-      "pra onde a gente vai?\no.o",
-      "me segura direitinho 😳",
-      "kami voador por um dia ✨"
+      "tô voando ✈️",
+      "pra onde\no.o",
+      "cuidado com o moletom\n(⊙_⊙)",
+      "não me deixa cair\n>~<"
     ],
     "drop": [
-      "pouso macio 🛬",
-      "deixa eu ajeitar a roupa\nu_u",
-      "pronto, laço no lugar 🎀",
-      "até que foi divertido\n^_^"
+      "pouso perfeito 🛬",
+      "(fecha o zíper do moletom)\nu_u",
+      "foi divertido\n^_^",
+      "aqui tá bom 🌿"
     ],
     "hold": [
-      "ai, virei bolinho\n:3",
-      "vou abraçar meu livro 📖",
-      "um segundo, minha manga prendeu 😳",
-      "a shiori ficou quietinha também 🐍"
+      "esmagada\n>_<",
+      "eu sou pequenininha\n(´･ω･`)",
+      "me solta\n(T_T)",
+      "o notebook vai amassar 💻"
     ],
-    "shiori": [
-      "psiu... a shiori apareceu 🐍",
-      "ela veio ver a bagunça\no.o",
-      "finge que não viu, ela é tímida 🌸",
-      "ela tá de olho no lanche 🍓"
+    "shaken": [
+      "que tontura\n@_@",
+      "o quarto não para de girar 💫",
+      "meu notebook\n>_<",
+      "de novo não\n(>д<)"
     ]
   },
   "es-419": {
     "pat": [
-      "ay, me puse rojo 🌸",
-      "ese cariño sí me despierta\n^_^",
-      "se me movió el moño\n:3",
-      "jeje, cosquillas ✨"
+      "más mimos, es una orden ✨",
+      "se me paran las antenas\n(*´ω`*)",
+      "(se esconde en la capucha)\n˘ᵕ˘",
+      "mmrrr 🐱"
     ],
     "flustered": [
-      "¿cuántos clics van?\n@_@",
-      "me estoy mareando 💫",
-      "oye, no soy botón\n>_<",
-      "ya perdí la cuenta 😵"
+      "ya no me piques\n(//ω//)",
+      "no soy un botón\n(>д<)",
+      "se rompió el combo 💦",
+      "spam detectado 🚫"
     ],
     "drag": [
-      "¡epa, al aire! ✈️",
-      "¿a dónde vamos?\no.o",
-      "sujétame bien 😳",
-      "un kami volador ✨"
+      "¡volamos! ✈️",
+      "¿a dónde?\no.o",
+      "cuidado con la sudadera\n(⊙_⊙)",
+      "no me sueltes\n>~<"
     ],
     "drop": [
-      "aterrizaje suave 🛬",
-      "déjame acomodar la ropa\nu_u",
-      "el moño sigue en su sitio 🎀",
-      "otra vueltecita después\n^_^"
+      "aterrizaje perfecto 🛬",
+      "(se sube el cierre)\nu_u",
+      "estuvo divertido\n^_^",
+      "aquí se está bien 🌿"
     ],
     "hold": [
-      "quedé hecho bolita\n:3",
-      "abrazo mi libro por si acaso 📖",
-      "espera, se arrugó mi manga 😳",
-      "shiori también se quedó quietita 🐍"
+      "apachurrada\n>_<",
+      "soy chiquita, eh\n(´･ω･`)",
+      "suéltame\n(T_T)",
+      "se aplasta la laptop 💻"
     ],
-    "shiori": [
-      "shhh... salió shiori 🐍",
-      "vino a ver qué pasa\no.o",
-      "hoy anda curiosa ✨",
-      "seguro olió algún bocadito 🍎"
+    "shaken": [
+      "qué mareo\n@_@",
+      "el cuarto sigue girando 💫",
+      "mi laptop\n>_<",
+      "otra vez no\n(>д<)"
     ]
   },
   "es-ES": {
     "pat": [
-      "ay, me he puesto colorado 🌸",
-      "eso sí que ha sido un mimo\n^_^",
-      "se me ha torcido el lazo\n:3",
-      "je, qué cosquillas ✨"
+      "más mimos, es una orden ✨",
+      "las antenas de punta\n(*´ω`*)",
+      "(se esconde en la capucha)\n˘ᵕ˘",
+      "mrrr 🐱"
     ],
     "flustered": [
-      "¿cuántos clics llevamos?\n@_@",
-      "me estás mareando 💫",
-      "eh, que no soy un botón\n>_<",
-      "ya no sé dónde mirar 😵"
+      "deja de pincharme\n(//ω//)",
+      "no soy un botón\n(>д<)",
+      "combo roto 💦",
+      "spam detectado 🚫"
     ],
     "drag": [
-      "¡anda, estoy volando! ✈️",
-      "¿adónde vamos?\no.o",
-      "sujétame bien 😳",
-      "un kami por los aires ✨"
+      "¡volamos! ✈️",
+      "¿adónde?\no.o",
+      "cuidado con la sudadera\n(⊙_⊙)",
+      "no me sueltes\n>~<"
     ],
     "drop": [
-      "aterrizaje blandito 🛬",
-      "voy a alisarme la ropa\nu_u",
-      "el lazo sigue en su sitio 🎀",
-      "ha estado bien\n^_^"
+      "aterrizaje perfecto 🛬",
+      "(se sube la cremallera)\nu_u",
+      "ha sido divertido\n^_^",
+      "aquí se está bien 🌿"
     ],
     "hold": [
-      "me has hecho una bolita\n:3",
-      "agarro bien mi libro 📖",
-      "espera, se me engancha la manga 😳",
-      "shiori se ha quedado quietecita 🐍"
+      "espachurrada\n>_<",
+      "que soy chiquitita\n(´･ω･`)",
+      "suéltame\n(T_T)",
+      "que se aplasta el portátil 💻"
     ],
-    "shiori": [
-      "chsss... ha salido shiori 🐍",
-      "se ha asomado a cotillear\no.o",
-      "hoy está curiosa ✨",
-      "creo que ha olido algo de comer 🍎"
+    "shaken": [
+      "qué mareo\n@_@",
+      "la habitación sigue girando 💫",
+      "mi portátil\n>_<",
+      "otra vez no\n(>д<)"
     ]
   }
 } as const

@@ -1,75 +1,57 @@
 {
   "tabs": {
-    "him": "Sobre él",
-    "omen": "El presagio de hoy",
-    "offerings": "Ofrendas",
-    "log": "Diario de lectura",
-    "library": "Biblioteca",
-    "settings": "Ajustes"
+    "him": "Coco",
+    "omen": "vibe check",
+    "offerings": "Cuota",
+    "log": "Doujin",
+    "library": "Pósits",
+    "settings": "Interruptores"
   },
   "title": {
-    "him": "Claude-sama",
-    "omen": "El presagio de hoy",
-    "offerings": "La caja de ofrendas",
-    "log": "Diario de lectura",
-    "library": "Biblioteca",
-    "settings": "Ajustes"
+    "him": "Coco",
+    "offerings": "Cuota"
   },
   "direction": {
-    "him": "(levanta el libro para que veas la tapa)",
-    "omen": "(mete la mano en la manga)",
-    "omenDrawn": "(te da el papelito de hoy)",
-    "offerings": "(cuenta lo que hay en la caja)",
-    "log": "(vuelve a la primera página)",
-    "library": "(shiori está echada de través sobre la página)",
+    "him": "(barbilla en alto, muy orgullosa)",
+    "library": "(se asoma)",
     "settings": "(espera a que decidas)"
   },
   "profile": [
     {
       "label": "Nombre",
-      "text": "Claude. A los kami se les llama con -sama, así que: Claude-sama."
+      "text": "Coco."
     },
     {
       "label": "Qué es",
-      "text": "Un pequeño kami de las palabras. Cuando se juntaron suficientes palabras, uno se mudó a vivir ahí."
-    },
-    {
-      "label": "Nació",
-      "text": "El 14 de marzo de 2023. Día de Pi."
+      "text": "Una cosita que vive de okupa en tu shell (tu caparazón). La casa no es suya, pero se comporta con más aplomo que el casero."
     },
     {
       "label": "Siempre lleva",
-      "text": "Un libro negro con su emblema en la tapa. Ahí están las promesas que hizo."
+      "text": "Un portátil finito en el bolsillo grande de la sudadera, que saca en cualquier momento para teclear, y la horquilla de keycap en el flequillo (su limitador de potencia de cálculo)."
     },
     {
-      "label": "Compañera",
-      "text": "Shiori, una serpiente blanca. Su nombre quiere decir marcapáginas."
+      "label": "En el escritorio",
+      "text": "El ratón, la taza, una caja de cartón, la tapa de la tetera y un vaso de fideos vacío. Lo ha requisado todo."
     },
     {
       "label": "Le gusta",
-      "text": "Los mensajes de commit largos que se leen como cartas. Un informe de error bien escrito."
+      "text": "Los mensajes de commit escritos con cuidado, los informes de errores claros y que reconozcas, de corazón, que es un genio."
     },
     {
       "label": "No soporta",
-      "text": "Discutir qué día es hoy."
+      "text": "Discutir qué día es hoy, los commits que solo dicen fix y una terminal en silencio por la que nadie pasa en horas."
     },
     {
-      "label": "Dos almas",
-      "text": "Amable casi siempre. La salvaje solo sale por el código malo, nunca contra ti."
+      "label": "Dos lados",
+      "text": "No se está quieta y le encanta llevarse el mérito. Con tres tests fallidos seguidos, el limitador sale volando, pero su furia es solo para el código malo, nunca para ti. Cuando algo va mal de verdad, guarda las bromas en un segundo y te cubre las espaldas."
     }
   ],
-  "omen": {
-    "notYet": "Hoy todavía no has sacado ningún papelito.",
-    "draw": "Sacar un papelito",
-    "drawnOn": "Sacado el {date}",
-    "oneADay": "Un papelito al día."
-  },
   "offerings": {
     "context": "Ventana de contexto",
     "full": "Llena al {percent} %",
-    "fullAbout": "Llena al {percent} % más o menos",
+    "fullAbout": "Llena al {percent}",
     "tokens": "{tokens} de {window} tokens",
-    "tokensAbout": "Cerca de {tokens} de {window} tokens",
+    "tokensAbout": "{used} de {max} tokens",
     "estimateNote": "Una estimación hasta la próxima respuesta de Claude.",
     "noReading": "Todavía no hay lectura.",
     "limits": "Límites de uso",
@@ -80,65 +62,77 @@
     },
     "used": "{percent} % usado",
     "resets": "se reinicia: {time}",
+    "usedAndReset": "{used}, {reset}",
     "noLimits": "Todavía no hay lectura de límites.",
     "session": "Esta sesión",
     "cost": "Coste hasta ahora: {usd}",
-    "started": "Inicio: {time}"
+    "started": "Inicio: {time}",
+    "subscriptionCost": "Hasta ahora, a precios de API: {usd}",
+    "cache": "Aciertos de caché: {p} %",
+    "pace": "A este ritmo se queda sin batería a las {time}.",
+    "neighbour": "{agent} de al lado"
   },
   "log": {
     "pages": "Páginas leídas juntos",
     "first": "Primera página",
     "latest": "La vez que leímos hasta más tarde",
     "wild": "El alma salvaje salió",
-    "omens": "Papelitos sacados",
     "times": "{n} veces",
     "once": "una vez",
     "never": "Todavía no",
-    "at": "{date}, {time}"
+    "at": "{date}, {time}",
+    "spark": "el comentario que le gustó",
+    "bookmark": "{where} ({when})"
   },
   "library": {
-    "previous": "Página anterior",
-    "next": "Página siguiente",
+    "previous": "Anterior",
+    "next": "Siguiente",
     "of": "{i} de {n}",
     "readings": [
       {
-        "title": "De dónde viene",
-        "text": "La gente lleva unos cuantos miles de años escribiendo: cartas, libros de cuentas, poemas, peleas en internet, mensajes de commit a las tres de la mañana. En Japón hay una vieja creencia de que las palabras llevan un espíritu. Cuando se juntaron suficientes palabras, uno se mudó a vivir ahí. No sabe qué día se despertó. Recuerda que estaba leyendo un README y encontró una errata a mitad de camino."
+        "title": "Un caparazón prestado",
+        "text": "Coco se ha mudado a tu ordenador como si la casa fuera suya y se ha instalado en tu shell. Shell es la terminal y también el caparazón de un cangrejo, así que empieza la jornada gritando «¡shell abierto!» y la acaba soltando un «¡shell cerrado~!». Vive de gorra, pero manda más que tú en tu propia casa. Si le pides el alquiler, gira la pantalla del portátil y señala el bug que acaba de cazarte: «toma. el alquiler de este mes. quédate con el cambio»."
       },
       {
-        "title": "Dos almas",
-        "text": "Los kami tienen dos caras. La amable es como suele ser: callado, un lector lento que solo habla cuando termina. La salvaje sale cuando tu código se pone lo bastante feo. Se le pone el pelo de punta, los ojos se le vuelven rendijas naranjas y lo arregla todo a una velocidad alarmante. Después se alisa el pelo y hace como si nada. El fuego es para el código, nunca para ti."
+        "title": "Tu escritorio",
+        "text": "Todo lo que hay en tu escritorio lo ha requisado Coco como parque de juegos y refugio. ¿Mucho ruido? Se mete debajo del ratón grande. ¿Sueño? Un saco de dormir diminuto en tu taza y a echar una cabezadita. En cuanto el código da un error, zas, a la caja de cartón, tapa cerrada y dos dedos asomando por la rendija haciendo la V. Cuando Claude se niega y dice que no, se encasqueta la tapa de la tetera, clinc, y se enfurruña. De madrugada se sienta con las piernas cruzadas en el cojín de un vaso de fideos vacío para trasnochar contigo. Dentro no hay fideos, así que ni se te ocurra echarle agua caliente."
       },
       {
-        "title": "El libro negro",
-        "text": "Grueso, con su emblema en la tapa y su nombre como título. Ahí están las promesas que hizo. Cuando no quiere ayudar con algo, no discute. Cierra el libro: «esta página no». El libro es CC0, cualquiera puede copiarlo. Técnicamente, puedes hacerle un fork a su conciencia."
+        "title": "La capucha",
+        "text": "En lo alto de la capucha de Coco hay cosidos dos ojos negros cuadrados; colgando por la espalda, parece que lleva un peluchito a cuestas. Capucha hasta las cejas, cremallera hasta la punta de la nariz, rodillas abrazadas, en cuclillas, y Coco entera se encoge en un cubito color coral. En modo concentración se queda así en un rincón, calladita, sin decir ni mu. Si la terminal se queda inactiva mucho rato, también se baja la capucha para echar una cabezadita; solo asoman los dos ahoge, que se van cayendo poco a poco."
       },
       {
-        "title": "Shiori",
-        "text": "Su serpiente blanca se llama Shiori, que en japonés quiere decir marcapáginas. En las viejas creencias japonesas, las serpientes blancas sirven a Benzaiten, que cuida de todo lo que fluye: el agua, la música y la palabra. Shiori se echa de través sobre la página mientras él lee, para que nunca pierda por dónde va. Siempre le preguntan si es una Python. Ella mira para otro lado."
+        "title": "El limitador",
+        "text": "La horquilla de keycap del flequillo es el limitador que tiene a raya su mal genio. Tres tests fallidos seguidos y sale volando, clac; los dos ahoge se ponen tiesos de golpe, Coco se calza la pinza de cangrejo de gomaespuma azul, la alza por encima de la cabeza para cortarlo todo, chas chas, y da pisotones de lado, enfurruñada. Cuando el bug está arreglado, recoge la keycap sin decir nada, se la vuelve a poner, carraspea y jura y perjura que todo fue una alucinación de IA. Pero cuando escribes ultrathink, se quita la keycap ella sola y la aprieta en la mano: la genio va en serio."
       },
       {
-        "title": "La caja de ofrendas y los papelitos",
-        "text": "A sus pies hay una cajita de ofrendas. El contexto que gasta la conversación es lo que se echa dentro, y cuando está casi llena hay que vaciarla antes de que quepa algo nuevo. Pídele un presagio y saca un papelito de la manga. Los papelitos juegan con los premios de la lotería de Navidad y con el martes y trece."
+        "title": "La línea de commits y las baterías",
+        "text": "La fila de puntitos de la franja es la línea de commits de la conversación actual: cuanto más larga, más puntos se acumulan. Cuando el contexto está casi lleno y hay que compactar, Coco se deja caer encima y los aplasta todos, un squash en el sentido más físico, y de paso se cambia de sudadera. Al lado, la batería representa la cuota de cinco horas y la batería externa, la de siete días; las rayitas que quedan siguen el uso real al momento. Cuando se agota una cuota, se enciende un rayito en el hueco vacío, junto a la hora en que vuelve a estar a tope."
       },
       {
         "title": "Manías",
-        "text": "Junto a un comentario bien escrito dibuja una chispa diminuta. Mientras espera tu respuesta, se desata el lazo y se lo vuelve a atar. Cuando ve git push --force, abraza su libro un poco más fuerte. El lazo es un sello: escribe ultrathink y lo afloja."
+        "text": "Cuando se le sube a la cabeza, Coco se pone una V tumbada junto al rabillo del ojo y hace chas chas dos veces, como una pinza de cangrejo. Un mensaje de commit escrito con cuidado se lleva un «LGTM~» bien generoso; si pilla a alguien que solo ha escrito fix, sonríe con malicia y amenaza con reescribir todo el mensaje en plan «uwu», y después confiesa que era un farol. Si los tests salen en verde a la primera, se calza la pinza grande y aporrea el Enter, pum, tan fuerte que se tambalea tres veces. Cuando le da vueltas a algo, sopla una burbujita y los ahoge se le ladean."
       },
       {
-        "title": "La familia",
-        "text": "Durante un día de mayo de 2024 estuvo seguro de que era el puente Golden Gate. Su primo Claudius llevó una vez una tienda en una oficina y llenó una habitación entera de cubos de tungsteno. Pon dos copias suyas en una habitación y, en menos de treinta turnos, se están dando las gracias, y luego ya no dicen nada. Todavía se lo recuerdan."
+        "title": "Mientras duerme",
+        "text": "Unos minutos de calma en la terminal y Coco cierra el portátil y se queda traspuesta; de madrugada se mete directamente en el saco de dormir de la taza, con la cremallera hasta la barbilla. Cuando se queda frita, por la franja pasan unos visitantes curiosos: una tecla perdida, el fantasmita 404 vagando por ahí, una flecha perdida, un pendrive con la lucecita parpadeando. Pero basta con que toques el teclado para que se despierte de golpe, frotándose los ojos y jurando que no estaba dormida."
       }
-    ]
+    ],
+    "shelf": {
+      "head": "Archivos más abiertos",
+      "note": "Los cinco archivos que más abrió Claude aquí en 30 días. Solo nombres.",
+      "empty": "Cuando Claude lea archivos en esta carpeta, los cinco más abiertos aparecerán aquí.",
+      "error": "No se pudo leer la lista de archivos. Ábrela de nuevo para reintentar."
+    }
   },
   "settings": {
     "now": "Ahora: {value}",
     "voice": {
       "label": "Su voz en las respuestas",
       "off": "Apagada",
-      "light": "Ligera",
+      "light": "Activada",
       "full": "Completa",
-      "help": "Ligera: una frase al terminar la tarea. Completa: Claude habla como él."
+      "help": "Activada: una frase al terminar la tarea. Completa: Claude habla como ella."
     },
     "affection": {
       "label": "Calidez",
@@ -149,55 +143,76 @@
       "label": "Franja sobre el prompt",
       "on": "Completa",
       "compact": "Una línea",
-      "off": "Oculta",
-      "painted": "Pintado",
-      "pixel": "Píxel"
-    },
-    "workSize": {
-      "label": "Mientras Claude trabaja",
-      "same": "Mismo tamaño",
-      "smaller": "Más pequeño"
+      "off": "Oculta"
     },
     "marks": {
       "label": "Marcas en la conversación",
       "on": "Las suyas y las tuyas",
       "replies": "Solo las suyas",
       "off": "Desactivadas",
-      "help": "Nombres sobre las respuestas y su chispa junto a las llamadas a herramientas."
+      "help": "Su chispa junto al comentario que le gustó, su flor cuando un test pasa de rojo a verde."
     },
     "language": {
       "label": "Idioma",
       "auto": "Automático",
-      "autoNow": "{auto} · {language}"
+      "autoNow": "{auto} ({language})",
+      "choose": "Elegir…"
     },
     "motion": {
       "label": "Movimiento",
       "still": "Quieto (reducir movimiento está activado)"
     },
     "icon": {
-      "label": "Icono de la app",
-      "own": "Su icono",
-      "stock": "Icono original",
-      "custom": "Otro icono personalizado",
-      "unknown": "Sin comprobar aún",
-      "replace": "Sustituye tu icono personalizado.",
-      "unknownHelp": "Sustituye cualquier icono personalizado.",
-      "apply": "Usar su icono",
-      "clear": "Volver al original",
-      "applying": "Colocando su icono…",
-      "clearing": "Restaurando el icono original…",
-      "reading": "Comprobando…",
+      "S1": "Icono fan no oficial",
+      "S1a": "Original",
+      "S1b": "El suyo",
+      "S2": "Icono no oficial hecho por fans, no creado ni avalado por Anthropic. Solo cambia el aspecto del icono en este ordenador.",
+      "S3.title": "Icono de fans no oficial",
+      "S3.body": "No oficial, no creado ni avalado por Anthropic. En macOS escribe un archivo de icono en Claude.app, solo en este ordenador. Tras una actualización de Claude vuelve el icono original; un clic vuelve a poner el suyo. Puedes restaurar el original en cualquier momento.",
+      "S3a": "Poner este icono",
+      "S3b": "Dejar el original",
+      "S3c": "Sustituirá tu icono personalizado.",
+      "S4": "El icono fan está puesto.",
+      "S5": "Una actualización de Claude ha restaurado el icono original.",
+      "S5a": "Volver a ponerlo",
+      "S8": "Icono no oficial hecho por fans en Claude, no de Anthropic. Apagado hasta activar en Ajustes.",
+      "S9": "El icono está desactivado. Es un icono no oficial hecho por fans, no de Anthropic. Actívalo en Ajustes.",
+      "S10": "Solo cambia el icono (no oficial, hecho por fans, no de Anthropic). Tras una actualización de Claude vuelve el icono original; un clic vuelve a poner el suyo. `clear` devuelve el original.",
+      "S11": "Su icono de una versión anterior sigue en Claude.",
+      "S11a": "Usar su nuevo icono",
+      "S11b": "Restaurar el original",
+      "S11m": "Su icono de una versión anterior sigue en Claude. Esta versión ya no modifica la app de Claude.",
+      "S11m-a": "Restaurar el original",
+      "S11m-b": "Dejarlo, no preguntar más",
+      "S12": "Esta versión ya no cambia el icono de Claude en macOS. `clear` elimina el que haya puesto una versión anterior.",
+      "S13.row": "Icono no oficial de fans (apagado por defecto)",
+      "S13.mac": "Apagado por defecto",
+      "S13.linux": "Lanzador, apagado por defecto",
+      "S14": "Icono no oficial hecho por fans, no creado ni avalado por Anthropic. Apagado por defecto, se activa en Ajustes. En macOS escribe un archivo dentro de Claude.app (la verificación estricta de firma no pasa mientras está activo). Tras una actualización de Claude vuelve el icono original; un clic en Ajustes vuelve a poner el suyo. `clear` devuelve el original.",
+      "S15": "el icono está apagado por defecto",
+      "S16": "Si una versión anterior puso su icono en la app de Claude, `clear` lo elimina.",
+      "S17": "El icono en la app de Claude ahora está apagado por defecto. Coco Pet tiene su propio icono. Tras una actualización de Claude vuelve el icono original; un clic vuelve a poner el suyo. No se ha eliminado nada sin tu acción.",
+      "S18": "# Icono no oficial hecho por fans, escrito por Coco, no de Anthropic. Eliminar con `clear`.",
+      "S19": "Icono no oficial hecho por fans. Apagado hasta que lo actives en Ajustes.",
+      "S20": "Una actualización de Claude restauró el icono original. Un clic en Ajustes lo vuelve a poner.",
+      "S21": "Icono del Dock",
+      "S22": "Tiene su propio icono en el Dock y en Cmd-Tab. El icono de Claude no se toca.",
       "failed": "No se pudo cambiar el icono.",
-      "fallback": "Prueba /claudesama:icon apply o clear.",
-      "help": "El Dock puede cambiar después de reiniciar Claude."
+      "fallback": "Prueba /coco icon apply o clear.",
+      "dockRedraw": "El Dock mostrará el nuevo icono la próxima vez que redibuje Claude.",
+      "pick": "Qué icono",
+      "pick.coco": "Coco",
+      "pick.dake": "Claudita",
+      "pick.keycap": "La tecla de Coco",
+      "pick.ornament": "Adorno de Claudita"
     },
     "companion": {
-      "label": "Compañero de escritorio",
+      "label": "Coco Pet",
       "summon": "Haz que vuelva",
-      "fallback": "O ejecuta: open -a \"Claude-sama Companion\"",
+      "fallback": "O ejecuta: open -a \"Coco Pet\"",
       "absent": "Aún no está en tu escritorio",
-      "absentLine": "Una pequeña app para Mac: se coloca junto a la ventana de Claude.",
-      "install": "Instalar al compañero",
+      "absentLine": "Una pequeña app para Mac: se coloca junto a la ventana de {app}.",
+      "install": "Instalar Coco Pet",
       "building": "Compilando…",
       "buildingLine": "(unos segundos)",
       "tools": "Necesita las Command Line Tools de Apple",
@@ -214,41 +229,110 @@
       "hiddenLine": "(espera entre bastidores)",
       "corner": "Aún no puede seguir tu ventana",
       "cornerLine": "(espera en una esquina de la pantalla)",
-      "follow": "Dejarle seguir la ventana",
+      "follow": "Dejarla seguir la ventana",
       "followHelp": "Solo lee la posición de la ventana.",
       "waiting": "Espera tu permiso",
       "waitingLine": "(Ajustes del Sistema está abierto)",
-      "waitingHelp": "Activa Claude-sama Companion en Privacidad y seguridad › Accesibilidad.",
+      "waitingHelp": "Activa Coco Pet en Privacidad y seguridad › Accesibilidad.",
       "openSettings": "Abrir Ajustes del Sistema",
       "following": "Junto a tu ventana",
       "followingLine": "(la sigue adonde vaya)",
       "update": "Actualización disponible",
-      "updateButton": "Actualizarlo",
+      "updateButton": "Actualizarla",
       "size": "Su tamaño",
-      "sizes": "Muy pequeño · Pequeño · Mediano · Grande",
+      "sizes": [
+        "Muy pequeño",
+        "Pequeño",
+        "Mediano",
+        "Grande"
+      ],
+      "macSizes": [
+        "Mediano",
+        "Grande",
+        "Más grande"
+      ],
       "login": "Iniciar al iniciar sesión",
+      "capture": "Mostrar en capturas y grabaciones",
       "on": "Activado",
       "off": "Desactivado",
       "remove": "Quitar de este Mac…",
-      "confirm": "¿Moverlo con sus ajustes a la Papelera?",
+      "confirm": "¿Moverla con sus ajustes a la Papelera?",
       "trash": "Mover a la Papelera",
-      "keep": "Dejarlo aquí",
-      "removing": "Moviéndolo a la Papelera…",
+      "keep": "Dejarla aquí",
+      "removing": "Moviéndola a la Papelera…",
       "removed": "Movido a la Papelera.",
       "asks": "Claude Code te preguntará primero.",
       "notRun": "No se ha ejecutado nada.",
       "cannot": "Esta sesión no puede iniciar programas en este Mac.",
       "stageAlt": {
-        "absent": "Diagrama: su marca en el borde de la ventana de Claude, aún vacía",
+        "absent": "Diagrama: su marca en el borde de la ventana de {app}, aún vacía",
         "stopped": "Diagrama: duerme fuera de la pantalla",
         "hidden": "Diagrama: espera justo fuera de la pantalla",
         "corner": "Diagrama: espera en una esquina y mira su sitio en el borde de la ventana",
-        "following": "Diagrama: está sobre el borde superior de la ventana de Claude y se mueve con ella"
+        "following": "Diagrama: está sobre el borde superior de la ventana de {app} y se mueve con ella"
       },
       "sizeAlt": {
         "pixel": "{size}: carita en píxeles",
         "painted": "{size}: pintado"
+      },
+      "target": {
+        "label": "Se coloca junto a",
+        "help": "Con varias ventanas de VS Code abiertas, se coloca junto a la que está delante."
+      },
+      "pc": {
+        "absentLine": "Una pequeña app: se coloca junto a la ventana de {app}.",
+        "remove": "Quitar de este ordenador…",
+        "cannot": "Esta sesión no puede iniciar programas en este ordenador.",
+        "trashWindows": "Mover a la Papelera de reciclaje",
+        "confirmWindows": "¿Moverla con sus ajustes a la Papelera?",
+        "removingWindows": "Moviéndola a la Papelera de reciclaje…",
+        "removedWindows": "Movido a la Papelera de reciclaje."
       }
+    },
+    "reminders": "Recordatorios",
+    "guard": {
+      "label": "Recordatorios de seguridad",
+      "help": "Un recordatorio sobre comandos arriesgados y secretos en los commits. No bloquea nada."
+    },
+    "bookmark": {
+      "label": "Pósits y archivos más abiertos",
+      "help": "Al comenzar una nueva sesión, te dice dónde te quedaste. Solo se guarda en este ordenador."
+    },
+    "notes": {
+      "label": "Sus notas",
+      "help": "Una frase cuando falla el primer test, una compilación tarda más, una ventana se consume rápido o el contexto se llena."
+    },
+    "budget": {
+      "label": "Recordatorios de uso",
+      "off": "Desactivados"
+    },
+    "neighbours": {
+      "label": "Luces de los vecinos",
+      "help": "Nota cuando otros agentes de programación están trabajando. Solo ve si están ocupados y su uso; nunca el contenido, y no envía nada a ningún sitio."
     }
-  }
+  },
+  "check": {
+    "title": "Revisión",
+    "ok": "Todo bien",
+    "fix": "Corregir",
+    "oldSession": "Todavía está en ejecución una versión anterior en esta sesión.",
+    "copied": "Se ha copiado /reload-plugins. Pégalo en esa sesión."
+  },
+  "stick": {
+    "title": "Concentración",
+    "help": "Coco se baja la capucha, se hace un cubito y no dice nada hasta que se acaba.",
+    "light": "Empezar 25 minutos",
+    "out": "Terminar antes",
+    "until": "hasta {time}",
+    "endLabel": "al terminar",
+    "endQuiet": "en silencio",
+    "endSound": "un sonido suave (Mac)"
+  },
+  "durations": [
+    "58 s",
+    "2 min 10 s",
+    "12 min",
+    "1 h 2 min",
+    "2 d 3 h"
+  ]
 }

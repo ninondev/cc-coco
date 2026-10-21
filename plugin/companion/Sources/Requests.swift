@@ -4,10 +4,13 @@ import Foundation
 struct Requests: Equatable {
     struct SizePick: Equatable { var to: Size; var at: Double }
     struct LoginPick: Equatable { var on: Bool; var at: Double }
+    /// Whether screenshots, recordings and shared screens show him (owner 10-20: a switch, on by default).
+    struct CapturePick: Equatable { var on: Bool; var at: Double }
     var follow: Double = 0
     var settings: Double = 0
     var size: SizePick?
     var login: LoginPick?
+    var capture: CapturePick?
 
     init() {}
     init(_ object: [String: Any]) {
@@ -18,11 +21,14 @@ struct Requests: Equatable {
         follow = stamp(object["follow"])
         settings = stamp(object["settings"])
         if let value = object["size"] as? [String: Any], let raw = value["to"] as? String,
-           let to = Size(rawValue: raw), stamp(value["at"]) > 0 {
+           let to = Size(name: raw), stamp(value["at"]) > 0 {
             size = SizePick(to: to, at: stamp(value["at"]))
         }
         if let value = object["login"] as? [String: Any], let on = value["on"] as? Bool, stamp(value["at"]) > 0 {
             login = LoginPick(on: on, at: stamp(value["at"]))
+        }
+        if let value = object["capture"] as? [String: Any], let on = value["on"] as? Bool, stamp(value["at"]) > 0 {
+            capture = CapturePick(on: on, at: stamp(value["at"]))
         }
     }
 
@@ -31,6 +37,7 @@ struct Requests: Equatable {
         settings = max(settings, other.settings)
         if let pick = other.size, pick.at > (size?.at ?? 0) { size = pick }
         if let pick = other.login, pick.at > (login?.at ?? 0) { login = pick }
+        if let pick = other.capture, pick.at > (capture?.at ?? 0) { capture = pick }
     }
 
     static func wants(_ at: Double, after answered: Double, launch: Bool, now: Double) -> Bool {
@@ -40,7 +47,7 @@ struct Requests: Equatable {
 
 /// The script and the app deliberately write the same bytes. No registration or launchctl needed.
 enum LoginAgent {
-    static let label = "io.github.ninondev.claudesama-companion"
+    static let label = "io.github.ninondev.coco-companion"
     /// Scratch binaries must never repair or remove the owner's installed login agent.
     static func installedBundle(bundleIdentifier: String?, executable: String?) -> Bool {
         guard bundleIdentifier == label, let executable else { return false }
@@ -61,7 +68,7 @@ enum LoginAgent {
         <plist version="1.0">
         <dict>
         	<key>Label</key>
-        	<string>io.github.ninondev.claudesama-companion</string>
+        	<string>io.github.ninondev.coco-companion</string>
         	<key>ProgramArguments</key>
         	<array>
         		<string>\(escaped)</string>
@@ -77,7 +84,7 @@ enum LoginAgent {
         	<string>Aqua</string>
         	<key>AssociatedBundleIdentifiers</key>
         	<array>
-        		<string>io.github.ninondev.claudesama-companion</string>
+        		<string>io.github.ninondev.coco-companion</string>
         	</array>
         </dict>
         </plist>
@@ -91,19 +98,24 @@ enum LoginAgent {
     static func set(_ on: Bool, home: URL, executable: String) throws {
         guard isInstalledBundle else { return }
         let file = url(home: home)
-        let fm = FileManager.default
+        try writeAgent(on, file: file, executable: executable)
+    }
+
+    /// The installed-bundle gate stays at the caller; fixtures exercise the same writer.
+    static func writeAgent(_ on: Bool, file: URL, executable: String) throws {
+        let directory = try SecureDirectory(file.deletingLastPathComponent(), create: on)
         if on {
-            try fm.createDirectory(at: file.deletingLastPathComponent(), withIntermediateDirectories: true)
-            try plist(executable: executable).write(to: file, atomically: true, encoding: .utf8)
-        } else if fm.fileExists(atPath: file.path) {
-            try fm.trashItem(at: file, resultingItemURL: nil)
+            try directory.replace(file.lastPathComponent, with: Data(plist(executable: executable).utf8))
+        } else {
+            try directory.remove(file.lastPathComponent)
         }
     }
+
     static func repair(home: URL, executable: String) throws {
         guard isInstalledBundle else { return }
         let file = url(home: home)
-        guard FileManager.default.fileExists(atPath: file.path),
-              let data = try? Data(contentsOf: file),
+        guard let directory = try? SecureDirectory(file.deletingLastPathComponent()),
+              let data = try? directory.read(file.lastPathComponent, maxBytes: 65_536),
               let object = (try? PropertyListSerialization.propertyList(from: data, format: nil)) as? [String: Any],
               let args = object["ProgramArguments"] as? [String], args.first != executable else { return }
         try set(true, home: home, executable: executable)

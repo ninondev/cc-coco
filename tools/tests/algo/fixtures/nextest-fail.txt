@@ -1,0 +1,19 @@
+        PASS [  0.011s] finch auth::tests::checks_token
+        PASS [  0.008s] finch orders::tests::splits_lines
+        PASS [  0.014s] finch users::tests::finds_by_name
+        FAIL [  0.012s] finch orders::tests::computes_totals
+Canceling due to test failure: 1 test run left
+------ Final test run ------
+        FAIL [  0.012s] finch orders::tests::computes_totals
+Captured stdout of the failing test:
+
+assertion `left == right` failed
+  left: 41
+ right: 42
+
+--------------- Summary ---------------
+     Run: 12
+   Passed: 11
+   Failed: 1
+  Skipped: 0
+error: test run failed

@@ -1,0 +1,7 @@
+◇ Test run started.
+◇ Suite "Parser tests" started.
+✔ Test parses a header() passed after 0.004 seconds
+✔ Test writes nested output() passed after 0.006 seconds
+✔ Test rejects an empty body() passed after 0.001 seconds
+✔ Suite "Parser tests" passed after 0.012 seconds
+✔ Test run with 3 tests passed after 0.031 seconds.

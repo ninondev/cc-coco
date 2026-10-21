@@ -1,0 +1,11 @@
+   Compiling finch v0.4.2 (/home/user/src/finch)
+error[E0308]: mismatched types
+ --> src/orders.rs:88:26
+   |
+88 |     let total: u32 = compute(line_items);
+   |            ^^^^^ expected `u32`, found `f64`
+   |
+help: try using a conversion method: `compute(line_items) as u32`
+
+For more information about this error, try `rustc --explain E0308`.
+error: could not compile `finch` (lib) due to 1 previous error

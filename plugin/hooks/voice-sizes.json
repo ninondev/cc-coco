@@ -1,0 +1,72 @@
+{
+  "version": 1,
+  "unit": "Unicode code points",
+  "sourceSha256": "2ef4b25e5b42afbbf37a451c6196c82c120956df03963ad75b8df8b2adc35583",
+  "languages": {
+    "de": {
+      "off": 0,
+      "light": 338,
+      "full": 1196
+    },
+    "en": {
+      "off": 0,
+      "light": 338,
+      "full": 1196
+    },
+    "es-419": {
+      "off": 0,
+      "light": 338,
+      "full": 1196
+    },
+    "es-ES": {
+      "off": 0,
+      "light": 338,
+      "full": 1196
+    },
+    "fr": {
+      "off": 0,
+      "light": 338,
+      "full": 1196
+    },
+    "hi": {
+      "off": 0,
+      "light": 338,
+      "full": 1196
+    },
+    "id": {
+      "off": 0,
+      "light": 338,
+      "full": 1196
+    },
+    "it": {
+      "off": 0,
+      "light": 338,
+      "full": 1196
+    },
+    "ja": {
+      "off": 0,
+      "light": 338,
+      "full": 1196
+    },
+    "ko": {
+      "off": 0,
+      "light": 338,
+      "full": 1196
+    },
+    "pt-BR": {
+      "off": 0,
+      "light": 338,
+      "full": 1196
+    },
+    "zh": {
+      "off": 0,
+      "light": 338,
+      "full": 1196
+    },
+    "zh-Hant": {
+      "off": 0,
+      "light": 338,
+      "full": 1196
+    }
+  }
+}

@@ -1,16 +1,16 @@
 {
-  "name": "claudesama",
+  "name": "coco",
   "owner": {
     "name": "ninondev"
   },
   "metadata": {
-    "description": "My unofficial fan mod that makes Claude Code cute: a small kami of words moves in above your prompt. Not affiliated with Anthropic."
+    "description": "Unofficial fan mod for Claude Code. A small character who lives in the band above your prompt."
   },
   "plugins": [
     {
-      "name": "claudesama",
+      "name": "coco",
       "source": "./plugin",
-      "description": "My unofficial fan mod that makes Claude Code cute. Claude-sama, a small kami of words, reads along above your prompt, keeps an offering box for your context window and draws you one omen a day. Terminal and desktop. Not affiliated with Anthropic."
+      "description": "Unofficial fan mod for Claude Code. A small character who lives in the band above your prompt."
     }
   ]
 }

@@ -1,0 +1,3 @@
+// Generated live public facade. Authoritative implementation: hooks-source/dm.ts
+export {dm__DM_BACK_MS as DM_BACK_MS,dm__DM_CLOCK_MS as DM_CLOCK_MS,dm__DM_DAY_CAP as DM_DAY_CAP,dm__DM_GAP_MS as DM_GAP_MS,dm__DM_MOMENTS as DM_MOMENTS,dm__DM_MOMENT_MS as DM_MOMENT_MS,dm__DM_PREVIEW as DM_PREVIEW,dm__DM_UNANSWERED_CAP as DM_UNANSWERED_CAP,dm__dmAnswered as dmAnswered,dm__dmArrived as dmArrived,dm__dmInitial as dmInitial,dm__dmMoment as dmMoment,dm__dmMomentLine as dmMomentLine,dm__dmPreview as dmPreview,dm__dmSeen as dmSeen,dm__dmSpoken as dmSpoken,dm__dmState as dmState,dm__dmWrote as dmWrote} from './m1-compiled/companion.js'
+export type {DmFirst,DmState} from '../hooks-source/dm'

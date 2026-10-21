@@ -1,0 +1,25 @@
+running 3 tests from ./api/users_test.ts
+UsersService
+  ✔ finds a user by name (4ms)
+  ✗ creates a user with a valid payload (5ms)
+    error: AssertionError: expected 201, got 500
+      at assertEquals (https://deno.land/std@0.208.0/assert/assert_equals.ts:79:9)
+      at creates a user with a valid payload (./api/users_test.ts:18:5)
+  ✔ deletes a user (1ms)
+
+failures:
+
+creates a user with a valid payload
+=> ./api/users_test.ts:18:5
+
+ERRORS
+
+creates a user with a valid payload => ./api/users_test.ts:18:5
+
+failures:
+
+	1. api/users_test.ts
+
+2 passed | 1 failed | 0 ignored (0.01s)
+
+error: Test failed

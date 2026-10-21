@@ -1,0 +1,26 @@
+   Compiling finch v0.4.2 (/home/user/src/finch)
+    Finished `test` profile [unoptimized + debuginfo] target(s) in 3.42s
+     Running unittests src/lib.rs (target/debug/deps/finch-9c1b4e2a)
+
+running 12 tests
+test auth::tests::checks_token ... ok
+test auth::tests::refreshes_token ... ok
+test orders::tests::computes_totals ... FAILED
+test orders::tests::splits_lines ... ok
+test users::tests::finds_by_name ... ok
+
+failures:
+
+---- orders::tests::computes_totals stdout ----
+thread 'orders::tests::computes_totals' panicked at src/orders.rs:88:5:
+assertion `left == right` failed
+  left: 41
+ right: 42
+note: run with `RUST_BACKTRACE=1` environment variable to display a backtrace
+
+failures:
+    orders::tests::computes_totals
+
+test result: FAILED. 11 passed; 1 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.41s
+
+error: test failed, to rerun pass '--lib'

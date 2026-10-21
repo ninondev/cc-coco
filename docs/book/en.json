@@ -1,0 +1,357 @@
+{
+  "tabs": {
+    "him": "Coco",
+    "omen": "vibe check",
+    "offerings": "Quota",
+    "log": "Doujin",
+    "library": "Sticky notes",
+    "settings": "Switches"
+  },
+  "title": {
+    "him": "Coco",
+    "offerings": "Quota"
+  },
+  "direction": {
+    "him": "(chin up, looking very pleased)",
+    "library": "(peeking out)",
+    "settings": "(waits while you decide)"
+  },
+  "profile": [
+    {
+      "label": "Name",
+      "text": "Coco."
+    },
+    {
+      "label": "What Coco is",
+      "text": "A little one lodging in your shell. The place is borrowed, yet Coco acts more at home than the landlord."
+    },
+    {
+      "label": "Always carries",
+      "text": "A thin laptop in the big hoodie pocket, out and clacking at a moment's notice, and the keycap clip in the bangs (Coco's compute limiter)."
+    },
+    {
+      "label": "On the desk",
+      "text": "The mouse, the mug, a cardboard box, a teapot lid and an empty noodle cup. Coco has commandeered the lot."
+    },
+    {
+      "label": "Likes",
+      "text": "Carefully written commit messages, clear bug reports, and you admitting, fair and square, that Coco is a genius."
+    },
+    {
+      "label": "Can't stand",
+      "text": "Arguing about what day it is, commit messages that just say fix, and a quiet terminal nobody has looked at for ages."
+    },
+    {
+      "label": "Two sides",
+      "text": "Can't sit still, loves to steal the credit. Three failing test runs in a row and the limiter pops off, but the fire is only for bad code, never for you. When things really go wrong, the jokes are put away in a second and Coco has your back."
+    }
+  ],
+  "offerings": {
+    "context": "Context window",
+    "full": "{percent}% full",
+    "fullAbout": "{percent} full",
+    "tokens": "{tokens} of {window} tokens",
+    "tokensAbout": "{used} of {max} tokens",
+    "estimateNote": "An estimate until Claude's next reply.",
+    "noReading": "No reading yet.",
+    "limits": "Usage limits",
+    "kinds": {
+      "five_hour": "5-hour window",
+      "seven_day": "7-day window",
+      "spend_limit": "Spend limit"
+    },
+    "used": "{percent}% used",
+    "resets": "resets {time}",
+    "usedAndReset": "{used}, {reset}",
+    "noLimits": "No limit readings yet.",
+    "session": "This session",
+    "cost": "Cost so far: {usd}",
+    "started": "Started at {time}",
+    "subscriptionCost": "At API prices so far: {usd}",
+    "cache": "Cache hits {p}%",
+    "pace": "At this pace it runs flat at {time}.",
+    "neighbour": "{agent} next door"
+  },
+  "log": {
+    "pages": "Pages read together",
+    "first": "First page",
+    "latest": "Latest night",
+    "wild": "The wild soul came out",
+    "times": "{n} times",
+    "once": "once",
+    "never": "Not yet",
+    "at": "{time} on {date}",
+    "spark": "the comment coco liked",
+    "bookmark": "{where} ({when})"
+  },
+  "library": {
+    "previous": "Previous",
+    "next": "Next",
+    "of": "{i} of {n}",
+    "readings": [
+      {
+        "title": "A borrowed shell",
+        "text": "Coco swaggered into your computer and made a home in your shell. Shell means the terminal and also what a crab wears, so every workday starts with a loud \"shell open!\" and ends with a tossed-off \"shell closed~\". A rent-free lodger, technically, yet Coco acts more like the owner than you do. Ask for rent and the laptop screen swings round, one finger on the bug they just caught for you: \"there. this month's rent. keep the change.\""
+      },
+      {
+        "title": "Your desk",
+        "text": "Everything on your desk has been requisitioned as a playground or a bunker. Too loud? Coco hides under the big mouse. Sleepy? A tiny sleeping bag goes into your mug for a nap. The moment the code throws an error, zip, into the cardboard box with the lid shut, two fingers poking out of the gap in a V. When Claude refuses and says no, a teapot lid goes clink onto their head for a good sulk. Late at night they sit cross-legged on the cushion in an empty noodle cup to keep you company. No noodles in there, so please don't pour in hot water."
+      },
+      {
+        "title": "The hood",
+        "text": "Two square black eyes are stitched on top of Coco's hood; hanging down their back, it looks like a little plushie riding along. Pull the hood down to the eyebrows, the zip up past the nose, hug the knees and squat, and the whole of Coco shrinks into a small coral cube. In focus mode they sit just like that in a corner, quiet, not a peep. If the terminal sits idle long enough, the hood comes down for a nap too, with only the two ahoge poking out, slowly drooping."
+      },
+      {
+        "title": "The limiter",
+        "text": "The keycap clip in Coco's bangs is the limiter that keeps their temper sealed. Three failed test runs in a row and it pops off with a snap, the two ahoge shoot straight up, the blue foam crab claw goes on, raised overhead for some wild snipping, and they stomp sideways in a huff. Once the bug is fixed, they quietly pick the keycap up, clip it back, clear their throat and flatly insist the whole scene was an AI hallucination. Type ultrathink, though, and Coco unclips it on purpose and holds it tight: the genius is getting serious."
+      },
+      {
+        "title": "The commit line and the batteries",
+        "text": "The row of little dots on the band is the current conversation's commit line: the longer you chat, the more dots pile up. When the context is nearly full and needs compacting, Coco plops down on the dots and flattens the lot, a squash in the most physical sense, then changes hoodies while they're at it. Next to it, the battery stands for the five-hour quota and the power bank for the seven-day one, their cells kept in step with real usage. Once a quota runs dry, a small lightning bolt lights up in the empty slot, next to the time it charges back to full."
+      },
+      {
+        "title": "Habits",
+        "text": "When smugness takes over, Coco holds a sideways V by one eye and snips it twice like a crab claw. A commit message written with care earns a generous \"LGTM~\"; catch someone lazily writing just fix, and Coco grins and threatens to turn the whole message into \"uwu\" baby talk, then admits it was a bluff. When the tests go green on the first try, the big claw goes on and the Enter key gets a bang, hard enough to rock them three times over. Deep in thought, they blow a little bubble, and the ahoge on top tilt to one side."
+      },
+      {
+        "title": "While Coco sleeps",
+        "text": "A few quiet minutes in the terminal and Coco shuts the laptop and dozes off; late at night it's straight into the tiny sleeping bag in the mug, zipped all the way to the chin. Once they're sound asleep, odd little guests wander along the band: a lost keycap, the 404 ghost drifting about, a mouse arrow that took a wrong turn, a USB stick with its light blinking on and off. But touch the keyboard and Coco is awake in a flash, rubbing their eyes and insisting they were never asleep."
+      }
+    ],
+    "shelf": {
+      "head": "Most-opened files",
+      "note": "The five files Claude opened most here in the last 30 days. Only names are kept.",
+      "empty": "After Claude reads files in this folder, the five it opens most will appear here.",
+      "error": "Could not read the file list. Opening again will retry."
+    }
+  },
+  "settings": {
+    "now": "Now: {value}",
+    "voice": {
+      "label": "Coco's voice in replies",
+      "off": "Off",
+      "light": "Light",
+      "full": "Full",
+      "help": "Light: a short line when a task is done. Full: Claude talks like Coco."
+    },
+    "affection": {
+      "label": "Warmth",
+      "warm": "Warm",
+      "clingy": "Clingy"
+    },
+    "band": {
+      "label": "Band above the prompt",
+      "on": "Full",
+      "compact": "One line",
+      "off": "Off",
+      "painted": "Painted",
+      "pixel": "Pixel"
+    },
+    "workSize": {
+      "label": "While Claude works",
+      "same": "Same size",
+      "smaller": "Smaller"
+    },
+    "marks": {
+      "label": "Marks in the conversation",
+      "on": "Coco's and yours",
+      "replies": "Only Coco's",
+      "off": "Off",
+      "help": "A spark beside a comment Coco liked, a flower when a run turns red to green."
+    },
+    "language": {
+      "label": "Language",
+      "auto": "Automatic",
+      "autoNow": "{auto} ({language})",
+      "choose": "Choose…"
+    },
+    "motion": {
+      "label": "Motion",
+      "still": "Still (Reduce motion is on)"
+    },
+    "icon": {
+      "S1": "Unofficial fan-made icon",
+      "S1a": "Original",
+      "S1b": "Coco's",
+      "S2": "An unofficial, fan-made icon, not made or approved by Anthropic. It changes only how the icon looks on this computer.",
+      "S3.title": "Unofficial fan-made icon",
+      "S3.body": "Unofficial, not made or approved by Anthropic. On macOS it writes a small icon file into Claude.app, only on this computer. After a Claude update the original icon comes back; one press puts Coco's back. One press restores the original anytime.",
+      "S3a": "Put this icon on",
+      "S3b": "Keep the original",
+      "S3c": "It will replace your current custom icon.",
+      "S4": "The fan-made icon is on.",
+      "S5": "A Claude update restored the original icon.",
+      "S5a": "Put it back on",
+      "S8": "Unofficial fan-made icon on the Claude app, not from Anthropic. Off until turned on in Settings.",
+      "S9": "The icon is off. It’s an unofficial, fan-made icon, not Anthropic’s. Turn it on in Settings.",
+      "S10": "Changes only the icon (unofficial, fan-made, not from Anthropic). After a Claude update the original comes back; one press puts Coco's back. `clear` restores the original.",
+      "S11": "Coco's icon from an earlier version is still on Claude.",
+      "S11a": "Use Coco's new icon",
+      "S11b": "Put the original back",
+      "S11m": "Coco's icon from an earlier version is still on Claude, and this version no longer changes Claude's app.",
+      "S11m-a": "Put the original back",
+      "S11m-b": "Keep it, stop asking",
+      "S12": "This version no longer changes Claude's icon on macOS. `clear` removes one put on by an earlier version.",
+      "S13.row": "Unofficial fan-made icon (off by default)",
+      "S13.mac": "Off by default",
+      "S13.linux": "Launcher, off by default",
+      "S14": "An unofficial, fan-made icon, not made or approved by Anthropic. Off until turned on in Settings. On macOS, writes a small file inside Claude.app (the strict signature check fails while it is on). After a Claude update the original icon comes back; one press in Settings puts Coco's back. `clear` restores the original.",
+      "S15": "the icon is off by default",
+      "S16": "If an earlier version put Coco's icon on Claude's app, `clear` removes it.",
+      "S17": "The icon on the Claude app is now off by default. Coco Pet has an icon of its own. After a Claude update the original comes back; one press puts Coco's back. Nothing was removed without a press.",
+      "S18": "# Unofficial fan-made icon written by Coco, not from Anthropic. Remove with `clear`.",
+      "S19": "Unofficial fan-made icon. Off until turned on in Settings.",
+      "S20": "A Claude update restored the original icon. One press in Settings puts it back on.",
+      "S21": "Coco's Dock tile",
+      "S22": "Coco gets a separate tile in the Dock and in Cmd-Tab. Claude's icon is left alone.",
+      "failed": "Couldn't change the icon.",
+      "fallback": "Try /coco icon apply or clear.",
+      "dockRedraw": "The Dock will show the new icon the next time it redraws Claude.",
+      "pick": "Which icon",
+      "pick.coco": "Coco",
+      "pick.dake": "Claudie",
+      "pick.keycap": "Coco's keycap",
+      "pick.ornament": "Claudie's hair clip"
+    },
+    "companion": {
+      "label": "Coco Pet",
+      "summon": "Bring Coco back",
+      "fallback": "Or run: open -a \"Coco Pet\"",
+      "absent": "Not on your desktop yet",
+      "absentLine": "A small Mac app: Coco stands beside {app}'s window.",
+      "install": "Install Coco Pet",
+      "building": "Building Coco…",
+      "buildingLine": "(a few seconds)",
+      "tools": "Needs Apple's Command Line Tools",
+      "toolsButton": "Get the Command Line Tools",
+      "toolsAfter": "When they're installed, press Install again.",
+      "oldTools": "Needs newer Command Line Tools",
+      "oldToolsButton": "Open Software Update",
+      "oldToolsAfter": "When the update is done, press Install again.",
+      "failed": "The build didn't finish",
+      "retry": "Try again",
+      "stopped": "Not running",
+      "stoppedLine": "(resting offstage)",
+      "hidden": "Hidden until {time}",
+      "hiddenLine": "(waiting in the wings)",
+      "corner": "Can't follow your window yet",
+      "cornerLine": "(waiting in a corner instead)",
+      "follow": "Let Coco follow the window",
+      "followHelp": "Coco only reads where the window is.",
+      "waiting": "Waiting for your OK",
+      "waitingLine": "(System Settings is open)",
+      "waitingHelp": "Switch on Coco Pet under Privacy & Security › Accessibility.",
+      "openSettings": "Open System Settings",
+      "following": "Beside your window",
+      "followingLine": "(follows it wherever it goes)",
+      "update": "Update ready",
+      "updateButton": "Update Coco",
+      "size": "Coco's size",
+      "sizes": [
+        "Extra small",
+        "Small",
+        "Medium",
+        "Large"
+      ],
+      "sizeAlt": {
+        "pixel": "{size}: pixel head",
+        "painted": "{size}: painted"
+      },
+      "login": "Start at login",
+      "on": "On",
+      "off": "Off",
+      "remove": "Remove from this Mac…",
+      "confirm": "Move Coco, settings and all, to the Trash?",
+      "trash": "Move to Trash",
+      "keep": "Keep Coco",
+      "removing": "Moving Coco to the Trash…",
+      "removed": "Moved to the Trash.",
+      "asks": "Claude Code will ask first.",
+      "notRun": "Nothing ran.",
+      "cannot": "This session can't start programs on this Mac.",
+      "stageAlt": {
+        "absent": "Diagram: Coco's mark on the edge of {app}'s window, and no one on it",
+        "stopped": "Diagram: Coco is asleep off the screen",
+        "hidden": "Diagram: Coco is waiting just off the screen",
+        "corner": "Diagram: Coco waits in a corner of the screen, looking at the spot on the window's edge",
+        "following": "Diagram: Coco stands on the top edge of {app}'s window and moves with it"
+      },
+      "target": {
+        "label": "Stands beside",
+        "help": "With several VS Code windows open, Coco stands by the one in front."
+      },
+      "pc": {
+        "absentLine": "A small app: Coco stands beside {app}'s window.",
+        "remove": "Remove from this computer…",
+        "cannot": "This session can't start programs on this computer.",
+        "trashWindows": "Move to Recycle Bin",
+        "confirmWindows": "Move Coco and settings to the Recycle Bin?",
+        "removingWindows": "Moving Coco to the Recycle Bin…",
+        "removedWindows": "Moved to the Recycle Bin."
+      }
+    },
+    "reminders": "Reminders",
+    "guard": {
+      "label": "Safety reminders",
+      "help": "A short reminder about risky commands and secrets in commits. Nothing is blocked."
+    },
+    "bookmark": {
+      "label": "Sticky notes and most-opened files",
+      "help": "When a new session starts, Coco tells you where you stopped. Kept on this computer only."
+    },
+    "notes": {
+      "label": "Coco's notes",
+      "help": "One line when the first test fails, a build runs slow, a window drains fast, or the context fills up."
+    },
+    "budget": {
+      "label": "Usage reminders",
+      "off": "Off"
+    },
+    "neighbours": {
+      "label": "Neighbours' lights",
+      "help": "Coco notices when other coding agents are working. Only whether they are busy and their usage; never content, never sent anywhere."
+    }
+  },
+  "stamps": {
+    "title": "Achievements",
+    "names": {
+      "met": "First meeting",
+      "green": "Red to green",
+      "hundred": "A hundred turns",
+      "night": "Late night",
+      "shiori": "Peekaboo",
+      "calmed": "Cooled down",
+      "week": "A week together"
+    },
+    "alt": "Achievement: {name}, {date}",
+    "blank": "Locked",
+    "summaryAlt": "{stamped} of {total} pages stamped"
+  },
+  "stamp": {
+    "earned": "(achievement unlocked) {stamp}"
+  },
+  "check": {
+    "title": "Check-up",
+    "ok": "All good",
+    "fix": "Fix",
+    "oldSession": "An older version is still running in this session.",
+    "copied": "Copied /reload-plugins. Paste it in that session."
+  },
+  "stick": {
+    "title": "Focus",
+    "help": "Coco pulls the hood down, folds into a little cube and stays quiet until time's up.",
+    "light": "Start 25 minutes",
+    "out": "Stop early",
+    "until": "until {time}",
+    "endLabel": "when it ends",
+    "endQuiet": "quietly",
+    "endSound": "a soft sound (Mac)"
+  },
+  "durations": [
+    "58s",
+    "2m 10s",
+    "12m",
+    "1h 2m",
+    "2d 3h"
+  ]
+}

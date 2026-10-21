@@ -1,28 +1,28 @@
 #!/bin/sh
-# companion-macos.sh - put Claude-sama beside the Claude desktop app's window (macOS only).
+# companion-macos.sh - put Coco beside the Claude desktop app's window (macOS only).
 #
 # Usage: companion-macos.sh install [--login] | start | stop | status | uninstall [--report]
 #
 # What it does
 #   install    Builds the companion from its Swift source (../companion) with swiftc from the Xcode
-#              Command Line Tools (Swift 5.9 or newer, Xcode 15 or later) into ~/Applications/Claude-sama Companion.app, copies the mod's
-#              frames into it (16 desktop pictures, 16 pixel ones), signs it for this Mac only (ad
-#              hoc, no Apple ID) and starts it. Nothing is downloaded. It rebuilds only when the
+#              Command Line Tools (Swift 5.9 or newer, Xcode 15 or later) into ~/Applications/Coco Pet.app, copies the mod's
+#              frames into it (16 desktop pictures, 16 pixel ones) with Coco's clips and Claudie's
+#              cells, signs it for this Mac only (ad hoc, no Apple ID) and starts it. Nothing is downloaded. It rebuilds only when the
 #              source changed, so a permission you gave the app stays valid. --login also adds a
 #              LaunchAgent so it starts when you log in (macOS shows a "background item added"
 #              notice).
-#              Settings and the mod's feed stay in ~/Library/Application Support/Claude-sama/;
+#              Settings and the mod's feed stay in ~/Library/Application Support/Coco/;
 #              that folder tells the mod the companion is installed.
-#   start      Starts the installed companion, or brings him back if he is running or hidden.
+#   start      Starts the installed companion, or brings it back if it is running or hidden.
 #   stop       Stops it. A login item stays in place; uninstall removes it.
 #   status     Reads, never writes: installed, running (with its memory), whether it may follow the
 #              window, login item, and when the mod last wrote its feed.
-#   uninstall  Stops it and moves the app, ~/Library/Application Support/Claude-sama/ (settings and
+#   uninstall  Stops it and moves the app, ~/Library/Application Support/Coco/ (settings and
 #              the mod's feed file) and the LaunchAgent to the Trash; resets only its own
 #              Accessibility entry.
 #
 # Permissions: to follow the window it needs Accessibility (System Settings > Privacy & Security >
-# Accessibility > Claude-sama Companion); his card or the book's Settings button offers it. Without it he waits in the
+# Accessibility > Coco Pet); its card or the bag's Settings button offers it. Without it, Coco waits in the
 # lower right corner of the screen while Claude is in front. It never asks for Screen Recording and
 # never reads window titles, keystrokes or anything over the network. Claude.app is never touched.
 #
@@ -31,14 +31,16 @@
 # this script. --no-prompt stays accepted as a no-op; launch never asks for permission.
 # --report adds one final result line for the book; the human messages stay available.
 #
-# License: MIT. Part of Claude-sama, an unofficial fan skin. Claude is a trademark of Anthropic.
+# License: MIT. Part of Coco, an unofficial fan skin. Claude is a trademark of Anthropic.
 
 set -eu
+PATH=/usr/bin:/bin:/usr/sbin:/sbin
+export PATH
 
 PROG=companion-macos.sh
-LABEL=io.github.ninondev.claudesama-companion
-EXE=claudesama-companion
-NAME="Claude-sama Companion"
+LABEL=io.github.ninondev.coco-companion
+EXE=coco-companion
+NAME="Coco Pet"
 REPORT=0
 RESULT=failed
 
@@ -50,12 +52,12 @@ die() {
 }
 
 usage() {
-  cat <<EOF
+  /bin/cat <<EOF
 Usage: $PROG install [--login] | start | stop | status | uninstall [--report]
 
-  install       Build from source (swiftc), install into ~/Applications/Claude-sama Companion.app, start
+  install       Build from source (swiftc), install into ~/Applications/Coco Pet.app, start
   install --login   The same, and start it at every login (a LaunchAgent)
-  start         Start it or bring him back, even while hidden
+  start         Start it or bring it back, even while hidden
   stop          Stop it
   status        Show what is installed and running (read only)
   uninstall     Stop it, move everything it created to the Trash, reset its Accessibility entry
@@ -73,24 +75,31 @@ EOF
 self_dir() {
   _p=$1
   while [ -h "$_p" ]; do
-    _d=$(cd "$(dirname "$_p")" && pwd -P)
-    _l=$(readlink "$_p")
+    _d=$(cd "$(/usr/bin/dirname "$_p")" && pwd -P)
+    _l=$(/usr/bin/readlink "$_p")
     case $_l in
       /*) _p=$_l ;;
       *) _p=$_d/$_l ;;
     esac
   done
-  (cd "$(dirname "$_p")" && pwd -P)
+  (cd "$(/usr/bin/dirname "$_p")" && pwd -P)
 }
 
 HERE=$(self_dir "$0")
 PLUGIN=$(cd "$HERE/.." && pwd -P)
+CONTROL=$HERE/companion-control
 SRC=$PLUGIN/companion
 FRAMES=$PLUGIN/assets/desktop
 PIXELS=$PLUGIN/assets/pixel
-ICON=$PLUGIN/assets/icon/claude-sama-1024.png
+# Coco's clips (the pet's own set, the one companion-rs draws) and Claudie's cells; the app draws Coco from these
+# when they are there and falls back to the painted frames above when they are not.
+COCO=$PLUGIN/companion-rs/assets/coco
+# The quota foot's words, the Rust pet's own table (QuotaPixels.swift reads them from Resources/words).
+QUOTA_WORDS=$PLUGIN/companion-rs/assets/words
+CLAUDIE=$PLUGIN/assets/claudie
+ICON=$PLUGIN/assets/icon/coco-1024.png
 
-DIR="$HOME/Library/Application Support/Claude-sama"
+DIR="$HOME/Library/Application Support/Coco"
 APPS="$HOME/Applications"
 APP="$APPS/$NAME.app"
 OLD_APP="$DIR/$NAME.app"
@@ -98,8 +107,8 @@ BIN="$APP/Contents/MacOS/$EXE"
 STATE="$DIR/companion.json"
 FEED="$DIR/view.json"
 AGENT="$HOME/Library/LaunchAgents/$LABEL.plist"
-UIDN=$(id -u)
-MATCH="Claude-sama Companion.app/Contents/MacOS/$EXE"
+UIDN=$(/usr/bin/id -u)
+OLD_BIN="$OLD_APP/Contents/MacOS/$EXE"
 
 # ---- arguments ---------------------------------------------------------------------------
 
@@ -133,7 +142,7 @@ STAGE=
 cleanup() {
   _exit=$?
   if [ -n "$STAGE" ] && [ -d "$STAGE" ]; then
-    rm -rf "$STAGE"
+    /bin/rm -rf "$STAGE"
   fi
   if [ "$REPORT" -eq 1 ]; then
     printf 'result: %s\n' "$RESULT"
@@ -143,63 +152,66 @@ cleanup() {
 trap cleanup EXIT
 trap 'exit 1' HUP INT TERM
 
-if [ "$(uname -s)" != Darwin ]; then
+if [ "$(/usr/bin/uname -s)" != Darwin ]; then
   RESULT=not-mac
   die "the companion is for macOS; on other systems the band inside Claude Code is all there is"
 fi
 
-VERSION=$(sed -n 's/.*"version"[[:space:]]*:[[:space:]]*"\([^"]*\)".*/\1/p' "$PLUGIN/.claude-plugin/plugin.json" 2>/dev/null | head -n 1)
+VERSION=$(/usr/bin/sed -n 's/.*"version"[[:space:]]*:[[:space:]]*"\([^"]*\)".*/\1/p' "$PLUGIN/.claude-plugin/plugin.json" 2>/dev/null | /usr/bin/head -n 1)
 [ -n "$VERSION" ] || VERSION=0
 
 # ---- helpers -----------------------------------------------------------------------------
 
-pids() { pgrep -f "$MATCH" 2>/dev/null || true; }
+pids() { "$CONTROL" list "$BIN" "$OLD_BIN"; }
 
-running_pid() { pids | head -n 1; }
+running_pid() { pids | /usr/bin/head -n 1; }
 
 # Moves a path to the Trash: /usr/bin/trash when present (macOS 15+), otherwise ~/.Trash.
 to_trash() {
-  if command -v trash >/dev/null 2>&1 && trash "$1" >/dev/null 2>&1; then
+  if [ -x /usr/bin/trash ] && /usr/bin/trash "$1" >/dev/null 2>&1; then
     return 0
   fi
-  mkdir -p "$HOME/.Trash"
-  _base=$(basename "$1")
+  "$CONTROL" ensure-dir "$HOME/.Trash"
+  _base=$(/usr/bin/basename "$1")
   _dest="$HOME/.Trash/$_base"
-  [ -e "$_dest" ] && _dest="$HOME/.Trash/$_base $(date +%Y%m%d-%H%M%S)"
-  mv "$1" "$_dest"
+  [ -e "$_dest" ] && _dest="$HOME/.Trash/$_base $(/bin/date +%Y%m%d-%H%M%S)"
+  /bin/mv "$1" "$_dest"
 }
 
 # A short hash of everything the app is built from: rebuild only when it changes.
 source_hash() {
   {
     printf '%s\n' "$VERSION"
-    for _f in "$SRC/Info.plist" "$SRC"/Sources/*.swift "$FRAMES"/*.png "$PIXELS"/*.png "$ICON" "$HERE/$PROG"; do
-      shasum -a 256 "$_f" | cut -d ' ' -f 1
+    for _f in "$SRC/Info.plist" "$SRC"/Sources/*.swift "$FRAMES"/*.png "$PIXELS"/*.png "$ICON" "$PLUGIN/assets/icon/coco-16.png" "$PLUGIN/assets/icon/coco-32.png" "$PLUGIN/assets/icon/build-icns.sh" "$HERE/$PROG"; do
+      /usr/bin/shasum -a 256 "$_f" | /usr/bin/cut -d ' ' -f 1
     done
-  } | shasum -a 256 | cut -c 1-16
+    for _f in "$PLUGIN/assets/shed"/*.png "$PLUGIN/assets/shed/shed.json" "$PLUGIN/assets/visitors"/*.png "$PLUGIN/assets/visitors/visitors.json" "$COCO"/*.json "$COCO"/*.bin "$CLAUDIE"/*/*.png "$QUOTA_WORDS/quota.json" "$QUOTA_WORDS/languages.json"; do
+      if [ -f "$_f" ]; then /usr/bin/shasum -a 256 "$_f" | /usr/bin/cut -d ' ' -f 1; fi
+    done
+  } | /usr/bin/shasum -a 256 | /usr/bin/cut -c 1-16
 }
 
-installed_build() { cat "$APP/Contents/Resources/build.txt" 2>/dev/null || true; }
+installed_build() { /bin/cat "$APP/Contents/Resources/build.txt" 2>/dev/null || true; }
 
-state_value() { plutil -extract "$1" raw -o - "$STATE" 2>/dev/null || true; }
+state_value() { /usr/bin/plutil -extract "$1" raw -o - "$STATE" 2>/dev/null || true; }
 
-agent_loaded() { launchctl print "gui/$UIDN/$LABEL" >/dev/null 2>&1; }
+agent_loaded() { /bin/launchctl print "gui/$UIDN/$LABEL" >/dev/null 2>&1; }
 
 # Only the selected Xcode compiler is inspected. Neither lookup opens an installer dialog.
 preflight() {
-  if ! xcode-select -p >/dev/null 2>&1; then
+  if ! /usr/bin/xcode-select -p >/dev/null 2>&1; then
     RESULT=no-tools
     warn "the Xcode Command Line Tools are not installed. Run: xcode-select --install   then run install again."
     exit 3
   fi
-  _swiftc=$(xcrun --sdk macosx --find swiftc 2>/dev/null) || _swiftc=
+  _swiftc=$(/usr/bin/xcrun --sdk macosx --find swiftc 2>/dev/null) || _swiftc=
   if [ -z "$_swiftc" ] || [ ! -x "$_swiftc" ]; then
     RESULT=no-tools
     warn "swiftc not found. Run: xcode-select --install   then run install again."
     exit 3
   fi
   _swift_version=$("$_swiftc" -version 2>&1) || _swift_version=
-  _swift_numbers=$(printf '%s\n' "$_swift_version" | sed -n 's/.*Swift version \([0-9][0-9]*\)\.\([0-9][0-9]*\).*/\1 \2/p' | head -n 1)
+  _swift_numbers=$(printf '%s\n' "$_swift_version" | /usr/bin/sed -n 's/.*Swift version \([0-9][0-9]*\)\.\([0-9][0-9]*\).*/\1 \2/p' | /usr/bin/head -n 1)
   _major=${_swift_numbers%% *}
   _minor=${_swift_numbers#* }
   if [ -z "$_swift_numbers" ] || ! { [ "$_major" -gt 5 ] || { [ "$_major" -eq 5 ] && [ "$_minor" -ge 9 ]; }; }; then
@@ -218,38 +230,63 @@ build() {
     [ -f "$_f" ] || die "missing $_f; is the plugin complete?"
   done
   preflight
-  STAGE=$(mktemp -d "${TMPDIR:-/tmp}/claudesama-companion.XXXXXX") || die "cannot create a temp folder"
+  STAGE=$(/usr/bin/mktemp -d "${TMPDIR:-/tmp}/coco-companion.XXXXXX") || die "cannot create a temp folder"
   NEW="$STAGE/$NAME.app"
-  mkdir -p "$NEW/Contents/MacOS" "$NEW/Contents/Resources/frames" "$NEW/Contents/Resources/pixel"
-  sed "s/@VERSION@/$VERSION/g" "$SRC/Info.plist" >"$NEW/Contents/Info.plist"
-  cp "$FRAMES"/*.png "$NEW/Contents/Resources/frames/"
-  cp "$PIXELS"/*.png "$NEW/Contents/Resources/pixel/"
+  /bin/mkdir -p "$NEW/Contents/MacOS" "$NEW/Contents/Resources/frames" "$NEW/Contents/Resources/pixel"
+  /usr/bin/sed "s/@VERSION@/$VERSION/g" "$SRC/Info.plist" >"$NEW/Contents/Info.plist"
+  /bin/cp "$FRAMES"/*.png "$NEW/Contents/Resources/frames/"
+  /bin/cp "$PIXELS"/*.png "$NEW/Contents/Resources/pixel/"
+  if [ -d "$PLUGIN/assets/shed" ]; then
+    /bin/mkdir -p "$NEW/Contents/Resources/shed"
+    /bin/cp "$PLUGIN/assets/shed"/*.png "$PLUGIN/assets/shed"/shed.json "$NEW/Contents/Resources/shed/"
+  fi
+  if [ -d "$PLUGIN/assets/visitors" ]; then
+    /bin/mkdir -p "$NEW/Contents/Resources/visitors"
+    /bin/cp "$PLUGIN/assets/visitors"/*.png "$PLUGIN/assets/visitors"/visitors.json "$NEW/Contents/Resources/visitors/"
+  fi
+  if [ -f "$COCO/band-A.json" ] && [ -f "$COCO/band-B.json" ]; then
+    /bin/mkdir -p "$NEW/Contents/Resources/coco"
+    /bin/cp "$COCO"/*.json "$COCO"/*.bin "$NEW/Contents/Resources/coco/"  # pictures: X.bin beside X.json
+  fi
+  if [ -f "$QUOTA_WORDS/quota.json" ] && [ -f "$QUOTA_WORDS/languages.json" ]; then
+    /bin/mkdir -p "$NEW/Contents/Resources/words"
+    /bin/cp "$QUOTA_WORDS/quota.json" "$QUOTA_WORDS/languages.json" "$NEW/Contents/Resources/words/"
+  fi
+  for _form in dake maid; do
+    if [ -d "$CLAUDIE/$_form" ]; then
+      /bin/mkdir -p "$NEW/Contents/Resources/claudie/$_form"
+      /bin/cp "$CLAUDIE/$_form"/*.png "$NEW/Contents/Resources/claudie/$_form/"
+    fi
+  done
   printf '%s\n' "$1" >"$NEW/Contents/Resources/build.txt"
   # His icon for the app (shown where macOS asks about Accessibility); skipped if it cannot be made.
-  if [ -f "$ICON" ] && command -v sips >/dev/null 2>&1 && command -v iconutil >/dev/null 2>&1; then
+  if [ -f "$ICON" ] && [ -x /usr/bin/sips ]; then
     _set="$STAGE/AppIcon.iconset"
-    mkdir "$_set"
-    for _px in 16 32 128 256; do
-      sips -z "$_px" "$_px" "$ICON" --out "$_set/icon_${_px}x${_px}.png" >/dev/null 2>&1 || true
+    /bin/mkdir "$_set"
+    for _px in 16 32 128 256 512; do
+      /usr/bin/sips -z "$_px" "$_px" "$ICON" --out "$_set/icon_${_px}x${_px}.png" >/dev/null 2>&1 || true
       _px2=$((_px * 2))
-      sips -z "$_px2" "$_px2" "$ICON" --out "$_set/icon_${_px}x${_px}@2x.png" >/dev/null 2>&1 || true
+      /usr/bin/sips -z "$_px2" "$_px2" "$ICON" --out "$_set/icon_${_px}x${_px}@2x.png" >/dev/null 2>&1 || true
     done
-    iconutil -c icns "$_set" -o "$NEW/Contents/Resources/AppIcon.icns" >/dev/null 2>&1 || warn "no app icon (iconutil failed); continuing"
+    /bin/cp "$PLUGIN/assets/icon/coco-16.png" "$_set/icon_16x16.png"
+    /bin/cp "$PLUGIN/assets/icon/coco-32.png" "$_set/icon_16x16@2x.png"
+    /bin/cp "$PLUGIN/assets/icon/coco-32.png" "$_set/icon_32x32.png"
+    /bin/sh "$PLUGIN/assets/icon/build-icns.sh" "$_set" "$NEW/Contents/Resources/AppIcon.icns" || return 1
   fi
-  xcrun --sdk macosx swiftc -O -swift-version 5 -module-cache-path "$STAGE/cache" \
+  /usr/bin/xcrun --sdk macosx swiftc -O -swift-version 5 -module-cache-path "$STAGE/cache" \
     -o "$NEW/Contents/MacOS/$EXE" "$SRC"/Sources/*.swift >&2 ||
     die "the build failed (messages above); nothing was installed"
-  codesign --force --sign - --identifier "$LABEL" "$NEW" >/dev/null 2>&1 ||
+  /usr/bin/codesign --force --sign - --identifier "$LABEL" "$NEW" >/dev/null 2>&1 ||
     die "codesign could not sign the app; nothing was installed"
 }
 
 # Home paths are text in XML, and can contain ampersands or other markup characters.
-xml_text() { printf '%s' "$1" | sed -e 's/\&/\&amp;/g' -e 's/</\&lt;/g' -e 's/>/\&gt;/g' -e 's/"/\&quot;/g' -e "s/'/\&apos;/g"; }
+xml_text() { printf '%s' "$1" | /usr/bin/sed -e 's/\&/\&amp;/g' -e 's/</\&lt;/g' -e 's/>/\&gt;/g' -e 's/"/\&quot;/g' -e "s/'/\&apos;/g"; }
 
 # Kept byte-for-byte in sync with LoginAgent.plist in the companion.
 agent_text() {
   _agent_bin=$(xml_text "$BIN")
-  cat <<EOF
+  /bin/cat <<EOF
 <?xml version="1.0" encoding="UTF-8"?>
 <!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
 <plist version="1.0">
@@ -279,21 +316,20 @@ EOF
 }
 
 write_agent() {
-  mkdir -p "$HOME/Library/LaunchAgents"
-  agent_text >"$AGENT"
+  agent_text | "$CONTROL" write-agent "$HOME/Library/LaunchAgents" "$LABEL.plist"
 }
 
 start_it() {
   _pid=$(running_pid)
   [ -x "$BIN" ] || die "not installed; run: $PROG install"
-  open -g "$APP" || die "macOS could not open $APP"
+  /usr/bin/open -g "$APP" || die "macOS could not open $APP"
   if [ -n "$_pid" ]; then
-    say "Brought him back (pid $_pid)."
+    say "Brought it back (pid $_pid)."
     return 0
   fi
   _i=0
   while [ $_i -lt 30 ] && [ -z "$(running_pid)" ]; do
-    sleep 0.1
+    /bin/sleep 0.1
     _i=$((_i + 1))
   done
   _pid=$(running_pid)
@@ -306,7 +342,7 @@ start_it() {
 wait_state() {
   _i=0
   while [ $_i -lt 30 ] && [ "$(state_value pid)" != "$1" ]; do
-    sleep 0.1
+    /bin/sleep 0.1
     _i=$((_i + 1))
   done
 }
@@ -317,11 +353,10 @@ stop_it() {
     [ "${1:-}" = quiet ] || say "Not running."
     return 0
   fi
-  # shellcheck disable=SC2086 # one pid per word
-  kill -TERM $_list 2>/dev/null || true
+  "$CONTROL" stop "$BIN" "$OLD_BIN" || return 1
   _i=0
   while [ $_i -lt 30 ] && [ -n "$(pids)" ]; do
-    sleep 0.1
+    /bin/sleep 0.1
     _i=$((_i + 1))
   done
   if [ -n "$(pids)" ]; then
@@ -335,7 +370,7 @@ stop_it() {
 
 do_status() {
   if [ -x "$BIN" ]; then
-    _v=$(plutil -extract CFBundleShortVersionString raw -o - "$APP/Contents/Info.plist" 2>/dev/null || say "?")
+    _v=$(/usr/bin/plutil -extract CFBundleShortVersionString raw -o - "$APP/Contents/Info.plist" 2>/dev/null || say "?")
     say "Installed:      yes, version $_v, build $(installed_build)"
     say "                $APP"
     [ "$(installed_build)" = "$(source_hash)" ] || say "                (this plugin's source is newer: run install to rebuild)"
@@ -346,20 +381,20 @@ do_status() {
   fi
   _pid=$(running_pid)
   if [ -n "$_pid" ]; then
-    _rss=$(ps -o rss= -p "$_pid" 2>/dev/null | tr -d ' ')
-    _fp=$(footprint -p "$_pid" 2>/dev/null | sed -n 's/.*phys_footprint: *\([0-9.]* [KMG]B\).*/\1/p' | head -n 1)
+    _rss=$(/bin/ps -o rss= -p "$_pid" 2>/dev/null | /usr/bin/tr -d ' ')
+    _fp=$(/usr/bin/footprint -p "$_pid" 2>/dev/null | /usr/bin/sed -n 's/.*phys_footprint: *\([0-9.]* [KMG]B\).*/\1/p' | /usr/bin/head -n 1)
     say "Running:        yes, pid $_pid, ${_rss:-?} KB resident${_fp:+, footprint $_fp}"
     case $(state_value accessibility) in
-      true) say "Accessibility:  allowed: he follows the Claude window." ;;
+      true) say "Accessibility:  allowed: it follows the Claude window." ;;
       false)
-        say "Accessibility:  not allowed: he cannot follow the window, so he waits in the lower right corner"
-        say "                (or where you drag him) while Claude is in front. Use his card, or Let him follow"
-        say "                the window in his book's Settings. If those cannot help, open System Settings >"
+        say "Accessibility:  not allowed: it cannot follow the window, so it waits in the lower right corner"
+        say "                (or where you drag it) while Claude is in front. Use its card, or Let Coco follow"
+        say "                the window in the bag's Settings. If those cannot help, open System Settings >"
         say "                Privacy & Security > Accessibility > switch on \"$NAME\". If it"
         say "                is on already, that entry belongs to an earlier build (each build needs its"
         say "                own): select it, remove it with the minus button, add the app again with the"
         say "                plus button from $APPS, and switch it on."
-        say "                He notices as soon as you come back to any app; no restart needed."
+        say "                It notices as soon as you come back to any app; no restart needed."
         ;;
       *) say "Accessibility:  unknown (no state written yet)" ;;
     esac
@@ -372,7 +407,7 @@ do_status() {
     say "At login:       no (install --login adds it)"
   fi
   if [ -f "$FEED" ]; then
-    _age=$(($(date +%s) - $(stat -f %m "$FEED")))
+    _age=$(($(/bin/date +%s) - $(/usr/bin/stat -f %m "$FEED")))
     say "Feed:           the mod last wrote ${_age}s ago"
   else
     say "Feed:           nothing yet (the mod writes it while a session with this plugin runs)"
@@ -381,16 +416,15 @@ do_status() {
 
 do_install() {
   _hash=$(source_hash)
-  if [ -x "$OLD_APP/Contents/MacOS/$EXE" ] && [ "$(cat "$OLD_APP/Contents/Resources/build.txt" 2>/dev/null || true)" = "$_hash" ]; then
+  if [ -x "$OLD_APP/Contents/MacOS/$EXE" ] && [ "$(/bin/cat "$OLD_APP/Contents/Resources/build.txt" 2>/dev/null || true)" = "$_hash" ]; then
     stop_it quiet || die "could not stop the running companion; nothing was moved"
-    mkdir -p "$APPS"
-    mkdir -p -m 700 "$DIR"
-    chmod 700 "$DIR"
+    "$CONTROL" ensure-dir "$APPS"
+    "$CONTROL" private-dir "$DIR"
     if [ -e "$APP" ]; then
       to_trash "$APP" || die "could not move the previous build to the Trash; nothing was moved"
       say "The previous build went to the Trash."
     fi
-    mv "$OLD_APP" "$APP"
+    /bin/mv "$OLD_APP" "$APP"
     say "Moved $NAME from its old location to $APP (build $_hash); keeping the same binary and its Accessibility permission."
   fi
   if [ -x "$BIN" ] && [ "$(installed_build)" = "$_hash" ]; then
@@ -399,14 +433,13 @@ do_install() {
     say "Building $NAME $VERSION from source with swiftc (takes a few seconds)..."
     build "$_hash"
     stop_it quiet || die "could not stop the running companion; nothing was replaced"
-    mkdir -p "$APPS"
-    mkdir -p -m 700 "$DIR"
-    chmod 700 "$DIR"
+    "$CONTROL" ensure-dir "$APPS"
+    "$CONTROL" private-dir "$DIR"
     if [ -e "$APP" ]; then
       to_trash "$APP" || die "could not move the previous build to the Trash; nothing was replaced"
       say "The previous build went to the Trash."
     fi
-    mv "$NEW" "$APP"
+    /bin/mv "$NEW" "$APP"
     say "Installed $APP (build $_hash)."
   fi
   if [ -e "$OLD_APP" ]; then
@@ -414,17 +447,16 @@ do_install() {
     to_trash "$OLD_APP" || die "could not move the app at the old location to the Trash"
     say "The app at the old location went to the Trash."
   fi
-  mkdir -p -m 700 "$DIR"
-  chmod 700 "$DIR"
+  "$CONTROL" private-dir "$DIR"
   if [ "$LOGIN" -eq 1 ] || [ -f "$AGENT" ]; then
-    agent_loaded && launchctl bootout "gui/$UIDN/$LABEL" >/dev/null 2>&1 || true
+    agent_loaded && /bin/launchctl bootout "gui/$UIDN/$LABEL" >/dev/null 2>&1 || true
     write_agent
     stop_it quiet || true
-    launchctl bootstrap "gui/$UIDN" "$AGENT" || die "launchctl could not load $AGENT"
+    /bin/launchctl bootstrap "gui/$UIDN" "$AGENT" || die "launchctl could not load $AGENT"
     say "Starts at login: $AGENT"
     _i=0
     while [ $_i -lt 30 ] && [ -z "$(running_pid)" ]; do
-      sleep 0.1
+      /bin/sleep 0.1
       _i=$((_i + 1))
     done
     wait_state "$(running_pid)"
@@ -436,8 +468,20 @@ do_install() {
 
 do_uninstall() {
   stop_it || true
+  # The trim worker deletes only its indexed, identity-checked private files.
+  # Presence claims and all unrelated files stay under the transport's ownership.
+  _logs="$HOME/Library/Application Support/Coco-presence/logs"
+  if [ -f "$_logs/.owner" ]; then
+    _trim_runtime=''
+    if command -v node >/dev/null 2>&1; then _trim_runtime=node
+    elif command -v bun >/dev/null 2>&1; then _trim_runtime=bun
+    fi
+    [ -n "$_trim_runtime" ] || return 1
+    _trim_reply=$("$_trim_runtime" "$PLUGIN/hooks/d1-trim-worker.mjs" --purge-root "$HOME/Library/Application Support/Coco-presence") || return 1
+    [ "$_trim_reply" = '{"ok":true}' ] || return 1
+  fi
   if [ -f "$AGENT" ]; then
-    launchctl bootout "gui/$UIDN/$LABEL" >/dev/null 2>&1 || true
+    /bin/launchctl bootout "gui/$UIDN/$LABEL" >/dev/null 2>&1 || true
     to_trash "$AGENT" || die "could not move the login item to the Trash"
     say "Moved to the Trash: $AGENT"
   fi
@@ -461,7 +505,7 @@ do_uninstall() {
     say "Nothing installed at $DIR."
   fi
   say "The mod writes its feed only while that folder exists, so it has stopped too."
-  if tccutil reset Accessibility "$LABEL"; then
+  if /usr/bin/tccutil reset Accessibility "$LABEL"; then
     say "Reset its own Accessibility entry ($LABEL)."
   else
     warn "could not reset its Accessibility entry; remove \"$NAME\" under System Settings > Privacy & Security > Accessibility."

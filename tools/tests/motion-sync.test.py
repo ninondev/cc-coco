@@ -4,11 +4,15 @@ import json
 from pathlib import Path
 import re
 import unittest
+import sys
+sys.path.insert(0, str(Path(__file__).resolve().parents[1]))
+from hooks_source import hook_source
+
 ROOT = Path(__file__).resolve().parents[2]
 
 class MotionSourceChecks(unittest.TestCase):
     def test_native_startup_model_is_byte_exact_shared_json(self):
-        model = json.loads(re.search(r'export const MOTION = (\{.*?\}) as const', (ROOT / 'plugin/hooks/motion.ts').read_text(), re.S)[1])
+        model = json.loads(re.search(r'export const MOTION = (\{.*?\}) as const', hook_source(ROOT / 'plugin/hooks/motion.source.ts').read_text(), re.S)[1])
         native = re.search(r'static let defaultJSON = #"(.*?)"#', (ROOT / 'plugin/companion/Sources/Motion.swift').read_text())[1]
         self.assertEqual(native, json.dumps(model, separators=(',', ':')))
 
@@ -30,7 +34,8 @@ class MotionSourceChecks(unittest.TestCase):
         self.assertNotIn('CreateWithURL', image)
         self.assertNotIn('contentsOf:', image)
         pet = (source / 'Pet.swift').read_text()
-        follow = pet[pet.index('    func follow('):pet.index('    /// Claude\'s window was dragged')]
+        follow_start = pet.index('    func follow(')
+        follow = pet[follow_start:pet.index('    func configure(', follow_start)]
         self.assertNotIn('OneShot', follow)
         self.assertNotIn('fire(after:', follow)
         self.assertIn('place(reorder: reorder)', follow)

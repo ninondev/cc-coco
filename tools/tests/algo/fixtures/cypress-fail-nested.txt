@@ -1,0 +1,16 @@
+Kinetic Chrome 130 launches the app
+
+  Shop checkout
+    ✓ logs in with a valid password
+    1) rejects a bad password
+
+
+  1 passing (3s)
+  1 failing
+
+  1) Shop checkout
+       rejects a bad password:
+     [31mCypressError[39m: Timed out retrying: expected [4m[31m[data-cy=alert][39m to [33mexist[39m in the DOM
+
+      at Context.eval (cypress/e2e/shop.cy.js:19:24)
+

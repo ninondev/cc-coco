@@ -1,0 +1,10 @@
+Test Suite 'All tests' started at 2025-10-04 09:00:01.234
+Test Suite 'KiwiTests.xctest' started at 2025-10-04 09:00:01.235
+Test Case '-[KiwiTests.ParserTests testParsesHeader]' passed (0.004 seconds).
+Test Case '-[KiwiTests.ParserTests testRejectsEmpty]' passed (0.002 seconds).
+Test Suite 'KiwiTests.xctest' passed at 2025-10-04 09:00:01.240 (0.006 seconds).
+Test Suite 'All tests' passed at 2025-10-04 09:00:01.240 (0.007 seconds).
+
+Executed 2 tests, with 0 failures (0 expectations) in 0.007 (0.008) seconds
+
+** TEST SUCCEEDED **

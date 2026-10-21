@@ -66,6 +66,8 @@ enum Place {
         var visible: CGRect
         var screen: CGRect
         var active = true // Claude is the frontmost app
+        var overlay: CGRect? = nil // Reserved interactive row/labels; never changes the sprite frame.
+        var gestureStartWindow: CGRect? = nil
         /// Placed by you (or free over a full window): above Claude's window, floating while it is in front.
         var chosen: Bool { mode == .dragging || mode == .free || mode == .manual }
     }
@@ -75,7 +77,7 @@ enum Place {
     /// Dropped within this many points of Claude's window, he follows the window.
     static let near: CGFloat = 48
 
-    static func spot(for sighting: Claude.Sighting, size: NSSize, places: Places) -> Target? {
+    private static func automaticSpot(for sighting: Claude.Sighting, size: NSSize, places: Places) -> Target? {
         switch sighting {
         case .none:
             return nil
@@ -125,6 +127,105 @@ enum Place {
             }
             // Nothing clear: the window all but fills the screen.
             return free
+        }
+    }
+
+    /// While a gesture is live he follows the same placement rule, even when squeezed. After
+    /// release the place survives while it fits; a preferred place never causes a gratuitous jump.
+    static func spot(for sighting: Claude.Sighting, size: NSSize, places: Places,
+                     previous: Target? = nil, liveGesture: Bool = false,
+                     motion: CompanionMotionTuning = .standard) -> Target? {
+        let automatic = automaticSpot(for: sighting, size: size, places: places)
+        guard places.drag == nil, let previous,
+              case let .window(window, number, fullScreen, visible, screen, active) = sighting else { return automatic }
+        if !liveGesture && (fullScreen || fills(window, visible)) { return automatic }
+        var out = previous
+        out.window = window; out.number = number; out.visible = visible; out.screen = screen; out.active = active
+        out.frame.size = size; out.overlay = nil
+        out.gestureStartWindow = liveGesture ? previous.gestureStartWindow ?? previous.window : previous.gestureStartWindow
+        switch previous.mode {
+        case .ledge:
+            let edge = CGFloat(motion.number("cling.ledgeEdgeMarginPt"))
+            let margin = CGFloat(motion.number("cling.ledgeScreenMarginPt"))
+            let low = window.minX + edge, high = window.maxX - edge - size.width
+            let desired = clamp(window.maxX - ledgeOffset - size.width, low, high)
+            // Scoot only while both the screen and the window end margins can be honoured.
+            let screenLow = max(low, screen.minX + margin), screenHigh = min(high, screen.maxX - margin - size.width)
+            out.frame.origin = CGPoint(x: screenLow <= screenHigh ? clamp(desired, screenLow, screenHigh) : desired,
+                                       y: window.maxY - (size.height * 0.05).rounded())
+        case .besideRight, .besideLeft:
+            let right = previous.mode == .besideRight
+            let margin = CGFloat(motion.number("squeeze.screenMarginPt"))
+            let normalX = right ? window.maxX + 10 : window.minX - 10 - size.width
+            out.frame.origin = CGPoint(x: right ? min(normalX, screen.maxX - margin - size.width) : max(normalX, screen.minX + margin),
+                                       y: clamp(max(window.minY, visible.minY), visible.minY, min(window.maxY, visible.maxY) - size.height))
+        case .below:
+            out.frame.origin = CGPoint(x: clamp(window.maxX - belowOffset - size.width, max(window.minX, screen.minX) + 8,
+                                                min(window.maxX, screen.maxX) - 8 - size.width),
+                                       y: window.minY - 4 - size.height)
+        case .manual:
+            guard let manual = places.manual else { return automatic }
+            out.frame = frame(for: manual, size: size, window: window, visible: visible, screen: screen)
+        case .free:
+            out.frame = freeFrame(size: size, places: places, visible: visible, screen: screen)
+        case .corner, .dragging:
+            return automatic
+        }
+        let contact = contact(for: out, motion: motion)
+        if liveGesture { return out }
+        let screenArea = freeArea(visible: visible, screen: screen)
+        let fits: Bool
+        switch out.mode {
+        case .ledge:
+            fits = contact.rawScale >= 1 && out.frame.minX >= screen.minX && out.frame.maxX <= screen.maxX
+                && out.frame.width + 2 * CGFloat(motion.number("cling.ledgeEdgeMarginPt")) <= window.width
+        case .besideLeft, .besideRight:
+            fits = contact.rawScale >= 1 && screenArea.contains(out.frame)
+        case .below:
+            fits = !contact.pushedBelow && window.minY - screen.minY - 4 >= size.height * 0.75
+                && out.frame.minX >= screen.minX && out.frame.maxX <= screen.maxX
+        case .manual, .free:
+            fits = screenArea.contains(out.frame)
+        default: fits = false
+        }
+        guard fits else { return automatic }
+        out.gestureStartWindow = nil
+        return out
+    }
+
+    struct Contact: Equatable {
+        enum Axis { case none, horizontal, vertical }
+        var axis: Axis
+        var roomPt: Double
+        var rawScale: Double
+        var pushDirection: CGPoint
+        var belowSinkPt = 0.0
+        var pushedBelow = false
+        var pushSign: Double { axis == .horizontal ? Double(pushDirection.x) : Double(pushDirection.y) }
+    }
+
+    /// The picture's base follows this target in the same geometry event. The place layer then
+    /// squeezes toward the obstacle and pushes along this direction; hit testing keeps its rest frame.
+    static func contact(for target: Target, motion: CompanionMotionTuning = .standard) -> Contact {
+        let height = max(1, Double(target.frame.height)), width = max(1, Double(target.frame.width))
+        switch target.mode {
+        case .ledge:
+            let room = Double(target.visible.maxY - target.frame.minY) - motion.number("squeeze.menuBarMarginPt")
+            return Contact(axis: .vertical, roomPt: room, rawScale: room / height, pushDirection: CGPoint(x: 0, y: -1))
+        case .besideRight:
+            let room = Double(target.screen.maxX - target.window.maxX) - motion.number("squeeze.screenMarginPt") - motion.number("squeeze.besideGapMinPt")
+            let free = target.window.maxX + 10 <= target.screen.maxX - CGFloat(motion.number("squeeze.screenMarginPt")) - target.frame.width
+            return Contact(axis: .horizontal, roomPt: room, rawScale: free ? 10 : room / width, pushDirection: CGPoint(x: 1, y: 0))
+        case .besideLeft:
+            let room = Double(target.window.minX - target.screen.minX) - motion.number("squeeze.screenMarginPt") - motion.number("squeeze.besideGapMinPt")
+            let free = target.window.minX - 10 - target.frame.width >= target.screen.minX + CGFloat(motion.number("squeeze.screenMarginPt"))
+            return Contact(axis: .horizontal, roomPt: room, rawScale: free ? 10 : room / width, pushDirection: CGPoint(x: -1, y: 0))
+        case .below:
+            let sink = max(0, Double((target.gestureStartWindow ?? target.window).minY - target.window.minY))
+            return Contact(axis: .none, roomPt: height, rawScale: 1, pushDirection: CGPoint(x: 0, y: -1),
+                           belowSinkPt: sink, pushedBelow: sink > motion.number("squeeze.belowSinkFraction") * height)
+        default:
+            return Contact(axis: .none, roomPt: height, rawScale: 1, pushDirection: .zero)
         }
     }
 
@@ -203,93 +304,157 @@ enum Place {
     // ------------------------------------------------------------ his line
 
     /// The task and the hover row occupy the same spot, just into his transparent top margin.
-    static func bubbleFrame(for target: Target, size: NSSize) -> NSRect {
+    static func bubbleFrame(for target: Target, size: NSSize, motion: CompanionMotionTuning = .standard) -> NSRect {
         let area = target.visible.intersection(target.screen)
         let size = NSSize(width: min(size.width, max(1, area.width - 8)), height: min(size.height, max(1, area.height - 4)))
         let origin = target.mode == .below
             ? CGPoint(x: target.frame.minX - 6 - size.width, y: target.frame.maxY - size.height - 4)
             : CGPoint(x: target.frame.midX - size.width / 2, y: target.frame.maxY - 4)
-        return NSRect(x: clamp(origin.x, area.minX + 4, area.maxX - 4 - size.width),
-                      y: clamp(origin.y, area.minY + 2, area.maxY - 2 - size.height), width: size.width, height: size.height)
+        let frame = NSRect(x: clamp(origin.x, area.minX + 4, area.maxX - 4 - size.width),
+                           y: clamp(origin.y, area.minY + 2, area.maxY - 2 - size.height), width: size.width, height: size.height)
+        return avoidFace(frame: frame, visible: area, keepOut: faceKeepOut(for: target, motion: motion), margin: CGFloat(motion.number("flip.marginPt"))) ?? .zero
     }
 
-    static func badgeFrame(for target: Target, size: NSSize) -> NSRect {
-        NSRect(x: clamp(target.frame.minX - 4, target.visible.minX + 2, target.visible.maxX - size.width - 2),
-               y: clamp(target.frame.maxY - size.height + 2, target.visible.minY + 2, target.visible.maxY - size.height - 2),
-               width: size.width, height: size.height)
+    static func badgeFrame(for target: Target, size: NSSize, motion: CompanionMotionTuning = .standard) -> NSRect {
+        let frame = NSRect(x: clamp(target.frame.minX - 4, target.visible.minX + 2, target.visible.maxX - size.width - 2),
+                           y: clamp(target.frame.maxY - size.height + 2, target.visible.minY + 2, target.visible.maxY - size.height - 2),
+                           width: size.width, height: size.height)
+        return avoidFace(frame: frame, visible: target.visible.intersection(target.screen), keepOut: faceKeepOut(for: target, motion: motion), margin: CGFloat(motion.number("flip.marginPt"))) ?? .zero
     }
 
     static func aroundTarget(for target: Target, overlay: NSRect?) -> Target {
         var result = target
-        if let overlay { result.frame = target.frame.union(overlay) }
+        result.overlay = overlay
         return result
     }
 
     /// Reserve the whole label lane before any button is hovered, so his line stays still.
-    static func hoverOverlay(for target: Target, labelWidths: [CGFloat] = []) -> NSRect {
-        let row = bubbleFrame(for: target, size: NSSize(width: 144, height: 32))
+    static func hoverOverlay(for target: Target, labelWidths: [CGFloat] = [], motion: CompanionMotionTuning = .standard) -> NSRect {
+        let row = bubbleFrame(for: target, size: NSSize(width: 144, height: 32), motion: motion)
         let visible = target.visible.intersection(target.screen)
-        var left = row.minX, right = row.maxX
+        var overlay = row
         for (index, width) in labelWidths.prefix(5).enumerated() {
             let button = NSRect(x: row.minX + 4 + CGFloat(index) * 28, y: row.minY + 4, width: 24, height: 24)
-            let label = ButtonLabelPlacement.frame(button: button, row: row, size: NSSize(width: width, height: 20), visible: visible)
-            left = min(left, label.minX); right = max(right, label.maxX)
+            let size = NSSize(width: width, height: 20)
+            let original = ButtonLabelPlacement.frame(button: button, row: row, size: size, visible: visible)
+            let label = ButtonLabelPlacement.frame(button: button, row: row, size: size, visible: visible,
+                                                  faceKeepOut: faceKeepOut(for: target, motion: motion))
+            overlay = overlay.union(original)
+            if !label.isEmpty { overlay = overlay.union(label) }
         }
-        var overlay = row.union(NSRect(x: left, y: row.maxY, width: right - left, height: 24))
+        // Reserve both the entire label lane and its edge-flipped counterpart before a button is
+        // selected, so moving across siblings never changes where his speech stands.
+        overlay = overlay.union(CGRect(x: overlay.minX, y: row.maxY, width: overlay.width, height: 24))
         if row.maxY + 26 > visible.maxY {
-            overlay = overlay.union(NSRect(x: left, y: row.minY - 24, width: right - left, height: 24))
+            overlay = overlay.union(CGRect(x: overlay.minX, y: row.minY - 24, width: overlay.width, height: 24))
         }
         return overlay
     }
 
-    /// How wide and tall his line may be where he stands.
-    static func lineLimits(for target: Target) -> NSSize {
-        let me = target.frame, window = target.window, visible = target.visible
-        switch target.mode {
-        case .ledge:
-            return NSSize(width: 280, height: max(visible.maxY - 2 - (window.maxY + 2), 20))
-        case .besideRight, .besideLeft, .corner:
-            let lane = lane(for: target)
-            return NSSize(width: min(280, max(lane.upperBound - lane.lowerBound, me.width + 12)), height: 160)
-        case .below:
-            return NSSize(width: 280, height: max(window.minY - target.screen.minY - 8, 20))
-        case .free, .manual, .dragging:
-            return NSSize(width: 280, height: 160)
+    /// Text starts at its ordinary readable width; side selection and wrapping are independent of
+    /// the current lane, so a narrow column can flip the line instead of squeezing its first layout.
+    static func lineLimits(for target: Target, motion: CompanionMotionTuning = .standard) -> NSSize {
+        let area = target.visible.intersection(target.screen), margin = CGFloat(motion.number("flip.marginPt"))
+        return NSSize(width: min(280, max(1, area.width - 2 * margin)), height: min(160, max(1, area.height - 2 * margin)))
+    }
+
+    enum LineSide: String, CaseIterable { case above, below, left, right }
+    struct LinePlacement: Equatable { var frame: CGRect; var side: LineSide }
+
+    static func faceKeepOut(for target: Target, motion: CompanionMotionTuning = .standard) -> CGRect {
+        let f = motion.curve("flip.faceKeepOutFraction"), me = target.frame
+        return CGRect(x: me.minX + CGFloat(f[0]) * me.width, y: me.minY + CGFloat(f[1]) * me.height,
+                      width: CGFloat(f[2] - f[0]) * me.width, height: CGFloat(f[3] - f[1]) * me.height)
+    }
+
+    /// Translate along the shortest axis that clears the face and stays inside the visible area.
+    /// nil means the physical viewport cannot fit the supplied rectangle without covering his face.
+    static func avoidFace(frame: CGRect, visible: CGRect, keepOut: CGRect, margin: CGFloat = 4) -> CGRect? {
+        guard !visible.isNull, visible.width >= frame.width + 2 * margin, visible.height >= frame.height + 2 * margin else { return nil }
+        let area = visible.insetBy(dx: margin, dy: margin)
+        var base = frame
+        base.origin.x = clamp(base.minX, area.minX, area.maxX - base.width)
+        base.origin.y = clamp(base.minY, area.minY, area.maxY - base.height)
+        if !base.intersects(keepOut) { return base }
+        var candidates = [base, base, base, base]
+        candidates[0].origin.x = keepOut.minX - base.width
+        candidates[1].origin.x = keepOut.maxX
+        candidates[2].origin.y = keepOut.minY - base.height
+        candidates[3].origin.y = keepOut.maxY
+        return candidates.filter { area.contains($0) && !$0.intersects(keepOut) }.min {
+            hypot($0.minX - base.minX, $0.minY - base.minY) < hypot($1.minX - base.minX, $1.minY - base.minY)
         }
     }
 
-    /// Where his line goes for a measured size: beside him on the top edge (ledge), above him in his
-    /// column (beside, corner), beside him in the strip (below), over or under him wherever you put
-    /// him; always inside the screen and never over him.
-    static func lineFrame(for target: Target, size: NSSize) -> NSRect {
-        let me = target.frame, window = target.window, visible = target.visible, screen = target.screen
-        var frame: NSRect
+    private static func lineSides(for target: Target) -> [LineSide] {
         switch target.mode {
-        case .ledge:
-            let bottom = window.maxY + 2
-            var x = me.minX - 6 - size.width
-            if x < visible.minX + 4 { x = me.maxX + 6 }
-            frame = NSRect(x: x, y: bottom + max(0, (me.maxY - bottom - size.height) / 2), width: size.width, height: size.height)
-        case .besideRight, .besideLeft, .corner:
-            let lane = lane(for: target)
-            let x = clamp(me.midX - size.width / 2, lane.lowerBound, lane.upperBound - size.width)
-            var y = me.maxY + 6
-            if y + size.height > visible.maxY - 2 { y = me.minY - 6 - size.height }
-            frame = NSRect(x: x, y: y, width: size.width, height: size.height)
-        case .below:
-            var x = me.minX - 6 - size.width
-            if x < screen.minX + 4 { x = me.maxX + 6 }
-            frame = NSRect(x: x, y: window.minY - 4 - size.height, width: size.width, height: size.height)
-        case .free, .manual, .dragging:
-            let area = freeArea(visible: visible, screen: screen)
-            let x = clamp(me.midX - size.width / 2, area.minX + 4, area.maxX - 4 - size.width)
-            var y = me.maxY + 6
-            if y + size.height > area.maxY - 2 { y = me.minY - 6 - size.height }
-            frame = NSRect(x: x, y: y, width: size.width, height: size.height)
+        case .ledge: return [.left, .right, .above]
+        case .besideRight, .corner: return [.above, .below, .right]
+        case .besideLeft: return [.above, .below, .left]
+        case .below: return [.left, .right]
+        case .free, .manual, .dragging: return [.above, .below, .left, .right]
         }
-        frame.origin.x = clamp(frame.minX, screen.minX + 4, screen.maxX - 4 - frame.width)
-        frame.origin.y = clamp(frame.minY, screen.minY + 2, screen.maxY - 2 - frame.height)
-        return frame
+    }
+
+    private static func lineCandidate(for target: Target, size: NSSize, side: LineSide, gap: CGFloat) -> CGRect {
+        let me = target.frame
+        switch side {
+        case .above: return CGRect(x: me.midX - size.width / 2, y: me.maxY + gap, width: size.width, height: size.height)
+        case .below: return CGRect(x: me.midX - size.width / 2, y: me.minY - gap - size.height, width: size.width, height: size.height)
+        case .left: return CGRect(x: me.minX - gap - size.width, y: me.midY - size.height / 2, width: size.width, height: size.height)
+        case .right: return CGRect(x: me.maxX + gap, y: me.midY - size.height / 2, width: size.width, height: size.height)
+        }
+    }
+
+    static func linePlacement(for target: Target, size: NSSize, current: LineSide? = nil,
+                              motion: CompanionMotionTuning = .standard, allowFallback: Bool = true) -> LinePlacement? {
+        let area = target.visible.intersection(target.screen), face = faceKeepOut(for: target, motion: motion)
+        let sides = lineSides(for: target), gap = CGFloat(motion.number("flip.gapPt"))
+        let margin = CGFloat(motion.number("flip.marginPt")), hysteresis = CGFloat(motion.number("flip.hysteresisPt"))
+        func fits(_ side: LineSide, _ spare: CGFloat) -> Bool {
+            let rect = lineCandidate(for: target, size: size, side: side, gap: gap)
+            return area.insetBy(dx: spare, dy: spare).contains(rect) && !rect.intersects(face)
+                && !(target.overlay.map { rect.intersects($0) } ?? false)
+        }
+        if let current, let rank = sides.firstIndex(of: current), fits(current, margin) {
+            let selected = sides.prefix(rank).first { fits($0, hysteresis) } ?? current
+            return LinePlacement(frame: lineCandidate(for: target, size: size, side: selected, gap: gap), side: selected)
+        }
+        if let selected = sides.first(where: { fits($0, margin) }) {
+            return LinePlacement(frame: lineCandidate(for: target, size: size, side: selected, gap: gap), side: selected)
+        }
+        guard allowFallback else { return nil }
+        // The caller remeasures at lineWidthLimit (down to 140 pt) before using this fallback.
+        let room: (LineSide) -> CGFloat = { side in
+            switch side {
+            case .left: return target.frame.minX - area.minX
+            case .right: return area.maxX - target.frame.maxX
+            case .above: return area.maxY - target.frame.maxY
+            case .below: return target.frame.minY - area.minY
+            }
+        }
+        for side in sides.sorted(by: { room($0) > room($1) }) {
+            guard let frame = avoidFace(frame: lineCandidate(for: target, size: size, side: side, gap: gap), visible: area,
+                                        keepOut: face, margin: margin), !(target.overlay.map { frame.intersects($0) } ?? false) else { continue }
+            return LinePlacement(frame: frame, side: side)
+        }
+        return nil
+    }
+
+    /// Wrapping requires the view's text measurement; no guessed height is introduced here.
+    static func lineWidthLimit(for target: Target, size: NSSize, motion: CompanionMotionTuning = .standard) -> CGFloat {
+        let area = target.visible.intersection(target.screen), gap = CGFloat(motion.number("flip.gapPt"))
+        let inset = area.insetBy(dx: CGFloat(motion.number("flip.marginPt")), dy: CGFloat(motion.number("flip.marginPt")))
+        let face = faceKeepOut(for: target, motion: motion)
+        let fits = lineSides(for: target).contains { side in
+            let rect = lineCandidate(for: target, size: size, side: side, gap: gap)
+            return inset.contains(rect) && !rect.intersects(face) && !(target.overlay.map { rect.intersects($0) } ?? false)
+        }
+        return fits ? size.width : min(size.width, CGFloat(motion.number("flip.minWidthPt")), max(1, inset.width))
+    }
+
+    static func lineFrame(for target: Target, size: NSSize, motion: CompanionMotionTuning = .standard) -> NSRect {
+        linePlacement(for: target, size: size, motion: motion)?.frame ?? .zero
     }
 
     /// The free column beside the window that he stands in (for the corner: beside Claude's window).

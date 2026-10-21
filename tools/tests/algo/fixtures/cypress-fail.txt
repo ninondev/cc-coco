@@ -1,0 +1,22 @@
+Run Url: https://dashboard.cypress.io/projects/alpha/runs/42
+
+  (Run Starting)
+
+  ┌──────────────────────────────────────────────────────────────────────────┐
+  │ Tests:        4                                                          │
+  │ Passing:      3                                                          │
+  │ Failing:      1                                                          │
+  │ Skipped:      0                                                          │
+  └──────────────────────────────────────────────────────────────────────────┘
+
+
+  1) login flow
+       rejects a bad password:
+     CypressError: Timed out retrying after 4000ms: `cy.get('#error')` failed because the element you are chaining off of became detached from the DOM.
+      at Context.eval (https://localhost:8080/__cypress/tests?p=cypress/e2e/login.cy.js:104:33)
+
+  (Results)
+
+  ┌──────────────────────────────────────────────────────────────────────────┐
+  │ Tests:        4 failed: 1 passed: 3                                      │
+  └──────────────────────────────────────────────────────────────────────────┘

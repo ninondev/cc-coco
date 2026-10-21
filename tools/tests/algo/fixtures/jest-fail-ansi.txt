@@ -1,0 +1,23 @@
+]0;jest\
+[31mFAIL[39m [2msrc/orders/billing.test.js[22m
+  [1mCalculator[22m
+    [32m✓[39m adds numbers [2m(3 ms)[22m
+    [32m✓[39m subtracts numbers [2m(2 ms)[22m
+    [31m✕[39m totals an invoice [2m(5 ms)[22m
+
+  [31m●[39m Calculator › totals an invoice
+
+    [31mexpect(received).toBe(expected)[39m // Object.is equality
+
+    Expected: [32m4200[39m
+    Received: [31m4199[39m
+
+      at Object.<anonymous> ([2msrc/orders/billing.test.js:42:19[22m)
+
+[32mPASS[39m [2msrc/orders/cart.test.js[22m
+
+[31mTest Suites: [39m[31m1 failed, 1 total[39m
+[31mTests:       [39m[31m1 failed, 2 passed, 3 total[39m
+Snapshots:   0 total
+Time:        [2m1.234 s[22m
+Ran all test suites matching /src\/orders/i.

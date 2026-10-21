@@ -2,8 +2,8 @@
 
 import { describe, expect, test } from 'claude-code/testing'
 import { FRAME_NAMES } from '../hooks/art'
-import { TERMINAL_ROWS, spriteCells } from '../hooks/pictures'
-import { RECENT, band, world } from './world'
+import { TERMINAL_ROWS, spriteCells } from '../hooks/pictures-lazy'
+import { settleLegacyStart, RECENT, band, world } from './world'
 
 const START = { cwd: '/tmp/project', surface: 'terminal' as const, isInteractive: true }
 const DEFAULT = 0x01000000
@@ -40,8 +40,8 @@ describe('colour', () => {
   })
 
   test('Terminal.app without COLORTERM draws only colours of the xterm 256 palette', async ($, on) => {
-    world(on, { store: RECENT, env: { TERM_PROGRAM: 'Apple_Terminal', TERM: 'xterm-256color', LANG: 'en_US.UTF-8' } })
-    await $.session.start(START)
+    const setupWorld=world(on, { store: RECENT, env: { TERM_PROGRAM: 'Apple_Terminal', TERM: 'xterm-256color', LANG: 'en_US.UTF-8' } })
+    await $.session.start(START); await settleLegacyStart($,setupWorld);
     const ui = await $.ui.mount({ surface: 'terminal', ...band(100) })
     const raster = await ui.find({ type: 'Raster' })
     const colours = cellsOf(String(raster?.props.cells)).flatMap(([, fg, bg]) => [fg, bg]).filter(c => c !== DEFAULT)
@@ -51,47 +51,47 @@ describe('colour', () => {
 
   test('tmux without COLORTERM falls back to 256 colours; COLORTERM=truecolor keeps 24-bit', async ($, on) => {
     const w = world(on, { store: RECENT, env: { TMUX: '/tmp/tmux-501/default,1,0', TERM: 'tmux-256color', TERM_PROGRAM: 'iTerm.app' } })
-    await $.session.start(START)
+    await $.session.start(START); await settleLegacyStart($,w);
     expect(w.view().colors).toBe('256')
   })
 
   test('a terminal that says truecolor gets the full palette', async ($, on) => {
     const w = world(on, { store: RECENT, env: { TERM_PROGRAM: 'Apple_Terminal', TERM: 'xterm-256color', COLORTERM: 'truecolor' } })
-    await $.session.start(START)
+    await $.session.start(START); await settleLegacyStart($,w);
     expect(w.view().colors).toBe('truecolor')
   })
 })
 
 describe('sharing the band', () => {
   test('nobody else in the band: his picture shows', async ($, on) => {
-    world(on, { store: RECENT })
-    await $.session.start(START)
+    const setupWorld=world(on, { store: RECENT })
+    await $.session.start(START); await settleLegacyStart($,setupWorld);
     const ui = await $.ui.mount({ surface: 'terminal', ...band(100, false, 30) })
     expect(await ui.find({ type: 'Raster' })).toBeDefined()
   })
 
   test("another mod's 25 rows in a 30-row band: he steps down to one line", async ($, on) => {
-    world(on, { store: RECENT, theirsRows: 25 })
-    await $.session.start(START)
+    const setupWorld=world(on, { store: RECENT, theirsRows: 25 })
+    await $.session.start(START); await settleLegacyStart($,setupWorld);
     const ui = await $.ui.mount({ surface: 'terminal', ...band(100, false, 30) })
     expect(await ui.find({ type: 'Raster' })).toBe(undefined)
-    expect(await ui.find({ type: 'Text', text: 'Claude-sama' })).toBeDefined()
+    expect(await ui.find({ type: 'Text', text: 'Coco' })).toBeDefined()
     expect(await ui.find({ type: 'Text', text: /another mod, row 25/ })).toBeDefined()
   })
 
   test('room for both: 30 rows with 10 of theirs keeps his picture', async ($, on) => {
-    world(on, { store: RECENT, theirsRows: 10 })
-    await $.session.start(START)
+    const setupWorld=world(on, { store: RECENT, theirsRows: 10 })
+    await $.session.start(START); await settleLegacyStart($,setupWorld);
     const ui = await $.ui.mount({ surface: 'terminal', ...band(100, false, 30) })
     expect((await ui.find({ type: 'Raster' }))?.props.rows).toBe(TERMINAL_ROWS)
   })
 
   test('even when others fill the band he keeps his one line', async ($, on) => {
-    world(on, { store: RECENT, theirsRows: 40 })
-    await $.session.start(START)
+    const setupWorld=world(on, { store: RECENT, theirsRows: 40 })
+    await $.session.start(START); await settleLegacyStart($,setupWorld);
     for (const surface of ['terminal', 'desktop'] as const) {
       const ui = await $.ui.mount({ surface, ...band(100, false, 30) })
-      expect(await ui.find({ type: 'Text', text: 'Claude-sama' })).toBeDefined()
+      expect(await ui.find({ type: 'Text', text: 'Coco' })).toBeDefined()
     }
   })
 })

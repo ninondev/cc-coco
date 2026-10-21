@@ -1,7 +1,13 @@
 import { describe, expect, test } from 'claude-code/testing'
-import { homePath, isWindows, joinPath, samePath, windowsPath } from '../hooks/paths'
+import { homePath, isWindows, joinPath, presenceFolder, samePath, windowsPath } from '../hooks/paths'
 
 describe('portable path helper', () => {
+  test('presence uses the platform state directory, with absolute XDG preference', () => {
+    expect(presenceFolder('/tmp/home', true, '/tmp/xdg')).toBe('/tmp/home/Library/Application Support/Coco-presence')
+    expect(presenceFolder('/tmp/home', false, '/tmp/xdg')).toBe('/tmp/xdg/coco')
+    expect(presenceFolder('/tmp/home', false)).toBe('/tmp/home/.local/state/coco')
+    expect(presenceFolder('/tmp/home', false, 'relative')).toBe('/tmp/home/.local/state/coco')
+  })
   test('POSIX root and empty roots keep their absolute or relative meaning', () => {
     expect(joinPath('/', 'book', 'en.json')).toBe('/book/en.json')
     expect(joinPath('', 'book', 'en.json')).toBe('book/en.json')

@@ -1,0 +1,52 @@
+[package]
+name = "coco-companion"
+version = "1.0.0"
+edition = "2021"
+rust-version = "1.87"
+publish = false
+
+[features]
+default = ["runtime-svg", "a11y"]
+runtime-svg = ["dep:resvg"]
+a11y = ["dep:accesskit"]
+
+[build-dependencies]
+resvg = { version = "0.47", default-features = false }
+serde_json = { version = "1", features = ["float_roundtrip"] }
+
+[dev-dependencies]
+resvg = { version = "0.47", default-features = false }
+
+[dependencies]
+unicode-segmentation = "=1.13.3"
+serde = { version = "1", features = ["derive"] }
+serde_json = { version = "1", features = ["float_roundtrip"] }
+png = "0.18"
+libc = "0.2"
+accesskit = { version = "0.24.1", optional = true }
+resvg = { version = "0.47", default-features = false, optional = true }
+tiny-skia = "0.12"
+
+[target.'cfg(target_os = "macos")'.dependencies]
+gif = "0.14"
+
+[target.'cfg(windows)'.dependencies]
+windows-core = "0.58"
+windows = { version = "0.58", features = ["Win32_Foundation", "Win32_Graphics_Gdi", "Win32_Graphics_DirectWrite", "Win32_Graphics_Direct2D", "Win32_Graphics_Direct2D_Common", "Win32_Graphics_Dxgi_Common", "Win32_System_Threading", "Win32_System_LibraryLoader", "Win32_System_Registry", "Win32_System_IO", "Win32_System_Pipes", "Win32_Storage_FileSystem", "Win32_UI_WindowsAndMessaging", "Win32_UI_HiDpi", "Win32_UI_Accessibility", "Win32_Globalization", "Win32_Security", "Win32_System_Com", "Foundation_Numerics", "Win32_UI_Input_KeyboardAndMouse", "implement", "Win32_System_Ole", "Win32_System_Com_StructuredStorage", "Win32_UI_Shell", "Win32_System_RemoteDesktop", "Win32_System_SystemInformation", "Win32_System_Time", "Win32_System_Variant", "Win32_UI_Shell_PropertiesSystem", "Data_Xml_Dom", "UI_Notifications"] }
+
+[target.'cfg(target_os = "linux")'.dependencies]
+wayland-client = "0.31"
+wayland-protocols = { version = "0.32", features = ["client", "staging", "unstable"] }
+wayland-protocols-wlr = { version = "0.3", features = ["client"] }
+
+[profile.release]
+opt-level = "s"
+lto = true
+codegen-units = 1
+panic = "abort"
+strip = true
+
+# Offscreen pixel coverage is exercised repeatedly at 0.5x–4x in the host tests.
+# Keep test/debug assertions and overflow checks enabled, including dependencies.
+[profile.test]
+opt-level = 1

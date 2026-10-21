@@ -1,0 +1,13 @@
+
+  [1mWren parser[22m
+    [32m✓[39m reads a header [2m(4126ms)[22m
+    [32m✓[39m rejects an empty body [2m(3ms)[22m
+    [31m✗[39m writes nested output [2m(2ms)[22m
+
+  [31m1 failing[39m
+
+  1) Wren parser
+       writes nested output:
+     [1mAssertionError[22m: expected 2 to equal 3
+      at Context.<anonymous> ([2mtest/wren/parser.spec.js:31:19[22m)
+

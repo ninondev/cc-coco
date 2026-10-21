@@ -1,0 +1,15 @@
+[96m▶[39m Run 6 tests using 2 workers
+
+  [31m1[39m) [2m[31m[chromium][39m › [2msrc/shop/orders.spec.ts:12:5[39m › [1mOrders[22m › computes totals ─────────────────────────────────
+
+    [2m1) [chromium] › src/shop/orders.spec.ts:12:5 › Orders › computes totals[22m
+
+    [31mError[39m: expect(received).toBe(2)
+
+    at /home/user/src/shop/src/shop/orders.spec.ts:12:24
+
+  [31m1 failed[39m
+  [32m11 passed[39m [2m(1.6s)[22m
+
+  1 failed
+  11 passed

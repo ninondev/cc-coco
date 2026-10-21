@@ -1,0 +1,14 @@
+=== RUN   TestParserReadsHeader
+--- PASS: TestParserReadsHeader (0.00s)
+=== RUN   TestParserRejectsEmpty
+--- PASS: TestParserRejectsEmpty (0.00s)
+=== RUN   TestParserNested
+=== RUN   TestParserNested/empty_body
+    parser_test.go:44: got error want nil
+--- FAIL: TestParserNested/empty_body (0.00s)
+--- FAIL: TestParserNested (0.00s)
+=== RUN   TestWriterFlushes
+--- PASS: TestWriterFlushes (0.01s)
+FAIL
+FAIL	github.com/user/lark	0.213s
+FAIL

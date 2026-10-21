@@ -1,0 +1,3 @@
+// Generated live public facade. Authoritative implementation: hooks-source/card-runtime.ts
+export {card_runtime__CARD_FONTS as CARD_FONTS,card_runtime__cardCrest as cardCrest,card_runtime__cardDestination as cardDestination,card_runtime__cardName as cardName,card_runtime__cardPng as cardPng,card_runtime__cardSaveWords as cardSaveWords,card_runtime__cardWrap as cardWrap,card_runtime__revealCard as revealCard,card_runtime__saveCard as saveCard,card_runtime__saveWeekCard as saveWeekCard} from './m1-compiled/pages.js'
+export type {CardDestination,CardPlatform,CardSaveResult} from '../hooks-source/card-runtime'

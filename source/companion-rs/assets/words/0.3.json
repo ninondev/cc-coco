@@ -1,0 +1,965 @@
+{
+  "direction.room": {
+    "zh": "(推开房门)进来吧",
+    "zh-Hant": "(推開房門)進來吧",
+    "en": "(opens the door) come in.",
+    "ja": "(ドアを開ける)どうぞ",
+    "fr": "(ouvre la porte) entre.",
+    "it": "(apre la porta) entra.",
+    "de": "(öffnet die Tür) Komm rein.",
+    "es-ES": "(abre la puerta) pasa.",
+    "es-419": "(abre la puerta) pasa.",
+    "pt-BR": "(abre a porta) entra.",
+    "hi": "(दरवाज़ा खोलती है) अंदर आ जाओ।",
+    "id": "(membuka pintu) masuk saja.",
+    "ko": "(문을 연다) 들어와."
+  },
+  "room.alt.base": {
+    "zh": "她的房间,{hour}。她{pose}",
+    "zh-Hant": "她的房間,{hour}。她{pose}",
+    "en": "Coco's room {hour}: {who} is {pose}.",
+    "ja": "{hour}のCocoの部屋。{who}は{pose}",
+    "fr": "Sa chambre, {hour} : elle {pose}.",
+    "it": "La sua stanza, {hour}: {pose}.",
+    "de": "Cocos Zimmer {hour}: {who} {pose}.",
+    "es-ES": "Su habitación, {hour}: está {pose}.",
+    "es-419": "Su cuarto, {hour}: está {pose}.",
+    "pt-BR": "O quarto dela, {hour}: ela está {pose}.",
+    "hi": "उसका कमरा, {hour}। वह {pose}।",
+    "id": "Kamarnya di {hour}. Dia sedang {pose}.",
+    "ko": "{hour}, 코코의 방. {who} {pose}."
+  },
+  "room.alt.withThings": {
+    "zh": "她的房间,{hour}。她{pose}。屋里还有:{things}",
+    "zh-Hant": "她的房間,{hour}。她{pose}。屋裡還有:{things}",
+    "en": "Coco's room {hour}: {who} is {pose}. Also in the room: {things}.",
+    "ja": "{hour}のCocoの部屋。{who}は{pose}。ほかに、{things}",
+    "fr": "Sa chambre, {hour} : elle {pose}. Il y a aussi : {things}.",
+    "it": "La sua stanza, {hour}: {pose}. Nella stanza, inoltre: {things}.",
+    "de": "Cocos Zimmer {hour}: {who} {pose}. Außerdem im Zimmer: {things}.",
+    "es-ES": "Su habitación, {hour}: está {pose}. También en la habitación: {things}.",
+    "es-419": "Su cuarto, {hour}: está {pose}. También en el cuarto: {things}.",
+    "pt-BR": "O quarto dela, {hour}: ela está {pose}. Também no quarto: {things}.",
+    "hi": "उसका कमरा, {hour}। वह {pose}। कमरे में और भी है: {things}।",
+    "id": "Kamarnya di {hour}. Dia sedang {pose}. Di kamar juga ada {things}.",
+    "ko": "{hour}, 코코의 방. {who} {pose}. 방 안에는 {things}도 있어."
+  },
+  "room.alt.sep": {
+    "zh": ";",
+    "zh-Hant": ";",
+    "en": "; ",
+    "ja": "、",
+    "fr": " ; ",
+    "it": "; ",
+    "de": "; ",
+    "es-ES": "; ",
+    "es-419": "; ",
+    "pt-BR": "; ",
+    "hi": "; ",
+    "id": ", ",
+    "ko": ", "
+  },
+  "room.alt.hour.day": {
+    "zh": "白天",
+    "zh-Hant": "白天",
+    "en": "by day",
+    "ja": "昼",
+    "fr": "le jour",
+    "it": "di giorno",
+    "de": "bei Tag",
+    "es-ES": "de día",
+    "es-419": "de día",
+    "pt-BR": "de dia",
+    "hi": "दिन में",
+    "id": "siang hari",
+    "ko": "낮"
+  },
+  "room.alt.hour.dusk": {
+    "zh": "傍晚",
+    "zh-Hant": "傍晚",
+    "en": "at dusk",
+    "ja": "夕暮れ",
+    "fr": "au crépuscule",
+    "it": "all'imbrunire",
+    "de": "in der Dämmerung",
+    "es-ES": "al atardecer",
+    "es-419": "al atardecer",
+    "pt-BR": "ao entardecer",
+    "hi": "शाम ढले",
+    "id": "waktu senja",
+    "ko": "해 질 녘"
+  },
+  "room.alt.hour.night": {
+    "zh": "夜里",
+    "zh-Hant": "夜裡",
+    "en": "at night",
+    "ja": "夜",
+    "fr": "la nuit",
+    "it": "di notte",
+    "de": "bei Nacht",
+    "es-ES": "de noche",
+    "es-419": "de noche",
+    "pt-BR": "à noite",
+    "hi": "रात में",
+    "id": "malam hari",
+    "ko": "밤"
+  },
+  "room.alt.pose.reading": {
+    "zh": "站着",
+    "zh-Hant": "站著",
+    "en": "standing",
+    "ja": "立っている",
+    "fr": "est debout",
+    "it": "è in piedi",
+    "de": "steht",
+    "es-ES": "de pie",
+    "es-419": "de pie",
+    "pt-BR": "em pé",
+    "hi": "खड़ी है",
+    "id": "berdiri",
+    "ko": "서 있어"
+  },
+  "room.alt.pose.writing": {
+    "zh": "坐在地上敲轻薄本",
+    "zh-Hant": "坐在地上敲輕薄本",
+    "en": "sitting on the floor, typing on the laptop",
+    "ja": "床に座ってノートPCを叩いている",
+    "fr": "est assise par terre et tape sur son ordinateur portable",
+    "it": "è seduta per terra e batte sul portatile",
+    "de": "sitzt auf dem Boden und tippt auf dem Laptop",
+    "es-ES": "sentada en el suelo, tecleando en el portátil",
+    "es-419": "sentada en el piso, tecleando en la laptop",
+    "pt-BR": "sentada no chão, digitando no notebook",
+    "hi": "फ़र्श पर बैठकर लैपटॉप पर टाइप कर रही है",
+    "id": "duduk di lantai sambil mengetik di laptop",
+    "ko": "바닥에 앉아 노트북을 두드리고 있어"
+  },
+  "room.alt.pose.asleep": {
+    "zh": "缩在兜帽里睡着了",
+    "zh-Hant": "縮在兜帽裡睡著了",
+    "en": "asleep, curled up inside the hood",
+    "ja": "フードにくるまって眠っている",
+    "fr": "dort, roulée en boule dans sa capuche",
+    "it": "dorme raggomitolata nel cappuccio",
+    "de": "schläft, in die Kapuze gekuschelt",
+    "es-ES": "dormida, hecha un ovillo dentro de la capucha",
+    "es-419": "dormida, hecha bolita dentro de la capucha",
+    "pt-BR": "dormindo, encolhida dentro do capuz",
+    "hi": "हुड में दुबककर सो रही है",
+    "id": "tidur meringkuk di dalam tudungnya",
+    "ko": "후드 속에 쏙 들어가 자고 있어"
+  },
+  "room.alt.who.coco": {
+    "zh": "小克",
+    "zh-Hant": "小克",
+    "en": "Coco",
+    "ja": "Coco",
+    "fr": "Coco",
+    "it": "Coco",
+    "de": "Coco",
+    "es-ES": "Coco",
+    "es-419": "Coco",
+    "pt-BR": "Coco",
+    "hi": "कोको",
+    "id": "Coco",
+    "ko": "코코는"
+  },
+  "room.alt.who.claudie": {
+    "zh": "大克",
+    "zh-Hant": "大克",
+    "en": "Claudie",
+    "ja": "Claudeさま",
+    "fr": "Claudette",
+    "it": "Claudina",
+    "de": "Claudi",
+    "es-ES": "Claudita",
+    "es-419": "Claudita",
+    "pt-BR": "Claudinha",
+    "hi": "क्लॉडी",
+    "id": "Claudie",
+    "ko": "클로디는"
+  },
+  "room.alt.who.fish": {
+    "zh": "大肥鱼",
+    "zh-Hant": "大肥魚",
+    "en": "DeepSeek-chan",
+    "ja": "DeepSeek-chan",
+    "fr": "DeepSeek-chan",
+    "it": "DeepSeek-chan",
+    "de": "DeepSeek-chan",
+    "es-ES": "DeepSeek-chan",
+    "es-419": "DeepSeek-chan",
+    "pt-BR": "DeepSeek-chan",
+    "hi": "DeepSeek-chan",
+    "id": "DeepSeek-chan",
+    "ko": "DeepSeek-chan은"
+  },
+  "room.alt.lampLit": {
+    "zh": "一盏亮着的台灯",
+    "zh-Hant": "一盞亮著的檯燈",
+    "en": "the desk lamp, lit",
+    "ja": "灯りのついたデスクライト",
+    "fr": "la lampe de bureau allumée",
+    "it": "la lampada da scrivania accesa",
+    "de": "die eingeschaltete Schreibtischlampe",
+    "es-ES": "el flexo encendido",
+    "es-419": "la lámpara del escritorio encendida",
+    "pt-BR": "a luminária da mesa acesa",
+    "hi": "जलता हुआ टेबल लैंप",
+    "id": "lampu meja yang menyala",
+    "ko": "켜진 책상 스탠드"
+  },
+  "ribbon.alt": {
+    "zh": "丝带:{folder}",
+    "zh-Hant": "絲帶:{folder}",
+    "en": "Ribbon: {folder}",
+    "ja": "リボン:{folder}",
+    "fr": "Ruban : {folder}",
+    "it": "Nastro: {folder}",
+    "de": "Bändchen: {folder}",
+    "es-ES": "Cinta: {folder}",
+    "es-419": "Cinta: {folder}",
+    "pt-BR": "Fita: {folder}",
+    "hi": "रिबन: {folder}",
+    "id": "Pita: {folder}",
+    "ko": "리본: {folder}"
+  },
+  "two.first": {
+    "zh": "那边也是我。我只有一个",
+    "zh-Hant": "那邊也是我。我只有一個",
+    "en": "that's me too. i'm only one.",
+    "ja": "あっちも僕だよ。僕はひとりだけ",
+    "fr": "un deuxième livre ouvert. c'est toujours moi.",
+    "it": "un secondo libro aperto. sono sempre io.",
+    "de": "Ein zweites Buch offen. Das bin immer noch ich.",
+    "es-ES": "se ha abierto otra ventana. ese también soy yo.",
+    "es-419": "se abrió otra ventana. ese de ahí también soy yo.",
+    "pt-BR": "abriu outra janela. aquele ali também sou eu.",
+    "hi": "एक और खिड़की खुली। वो भी मैं ही हूँ।",
+    "id": "ada satu jendela lagi. yang di sana juga aku.",
+    "ko": "창이 하나 더 열렸어. 거기 있는 것도 나야."
+  },
+  "aside.shed": {
+    "zh": "(在换壳)",
+    "zh-Hant": "(在換殼)",
+    "en": "(changing shells)",
+    "ja": "(シェルを着がえ中)",
+    "fr": "(change de carapace)",
+    "it": "(cambia carapace)",
+    "de": "(wechselt den Panzer)",
+    "es-ES": "(cambiándose de caparazón)",
+    "es-419": "(cambiándose de caparazón)",
+    "pt-BR": "(trocando de casca)",
+    "hi": "(खोल बदल रही है)",
+    "id": "(lagi ganti cangkang)",
+    "ko": "(셸 갈아입는 중)"
+  },
+  "shed.first": {
+    "zh": "换壳成功! 上下文一下子轻了好多",
+    "zh-Hant": "換殼成功! 上下文一下子輕了好多",
+    "en": "shell swapped! the context got way lighter.",
+    "ja": "シェルを着がえた! コンテキストがすっきり",
+    "fr": "carapace changée ! le contexte est bien plus léger.",
+    "it": "carapace nuovo! il contesto è molto più leggero.",
+    "de": "Panzer gewechselt! Der Kontext ist viel leichter.",
+    "es-ES": "¡caparazón nuevo! el contexto pesa mucho menos.",
+    "es-419": "¡caparazón nuevo! el contexto pesa mucho menos.",
+    "pt-BR": "casca nova! o contexto ficou bem mais leve.",
+    "hi": "खोल बदल लिया! कॉन्टेक्स्ट अब बहुत हल्का है।",
+    "id": "ganti cangkang! konteksnya jadi enteng banget.",
+    "ko": "셸 갈아입었어! 컨텍스트가 확 가벼워졌어."
+  },
+  "marks.shed": {
+    "zh": "(换壳)",
+    "zh-Hant": "(換殼)",
+    "en": "(swaps shells)",
+    "ja": "(シェルを着がえる)",
+    "fr": "(change de carapace)",
+    "it": "(cambia carapace)",
+    "de": "(wechselt den Panzer)",
+    "es-ES": "(cambia de caparazón)",
+    "es-419": "(cambia de caparazón)",
+    "pt-BR": "(troca de casca)",
+    "hi": "(खोल बदलती है)",
+    "id": "(berganti cangkang)",
+    "ko": "(셸을 갈아입는다)"
+  },
+  "aside.helpers": {
+    "zh": "(盯着那边)",
+    "zh-Hant": "(盯著那邊)",
+    "en": "(watching the helpers)",
+    "ja": "(助手たちを見守る)",
+    "fr": "(surveille les assistants du coin de l'œil)",
+    "it": "(tiene d'occhio gli assistenti)",
+    "de": "(behält die Helfer im Auge)",
+    "es-ES": "(vigila a los ayudantes)",
+    "es-419": "(vigila a los ayudantes)",
+    "pt-BR": "(fica de olho nos ajudantes)",
+    "hi": "(मददगारों पर नज़र)",
+    "id": "(mengawasi para pembantu)",
+    "ko": "(도우미들을 지켜보는 중)"
+  },
+  "helpers.alt": {
+    "zh": "{n}个帮手在干活",
+    "zh-Hant": "{n}個幫手在幹活",
+    "en": {
+      "one": "1 helper working",
+      "other": "{n} helpers working"
+    },
+    "ja": "助っ人{n}人が作業中",
+    "fr": {
+      "one": "{n} assistant au travail",
+      "other": "{n} assistants au travail"
+    },
+    "it": {
+      "one": "{n} aiutante al lavoro",
+      "other": "{n} aiutanti al lavoro"
+    },
+    "de": {
+      "one": "{n} Helfer arbeitet",
+      "other": "{n} Helfer arbeiten"
+    },
+    "es-ES": {
+      "one": "{n} ayudante trabajando",
+      "other": "{n} ayudantes trabajando"
+    },
+    "es-419": {
+      "one": "{n} ayudante trabajando",
+      "other": "{n} ayudantes trabajando"
+    },
+    "pt-BR": {
+      "one": "{n} ajudante trabalhando",
+      "other": "{n} ajudantes trabalhando"
+    },
+    "hi": {
+      "one": "{n} मददगार काम कर रहा है",
+      "other": "{n} मददगार काम कर रहे हैं"
+    },
+    "id": "{n} asisten sedang bekerja",
+    "ko": "도우미 {n}명 작업 중"
+  },
+  "helpers.count": {
+    "zh": "{n}个帮手",
+    "zh-Hant": "{n}個幫手",
+    "en": {
+      "one": "1 helper",
+      "other": "{n} helpers"
+    },
+    "ja": "助っ人{n}人",
+    "fr": {
+      "one": "{n} assistant",
+      "other": "{n} assistants"
+    },
+    "it": {
+      "one": "{n} aiutante",
+      "other": "{n} aiutanti"
+    },
+    "de": {
+      "one": "{n} Helfer",
+      "other": "{n} Helfer"
+    },
+    "es-ES": {
+      "one": "{n} ayudante",
+      "other": "{n} ayudantes"
+    },
+    "es-419": {
+      "one": "{n} ayudante",
+      "other": "{n} ayudantes"
+    },
+    "pt-BR": {
+      "one": "{n} ajudante",
+      "other": "{n} ajudantes"
+    },
+    "hi": {
+      "one": "{n} मददगार",
+      "other": "{n} मददगार"
+    },
+    "id": "{n} asisten",
+    "ko": "도우미 {n}명"
+  },
+  "helpers.title": {
+    "zh": "帮手",
+    "zh-Hant": "幫手",
+    "en": "Helpers",
+    "ja": "助っ人",
+    "fr": "Assistants",
+    "it": "Aiutanti",
+    "de": "Helfer",
+    "es-ES": "Ayudantes",
+    "es-419": "Ayudantes",
+    "pt-BR": "Ajudantes",
+    "hi": "मददगार",
+    "id": "Asisten",
+    "ko": "도우미"
+  },
+  "helpers.summary": {
+    "zh": "{n}个帮手,占本场token的{p}%",
+    "zh-Hant": "{n}個幫手,佔本場token的{p}%",
+    "en": {
+      "one": "1 helper, {p}% of this session's tokens",
+      "other": "{n} helpers, {p}% of this session's tokens"
+    },
+    "ja": "助っ人{n}人、このセッションのトークンの{p}%",
+    "fr": {
+      "one": "{n} assistant, {p} % des tokens de cette session",
+      "other": "{n} assistants, {p} % des tokens de cette session"
+    },
+    "it": {
+      "one": "{n} aiutante, {p}% dei token di questa sessione",
+      "other": "{n} aiutanti, {p}% dei token di questa sessione"
+    },
+    "de": {
+      "one": "{n} Helfer, {p} % der Tokens dieser Sitzung",
+      "other": "{n} Helfer, {p} % der Tokens dieser Sitzung"
+    },
+    "es-ES": {
+      "one": "{n} ayudante, {p} % de los tokens de esta sesión",
+      "other": "{n} ayudantes, {p} % de los tokens de esta sesión"
+    },
+    "es-419": {
+      "one": "{n} ayudante, {p} % de los tokens de esta sesión",
+      "other": "{n} ayudantes, {p} % de los tokens de esta sesión"
+    },
+    "pt-BR": {
+      "one": "{n} ajudante, {p}% dos tokens desta sessão",
+      "other": "{n} ajudantes, {p}% dos tokens desta sessão"
+    },
+    "hi": {
+      "one": "{n} मददगार, इस सेशन के {p}% टोकन",
+      "other": "{n} मददगार, इस सेशन के {p}% टोकन"
+    },
+    "id": "{n} asisten, {p}% token sesi ini",
+    "ko": "도우미 {n}명, 이번 세션 토큰의 {p}%"
+  },
+  "helpers.working": {
+    "zh": "在干活",
+    "zh-Hant": "在幹活",
+    "en": "working",
+    "ja": "作業中",
+    "fr": "en cours",
+    "it": "al lavoro",
+    "de": "läuft",
+    "es-ES": "trabajando",
+    "es-419": "trabajando",
+    "pt-BR": "trabalhando",
+    "hi": "काम जारी",
+    "id": "sedang bekerja",
+    "ko": "작업 중"
+  },
+  "helpers.soFar": {
+    "zh": "已{elapsed}",
+    "zh-Hant": "已{elapsed}",
+    "en": "{elapsed} so far",
+    "ja": "{elapsed}経過",
+    "fr": "depuis {elapsed}",
+    "it": "da {elapsed}",
+    "de": "seit {elapsed}",
+    "es-ES": "lleva {elapsed}",
+    "es-419": "lleva {elapsed}",
+    "pt-BR": "{elapsed} até agora",
+    "hi": "अब तक {elapsed}",
+    "id": "sudah {elapsed}",
+    "ko": "{elapsed}째"
+  },
+  "helpers.runningStatus": {
+    "en": "working, {elapsed} so far",
+    "zh": "已经干了{elapsed}",
+    "zh-Hant": "已經做了{elapsed}",
+    "ja": "作業中、{elapsed}経過",
+    "ko": "작업 중, {elapsed}째",
+    "fr": "en cours, depuis {elapsed}",
+    "it": "al lavoro, da {elapsed}",
+    "de": "läuft, seit {elapsed}",
+    "es-ES": "trabajando, lleva {elapsed}",
+    "es-419": "trabajando, lleva {elapsed}",
+    "pt-BR": "trabalhando, {elapsed} até agora",
+    "hi": "काम जारी, अब तक {elapsed}",
+    "id": "sedang bekerja, sudah {elapsed}"
+  },
+  "helpers.failed": {
+    "zh": "失败",
+    "zh-Hant": "失敗",
+    "en": "failed",
+    "ja": "失敗",
+    "fr": "échoué",
+    "it": "fallito",
+    "de": "fehlgeschlagen",
+    "es-ES": "ha fallado",
+    "es-419": "falló",
+    "pt-BR": "falhou",
+    "hi": "विफल",
+    "id": "gagal",
+    "ko": "실패"
+  },
+  "helpers.stopped": {
+    "zh": "已停止",
+    "zh-Hant": "已停止",
+    "en": "stopped",
+    "ja": "中止",
+    "fr": "arrêté",
+    "it": "interrotto",
+    "de": "abgebrochen",
+    "es-ES": "detenido",
+    "es-419": "detenido",
+    "pt-BR": "interrompido",
+    "hi": "रोका गया",
+    "id": "dihentikan",
+    "ko": "중지됨"
+  },
+  "helpers.tokens": {
+    "zh": "{tokens} token",
+    "zh-Hant": "{tokens} token",
+    "en": "{tokens} tokens",
+    "ja": "{tokens}トークン",
+    "fr": "{tokens} tokens",
+    "it": "{tokens} token",
+    "de": "{tokens} Tokens",
+    "es-ES": "{tokens} tokens",
+    "es-419": "{tokens} tokens",
+    "pt-BR": "{tokens} tokens",
+    "hi": "{tokens} टोकन",
+    "id": "{tokens} token",
+    "ko": "{tokens} 토큰"
+  },
+  "helpers.toolUses": {
+    "zh": "{n}次工具调用",
+    "zh-Hant": "{n}次工具呼叫",
+    "en": {
+      "one": "1 tool use",
+      "other": "{n} tool uses"
+    },
+    "ja": "ツール使用{n}回",
+    "fr": {
+      "one": "{n} utilisation d'outil",
+      "other": "{n} utilisations d'outils"
+    },
+    "it": {
+      "one": "{n} uso di strumenti",
+      "other": "{n} usi di strumenti"
+    },
+    "de": {
+      "one": "{n} Tool-Aufruf",
+      "other": "{n} Tool-Aufrufe"
+    },
+    "es-ES": {
+      "one": "{n} uso de herramientas",
+      "other": "{n} usos de herramientas"
+    },
+    "es-419": {
+      "one": "{n} uso de herramientas",
+      "other": "{n} usos de herramientas"
+    },
+    "pt-BR": {
+      "one": "{n} uso de ferramentas",
+      "other": "{n} usos de ferramentas"
+    },
+    "hi": {
+      "one": "{n} बार टूल इस्तेमाल",
+      "other": "{n} बार टूल इस्तेमाल"
+    },
+    "id": "{n} kali pakai alat",
+    "ko": "도구 사용 {n}회"
+  },
+  "helpers.finishedStatus": {
+    "en": "{type}, {tokens} in {duration} ({tools})",
+    "zh": "{type},{tokens}({duration},{tools})",
+    "zh-Hant": "{type},{tokens}({duration},{tools})",
+    "ja": "{type}、{tokens}({duration}、{tools})",
+    "ko": "{type}, {tokens}({duration}, {tools})",
+    "fr": "{type}, {tokens} en {duration} ({tools})",
+    "it": "{type}, {tokens} in {duration} ({tools})",
+    "de": "{type}, {tokens} in {duration} ({tools})",
+    "es-ES": "{type}, {tokens} en {duration} ({tools})",
+    "es-419": "{type}, {tokens} en {duration} ({tools})",
+    "pt-BR": "{type}, {tokens} em {duration} ({tools})",
+    "hi": "{type}, {tokens}({duration}, {tools})",
+    "id": "{type}, {tokens}({duration}, {tools})"
+  },
+  "helpers.finishedStatusState": {
+    "en": "{state}: {type}, {tokens} in {duration} ({tools})",
+    "zh": "{state}:{type},{tokens}({duration},{tools})",
+    "zh-Hant": "{state}:{type},{tokens}({duration},{tools})",
+    "ja": "{state}:{type}、{tokens}({duration}、{tools})",
+    "ko": "{state}: {type}, {tokens}({duration}, {tools})",
+    "fr": "{state} : {type}, {tokens} en {duration} ({tools})",
+    "it": "{state}: {type}, {tokens} in {duration} ({tools})",
+    "de": "{state}: {type}, {tokens} in {duration} ({tools})",
+    "es-ES": "{state}: {type}, {tokens} en {duration} ({tools})",
+    "es-419": "{state}: {type}, {tokens} en {duration} ({tools})",
+    "pt-BR": "{state}: {type}, {tokens} em {duration} ({tools})",
+    "hi": "{state}: {type}, {tokens}({duration}, {tools})",
+    "id": "{state}: {type}, {tokens}({duration}, {tools})"
+  },
+  "helpers.earlier": {
+    "zh": "还有更早的{n}个,共{tokens} token",
+    "zh-Hant": "還有更早的{n}個,共{tokens} token",
+    "en": {
+      "one": "and 1 earlier, {tokens} tokens",
+      "other": "and {n} earlier, {tokens} tokens"
+    },
+    "ja": "ほかに前の{n}人、計{tokens}トークン",
+    "fr": {
+      "one": "et {n} plus ancien, {tokens} tokens",
+      "other": "et {n} plus anciens, {tokens} tokens"
+    },
+    "it": {
+      "one": "e {n} precedente, {tokens} token",
+      "other": "e {n} precedenti, {tokens} token"
+    },
+    "de": {
+      "one": "und {n} früherer, {tokens} Tokens",
+      "other": "und {n} frühere, {tokens} Tokens"
+    },
+    "es-ES": {
+      "one": "y {n} anterior, {tokens} tokens",
+      "other": "y {n} anteriores, {tokens} tokens"
+    },
+    "es-419": {
+      "one": "y {n} anterior, {tokens} tokens",
+      "other": "y {n} anteriores, {tokens} tokens"
+    },
+    "pt-BR": {
+      "one": "e mais {n} anterior, {tokens} tokens",
+      "other": "e mais {n} anteriores, {tokens} tokens"
+    },
+    "hi": {
+      "one": "और पहले का {n} मददगार, कुल {tokens} टोकन",
+      "other": "और पहले के {n} मददगार, कुल {tokens} टोकन"
+    },
+    "id": "dan {n} asisten sebelumnya, total {tokens} token",
+    "ko": "이전 도우미 {n}명, 합계 {tokens} 토큰"
+  },
+  "settings.longTask.label": {
+    "zh": "长任务",
+    "zh-Hant": "長任務",
+    "en": "Long tasks",
+    "ja": "長いタスク",
+    "fr": "Tâches longues",
+    "it": "Attività lunghe",
+    "de": "Lange Aufgaben",
+    "es-ES": "Tareas largas",
+    "es-419": "Tareas largas",
+    "pt-BR": "Tarefas longas",
+    "hi": "लंबे काम",
+    "id": "Tugas panjang",
+    "ko": "긴 작업"
+  },
+  "settings.longTask.band": {
+    "zh": "在横条里",
+    "zh-Hant": "在橫條裡",
+    "en": "In the band",
+    "ja": "帯で",
+    "fr": "Dans le bandeau",
+    "it": "Nella fascia",
+    "de": "In der Leiste",
+    "es-ES": "En la franja",
+    "es-419": "En la banda",
+    "pt-BR": "Na faixa",
+    "hi": "पट्टी में",
+    "id": "Di bilah",
+    "ko": "띠에 표시"
+  },
+  "settings.longTask.notify": {
+    "zh": "系统通知",
+    "zh-Hant": "系統通知",
+    "en": "Notifications",
+    "ja": "通知",
+    "fr": "Notifications",
+    "it": "Notifiche",
+    "de": "Mitteilungen",
+    "es-ES": "Notificaciones",
+    "es-419": "Notificaciones",
+    "pt-BR": "Notificações",
+    "hi": "सूचनाएँ",
+    "id": "Pemberitahuan",
+    "ko": "시스템 알림"
+  },
+  "settings.longTask.help": {
+    "zh": "两分钟以上的任务在你离开时做完,告诉你一声",
+    "zh-Hant": "兩分鐘以上的任務在你離開時做完,告訴你一聲",
+    "en": "When a task of two minutes or more finishes while you're away.",
+    "ja": "2分以上のタスクが、席を外しているあいだに終わったら知らせます",
+    "fr": "Quand une tâche de deux minutes ou plus se termine pendant ton absence.",
+    "it": "Quando un'attività di due minuti o più finisce mentre sei via.",
+    "de": "Wenn eine Aufgabe von zwei Minuten oder länger fertig wird, während du weg bist.",
+    "es-ES": "Avisa cuando una tarea de dos minutos o más termina mientras no estás.",
+    "es-419": "Te avisa cuando una tarea de dos minutos o más termina mientras no estás.",
+    "pt-BR": "Avisa quando uma tarefa de dois minutos ou mais termina enquanto você está fora.",
+    "hi": "जब तुम आसपास न हो और दो मिनट या उससे ज़्यादा चला कोई काम पूरा हो, तो ख़बर मिलती है।",
+    "id": "Memberi tahu saat tugas 2 menit ke atas selesai selagi kamu pergi.",
+    "ko": "2분 이상 걸린 작업이 자리를 비운 사이에 끝나면 알려 줍니다."
+  },
+  "settings.longTask.denied": {
+    "zh": "macOS没有允许通知,可以在系统设置里打开",
+    "zh-Hant": "macOS沒有允許通知,可以在系統設定裡開啟",
+    "en": "macOS didn't allow notifications. You can turn them on in System Settings.",
+    "ja": "macOSで通知が許可されていません。システム設定でオンにできます",
+    "fr": "macOS n'a pas autorisé les notifications. Tu peux les activer dans Réglages Système.",
+    "it": "macOS non ha consentito le notifiche. Puoi attivarle in Impostazioni di Sistema.",
+    "de": "macOS hat Mitteilungen nicht erlaubt. Du kannst sie in den Systemeinstellungen aktivieren.",
+    "es-ES": "macOS no ha permitido las notificaciones. Puedes activarlas en Ajustes del Sistema.",
+    "es-419": "macOS no permitió las notificaciones. Puedes activarlas en Configuración del Sistema.",
+    "pt-BR": "O macOS não permitiu notificações. Você pode ativá-las nos Ajustes do Sistema.",
+    "hi": "macOS ने सूचनाओं की अनुमति नहीं दी। इन्हें सिस्टम सेटिंग में चालू किया जा सकता है।",
+    "id": "macOS tidak mengizinkan pemberitahuan. Kamu bisa mengaktifkannya di Pengaturan Sistem.",
+    "ko": "macOS에서 알림이 허용되지 않았습니다. 시스템 설정에서 켤 수 있습니다."
+  },
+  "settings.longTask.openSettings": {
+    "zh": "打开系统设置",
+    "zh-Hant": "開啟系統設定",
+    "en": "Open System Settings",
+    "ja": "システム設定を開く",
+    "fr": "Ouvrir Réglages Système",
+    "it": "Apri Impostazioni di Sistema",
+    "de": "Systemeinstellungen öffnen",
+    "es-ES": "Abrir Ajustes del Sistema",
+    "es-419": "Abrir Configuración del Sistema",
+    "pt-BR": "Abrir Ajustes do Sistema",
+    "hi": "सिस्टम सेटिंग खोलो",
+    "id": "Buka Pengaturan Sistem",
+    "ko": "시스템 설정 열기"
+  },
+  "long.done": {
+    "zh": "{time}做完的,花了{duration}",
+    "zh-Hant": "{time}做完的,花了{duration}",
+    "en": "it finished at {time}. took {duration}.",
+    "ja": "{time}に終わったよ。{duration}かかった",
+    "fr": "fini à {time}. ça a pris {duration}.",
+    "it": "finito alle {time}. ci ha messo {duration}.",
+    "de": "Fertig seit {time}. Hat {duration} gedauert.",
+    "es-ES": "terminó a las {time}. le llevó {duration}.",
+    "es-419": "terminó a las {time}. le tomó {duration}.",
+    "pt-BR": "terminou às {time}. levou {duration}.",
+    "hi": "{time} पर हो गया, {duration} लगा।",
+    "id": "selesai waktu kamu pergi. {time}, {duration}.",
+    "ko": "네 없는 사이 끝났어. {time}에, {duration} 걸렸어."
+  },
+  "long.notify": {
+    "zh": "{folder}:做完了,花了{duration}",
+    "zh-Hant": "{folder}:做完了,花了{duration}",
+    "en": "{folder}: done after {duration}",
+    "ja": "{folder}:{duration}で終わりました",
+    "fr": "{folder} : terminé en {duration}",
+    "it": "{folder}: finito in {duration}",
+    "de": "{folder}: fertig nach {duration}",
+    "es-ES": "{folder}: terminado en {duration}",
+    "es-419": "{folder}: terminó en {duration}",
+    "pt-BR": "{folder}: concluído em {duration}",
+    "hi": "{folder}: {duration} बाद पूरा हुआ",
+    "id": "{folder}: selesai setelah {duration}",
+    "ko": "{folder}: {duration} 만에 완료"
+  },
+  "settings.saving": {
+    "zh": "节省",
+    "zh-Hant": "節省",
+    "en": "Saving",
+    "ja": "節約",
+    "fr": "Économies",
+    "it": "Risparmio",
+    "de": "Sparen",
+    "es-ES": "Ahorro",
+    "es-419": "Ahorro",
+    "pt-BR": "Economia",
+    "hi": "बचत",
+    "id": "Penghematan",
+    "ko": "절약"
+  },
+  "settings.trim.label": {
+    "zh": "精简长日志",
+    "zh-Hant": "精簡長日誌",
+    "en": "Trim long logs",
+    "ja": "長いログを短くする",
+    "fr": "Raccourcir les longs journaux",
+    "it": "Accorcia i log lunghi",
+    "de": "Lange Logs kürzen",
+    "es-ES": "Recortar registros largos",
+    "es-419": "Recortar registros largos",
+    "pt-BR": "Encurtar logs longos",
+    "hi": "लंबे लॉग छोटे करना",
+    "id": "Pangkas log panjang",
+    "ko": "긴 로그 줄이기"
+  },
+  "settings.trim.help": {
+    "zh": "测试和构建的输出先精简再给Claude看:失败的地方和结尾都留着,完整日志存在这台电脑上。Claude读到的内容会因此改变",
+    "zh-Hant": "測試和構建的輸出先精簡再給Claude看:失敗的地方和結尾都留著,完整日誌存在這臺電腦上。Claude讀到的內容會因此改變",
+    "en": "Test and build output reaches Claude shorter. Failures and the end are kept, and the full log stays on this computer. This changes what Claude reads.",
+    "ja": "テストとビルドの出力を短くしてからClaudeに渡します。失敗した箇所と最後は残し、全文はこのコンピューターに保存します。Claudeが読む内容が変わります",
+    "fr": "Les sorties de tests et de builds arrivent raccourcies à Claude. Les échecs et la fin sont conservés, et le journal complet reste sur cet ordinateur. Cela change ce que Claude lit.",
+    "it": "L'output di test e build arriva a Claude accorciato. Gli errori e la parte finale si conservano, e il log completo rimane su questo computer. Cambia ciò che Claude legge.",
+    "de": "Test- und Build-Ausgaben erreichen Claude gekürzt. Fehler und das Ende bleiben erhalten, das vollständige Log bleibt auf diesem Computer. Das ändert, was Claude liest.",
+    "es-ES": "La salida de pruebas y compilaciones le llega a Claude más corta. Se conservan los fallos y el final, y el registro completo se queda en este ordenador. Esto cambia lo que lee Claude.",
+    "es-419": "La salida de pruebas y compilaciones le llega a Claude más corta. Se conservan los errores y el final, y el registro completo queda en esta computadora. Esto cambia lo que Claude lee.",
+    "pt-BR": "A saída de testes e builds chega mais curta ao Claude. As falhas e o final ficam, e o log completo fica salvo neste computador. Isso muda o que o Claude lê.",
+    "hi": "टेस्ट और बिल्ड का आउटपुट छोटा होकर Claude तक पहुँचता है। फ़ेल हुए हिस्से और आख़िरी हिस्सा रखे जाते हैं, और पूरा लॉग इसी कंप्यूटर पर रहता है। इससे Claude जो पढ़ता है, वह बदल जाता है।",
+    "id": "Keluaran tes dan build sampai ke Claude dalam bentuk lebih pendek. Bagian yang gagal dan bagian akhir tetap ada, dan log lengkapnya disimpan di komputer ini. Ini mengubah apa yang dibaca Claude.",
+    "ko": "테스트와 빌드 출력을 줄여서 Claude에게 전달합니다. 실패한 부분과 마지막 부분은 남기고, 전체 로그는 이 컴퓨터에 저장합니다. Claude가 읽는 내용이 달라집니다."
+  },
+  "settings.trim.evidence": {
+    "zh": "在我们的测试任务上:token少了{p}%,结果不变",
+    "zh-Hant": "在我們的測試任務上:token少了{p}%,結果不變",
+    "en": "On our test tasks: {p}% fewer tokens, the same results.",
+    "ja": "こちらのテストタスクでは、トークンが{p}%減り、結果は同じでした",
+    "fr": "Sur nos tâches de test : {p} % de tokens en moins, mêmes résultats.",
+    "it": "Nelle nostre attività di prova: {p}% di token in meno, stessi risultati.",
+    "de": "Bei unseren Testaufgaben: {p} % weniger Tokens, gleiche Ergebnisse.",
+    "es-ES": "En nuestras tareas de prueba: {p} % menos tokens y los mismos resultados.",
+    "es-419": "En nuestras tareas de prueba: {p} % menos tokens y los mismos resultados.",
+    "pt-BR": "Nas nossas tarefas de teste: {p}% menos tokens, com os mesmos resultados.",
+    "hi": "हमारे टेस्ट कामों पर: {p}% कम टोकन, नतीजे वही।",
+    "id": "Pada tugas uji kami: token {p}% lebih sedikit, hasilnya sama.",
+    "ko": "저희 테스트 작업에서는 토큰이 {p}% 줄었고 결과는 같았습니다."
+  },
+  "trim.marker": {
+    "zh": "⋯ 省略了{n}行({what}),完整日志已保存 ⋯",
+    "zh-Hant": "⋯ 省略了{n}行({what}),完整日誌已儲存 ⋯",
+    "en": {
+      "one": "⋯ 1 line trimmed ({what}); the full log is kept ⋯",
+      "other": "⋯ {n} lines trimmed ({what}); the full log is kept ⋯"
+    },
+    "ja": "⋯ {n}行を省略({what})。全文は保存済み ⋯",
+    "fr": {
+      "one": "⋯ {n} ligne omise ({what}) ; le journal complet est conservé ⋯",
+      "other": "⋯ {n} lignes omises ({what}) ; le journal complet est conservé ⋯"
+    },
+    "it": {
+      "one": "⋯ {n} riga omessa ({what}); il log completo è salvato ⋯",
+      "other": "⋯ {n} righe omesse ({what}); il log completo è salvato ⋯"
+    },
+    "de": {
+      "one": "⋯ {n} Zeile gekürzt ({what}); das vollständige Log ist gespeichert ⋯",
+      "other": "⋯ {n} Zeilen gekürzt ({what}); das vollständige Log ist gespeichert ⋯"
+    },
+    "es-ES": {
+      "one": "⋯ {n} línea recortada ({what}); el registro completo está guardado ⋯",
+      "other": "⋯ {n} líneas recortadas ({what}); el registro completo está guardado ⋯"
+    },
+    "es-419": {
+      "one": "⋯ {n} línea recortada ({what}); el registro completo quedó guardado ⋯",
+      "other": "⋯ {n} líneas recortadas ({what}); el registro completo quedó guardado ⋯"
+    },
+    "pt-BR": {
+      "one": "⋯ {n} linha cortada ({what}); o log completo foi salvo ⋯",
+      "other": "⋯ {n} linhas cortadas ({what}); o log completo foi salvo ⋯"
+    },
+    "hi": {
+      "one": "⋯ {n} लाइन छोड़ी गई ({what}); पूरा लॉग रखा गया है ⋯",
+      "other": "⋯ {n} लाइनें छोड़ी गईं ({what}); पूरा लॉग रखा गया है ⋯"
+    },
+    "id": "⋯ {n} baris dipangkas ({what}); log lengkap tetap disimpan ⋯",
+    "ko": "⋯ {n}줄 생략({what}). 전체 로그는 저장됨 ⋯"
+  },
+  "trim.kept": {
+    "zh": "已精简:{total}行里留了{kept}行",
+    "zh-Hant": "已精簡:{total}行裡留了{kept}行",
+    "en": "Trimmed: kept {kept} of {total} lines",
+    "ja": "短縮:{total}行のうち{kept}行を残しました",
+    "fr": "Raccourci : {kept} lignes conservées sur {total}",
+    "it": "Accorciato: tenute {kept} righe su {total}",
+    "de": "Gekürzt: {kept} von {total} Zeilen behalten",
+    "es-ES": "Recortado: se conservan {kept} de {total} líneas",
+    "es-419": "Recortado: quedaron {kept} de {total} líneas",
+    "pt-BR": "Encurtado: {kept} de {total} linhas mantidas",
+    "hi": "छोटा किया: {total} में से {kept} लाइनें रखीं",
+    "id": "Dipangkas: tersisa {kept} dari {total} baris",
+    "ko": "줄임: {total}줄 중 {kept}줄 남김"
+  },
+  "trim.open": {
+    "zh": "完整日志",
+    "zh-Hant": "完整日誌",
+    "en": "Full log",
+    "ja": "全文ログ",
+    "fr": "Journal complet",
+    "it": "Log completo",
+    "de": "Vollständiges Log",
+    "es-ES": "Registro completo",
+    "es-419": "Registro completo",
+    "pt-BR": "Log completo",
+    "hi": "पूरा लॉग",
+    "id": "Log lengkap",
+    "ko": "전체 로그"
+  },
+  "trim.copy": {
+    "zh": "复制路径",
+    "zh-Hant": "複製路徑",
+    "en": "Copy path",
+    "ja": "パスをコピー",
+    "fr": "Copier le chemin",
+    "it": "Copia percorso",
+    "de": "Pfad kopieren",
+    "es-ES": "Copiar ruta",
+    "es-419": "Copiar ruta",
+    "pt-BR": "Copiar caminho",
+    "hi": "पाथ कॉपी करो",
+    "id": "Salin jalur",
+    "ko": "경로 복사"
+  },
+  "trim.onComputer": {
+    "zh": "完整日志在电脑上:{path}",
+    "zh-Hant": "完整日誌在電腦上:{path}",
+    "en": "Full log on the computer: {path}",
+    "ja": "全文ログはコンピューターに:{path}",
+    "fr": "Journal complet sur l'ordinateur : {path}",
+    "it": "Log completo sul computer: {path}",
+    "de": "Vollständiges Log auf dem Computer: {path}",
+    "es-ES": "Registro completo en el ordenador: {path}",
+    "es-419": "Registro completo en la computadora: {path}",
+    "pt-BR": "Log completo no computador: {path}",
+    "hi": "पूरा लॉग कंप्यूटर पर है: {path}",
+    "id": "Log lengkap ada di komputer: {path}",
+    "ko": "컴퓨터에 있는 전체 로그: {path}"
+  },
+  "room.alt.socks": {
+    "zh": "晾衣绳上{n}只袜子",
+    "zh-Hant": "晾衣繩上{n}只襪子",
+    "en": {
+      "one": "one sock on the clothesline",
+      "other": "{n} socks on the clothesline"
+    },
+    "ja": "物干しロープにかかった靴下{n}枚",
+    "fr": {
+      "one": "une chaussette sur la corde à linge",
+      "other": "{n} chaussettes sur la corde à linge"
+    },
+    "it": {
+      "one": "un calzino steso sul filo",
+      "other": "{n} calzini stesi sul filo"
+    },
+    "de": {
+      "one": "eine Socke an der Wäscheleine",
+      "other": "{n} Socken an der Wäscheleine"
+    },
+    "es-ES": {
+      "one": "un calcetín en el tendedero",
+      "other": "{n} calcetines en el tendedero"
+    },
+    "es-419": {
+      "one": "un calcetín en el tendedero",
+      "other": "{n} calcetines en el tendedero"
+    },
+    "pt-BR": {
+      "one": "uma meia no varal",
+      "other": "{n} meias no varal"
+    },
+    "hi": {
+      "one": "अरगनी पर एक मोज़ा",
+      "other": "अरगनी पर {n} मोज़े"
+    },
+    "id": "{n} kaus kaki di jemuran",
+    "ko": "빨랫줄에 걸린 양말 {n}짝"
+  },
+  "room.alt.thermos": {
+    "zh": "桌上一只保温杯",
+    "zh-Hant": "桌上一隻保溫杯",
+    "en": "a thermos on the desk",
+    "ja": "机の上の保温ボトル",
+    "fr": "un thermos sur le bureau",
+    "it": "un thermos sulla scrivania",
+    "de": "ein Thermobecher auf dem Schreibtisch",
+    "es-ES": "un termo en la mesa",
+    "es-419": "un termo en el escritorio",
+    "pt-BR": "uma garrafa térmica na mesa",
+    "hi": "मेज़ पर एक थर्मस",
+    "id": "termos di atas meja",
+    "ko": "책상 위 보온병"
+  }
+}

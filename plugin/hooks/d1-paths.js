@@ -1,0 +1,2 @@
+// Generated live public facade. Authoritative implementation: hooks-source/d1-paths.js
+export {d1_paths__homePath as homePath,d1_paths__isWindows as isWindows,d1_paths__joinPath as joinPath,d1_paths__presenceFolder as presenceFolder,d1_paths__readRepositoryBranch as readRepositoryBranch,d1_paths__samePath as samePath,d1_paths__tildePath as tildePath,d1_paths__windowsPath as windowsPath} from './m1-compiled/presence.js'

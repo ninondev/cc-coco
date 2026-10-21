@@ -1,0 +1,12 @@
+Started
+.F.
+
+Failures:
+1) kiwi parser reads a nested list
+  Message:
+    Expected 2 to be 3.
+  Stack:
+    Error: Expected 2 to be 3.
+
+3 specs, 1 failure
+Finished in 0.018 seconds

@@ -40,7 +40,7 @@ final class OneShot {
 
 struct Options {
     var folder = FileManager.default.homeDirectoryForCurrentUser
-        .appendingPathComponent("Library/Application Support/Claude-sama", isDirectory: true)
+        .appendingPathComponent("Library/Application Support/Coco", isDirectory: true)
     var frames: URL?
     var login = false
     var accessibility = true
@@ -92,12 +92,13 @@ enum ComeBack {
 /// process id and whether Accessibility is allowed). Written atomically.
 @MainActor
 final class Store {
+    static let maxBytes = 65_536
     /// The build's source hash, written into the app by the install script.
     static let build: String = Bundle.main.url(forResource: "build", withExtension: "txt")
         .flatMap { try? String(contentsOf: $0, encoding: .utf8) }?
         .trimmingCharacters(in: .whitespacesAndNewlines) ?? "dev"
     let url: URL
-    var size = Size.medium
+    var size = Size.large
     /// Where you put him; nil: the automatic places.
     var manual: Place.Manual?
     /// Where you left him while a window filled the screen, as fractions of that screen.
@@ -112,14 +113,19 @@ final class Store {
     var loginAt: Double = 0
     var followAt: Double = 0
     var login = false
+    /// Screenshots, recordings and shared screens show him unless this is off (owner 10-20).
+    var capture = true
+    var captureAt: Double = 0
     var linesHidden = false
     var seenAt: Double = 0
+    var longTaskAuthorization = "notDetermined"
 
     init(url: URL) {
         self.url = url
-        guard let data = try? Data(contentsOf: url),
+        guard let directory = try? SecureDirectory(url.deletingLastPathComponent()),
+              let data = try? directory.read(url.lastPathComponent, maxBytes: Self.maxBytes),
               let object = (try? JSONSerialization.jsonObject(with: data)) as? [String: Any] else { return }
-        if let value = object["size"] as? String, let size = Size(rawValue: value) { self.size = size }
+        if let value = object["size"] as? String, let size = Size(name: value) { self.size = size }
         if let x = object["freeX"] as? Double, let y = object["freeY"] as? Double, (0...1).contains(x), (0...1).contains(y) {
             full = CGPoint(x: x, y: y)
         }
@@ -140,13 +146,23 @@ final class Store {
         loginAt = object["loginAt"] as? Double ?? 0
         followAt = object["followAt"] as? Double ?? 0
         login = object["login"] as? Bool ?? false
+        capture = object["capture"] as? Bool ?? true
+        captureAt = object["captureAt"] as? Double ?? 0
         linesHidden = object["linesHidden"] as? Bool ?? false
         seenAt = object["seenAt"] as? Double ?? 0
+        if let authorization = object["longTaskAuthorization"] as? String, ["authorized", "denied", "notDetermined"].contains(authorization) { longTaskAuthorization = authorization }
+    }
+
+    /// The launch's final persistence step, after saved options and feed requests are restored.
+    func started() {
+        running = true
+        save()
     }
 
     func save() {
         var object: [String: Any] = [
             "pid": Int(getpid()),
+            "targets": ["claude", "vscode"],
             "version": Bundle.main.object(forInfoDictionaryKey: "CFBundleShortVersionString") as? String ?? "dev",
             "accessibility": trusted,
             "size": size.rawValue,
@@ -154,8 +170,8 @@ final class Store {
             "askedFor": askedFor,
             "build": Store.build,
             "running": running, "answered": answered, "offered": offered,
-            "sizeAt": sizeAt, "loginAt": loginAt, "followAt": followAt, "login": login,
-            "linesHidden": linesHidden, "seenAt": seenAt,
+            "sizeAt": sizeAt, "loginAt": loginAt, "followAt": followAt, "login": login, "capture": capture, "captureAt": captureAt,
+            "linesHidden": linesHidden, "seenAt": seenAt, "longTaskAuthorization": longTaskAuthorization,
         ]
         if let full {
             object["freeX"] = Double(full.x)
@@ -170,19 +186,18 @@ final class Store {
             break
         }
         guard let data = try? JSONSerialization.data(withJSONObject: object, options: [.prettyPrinted, .sortedKeys]) else { return }
-        guard (try? data.write(to: url, options: .atomic)) != nil else { return }
+        guard let directory = try? SecureDirectory(url.deletingLastPathComponent()),
+              (try? directory.replace(url.lastPathComponent, with: data)) != nil else { return }
         // Broadcast only safe settings metadata to live mod channels. Opening an existing file
         // cannot recreate an uninstalled folder, and O_APPEND keeps the complete line together.
-        let keys = ["running", "accessibility", "hiddenUntil", "answered", "size", "sizeAt", "loginAt", "followAt", "login", "version"]
+        let keys = ["running", "accessibility", "hiddenUntil", "answered", "size", "sizeAt", "loginAt", "followAt", "login", "capture", "captureAt", "version", "longTaskAuthorization"]
         let info = object.filter { keys.contains($0.key) }
         let event: [String: Any] = ["v": 1, "kind": "companion-state", "at": Date().timeIntervalSince1970 * 1000, "info": info]
         guard var line = try? JSONSerialization.data(withJSONObject: event, options: [.sortedKeys]), line.count < 2048 else { return }
         line.append(10)
-        let channel = url.deletingLastPathComponent().appendingPathComponent("requests.jsonl")
-        let fd = open(channel.path, O_WRONLY | O_APPEND | O_NOFOLLOW)
-        guard fd >= 0 else { return }
-        defer { close(fd) }
-        _ = line.withUnsafeBytes { Darwin.write(fd, $0.baseAddress!, $0.count) }
+        guard let descriptor = try? directory.openFile("requests.jsonl") else { return }
+        close(descriptor)
+        _ = try? directory.append("requests.jsonl", data: line, maxBytes: RequestChannel.maxBytes)
     }
 }
 
@@ -194,6 +209,10 @@ final class Companion: NSObject, NSApplicationDelegate {
     private var claude: Claude!
     private var pet: Pet!
     private var channel: RequestChannel?
+    private var tuning: TuningStore?
+    private var frames: Frames?
+    private var neighbours: Neighbours?
+    private var health: HealthWriter?
     private lazy var requestExpiry = OneShot { [weak self] in self?.expireRequests() }
     private var activity: Activity?
     private var terminate: DispatchSourceSignal?
@@ -226,7 +245,7 @@ final class Companion: NSObject, NSApplicationDelegate {
         Pet.offscreen = options.offscreen
         Claude.testFrame = options.fakeWindow
         Claude.testPID = options.testPID
-        try? FileManager.default.createDirectory(at: options.folder, withIntermediateDirectories: true)
+        _ = try? SecureDirectory(options.folder, create: true)
         do { channel = try RequestChannel(folder: options.folder) }
         catch { trace.say("requests: cannot prepare the channel: \(error.localizedDescription)") }
         scheduleRequestExpiry()
@@ -237,29 +256,85 @@ final class Companion: NSObject, NSApplicationDelegate {
         answeredFollow = store.followAt
         try? LoginAgent.repair(home: home, executable: executable)
         store.login = FileManager.default.fileExists(atPath: LoginAgent.url(home: home).path)
+        Capture.shown = store.capture
         let frameFolder = options.frames ?? Bundle.main.resourceURL?.appendingPathComponent("frames", isDirectory: true)
             ?? options.folder.appendingPathComponent("frames", isDirectory: true)
         let pixelFolder = frameFolder.deletingLastPathComponent().appendingPathComponent("pixel", isDirectory: true)
-        pet = Pet(frames: Frames(folder: frameFolder, pixelFolder: pixelFolder), store: store, trace: trace)
+        let assetRoot = frameFolder.deletingLastPathComponent()
+        let loadedFrames = Frames(folder: frameFolder,pixelFolder: pixelFolder)
+        frames = loadedFrames
+        tuning = TuningStore(assetRoot.appendingPathComponent("companion-tuning.json"))
+        neighbours = Neighbours(configURL: assetRoot.appendingPathComponent("neighbours.json"),outputURL: options.folder.appendingPathComponent("neighbours.json"),home: home)
+        health = HealthWriter(folder: options.folder)
+        neighbours?.statusChanged = { [weak self] in self?.writeHealth() }
+        pet = Pet(frames: loadedFrames,store: store,trace: trace)
+        pet.pointerMonitorMeasured = { [weak self] period in self?.health?.recordPointerMonitor(period) }
+        pet.configure(tuning!.value)
+        loadedFrames.changed = { [weak self] in self?.pet.assetsChanged(); self?.writeHealth() }
+        tuning?.changed = { [weak self] value in self?.pet.configure(value); self?.claude.configure(value.window); self?.activity?.configure(value, reduceMotion: self?.pet.motionReduced); self?.writeHealth() }
+        loadedFrames.statusChanged = { [weak self] in self?.writeHealth() }
+        tuning?.statusChanged = { [weak self] in self?.writeHealth() }
+        loadedFrames.start(); tuning?.start()
         feed = Feed(file: options.folder.appendingPathComponent("view.json"), trace: trace)
+        neighbours?.changed = { [weak self] snapshot, enabled in
+            guard let self else { return }
+            var value = snapshot.presenceValue(running:enabled)
+            if enabled, let birth = PresenceProcessIdentity.birth(getpid()) { value["owner"] = ["pid":Int(getpid()),"birth":birth] }
+            self.feed.neighbours(value)
+            self.pet.neighbours(snapshot, enabled: enabled)
+        }
         feed.seenAt = store.seenAt
         feed.setClaudeFrontmost(NSWorkspace.shared.frontmostApplication?.bundleIdentifier == Claude.bundleID)
         claude = Claude(trace: trace, allowAX: options.accessibility)
+        claude.configure(tuning!.value.window)
 
-        feed.changed = { [unowned self] record in pet.show(record) }
+        d1Notifications.changed = { [weak self] in
+            guard let self else { return }
+            self.store.longTaskAuthorization = self.d1Notifications.authorization
+            self.store.save()
+            self.writeHealth()
+        }
+        d1Notifications.start()
+        feed.changed = { [unowned self] record in
+            pet.show(record); neighbours?.setEnabled(record.neighbours); syncDock(record); writeHealth()
+        }
+        feed.woke = { [unowned self] presence in pet.woke(presence) }
+        feed.targetChanged = { [unowned self] app in claude.setTarget(app); pet.targetBundleID = claude.targetBundleID; frontmostMoved(); writeHealth() }
+        pet.touched = { [unowned self] kind, at in feed.touch(kind,lang: feed.shown.lang,at: at) }
         claude.changed = { [unowned self] reorder in
             store.trusted = claude.trusted
+            pet.targetBundleID = claude.targetBundleID
             pet.follow(claude.sighting, reorder: reorder)
+            writeHealth()
+        }
+        pet.placementChanged = { [weak self] target, relocating in
+            guard let self else { return }
+            self.followActivity(target, relocating: relocating)
         }
         pet.requestFollow = { [unowned self] in follow(at: Date().timeIntervalSince1970 * 1000) }
         pet.openSettings = { [unowned self] in claude.openAccessibilitySettings() }
         pet.requestActivity = { [unowned self] in openActivity() }
+        pet.setLogin = { [unowned self] on in
+            do {
+                try LoginAgent.set(on, home: home, executable: executable)
+                store.loginAt = Date().timeIntervalSince1970 * 1000
+                store.login = FileManager.default.fileExists(atPath: LoginAgent.url(home: home).path)
+                store.save()
+            } catch { Trace(on: options.trace).say("companion: login item \(error.localizedDescription)") }
+        }
+        pet.requestDm = { [unowned self] in openActivity(dm: true) }
+        d1Notifications.openDm = { [weak self] in self?.openActivity(dm: true) }
         feed.activityChanged = { [unowned self] in
-            pet.setUnseen(feed.unseenCount)
+            refreshUnread()
             activity?.update(rows: feed.rows, sessions: feed.liveSessions)
         }
         feed.received = { [unowned self] record in
+            d1Notifications.receive(record, now: Date().timeIntervalSince1970 * 1000)
+            // Her DM's notification comes from the shown session's thread, as the badge's count does.
+            d1Notifications.receiveDm(feed.shown, now: Date().timeIntervalSince1970 * 1000, threadVisible: activity?.dmVisible == true)
+            refreshUnread()
             activity?.receive(record)
+            activity?.targetBundleID = claude.targetBundleID
             if let ack = record.ack {
                 do { try channel?.acknowledge(ack) }
                 catch { trace.say("requests: cannot remove acknowledged text: \(error.localizedDescription)") }
@@ -269,7 +344,19 @@ final class Companion: NSObject, NSApplicationDelegate {
         for name in [NSWorkspace.didActivateApplicationNotification, NSWorkspace.didDeactivateApplicationNotification] {
             NSWorkspace.shared.notificationCenter.addObserver(self, selector: #selector(frontmostMoved), name: name, object: nil)
         }
-        claude.dragged = { [unowned self] dx, _ in pet.sway(dx: dx) }
+        // The lid: he naps when the system sleeps and wakes a moment after it (or after the unlock).
+        NSWorkspace.shared.notificationCenter.addObserver(self, selector: #selector(systemWillSleep), name: NSWorkspace.willSleepNotification, object: nil)
+        NSWorkspace.shared.notificationCenter.addObserver(self, selector: #selector(systemDidWake), name: NSWorkspace.didWakeNotification, object: nil)
+        DistributedNotificationCenter.default().addObserver(self, selector: #selector(screenWasLocked), name: NSNotification.Name("com.apple.screenIsLocked"), object: nil)
+        DistributedNotificationCenter.default().addObserver(self, selector: #selector(screenWasUnlocked), name: NSNotification.Name("com.apple.screenIsUnlocked"), object: nil)
+        claude.windowGesture = { [unowned self] phase, _, at in
+            switch phase {
+            case .began: pet.windowGestureBegan(at: at)
+            case .changed: pet.windowGeometryChanged(at: at)
+            case .ended: pet.windowGestureEnded(at: at)
+            case .cancelled: pet.windowGestureEnded(at: at,cancelled: true)
+            }
+        }
         claude.quit = { [unowned self] in feed.forget() }
         claude.trustMoved = { [unowned self] in
             store.trusted = claude.trusted
@@ -287,8 +374,40 @@ final class Companion: NSObject, NSApplicationDelegate {
         pet.trustChanged()
         apply(feed.latestRequests, launch: true)
         feed.requested = { [unowned self] requests in apply(requests, launch: false) }
-        store.save()
+        store.started(); writeHealth()
         trace.say("companion: accessibility \(claude.trusted ? "allowed: following the window" : "not allowed: corner while Claude is in front")")
+    }
+
+    // His own Dock tile (S21 on the switches page, off by default): on, the app sits in the Dock with their face
+    // (the app icon), the unseen count in its corner, and the quota on a right click; a click on it brings her back
+    // (applicationShouldHandleReopen). Off, the app stays an accessory with no Dock tile, as it has always been.
+    private var dockQuota: [String]?
+    private func syncDock(_ record: Record) {
+        dockQuota = record.dock
+        let policy: NSApplication.ActivationPolicy = record.dock == nil ? .accessory : .regular
+        if NSApp.activationPolicy() != policy { NSApp.setActivationPolicy(policy) }
+        dockBadge()
+    }
+    private func dockBadge() {
+        let count = feed.unseenCount + (feed.shown.dm?.unread ?? 0)
+        NSApp.dockTile.badgeLabel = dockQuota != nil && count > 0 ? String(count) : nil
+    }
+    /// The badge by her hair and the Dock count Claude's replies not seen and her DMs not read (DmThread.swift); with
+    /// hers among them the badge opens the thread.
+    private func refreshUnread() {
+        let dm = feed.shown.dm?.unread ?? 0
+        pet.setUnseen(feed.unseenCount + dm, opensDm: dm > 0)
+        dockBadge()
+    }
+    func applicationDockMenu(_ sender: NSApplication) -> NSMenu? {
+        guard let lines = dockQuota, !lines.isEmpty else { return nil }
+        let menu = NSMenu()
+        for line in lines {
+            let item = NSMenuItem(title: line, action: nil, keyEquivalent: "")
+            item.isEnabled = false
+            menu.addItem(item)
+        }
+        return menu
     }
 
     func applicationShouldHandleReopen(_ sender: NSApplication, hasVisibleWindows flag: Bool) -> Bool {
@@ -298,20 +417,53 @@ final class Companion: NSObject, NSApplicationDelegate {
 
     func applicationWillTerminate(_ notification: Notification) {
         requestExpiry.cancel()
+        pet?.stop(); frames?.stop(); tuning?.stop(); neighbours?.stop()
+        claude?.stop()
+        feed?.stop()
         guard ownsInstance, let store else { return }
         store.running = false
         store.save()
     }
 
-    @objc private func frontmostMoved() {
-        feed?.setClaudeFrontmost(NSWorkspace.shared.frontmostApplication?.bundleIdentifier == Claude.bundleID)
+    private var screenIsLocked = false
+    @objc private func systemWillSleep() { pet?.systemSlept() }
+    @objc private func systemDidWake() { pet?.systemWoke(locked: screenIsLocked) }
+    @objc private func screenWasLocked() { screenIsLocked = true; noteAway("locked") }
+    @objc private func screenWasUnlocked() { screenIsLocked = false; noteAway(nil); pet?.screenUnlocked() }
+    // Only a change is written, stamped when it happened (companion-rs state.rs does the same on Windows).
+    private var away: CompanionAway?
+    private func noteAway(_ state: String?) {
+        if let away, away.state == state { return }
+        away = CompanionAway(state: state, since: (Date().timeIntervalSince1970 * 1000).rounded())
+        writeHealth()
     }
 
-    private func openActivity() {
-        guard activity == nil, let target = pet.activityTarget else { return }
+    @objc private func frontmostMoved() {
+        feed?.setClaudeFrontmost(NSWorkspace.shared.frontmostApplication?.bundleIdentifier == claude?.targetBundleID)
+    }
+
+    private let d1Notifications = D1Notifications()
+
+    private func writeHealth() {
+        guard let claude else { return }
+        let error = frames?.lastError ?? tuning?.lastError ?? claude.lastError ?? neighbours?.lastError
+        health?.update(CompanionHealth(version: Bundle.main.object(forInfoDictionaryKey: "CFBundleShortVersionString") as? String ?? "dev",
+                                      protocolGeneration: "native-v2",accessibility: claude.trusted,targetFound: claude.found,
+                                      target: claude.targetBundleID,lastError: error,longTaskAuthorization: d1Notifications.authorization,
+                                      away: away))
+    }
+
+    /// The Activity window, or with `dm` her DM thread in it (an open window turns to the thread).
+    private func openActivity(dm: Bool = false) {
+        if let activity { if dm { activity.showDm(true) }; return }
+        guard let target = pet.activityTarget else { return }
         let rows = feed.rows, sessions = feed.liveSessions, shown = feed.shown
         let chosen = sessions.first(where: { $0.session == shown.session }) ?? sessions.first ?? .resting
         let made = Activity(rows: rows, sessions: sessions, chosen: chosen, target: target, channel: channel)
+        made.targetBundleID = claude.targetBundleID
+        made.configure(tuning!.value, reduceMotion: pet.motionReduced)
+        if case let .window(_, _, fullScreen, _, _, _) = claude.sighting { made.follow(target, fullScreen: fullScreen) }
+        guard made.hasPlacement else { return }
         made.closed = { [weak self] in
             guard let self else { return }
             self.activity = nil
@@ -334,7 +486,16 @@ final class Companion: NSObject, NSApplicationDelegate {
         }
         scheduleRequestExpiry()
         store.seenAt = feed.seenAt; store.save()
-        made.open()
+        if dm { made.openDm() } else { made.open() }
+    }
+
+    private func followActivity(_ target: Place.Target?, relocating: Bool) {
+        guard let activity else { return }
+        activity.targetBundleID = claude.targetBundleID
+        if target == nil, relocating { activity.suspendPresentation(); return }
+        let fullScreen: Bool
+        if case let .window(_, _, full, _, _, _) = claude.sighting { fullScreen = full } else { fullScreen = false }
+        activity.follow(target, fullScreen: fullScreen)
     }
 
     private func scheduleRequestExpiry() {
@@ -375,6 +536,12 @@ final class Companion: NSObject, NSApplicationDelegate {
                 store.login = FileManager.default.fileExists(atPath: LoginAgent.url(home: home).path)
                 store.save()
             } catch { Trace(on: options.trace).say("companion: login item \(error.localizedDescription)") }
+        }
+        if let capture = requests.capture, Requests.wants(capture.at, after: store.captureAt, launch: false, now: now) {
+            store.capture = capture.on
+            store.captureAt = capture.at
+            store.save()
+            Capture.shown = capture.on
         }
         if Requests.wants(requests.follow, after: answeredFollow, launch: launch, now: now) {
             answeredFollow = requests.follow

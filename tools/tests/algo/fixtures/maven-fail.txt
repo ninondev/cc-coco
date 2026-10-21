@@ -1,0 +1,24 @@
+[INFO] Scanning for projects...
+[INFO] ----------------------< com.shop:billing >----------------------
+[INFO] Building billing 1.2.0
+[INFO] --------------------------------[ jar ]------------------------
+[INFO] 
+[INFO] --- surefire:3.1.2:test (default-test) @ billing ---
+[INFO] Surefire report directory: /home/user/src/shop/billing/target/surefire-reports
+[INFO] Using auto detected provider org.apache.maven.surefire.junitplatform.JUnitPlatformProvider
+[INFO] 
+[INFO] -------------------------------------------------------
+[INFO]  T E S T S
+[INFO] -------------------------------------------------------
+[INFO] Running com.shop.billing.BillingServiceTest
+[ERROR] Tests run: 8, Failures: 1, Errors: 0, Skipped: 0, Time elapsed: 0.412 s <<< FAILURE!
+[ERROR]   BillingServiceTest.testTotals:24 expected: <4200> but was: <4199>
+[INFO] 
+[INFO] Results:
+[INFO] 
+[ERROR] Tests run: 8, Failures: 1, Errors: 0, Skipped: 0
+[INFO] 
+[INFO] [INFO] ------------------------------------------------------------------------
+[INFO] BUILD FAILURE
+[INFO] Total time:  6.412 s
+[INFO] Finished at: 2025-10-04T09:00:02Z

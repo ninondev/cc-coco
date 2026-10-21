@@ -1,0 +1,150 @@
+{
+  "version": 1,
+  "source": "pixel/16-snake.png",
+  "source_fnv64": "0fc250127107457b",
+  "source_sha256": "2004051ef4fa02c2eb3818fb8c9aba4f958e82f61ce74c54ea6afaf6d4daaf48",
+  "generator_sha256": "a19c9dcc57fa244f0c5a1bae1096daf18c5f39350219b088f692a7347621b239",
+  "exporter_sha256": "2bc0cd6b9c135cb30e871459223bb1c89077cb35eec39ab132dd13ff50a23e58",
+  "glint_pixel": [
+    28,
+    17
+  ],
+  "pixel_size": [
+    35,
+    32
+  ],
+  "registration": {
+    "frame_overlay_offset_x": 7
+  },
+  "frames": [
+    {
+      "name": "shed-a",
+      "filename": "42-shed-a.png",
+      "base": "snake",
+      "kind": "band",
+      "offset": {
+        "x": 12.65,
+        "y": 7.1,
+        "scale": 0.4,
+        "body_anchor_sheet": [
+          1097.0,
+          1234
+        ],
+        "body_centre_x": 73.45,
+        "body_slide_x": 1.5,
+        "sheet_transform": [
+          -363.75,
+          -366.5
+        ],
+        "placement_policy": "manifest-pin",
+        "raster_recipe": {
+          "sampling_sheet_transform": [
+            -363.75,
+            -367.5
+          ],
+          "post_quantization_shift": [
+            0,
+            0
+          ],
+          "post_cleanup_shift": [
+            0,
+            0
+          ],
+          "post_variant_shift": [
+            0,
+            1
+          ]
+        },
+        "rim_profile_sha256": [
+          "301ac1d9197dc42dea223bd7d7f5b0def5a0e468e2b8ccc74f33089c2829d326"
+        ]
+      }
+    },
+    {
+      "name": "shed-b",
+      "filename": "43-shed-b.png",
+      "base": "snake",
+      "kind": "band",
+      "offset": {
+        "x": 12.65,
+        "y": 7.1,
+        "scale": 0.4,
+        "body_anchor_sheet": [
+          1097.0,
+          1234
+        ],
+        "body_centre_x": 73.45,
+        "body_slide_x": 1.5,
+        "sheet_transform": [
+          -363.75,
+          -366.5
+        ],
+        "placement_policy": "manifest-pin",
+        "raster_recipe": {
+          "sampling_sheet_transform": [
+            -363.75,
+            -367.5
+          ],
+          "post_quantization_shift": [
+            0,
+            0
+          ],
+          "post_cleanup_shift": [
+            0,
+            0
+          ],
+          "post_variant_shift": [
+            0,
+            1
+          ]
+        },
+        "rim_profile_sha256": [
+          "301ac1d9197dc42dea223bd7d7f5b0def5a0e468e2b8ccc74f33089c2829d326"
+        ]
+      }
+    },
+    {
+      "name": "shed-c",
+      "filename": "44-shed-c.png",
+      "base": "snake",
+      "kind": "band",
+      "offset": {
+        "x": 12.65,
+        "y": 7.1,
+        "scale": 0.4,
+        "body_anchor_sheet": [
+          1097.0,
+          1234
+        ],
+        "body_centre_x": 73.45,
+        "body_slide_x": 1.5,
+        "sheet_transform": [
+          -363.75,
+          -366.5
+        ],
+        "placement_policy": "manifest-pin",
+        "raster_recipe": {
+          "sampling_sheet_transform": [
+            -363.75,
+            -367.5
+          ],
+          "post_quantization_shift": [
+            0,
+            0
+          ],
+          "post_cleanup_shift": [
+            0,
+            0
+          ],
+          "post_variant_shift": [
+            0,
+            1
+          ]
+        },
+        "rim_profile_sha256": [
+          "301ac1d9197dc42dea223bd7d7f5b0def5a0e468e2b8ccc74f33089c2829d326"
+        ]
+      }
+    }
+  ]
+}

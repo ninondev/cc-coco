@@ -3,13 +3,13 @@
 <plist version="1.0">
 <dict>
 	<key>CFBundleIdentifier</key>
-	<string>io.github.ninondev.claudesama-companion</string>
+	<string>io.github.ninondev.coco-companion</string>
 	<key>CFBundleName</key>
-	<string>Claude-sama Companion</string>
+	<string>Coco Pet</string>
 	<key>CFBundleDisplayName</key>
-	<string>Claude-sama Companion</string>
+	<string>Coco Pet</string>
 	<key>CFBundleExecutable</key>
-	<string>claudesama-companion</string>
+	<string>coco-companion</string>
 	<key>CFBundlePackageType</key>
 	<string>APPL</string>
 	<key>CFBundleShortVersionString</key>
@@ -29,6 +29,6 @@
 	<key>NSSupportsSuddenTermination</key>
 	<true/>
 	<key>NSHumanReadableCopyright</key>
-	<string>Claude-sama, an unofficial fan skin (MIT; art CC BY-NC 4.0). Claude is a trademark of Anthropic.</string>
+	<string>Coco, an unofficial fan skin (MIT; art CC BY-NC 4.0). Claude is a trademark of Anthropic.</string>
 </dict>
 </plist>

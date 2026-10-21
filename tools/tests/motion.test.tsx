@@ -5,7 +5,7 @@ import { PLUGIN_SOURCES } from './plugin-sources'
 
 describe('one living motion model', () => {
   test('shipping runtime randomness needs no test setting, read or timer', () => {
-    const source = PLUGIN_SOURCES['hooks/motion.ts'] ?? ''
+    const source = PLUGIN_SOURCES['hooks/motion.source.ts'] ?? PLUGIN_SOURCES['hooks/motion.ts'] ?? ''
     expect(source).toContain('export const runtimeRandom: Random = Math.random')
     expect(source).not.toContain('seededRandom(0x4c415544)')
   })
@@ -56,6 +56,7 @@ describe('one living motion model', () => {
   })
   test('clingy precedes sleep in each quiet stretch', () => {
     expect(TIMING.clingyAfter).toBe(150000)
-    expect(TIMING.sleepAfter).toBe(240000)
+    expect(TIMING.sleepAfter(0)).toBeGreaterThanOrEqual(240000)
+    expect(TIMING.sleepAfter(0)).toBeLessThan(360000)
   })
 })

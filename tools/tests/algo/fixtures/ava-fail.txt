@@ -1,0 +1,11 @@
+
+  ✘ [fail]: billing > rounds totals to cents
+  ✘ [fail:] (2 tests [00:00.003])
+
+  ✘ [fail]: billing > rounds totals to cents
+    Difference (- actual, + expected):
+
+    - 41.999
+    + 42.00
+
+  1 test failed [00:00.21s]

@@ -1,4 +1,4 @@
-// Claude-sama Companion: puts him beside the Claude desktop app's window, in step with the mod.
+// Coco Pet: puts him beside the Claude desktop app's window, in step with the mod.
 //
 // A separate little app that stands beside Claude's window the way desktop pets do, never over it;
 // Claude.app is never touched. Feed.swift reads the one small file the mod writes, Claude.swift follows the
@@ -10,7 +10,7 @@
 // No network, no keystrokes, no screen contents, no window titles.
 //
 // Built from source at install by plugin/bin/companion-macos.sh (swiftc, no Xcode project).
-// License: MIT. Part of Claude-sama, an unofficial fan skin. Claude is a trademark of Anthropic.
+// License: MIT. Part of Coco, an unofficial fan skin. Claude is a trademark of Anthropic.
 
 import AppKit
 

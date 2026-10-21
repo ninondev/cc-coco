@@ -1,0 +1,23 @@
+ RUN  v1.6.0 /home/user/src/kiwi
+
+ ✓ src/calc.test.ts (3 tests) 4ms
+ ❯ src/writer.test.ts (2 tests | 1 failed) 8ms
+ ❯ src/writer.test.ts > writer > flushes the buffer
+   → expected 'buffered' to be 'flushed'
+   → expected 1 to be 2
+
+ Test Files  1 failed | 1 passed (2)
+      Tests  1 failed | 4 passed (5)
+   Start at  09:00:01
+   Duration  0.62s
+
+⎯⎯⎯⎯⎯⎯⎯⎯ Failed Tests 1 ⎯⎯⎯⎯⎯⎯⎯
+
+FAIL  src/writer.test.ts > writer > flushes the buffer
+AssertionError: expected 'buffered' to be 'flushed'
+ ❯ src/writer.test.ts:18:23
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯┻⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯
+
+ Test Files  1 failed | 1 passed (2)
+      Tests  1 failed | 4 passed (5)

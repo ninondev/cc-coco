@@ -1,0 +1,11 @@
+00:02 +0: loading tests/parser_test.dart
+00:03 +1: wren parser parses a header
+00:03 +2: wren parser rejects an empty body
+00:04 +3 -1: [E] wren parser writes nested output [E]
+  Expected: <3>
+    Actual: <2>
+  package:matcher                  expect
+  test/parser_test.dart:41:13
+  main.<fn>
+00:04 +2 -1: wren parser writes nested output [E]
+00:04 +2 -1: Some tests failed.

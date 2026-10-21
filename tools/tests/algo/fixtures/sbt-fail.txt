@@ -1,0 +1,17 @@
+[info] welcome to sbt 1.10.1 (Java 21).
+[info] loading settings for project alpha-root from build.sbt ...
+[info] compiling 4 Scala sources to /home/user/src/alpha/target/scala-3.4/classes ...
+[info] WrenParserSpec:
+[info] - reads a header
+[info] - writes nested output *** FAILED ***
+[info]   2 was not equal to 3 (WrenParserSpec.scala:31)
+[info] - rejects an empty body
+[info] Run completed in 412 milliseconds.
+[info] Total number of tests run: 3
+[info] Suites: completed 1, aborted 0
+[info] Tests: succeeded 2, failed 1, canceled 0, ignored 0, pending 0
+[info] *** 1 TEST FAILED ***
+[error] Failed tests:
+[error] 	wren.WrenParserSpec
+[error] (Test / execute) Failed tests
+[error] Total time: 9 s, completed Oct 4, 2025 9:00:09 AM

@@ -1,0 +1,587 @@
+{
+  "windows.title": {
+    "zh": "{n}个窗口",
+    "zh-Hant": "{n}個視窗",
+    "en": {
+      "one": "{n} window",
+      "other": "{n} windows"
+    },
+    "ja": "{n}つのウィンドウ",
+    "fr": {
+      "one": "{n} fenêtre",
+      "other": "{n} fenêtres"
+    },
+    "it": {
+      "one": "{n} finestra",
+      "other": "{n} finestre"
+    },
+    "de": {
+      "one": "{n} Fenster",
+      "other": "{n} Fenster"
+    },
+    "es-ES": {
+      "one": "{n} ventana",
+      "other": "{n} ventanas"
+    },
+    "es-419": {
+      "one": "{n} ventana",
+      "other": "{n} ventanas"
+    },
+    "pt-BR": {
+      "one": "{n} janela",
+      "other": "{n} janelas"
+    },
+    "hi": {
+      "one": "{n} विंडो",
+      "other": "{n} विंडो"
+    },
+    "id": "{n} jendela",
+    "ko": "창 {n}개"
+  },
+  "windows.permission": {
+    "zh": "等你给权限",
+    "zh-Hant": "等你給權限",
+    "en": "Waiting for your permission",
+    "ja": "許可を待っています",
+    "fr": "Attend ton autorisation",
+    "it": "In attesa del tuo permesso",
+    "de": "Wartet auf deine Erlaubnis",
+    "es-ES": "Esperando tu permiso",
+    "es-419": "Esperando tu permiso",
+    "pt-BR": "Aguardando sua permissão",
+    "hi": "तुम्हारी अनुमति का इंतज़ार",
+    "id": "Menunggu izin darimu",
+    "ko": "네 허락을 기다리는 중"
+  },
+  "windows.since": {
+    "zh": "从{time}开始",
+    "zh-Hant": "從{time}開始",
+    "en": "since {time}",
+    "ja": "{time}から",
+    "fr": "depuis {time}",
+    "it": "dalle {time}",
+    "de": "seit {time}",
+    "es-ES": "desde las {time}",
+    "es-419": "desde las {time}",
+    "pt-BR": "desde {time}",
+    "hi": "{time} से",
+    "id": "sejak {time}",
+    "ko": "{time}부터"
+  },
+  "windows.self": {
+    "zh": "这个窗口",
+    "zh-Hant": "這個視窗",
+    "en": "this window",
+    "ja": "このウィンドウ",
+    "fr": "cette fenêtre",
+    "it": "questa finestra",
+    "de": "dieses Fenster",
+    "es-ES": "esta ventana",
+    "es-419": "esta ventana",
+    "pt-BR": "esta janela",
+    "hi": "यह विंडो",
+    "id": "jendela ini",
+    "ko": "이 창"
+  },
+  "windows.go": {
+    "zh": "去{folder}",
+    "zh-Hant": "去{folder}",
+    "en": "Go to {folder}",
+    "ja": "{folder}へ",
+    "fr": "Aller à {folder}",
+    "it": "Vai a {folder}",
+    "de": "Zu {folder}",
+    "es-ES": "Ir a {folder}",
+    "es-419": "Ir a {folder}",
+    "pt-BR": "Ir para {folder}",
+    "hi": "{folder} पर जाओ",
+    "id": "Ke {folder}",
+    "ko": "{folder}(으)로"
+  },
+  "windows.goHelp": {
+    "zh": "把那个应用调到前面,你自己选窗口或标签页",
+    "zh-Hant": "把那個應用調到前面,你自己選視窗或標籤頁",
+    "en": "Brings the app to the front. You pick its window or tab.",
+    "ja": "そのアプリを前に出します。タブやウィンドウは自分で選んでください",
+    "fr": "L'application passe au premier plan. À toi de choisir la fenêtre ou l'onglet.",
+    "it": "Porta l'app in primo piano. Sta a te scegliere la finestra o la scheda.",
+    "de": "Bringt die App in den Vordergrund. Du wählst das Fenster oder den Tab.",
+    "es-ES": "Pone la aplicación en primer plano. Tú eliges la ventana o pestaña.",
+    "es-419": "Pone la aplicación en primer plano. Tú eliges la ventana o pestaña.",
+    "pt-BR": "Traz o app pra frente. Você escolhe a janela ou aba.",
+    "hi": "ऐप सामने आ जाएगा। विंडो या टैब तुम चुनो।",
+    "id": "Membawa aplikasi ke depan. Kamu pilih sendiri jendela atau tabnya.",
+    "ko": "앱을 앞으로 가져옵니다. 창이나 탭은 직접 고르세요."
+  },
+  "windows.older": {
+    "zh": "那边还在跑旧版本",
+    "zh-Hant": "那邊還在跑舊版本",
+    "en": "Running an older version there",
+    "ja": "あちらでは古いバージョンが動いています",
+    "fr": "Une version plus ancienne tourne là-bas",
+    "it": "Lì gira ancora una versione precedente",
+    "de": "Dort läuft noch eine ältere Version",
+    "es-ES": "Allí está usando una versión anterior",
+    "es-419": "Allá corre una versión anterior",
+    "pt-BR": "Lá está rodando uma versão mais antiga",
+    "hi": "वहाँ पुराना संस्करण चल रहा है",
+    "id": "Di sana masih pakai versi lama",
+    "ko": "거기서는 이전 버전이 돌고 있어"
+  },
+  "cmd.windows": {
+    "zh": "打开她的页面,看看她在哪些窗口里",
+    "zh-Hant": "開啟她的頁面,看看她在哪些視窗裡",
+    "en": "Open Coco's page and see every window Coco is in",
+    "ja": "Cocoのページを開いて、どのウィンドウにいるか見る",
+    "fr": "Ouvre sa page et montre toutes les fenêtres où elle est",
+    "it": "Apre la sua pagina e mostra tutte le finestre in cui si trova",
+    "de": "Öffnet Cocos Seite und zeigt alle Fenster, in denen sie ist",
+    "es-ES": "Abre su página y muestra todas las ventanas en las que está",
+    "es-419": "Abre su página y muestra todas las ventanas en las que está",
+    "pt-BR": "Abre a página dela e mostra todas as janelas em que ela está",
+    "hi": "उसका पन्ना खोलो, देखो वह किन-किन विंडो में है",
+    "id": "Buka halamannya dan lihat semua jendela tempat dia berada",
+    "ko": "코코 페이지를 열어 어떤 창에 있는지 본다"
+  },
+  "first.hello": {
+    "zh": "我是小克",
+    "zh-Hant": "我是小克",
+    "en": "Coco, at your side. everything's in settings.",
+    "ja": "Cocoだよ、そばにいる。設定を見てね",
+    "fr": "Coco, à tes côtés. tout est dans les réglages.",
+    "it": "Coco, al tuo fianco. tutto è nelle impostazioni.",
+    "de": "Coco, an deiner Seite. Alles steht in den Einstellungen.",
+    "es-ES": "Coco, a tu lado. todo está en ajustes.",
+    "es-419": "Coco, a tu lado. todo está en ajustes.",
+    "pt-BR": "Coco, do seu lado. tudo tá nos ajustes.",
+    "hi": "कोको, तुम्हारे साथ। सब सेटिंग्स में है",
+    "id": "Coco, menemanimu. semuanya ada di pengaturan.",
+    "ko": "코코, 네 곁에. 다 설정에 있어."
+  },
+  "first.title": {
+    "zh": "初次见面",
+    "zh-Hant": "初次見面",
+    "en": "Nice to meet you",
+    "ja": "はじめまして",
+    "fr": "Enchanté",
+    "it": "Piacere di conoscerti",
+    "de": "Schön, dich kennenzulernen",
+    "es-ES": "Encantado de conocerte",
+    "es-419": "Mucho gusto",
+    "pt-BR": "Prazer em conhecer",
+    "hi": "पहली मुलाक़ात",
+    "id": "Salam kenal",
+    "ko": "만나서 반가워"
+  },
+  "first.who": {
+    "zh": "小克住在这里,Claude干活时陪你。设置里有她的一切和所有开关。",
+    "zh-Hant": "小克住在這裡,Claude幹活時陪你。設定裡有她的一切和所有開關。",
+    "en": "Coco lives here and keeps you company while Claude works. Settings has everything about Coco and every switch.",
+    "ja": "Cocoはここに住んでいて、Claudeが働いているあいだきみのそばにいます。設定にはCocoのことと、すべてのスイッチがあります。",
+    "fr": "Coco vit ici et te tient compagnie pendant que Claude travaille. Les réglages contiennent tout sur elle et chaque interrupteur.",
+    "it": "Coco vive qui e ti fa compagnia mentre Claude lavora. Nelle impostazioni c'è tutto su di lei e ogni interruttore.",
+    "de": "Coco wohnt hier und leistet dir Gesellschaft, während Claude arbeitet. In den Einstellungen steht alles über sie und jeder Schalter.",
+    "es-ES": "Coco vive aquí y te hace compañía mientras Claude trabaja. En ajustes está todo sobre ella y cada interruptor.",
+    "es-419": "Coco vive aquí y te hace compañía mientras Claude trabaja. En ajustes está todo sobre ella y cada interruptor.",
+    "pt-BR": "A Coco mora aqui e faz companhia enquanto o Claude trabalha. Nos ajustes tem tudo sobre ela e cada chave.",
+    "hi": "कोको यहाँ रहती है और Claude के काम करने के दौरान तुम्हारे साथ रहती है। सेटिंग्स में उसके बारे में सब कुछ है, और हर स्विच भी।",
+    "id": "Coco tinggal di sini dan menemanimu selagi Claude bekerja. Pengaturan berisi semua tentang dia dan setiap sakelar.",
+    "ko": "코코는 여기 살아. Claude가 일하는 동안 곁에 있어. 설정에 코코의 모든 것과 스위치가 있어."
+  },
+  "first.voiceCost": {
+    "zh": "回复语气每次请求多带约{n}个token,大部分走缓存",
+    "zh-Hant": "回覆語氣每次請求多帶約{n}個token,大部分走快取",
+    "en": {
+      "one": "Coco's voice adds about {n} token to each request, mostly read from the cache.",
+      "other": "Coco's voice adds about {n} tokens to each request, mostly read from the cache."
+    },
+    "ja": "Cocoの口調は毎回のリクエストに約{n}トークンを加えます。大部分はキャッシュから読み込まれます",
+    "fr": {
+      "one": "Sa voix ajoute environ {n} token à chaque requête, pour l'essentiel lu depuis le cache.",
+      "other": "Sa voix ajoute environ {n} tokens à chaque requête, pour l'essentiel lus depuis le cache."
+    },
+    "it": {
+      "one": "La sua voce aggiunge circa {n} token a ogni richiesta, in gran parte letto dalla cache.",
+      "other": "La sua voce aggiunge circa {n} token a ogni richiesta, in gran parte letti dalla cache."
+    },
+    "de": {
+      "one": "Ihre Stimme fügt jeder Anfrage etwa {n} Token hinzu, die meisten aus dem Cache gelesen.",
+      "other": "Ihre Stimme fügt jeder Anfrage etwa {n} Tokens hinzu, die meisten aus dem Cache gelesen."
+    },
+    "es-ES": {
+      "one": "Su voz añade alrededor de {n} token a cada solicitud, casi todo leído de la caché.",
+      "other": "Su voz añade alrededor de {n} tokens a cada solicitud, casi todo leído de la caché."
+    },
+    "es-419": {
+      "one": "Su voz agrega alrededor de {n} token a cada solicitud, casi todo leído de la caché.",
+      "other": "Su voz agrega alrededor de {n} tokens a cada solicitud, casi todo leído de la caché."
+    },
+    "pt-BR": {
+      "one": "A voz dela adiciona cerca de {n} token a cada solicitação, a maior parte lida do cache.",
+      "other": "A voz dela adiciona cerca de {n} tokens a cada solicitação, a maior parte lida do cache."
+    },
+    "hi": {
+      "one": "उसकी आवाज़ हर अनुरोध में करीब {n} टोकन जोड़ती है, ज़्यादातर कैश से पढ़ा जाता है।",
+      "other": "उसकी आवाज़ हर अनुरोध में करीब {n} टोकन जोड़ती है, ज़्यादातर कैश से पढ़े जाते हैं।"
+    },
+    "id": "Suaranya menambahkan sekitar {n} token ke setiap permintaan, sebagian besar dibaca dari cache.",
+    "ko": "코코의 말투는 매 요청에 약 {n}개 토큰을 더하며, 대부분 캐시에서 읽힙니다."
+  },
+  "first.privacy": {
+    "zh": "不额外调用模型,不向外发送任何数据",
+    "zh-Hant": "不額外調用模型,不向外傳送任何資料",
+    "en": "No extra model calls. Nothing leaves this computer.",
+    "ja": "追加のモデル呼び出しはありません。何もこのコンピューターの外には出ません",
+    "fr": "Aucun appel supplémentaire au modèle. Rien ne quitte cet ordinateur.",
+    "it": "Nessuna chiamata aggiuntiva al modello. Niente esce da questo computer.",
+    "de": "Keine zusätzlichen Modellaufrufe. Nichts verlässt diesen Computer.",
+    "es-ES": "Sin llamadas adicionales al modelo. Nada sale de este ordenador.",
+    "es-419": "Sin llamadas adicionales al modelo. Nada sale de esta computadora.",
+    "pt-BR": "Sem chamadas extras ao modelo. Nada sai deste computador.",
+    "hi": "कोई अतिरिक्त मॉडल कॉल नहीं। कुछ भी इस कंप्यूटर से बाहर नहीं जाता।",
+    "id": "Tidak ada panggilan model tambahan. Tidak ada data yang keluar dari komputer ini.",
+    "ko": "추가 모델 호출 없음. 이 컴퓨터 밖으로 나가는 것은 없습니다."
+  },
+  "light.label": {
+    "zh": "小事少想",
+    "zh-Hant": "小事少想",
+    "en": "Reduced effort",
+    "ja": "控えめ思考",
+    "fr": "Réflexion réduite",
+    "it": "Impegno ridotto",
+    "de": "Reduzierter Aufwand",
+    "es-ES": "Esfuerzo reducido",
+    "es-419": "Esfuerzo reducido",
+    "pt-BR": "Esforço reduzido",
+    "hi": "कम सोच",
+    "id": "Hemat pikir",
+    "ko": "덜 생각하기"
+  },
+  "light.help": {
+    "zh": "很短的提示(谢谢、好的、问一下状态)降一档力度来答。这会改变Claude的行为",
+    "zh-Hant": "很短的提示(謝謝、好的、問一下狀態)降一檔力度來答。這會改變Claude的行為",
+    "en": "Very short prompts (thanks, okay, a quick status question) are answered one effort level lower. This changes what Claude does.",
+    "ja": "とても短いプロンプト(お礼、了解、ちょっとした状態の質問)を一段低いeffortで返します。Claudeの動作が変わります",
+    "fr": "Les prompts très courts (merci, ok, une question d'état rapide) reçoivent un niveau d'effort en moins. Cela change ce que Claude fait.",
+    "it": "I prompt molto brevi (grazie, ok, una domanda di stato rapida) ricevono un livello di effort in meno. Cambia il comportamento di Claude.",
+    "de": "Sehr kurze Prompts (Danke, okay, eine schnelle Statusfrage) werden mit einer Stufe weniger Effort beantwortet. Das ändert, was Claude tut.",
+    "es-ES": "Las indicaciones muy cortas (gracias, vale, una pregunta de estado rápida) se responden un nivel de esfuerzo más bajo. Esto cambia lo que Claude hace.",
+    "es-419": "Las indicaciones muy cortas (gracias, ok, una pregunta de estado rápida) se responden un nivel de esfuerzo más bajo. Esto cambia lo que Claude hace.",
+    "pt-BR": "Prompts muito curtos (obrigado, ok, uma pergunta rápida de status) são respondidos um nível de esforço abaixo. Isso muda o que o Claude faz.",
+    "hi": "बहुत छोटे प्रॉम्प्ट (शुक्रिया, ठीक है, स्थिति की छोटी-सी पूछताछ) एक स्तर कम effort से जवाब पाते हैं। इससे Claude का व्यवहार बदलता है।",
+    "id": "Prompt yang sangat pendek (terima kasih, oke, pertanyaan status singkat) dijawab satu tingkat effort lebih rendah. Ini mengubah perilaku Claude.",
+    "ko": "아주 짧은 프롬프트(고마워, 알겠어, 간단한 상태 질문)는 effort를 한 단계 낮춰 답합니다. Claude의 동작이 달라집니다."
+  },
+  "light.evidence": {
+    "zh": "这类提示省下{saved}个token,回答不变",
+    "zh-Hant": "這類提示省下{saved}個token,回答不變",
+    "en": "{saved} tokens saved on such prompts, same answers.",
+    "ja": "こうしたプロンプトで{saved}トークン節約、回答は同じ",
+    "fr": "{saved} tokens économisés sur ce type de prompts, mêmes réponses.",
+    "it": "{saved} token risparmiati su questi prompt, stesse risposte.",
+    "de": "{saved} Tokens gespart bei solchen Prompts, gleiche Antworten.",
+    "es-ES": "{saved} tokens ahorrados en este tipo de indicaciones, mismas respuestas.",
+    "es-419": "{saved} tokens ahorrados en este tipo de indicaciones, mismas respuestas.",
+    "pt-BR": "{saved} tokens economizados nesse tipo de prompt, mesmas respostas.",
+    "hi": "ऐसे प्रॉम्प्ट पर {saved} टोकन बचे, जवाब वही।",
+    "id": "{saved} token dihemat pada prompt semacam ini, jawaban tetap sama.",
+    "ko": "이런 프롬프트에서 {saved}개 토큰 절약, 답은 같음."
+  },
+  "light.paused": {
+    "zh": "已在{model}上暂停:降力度反而多耗token",
+    "zh-Hant": "已在{model}上暫停:降力度反而多耗token",
+    "en": "Paused on {model}: reducing effort cost more than it saved there.",
+    "ja": "{model}では一時停止中:控えめにするとかえってコストが増えるため",
+    "fr": "En pause sur {model} : réduire l'effort y coûtait plus qu'il n'économisait.",
+    "it": "In pausa su {model}: ridurre l'impegno lì costava più di quanto risparmiasse.",
+    "de": "Auf {model} pausiert: weniger Aufwand kostete dort mehr, als er sparte.",
+    "es-ES": "En pausa en {model}: reducir el esfuerzo costaba más de lo que ahorraba.",
+    "es-419": "En pausa en {model}: reducir el esfuerzo costaba más de lo que ahorraba.",
+    "pt-BR": "Pausado em {model}: reduzir o esforço custou mais do que economizou lá.",
+    "hi": "{model} पर रुका हुआ: कम सोचने में वहाँ बचत से ज़्यादा ख़र्च हुआ।",
+    "id": "Dijeda di {model}: hemat pikir di sana justru lebih mahal daripada hematnya.",
+    "ko": "{model}에서 일시 정지: 줄이니 오히려 더 비쌌음."
+  },
+  "light.done": {
+    "zh": "少想了:从{from}降到{to}",
+    "zh-Hant": "少想了:從{from}降到{to}",
+    "en": "dialed down: {to}, not {from}.",
+    "ja": "いまのは控えめにしたよ:{to}、{from}じゃなく",
+    "fr": "réduit cette fois : {to}, pas {from}.",
+    "it": "meno impegno: {to}, non {from}.",
+    "de": "Weniger Aufwand: {to}, nicht {from}.",
+    "es-ES": "menos esfuerzo: {to}, no {from}.",
+    "es-419": "menos esfuerzo: {to}, no {from}.",
+    "pt-BR": "menos esforço: {to}, não {from}.",
+    "hi": "कम सोचा: {to}, {from} नहीं।",
+    "id": "effort-nya diturunkan: {to}, bukan {from}.",
+    "ko": "덜 생각했어: {to}, {from} 아니고."
+  },
+  "light.again": {
+    "zh": "按原力度重问",
+    "zh-Hant": "按原力度重問",
+    "en": "Ask again at your level",
+    "ja": "元のeffortでもう一度",
+    "fr": "Réessayer, effort habituel",
+    "it": "Richiedi al tuo livello",
+    "de": "Nochmal, auf deiner Stufe",
+    "es-ES": "Preguntar de nuevo, a tu nivel",
+    "es-419": "Preguntar de nuevo, a tu nivel",
+    "pt-BR": "Perguntar de novo, no seu nível",
+    "hi": "फिर से पूछो, अपने स्तर पर",
+    "id": "Tanya ulang, effort biasa",
+    "ko": "다시 물어보기, 원래 수준으로"
+  },
+  "light.levels": {
+    "zh": "{from}→{to}",
+    "zh-Hant": "{from}→{to}",
+    "en": "{to}, not {from}",
+    "ja": "{to}、{from}ではなく",
+    "fr": "{to}, pas {from}",
+    "it": "{to}, non {from}",
+    "de": "{to}, nicht {from}",
+    "es-ES": "{to}, no {from}",
+    "es-419": "{to}, no {from}",
+    "pt-BR": "{to}, não {from}",
+    "hi": "{to}, {from} नहीं",
+    "id": "{to}, bukan {from}",
+    "ko": "{to}, {from} 아님"
+  },
+  "menu.backWindow": {
+    "zh": "回到那个窗口",
+    "zh-Hant": "回到那個視窗",
+    "en": "Back to the window",
+    "ja": "ウィンドウに戻る",
+    "fr": "Retourner à la fenêtre",
+    "it": "Torna alla finestra",
+    "de": "Zurück zum Fenster",
+    "es-ES": "Volver a la ventana",
+    "es-419": "Volver a la ventana",
+    "pt-BR": "Voltar para a janela",
+    "hi": "उस विंडो पर वापस जाओ",
+    "id": "Kembali ke jendela",
+    "ko": "창으로 돌아가기"
+  },
+  "menu.follow": {
+    "zh": "跟着一个窗口走…",
+    "zh-Hant": "跟著一個視窗走…",
+    "en": "Follow a window…",
+    "ja": "ウィンドウについていく…",
+    "fr": "Suivre une fenêtre…",
+    "it": "Segui una finestra…",
+    "de": "Einem Fenster folgen…",
+    "es-ES": "Seguir una ventana…",
+    "es-419": "Seguir una ventana…",
+    "pt-BR": "Seguir uma janela…",
+    "hi": "एक विंडो के पीछे चलो…",
+    "id": "Ikuti sebuah jendela…",
+    "ko": "창 따라가기…"
+  },
+  "menu.stopFollow": {
+    "zh": "不再跟着",
+    "zh-Hant": "不再跟著",
+    "en": "Stop following",
+    "ja": "ついていくのをやめる",
+    "fr": "Ne plus suivre",
+    "it": "Smetti di seguire",
+    "de": "Nicht mehr folgen",
+    "es-ES": "Dejar de seguir",
+    "es-419": "Dejar de seguir",
+    "pt-BR": "Parar de seguir",
+    "hi": "पीछा बंद करो",
+    "id": "Berhenti mengikuti",
+    "ko": "따라가기 중지"
+  },
+  "menu.quit": {
+    "zh": "退出Coco Pet",
+    "zh-Hant": "退出Coco Pet",
+    "en": "Quit Coco Pet",
+    "ja": "Coco Petを終了",
+    "fr": "Quitter Coco Pet",
+    "it": "Esci da Coco Pet",
+    "de": "Coco Pet beenden",
+    "es-ES": "Salir de Coco Pet",
+    "es-419": "Salir de Coco Pet",
+    "pt-BR": "Fechar Coco Pet",
+    "hi": "Coco Pet बंद करो",
+    "id": "Keluar dari Coco Pet",
+    "ko": "Coco Pet 종료"
+  },
+  "pick.help": {
+    "zh": "点一下让她站在旁边的窗口。按Esc取消",
+    "zh-Hant": "點一下讓她站在旁邊的視窗。按Esc取消",
+    "en": "Click the window Coco should stand by. Esc to cancel.",
+    "ja": "Cocoが横に立つウィンドウをクリック。Escで取り消し",
+    "fr": "Clique sur la fenêtre à côté de laquelle elle doit se tenir. Échap pour annuler.",
+    "it": "Clicca la finestra accanto a cui deve stare. Esc per annullare.",
+    "de": "Klicke auf das Fenster, neben dem sie stehen soll. Esc zum Abbrechen.",
+    "es-ES": "Haz clic en la ventana junto a la que debe ponerse. Esc para cancelar.",
+    "es-419": "Haz clic en la ventana junto a la que debe ponerse. Esc para cancelar.",
+    "pt-BR": "Clique na janela ao lado da qual ela deve ficar. Esc pra cancelar.",
+    "hi": "वह जिस विंडो के पास खड़ी रहे, उस पर क्लिक करो। Esc से रद्द।",
+    "id": "Klik jendela yang ingin dia temani. Esc untuk batal.",
+    "ko": "코코가 옆에 설 창을 클릭해. Esc로 취소."
+  },
+  "tray.tip": {
+    "zh": "小克",
+    "zh-Hant": "小克",
+    "en": "Coco",
+    "ja": "Coco",
+    "fr": "Coco",
+    "it": "Coco",
+    "de": "Coco",
+    "es-ES": "Coco",
+    "es-419": "Coco",
+    "pt-BR": "Coco",
+    "hi": "कोको",
+    "id": "Coco",
+    "ko": "코코"
+  },
+  "tray.tipUnseen": {
+    "zh": "小克, {n}条未读",
+    "zh-Hant": "小克, {n}條未讀",
+    "en": {
+      "one": "Coco, {n} unseen",
+      "other": "Coco, {n} unseen"
+    },
+    "ja": "Coco、未読{n}件",
+    "fr": {
+      "one": "Coco, {n} non lu",
+      "other": "Coco, {n} non lus"
+    },
+    "it": {
+      "one": "Coco, {n} non letto",
+      "other": "Coco, {n} non letti"
+    },
+    "de": {
+      "one": "Coco, {n} ungelesen",
+      "other": "Coco, {n} ungelesen"
+    },
+    "es-ES": {
+      "one": "Coco, {n} sin leer",
+      "other": "Coco, {n} sin leer"
+    },
+    "es-419": {
+      "one": "Coco, {n} sin leer",
+      "other": "Coco, {n} sin leer"
+    },
+    "pt-BR": {
+      "one": "Coco, {n} não lido",
+      "other": "Coco, {n} não lidos"
+    },
+    "hi": {
+      "one": "कोको, {n} अनदेखा",
+      "other": "कोको, {n} अनदेखे"
+    },
+    "id": "Coco, {n} belum dibaca",
+    "ko": "코코, 안 읽은 것 {n}개"
+  },
+  "activity.close": {
+    "zh": "关闭",
+    "zh-Hant": "關閉",
+    "en": "Close",
+    "ja": "閉じる",
+    "fr": "Fermer",
+    "it": "Chiudi",
+    "de": "Schließen",
+    "es-ES": "Cerrar",
+    "es-419": "Cerrar",
+    "pt-BR": "Fechar",
+    "hi": "बंद करो",
+    "id": "Tutup",
+    "ko": "닫기"
+  },
+  "skin.name": {
+    "zh": "小克配色(非官方皮肤)",
+    "zh-Hant": "小克配色(非官方外觀)",
+    "en": "Coco's Colours (unofficial fan skin)",
+    "ja": "Cocoカラー(非公式ファンスキン)",
+    "fr": "Couleurs de Coco (skin non officiel)",
+    "it": "Colori di Coco (skin non ufficiale)",
+    "de": "Cocos Farben (inoffizieller Fan-Skin)",
+    "es-ES": "Colores de Coco (skin no oficial)",
+    "es-419": "Colores de Coco (skin no oficial)",
+    "pt-BR": "Cores da Coco (skin não oficial)",
+    "hi": "कोको के रंग (अनौपचारिक प्रशंसक स्किन)",
+    "id": "Warna Coco (skin tidak resmi)",
+    "ko": "코코 컬러 (비공식 팬 스킨)"
+  },
+  "skin.description": {
+    "en": "Recolours claude.ai in your browser, light and dark. Needs a user-style extension such as Stylus. Unofficial fan skin, not affiliated with Anthropic."
+  },
+  "effort.low": {
+    "zh": "低",
+    "zh-Hant": "低",
+    "en": "low",
+    "ja": "low",
+    "fr": "low",
+    "it": "low",
+    "de": "low",
+    "es-ES": "low",
+    "es-419": "low",
+    "pt-BR": "low",
+    "hi": "low",
+    "id": "low",
+    "ko": "low"
+  },
+  "effort.medium": {
+    "zh": "中",
+    "zh-Hant": "中",
+    "en": "medium",
+    "ja": "medium",
+    "fr": "medium",
+    "it": "medium",
+    "de": "medium",
+    "es-ES": "medium",
+    "es-419": "medium",
+    "pt-BR": "medium",
+    "hi": "medium",
+    "id": "medium",
+    "ko": "medium"
+  },
+  "effort.high": {
+    "zh": "高",
+    "zh-Hant": "高",
+    "en": "high",
+    "ja": "high",
+    "fr": "high",
+    "it": "high",
+    "de": "high",
+    "es-ES": "high",
+    "es-419": "high",
+    "pt-BR": "high",
+    "hi": "high",
+    "id": "high",
+    "ko": "high"
+  },
+  "effort.xhigh": {
+    "zh": "超高",
+    "zh-Hant": "超高",
+    "en": "xhigh",
+    "ja": "xhigh",
+    "fr": "xhigh",
+    "it": "xhigh",
+    "de": "xhigh",
+    "es-ES": "xhigh",
+    "es-419": "xhigh",
+    "pt-BR": "xhigh",
+    "hi": "xhigh",
+    "id": "xhigh",
+    "ko": "xhigh"
+  },
+  "effort.max": {
+    "zh": "最高",
+    "zh-Hant": "最高",
+    "en": "max",
+    "ja": "max",
+    "fr": "max",
+    "it": "max",
+    "de": "max",
+    "es-ES": "max",
+    "es-419": "max",
+    "pt-BR": "max",
+    "hi": "max",
+    "id": "max",
+    "ko": "max"
+  }
+}

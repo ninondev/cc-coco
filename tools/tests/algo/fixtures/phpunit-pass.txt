@@ -1,0 +1,10 @@
+PHPUnit 10.5.20 by Sebastian Bergmann and contributors.
+
+Runtime:	PHP 8.3.11
+Configuration:	/home/user/src/api/phpunit.xml.dist
+
+........                                                          8 / 8 (100%)
+
+Time: 00:00.198, Memory: 20.00 MB
+
+OK (8 tests, 31 assertions)

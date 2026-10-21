@@ -1,0 +1,33 @@
+============================= test session starts ==============================
+platform darwin -- Python 3.12.4, pytest-8.2.2, pluggy-1.5.0
+rootdir: /home/user/src/mango
+configfile: pyproject.toml
+plugins: cov-5.0.0, xdist-3.6.1
+collected 47 items
+
+tests/test_billing.py ........F..                                           [ 21%]
+tests/api/test_users.py ................                                   [ 55%]
+tests/test_orders.py ..............F.                                      [100%]
+
+=================================== FAILURES ===================================
+_______________________ TestBilling.test_totals_invoice _______________________
+
+self = <tests.test_billing.TestBilling object at 0x102c4a1f90>
+
+    def test_totals_invoice(self):
+        total = billing.total_for(self.invoice)
+>       assert total == 4200
+E       assert 4199 == 4200
+
+tests/test_billing.py:42: AssertionError
+_________________________ test_apply_discount_bulk ____________________________
+
+    def test_apply_discount_bulk():
+>       assert orders.apply_discount(100, 10) == 90
+E       assert 91 == 90
+
+tests/test_orders.py:18: AssertionError
+=========================== short test summary info ============================
+FAILED tests/test_billing.py::TestBilling::test_totals_invoice - assert 4199 == 4200
+FAILED tests/test_orders.py::test_apply_discount_bulk - assert 91 == 90
+======================== 2 failed, 45 passed in 1.23s ==========================

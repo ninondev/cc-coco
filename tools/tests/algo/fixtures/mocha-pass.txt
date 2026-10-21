@@ -1,0 +1,9 @@
+
+  Calculator
+    ✓ adds numbers (4126ms)
+    ✓ subtracts numbers (3ms)
+    ✓ handles zero (2ms)
+
+  3 passing (5s)
+
+Done in 5.21s.

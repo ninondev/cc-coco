@@ -1,8 +1,10 @@
+// W1 order Do 3: exact v3 words replace old text pins; all other properties stay.
 import { describe, expect, test } from 'claude-code/testing'
 import { companionRecord, TASK_WORDS } from '../hooks/companion'
 import { DOOR_WORDS } from '../hooks/door-words'
 import { LINES } from '../hooks/lines'
 import { APPROVED_PERSONA, APPROVED_REACTIONS } from './approved-localization'
+import { APPROVED_RIDE } from './approved-ride'
 import { VOICE } from '../hooks/voice'
 import { LANGS, WORDS } from '../hooks/words'
 import { BOOK_FILES } from './book-files'
@@ -28,12 +30,14 @@ function violations(sources: Record<string, unknown>): string[] {
 
 describe('owner-approved localization boundaries', () => {
   test('no Japanese soul names appear in Chinese user-facing text', { timeoutMs: 60_000 }, () => {
-    const companion = companionRecord(VIEW)
-    expect(violations({
-      book: JSON.parse(BOOK_FILES['zh.json']), words: WORDS.zh,
-      lines: [LINES.zh, LINES.omikuji.zh], voice: VOICE, door: DOOR_WORDS.zh,
-      companion: [companion.words, companion.reactions, TASK_WORDS.zh], readme: CHINESE_README,
-    })).toEqual([])
+    for (const { code: lang } of LANGS.filter(({ code }) => code.startsWith('zh'))) {
+      const companion = companionRecord({ ...VIEW, lang })
+      expect(violations({
+        book: JSON.parse(BOOK_FILES[`${lang}.json`]), words: WORDS[lang],
+        lines: [LINES[lang]], voice: VOICE, door: DOOR_WORDS[lang],
+        companion: [companion.words, companion.reactions, TASK_WORDS[lang]], readme: CHINESE_README,
+      })).toEqual([])
+    }
   })
 
   test('the guard rejects each forbidden name in every covered source, including nested values', () => {
@@ -48,19 +52,29 @@ describe('owner-approved localization boundaries', () => {
 
   test('Chinese book keeps the exact five approved values', () => {
     const book = JSON.parse(BOOK_FILES['zh.json'])
-    expect(book.profile[7]).toEqual({ label: '两面', text: '平常温和。黑化了也只冲着烂代码去,从不冲着你' })
+    // Her page as the owner rewrote it on 10-15; the birthday row went, so 两面 is the seventh row.
+    expect(book.profile[6]).toEqual({ label: '两面', text: '平时坐不住,爱抢功。测试连挂三次限制器就弹飞,火只冲烂代码从不冲你;真出大事时一秒收起玩笑替你兜底' })
     expect(book.log.wild).toBe('黑化过')
+    // The bag's extras (lane B 10-15) replaced the old book's readings about the kami; his own wording of 10-15.
     expect(book.library.readings[1]).toEqual({
-      title: '两面',
-      text: '神都有两面。平常的他很温和:安静,读得慢,读完才开口。代码烂到一定地步,他就黑化了:头发一根根竖起,眼睛缩成两道橙色细缝,修起来快得吓人。修完他把头发按回原处,全当无事发生。发火只冲着代码,从不冲着你。',
+      title: '桌上的东西',
+      text: '你桌上的物件,全被她征用成了游乐场和避难所。嫌吵就钻进大鼠标底下躲清静,犯困就往马克杯里塞个小睡袋打盹。代码一报错,她咻地钻进纸箱合上盖子,只从缝里伸出两根手指比V。遇上Claude拒答说不干,她就"叮"地把茶壶盖扣在头上生闷气。到了半夜,她会盘腿窝在空面桶的软垫上陪你熬夜。桶里没面,千万别往里倒开水。',
     })
   })
 
-  test('all persona strings equal the before snapshot plus only the round-6 approved changes', { timeoutMs: 60_000 }, () => {
+  test('all persona strings equal the frozen W1 values plus the approved W2 Chinese pat addition', { timeoutMs: 60_000 }, () => {
+    // The fixture holds the owner's W2 pat line itself (zh, and zh-Hant from build-zh-hant), so every language is exact.
     for (const { code } of LANGS) expect(LINES[code]).toEqual(APPROVED_PERSONA[code])
+    // Negative control: changing an unapproved warm line still fails the frozen boundary.
+    const wrong = { ...LINES.en, start: ['changed without approval'] }
+    expect(wrong).not.toEqual(APPROVED_PERSONA.en)
   })
 
-  test('all companion reactions equal the before snapshot plus only the eight approved changes', { timeoutMs: 60_000 }, () => {
-    for (const { code } of LANGS) expect(companionRecord({ ...VIEW, lang: code }).reactions).toEqual(APPROVED_REACTIONS[code])
+  test('all companion reactions equal the approved W1 v3 native pools', { timeoutMs: 60_000 }, () => {
+    for (const { code } of LANGS) {
+      const { ride, ...before } = companionRecord({ ...VIEW, lang: code }).reactions
+      expect(before).toEqual(APPROVED_REACTIONS[code])
+      expect(ride).toEqual(APPROVED_RIDE[code])
+    }
   })
 })

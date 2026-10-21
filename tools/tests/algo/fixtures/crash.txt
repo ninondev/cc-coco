@@ -1,0 +1,4 @@
+running 1 tests from ./api/orders_test.ts
+OrdersService
+
+Segmentation fault (core dumped)

@@ -1,0 +1,11 @@
+{"Time":"2025-10-04T09:00:00.000Z","Action":"start","Package":"github.com/user/lark"}
+{"Time":"2025-10-04T09:00:00.100Z","Action":"run","Package":"github.com/user/lark","Test":"TestParserReadsHeader"}
+{"Time":"2025-10-04T09:00:00.101Z","Action":"pass","Package":"github.com/user/lark","Test":"TestParserReadsHeader","Elapsed":0.001}
+{"Time":"2025-10-04T09:00:00.102Z","Action":"run","Package":"github.com/user/lark","Test":"TestParserNested"}
+{"Time":"2025-10-04T09:00:00.103Z","Action":"run","Package":"github.com/user/lark","Test":"TestParserNested/empty_body","Parent":"TestParserNested"}
+{"Time":"2025-10-04T09:00:00.104Z","Action":"output","Package":"github.com/user/lark","Test":"TestParserNested/empty_body","Parent":"TestParserNested","Output":"    parser_test.go:44: got error want nil\n"}
+{"Time":"2025-10-04T09:00:00.105Z","Action":"fail","Package":"github.com/user/lark","Test":"TestParserNested/empty_body","Parent":"TestParserNested","Elapsed":0}
+{"Time":"2025-10-04T09:00:00.106Z","Action":"fail","Package":"github.com/user/lark","Test":"TestParserNested","Elapsed":0}
+{"Time":"2025-10-04T09:00:00.107Z","Action":"run","Package":"github.com/user/lark","Test":"TestWriterFlushes"}
+{"Time":"2025-10-04T09:00:00.108Z","Action":"pass","Package":"github.com/user/lark","Test":"TestWriterFlushes","Elapsed":0.01}
+{"Time":"2025-10-04T09:00:00.109Z","Action":"fail","Package":"github.com/user/lark","Elapsed":0.213}

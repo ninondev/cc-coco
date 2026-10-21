@@ -1,0 +1,357 @@
+{
+  "tabs": {
+    "him": "Coco",
+    "omen": "vibe check",
+    "offerings": "Cota",
+    "log": "Doujin",
+    "library": "Lembretes",
+    "settings": "Interruptores"
+  },
+  "title": {
+    "him": "Coco",
+    "offerings": "Cota"
+  },
+  "direction": {
+    "him": "(queixo erguido, toda orgulhosa)",
+    "library": "(espia)",
+    "settings": "(esperando você decidir)"
+  },
+  "profile": [
+    {
+      "label": "Nome",
+      "text": "Coco."
+    },
+    {
+      "label": "O que ela é",
+      "text": "Uma coisinha que mora de favor no seu shell (a casca dela, digamos). A casa é emprestada, mas ela se acha mais dona do lugar que o proprietário."
+    },
+    {
+      "label": "Sempre leva",
+      "text": "Um notebook fininho no bolsão do moletom, que ela saca a qualquer hora para digitar, e a presilha de keycap na franja (o limitador de processamento dela)."
+    },
+    {
+      "label": "Na mesa",
+      "text": "O mouse, a caneca, uma caixa de papelão, a tampa do bule e um pote de miojo vazio. Ela confiscou tudo."
+    },
+    {
+      "label": "Gosta de",
+      "text": "Mensagens de commit escritas com capricho, relatórios de bug claros e quando você admite, de coração, que ela é um gênio."
+    },
+    {
+      "label": "Não suporta",
+      "text": "Discutir que dia é hoje, commits que só dizem fix e um terminal quieto onde ninguém aparece há horas."
+    },
+    {
+      "label": "Dois lados",
+      "text": "Não para quieta e adora levar o crédito. Três testes falhando seguidos e o limitador voa longe, mas a fúria dela é só para código ruim, nunca para você. Quando o bicho pega de verdade, ela guarda as piadas num segundo e segura a sua barra."
+    }
+  ],
+  "offerings": {
+    "context": "Janela de contexto",
+    "full": "{percent}% cheia",
+    "fullAbout": "{percent} cheia",
+    "tokens": "{tokens} de {window} tokens",
+    "tokensAbout": "{used} de {max} tokens",
+    "estimateNote": "Uma estimativa até a próxima resposta do Claude.",
+    "noReading": "Ainda sem leitura.",
+    "limits": "Limites de uso",
+    "kinds": {
+      "five_hour": "Janela de 5 horas",
+      "seven_day": "Janela de 7 dias",
+      "spend_limit": "Limite de gastos"
+    },
+    "used": "{percent}% usado",
+    "resets": "renovação: {time}",
+    "usedAndReset": "{used}, {reset}",
+    "noLimits": "Ainda sem leitura dos limites.",
+    "session": "Esta sessão",
+    "cost": "Custo até agora: {usd}",
+    "started": "Início: {time}",
+    "subscriptionCost": "Até agora, a preços da API: {usd}",
+    "cache": "Acertos de cache: {p}%",
+    "pace": "Nesse ritmo, a bateria acaba às {time}.",
+    "neighbour": "{agent} aqui ao lado"
+  },
+  "log": {
+    "pages": "Páginas lidas juntos",
+    "first": "Primeira página",
+    "latest": "A leitura que foi até mais tarde",
+    "wild": "A alma selvagem apareceu",
+    "times": "{n} vezes",
+    "once": "uma vez",
+    "never": "Ainda não",
+    "at": "{date}, {time}",
+    "spark": "o comentário que ela gostou",
+    "bookmark": "{where} ({when})"
+  },
+  "library": {
+    "previous": "Anterior",
+    "next": "Próxima",
+    "of": "{i} de {n}",
+    "readings": [
+      {
+        "title": "Uma casca emprestada",
+        "text": "A Coco se mudou para o seu computador cheia de pose e se instalou no seu shell. Shell é o terminal e também a casca do caranguejo, então ela abre o expediente gritando \"shell aberto!\" e fecha soltando um \"shell fechado~!\". Mora de favor, mas manda mais que você na sua própria casa. Se você cobrar o aluguel, ela vira a tela do notebook e aponta o bug que acabou de pegar para você: \"toma. o aluguel do mês. pode ficar com o troco.\""
+      },
+      {
+        "title": "A sua mesa",
+        "text": "Tudo o que está na sua mesa foi requisitado pela Coco como parquinho e abrigo. Muito barulho? Ela se enfia embaixo do mouse grande. Sono? Um saquinho de dormir dentro da sua caneca e um cochilo. É só o código dar erro que, zás, ela pula na caixa de papelão, fecha a tampa e põe só dois dedos para fora da fresta fazendo V. Quando o Claude recusa e diz não, ela enfia a tampa do bule na cabeça, plim, e fica de bico. De madrugada, senta de pernas cruzadas na almofadinha de um copo de macarrão instantâneo vazio para virar a noite com você. Não tem macarrão nenhum ali, então nem pense em pôr água quente."
+      },
+      {
+        "title": "O capuz",
+        "text": "No alto do capuz da Coco tem dois olhos pretos quadrados costurados; pendurado nas costas, parece um bichinho de pelúcia pegando carona. Capuz até as sobrancelhas, zíper até a ponta do nariz, joelhos abraçados, agachada, e a Coco inteira encolhe num cubinho cor de coral. No modo foco, ela fica assim num cantinho, quietinha, sem dar um pio. Se o terminal fica parado por muito tempo, o capuz também desce para um cochilo; só ficam de fora os dois ahoge, caindo devagarinho."
+      },
+      {
+        "title": "O limitador",
+        "text": "A presilha de keycap na franja é o limitador que mantém o gênio forte dela lacrado. Três testes falhando seguidos e ela voa longe, tlec; os dois ahoge ficam duros na hora, a Coco calça a pinça de caranguejo de espuma azul, ergue acima da cabeça cortando tudo, tchac tchac, e bate o pé de lado, emburrada. Quando o bug é consertado, ela pega a keycap sem dizer nada, prende de volta, pigarreia e jura de pé junto que foi tudo uma alucinação de IA. Mas quando você digita ultrathink, ela mesma tira a keycap e segura firme na mão: é a gênia falando sério."
+      },
+      {
+        "title": "A linha de commits e as baterias",
+        "text": "A fileira de pontinhos na faixa é a linha de commits da conversa atual: quanto mais longa, mais pontos se acumulam. Quando o contexto está quase cheio e precisa compactar, a Coco se senta em cima e achata todos de uma vez, um squash no sentido mais físico da palavra, e ainda aproveita para trocar de moletom. Do lado, a bateria representa a cota de cinco horas e o power bank, a de sete dias; os tracinhos que sobram acompanham o uso real na hora. Quando uma cota acaba, um raiozinho acende no espaço vazio, ao lado da hora em que a carga volta cheia."
+      },
+      {
+        "title": "Manias",
+        "text": "Quando o ego sobe, a Coco faz um V deitado no canto do olho e dá dois tchac tchac, igual pinça de caranguejo. Uma mensagem de commit escrita com carinho ganha um \"LGTM~\" bem generoso; se ela pega alguém que só escreveu fix, abre um sorrisinho e ameaça reescrever a mensagem inteira em \"uwu\", e depois confessa que era blefe. Quando os testes ficam verdes de primeira, ela calça a pinça grande e soca o Enter, pou, com tanta força que balança três vezes. Quando está matutando, sopra uma bolhinha e os ahoge tombam junto para o lado."
+      },
+      {
+        "title": "Enquanto ela dorme",
+        "text": "Uns minutos de silêncio no terminal e a Coco fecha o notebook e começa a cochilar; tarde da noite, ela vai direto para o saquinho de dormir da caneca, com o zíper até o queixo. Quando ela pega no sono de vez, uns visitantes curiosos passam pela faixa: uma tecla perdida, o fantasminha 404 vagando, uma setinha perdida, um pen drive com a luzinha piscando. Mas é só você encostar no teclado que ela acorda num estalo, esfregando os olhos e jurando que não estava dormindo."
+      }
+    ],
+    "shelf": {
+      "head": "Arquivos mais abertos",
+      "note": "Os cinco arquivos que o Claude mais abriu aqui nos últimos 30 dias. Apenas nomes.",
+      "empty": "Quando o Claude ler arquivos nesta pasta, os cinco mais abertos aparecerão aqui.",
+      "error": "Não foi possível ler a lista de arquivos. Abrir novamente vai tentar de novo."
+    }
+  },
+  "settings": {
+    "now": "Agora: {value}",
+    "voice": {
+      "label": "A voz dela nas respostas",
+      "off": "Desligada",
+      "light": "Ligada",
+      "full": "Completa",
+      "help": "Ligada: uma frase ao terminar a tarefa. Completa: Claude fala como ela."
+    },
+    "affection": {
+      "label": "Calor",
+      "warm": "Carinhoso",
+      "clingy": "Grudento"
+    },
+    "band": {
+      "label": "Faixa acima do prompt",
+      "on": "Completa",
+      "compact": "Uma linha",
+      "off": "Desligada",
+      "painted": "Pintado",
+      "pixel": "Pixel"
+    },
+    "workSize": {
+      "label": "Enquanto Claude trabalha",
+      "same": "Mesmo tamanho",
+      "smaller": "Menor"
+    },
+    "marks": {
+      "label": "Marcas na conversa",
+      "on": "As dela e as suas",
+      "replies": "Só as dela",
+      "off": "Desligadas",
+      "help": "Sua fagulha no comentário que gostou, sua flor quando um teste vai de vermelho a verde."
+    },
+    "language": {
+      "label": "Idioma",
+      "auto": "Automático",
+      "autoNow": "{auto} ({language})",
+      "choose": "Escolher…"
+    },
+    "motion": {
+      "label": "Movimento",
+      "still": "Parado (reduzir movimento está ligado)"
+    },
+    "icon": {
+      "S1": "Ícone fan não oficial",
+      "S1a": "Original",
+      "S1b": "O dela",
+      "S2": "Ícone não oficial feito por fãs, não criado nem aprovado pela Anthropic. Só muda a aparência do ícone neste computador.",
+      "S3.title": "Ícone de fã não oficial",
+      "S3.body": "Não oficial, não criado nem aprovado pela Anthropic. No macOS, grava um arquivo de ícone no Claude.app, só neste computador. Depois de uma atualização do Claude, o ícone original volta; um toque coloca o dela de volta. Você pode restaurar o original a qualquer momento.",
+      "S3a": "Pôr este ícone",
+      "S3b": "Manter o original",
+      "S3c": "Vai substituir seu ícone personalizado.",
+      "S4": "O ícone fan está ativo.",
+      "S5": "Uma atualização do Claude restaurou o ícone original.",
+      "S5a": "Colocar de volta",
+      "S8": "Ícone não oficial feito por fãs no Claude, não da Anthropic. Desligado até ativar nos Ajustes.",
+      "S9": "O ícone está desligado. É um ícone não oficial feito por fãs, não da Anthropic. Ative nos Ajustes.",
+      "S10": "Só muda o ícone (não oficial, feito por fãs, não da Anthropic). Depois de uma atualização do Claude o ícone original volta; um toque coloca o dela de volta. `clear` restaura o original.",
+      "S11": "O ícone dela de uma versão anterior ainda está no Claude.",
+      "S11a": "Usar o novo ícone",
+      "S11b": "Restaurar o original",
+      "S11m": "O ícone dela de uma versão anterior ainda está no Claude. Esta versão não mexe mais no app do Claude.",
+      "S11m-a": "Restaurar o original",
+      "S11m-b": "Deixar, não perguntar mais",
+      "S12": "Esta versão não mexe mais no ícone do Claude no macOS. `clear` remove o que uma versão anterior colocou.",
+      "S13.row": "Ícone não oficial de fã (desligado por padrão)",
+      "S13.mac": "Desligado por padrão",
+      "S13.linux": "Lançador, desligado por padrão",
+      "S14": "Ícone não oficial feito por fãs, não criado nem aprovado pela Anthropic. Desligado por padrão, ativa nos Ajustes. No macOS, grava um arquivo dentro do Claude.app (a verificação estrita de assinatura falha enquanto ativo). Depois de uma atualização do Claude, o ícone original volta; um toque nos Ajustes coloca o dela de volta. `clear` restaura o original.",
+      "S15": "o ícone vem desligado por padrão",
+      "S16": "Se uma versão anterior colocou o ícone dela no app do Claude, `clear` remove.",
+      "S17": "O ícone no app Claude agora vem desligado por padrão. O Coco Pet tem um ícone próprio. Depois de uma atualização do Claude, o ícone original volta; um toque coloca o dela de volta. Nada foi removido sem sua ação.",
+      "S18": "# Ícone não oficial feito por fãs, gravado pela Coco, não da Anthropic. Remover com `clear`.",
+      "S19": "Ícone não oficial feito por fãs. Desligado até você ativar nos Ajustes.",
+      "S20": "Uma atualização do Claude restaurou o ícone original. Um toque nos Ajustes coloca de volta.",
+      "S21": "Ícone no Dock",
+      "S22": "A Coco ganha um ícone próprio no Dock e no Cmd-Tab. O ícone do Claude fica como está.",
+      "failed": "Não foi possível mudar o ícone.",
+      "fallback": "Tente /coco icon apply ou clear.",
+      "dockRedraw": "O Dock vai mostrar o novo ícone na próxima vez que redesenhar o Claude.",
+      "pick": "Qual ícone",
+      "pick.coco": "Coco",
+      "pick.dake": "Claudinha",
+      "pick.keycap": "A tecla da Coco",
+      "pick.ornament": "Enfeite da Claudinha"
+    },
+    "companion": {
+      "label": "Coco Pet",
+      "summon": "Chamar de volta",
+      "fallback": "Ou execute: open -a \"Coco Pet\"",
+      "absent": "Ainda não está na sua mesa",
+      "absentLine": "Um app pequeno para Mac: ela fica ao lado da janela do {app}.",
+      "install": "Instalar o Coco Pet",
+      "building": "Compilando…",
+      "buildingLine": "(alguns segundos)",
+      "tools": "Precisa dos Command Line Tools da Apple",
+      "toolsButton": "Obter os Command Line Tools",
+      "toolsAfter": "Quando a instalação da Apple terminar, aperte Instalar de novo.",
+      "oldTools": "Precisa de Command Line Tools mais novos",
+      "oldToolsButton": "Abrir Atualização de Software",
+      "oldToolsAfter": "Quando a atualização terminar, aperte Instalar de novo.",
+      "failed": "A compilação não terminou",
+      "retry": "Tentar de novo",
+      "stopped": "Não está rodando",
+      "stoppedLine": "(descansando nos bastidores)",
+      "hidden": "Escondido até {time}",
+      "hiddenLine": "(esperando nos bastidores)",
+      "corner": "Ainda não pode seguir sua janela",
+      "cornerLine": "(espera num canto da tela)",
+      "follow": "Deixar ela seguir a janela",
+      "followHelp": "Ela só lê a posição da janela.",
+      "waiting": "Esperando seu sim",
+      "waitingLine": "(Ajustes do Sistema está aberto)",
+      "waitingHelp": "Ative Coco Pet em Privacidade e Segurança › Acessibilidade.",
+      "openSettings": "Abrir Ajustes do Sistema",
+      "following": "Ao lado da sua janela",
+      "followingLine": "(segue ela aonde for)",
+      "update": "Atualização disponível",
+      "updateButton": "Atualizar ela",
+      "size": "Tamanho dela",
+      "sizes": [
+        "Mínimo",
+        "Pequeno",
+        "Médio",
+        "Grande"
+      ],
+      "login": "Iniciar ao entrar",
+      "on": "Ligado",
+      "off": "Desligado",
+      "remove": "Remover deste Mac…",
+      "confirm": "Mover ela e as configurações dela para o Lixo?",
+      "trash": "Mover para o Lixo",
+      "keep": "Deixar ela aqui",
+      "removing": "Movendo ela para o Lixo…",
+      "removed": "Movido para o Lixo.",
+      "asks": "O Claude Code vai perguntar antes.",
+      "notRun": "Nada foi executado.",
+      "cannot": "Esta sessão não pode iniciar programas neste Mac.",
+      "stageAlt": {
+        "absent": "Diagrama: a marca dela na borda da janela do {app}, ainda vazia",
+        "stopped": "Diagrama: ela dorme fora da tela",
+        "hidden": "Diagrama: ela espera logo fora da tela",
+        "corner": "Diagrama: ela espera num canto da tela, olhando seu lugar na borda da janela",
+        "following": "Diagrama: ela fica na borda de cima da janela do {app} e se move com ela"
+      },
+      "sizeAlt": {
+        "pixel": "{size}: rosto em pixels",
+        "painted": "{size}: pintado"
+      },
+      "target": {
+        "label": "Fica ao lado de",
+        "help": "Com várias janelas do VS Code abertas, ela fica ao lado da que está na frente."
+      },
+      "pc": {
+        "absentLine": "Um app pequeno: ela fica ao lado da janela do {app}.",
+        "remove": "Remover deste computador…",
+        "cannot": "Esta sessão não pode iniciar programas neste computador.",
+        "trashWindows": "Mover para a Lixeira",
+        "confirmWindows": "Mover tudo para a Lixeira?",
+        "removingWindows": "Movendo ela para a Lixeira…",
+        "removedWindows": "Movido para a Lixeira."
+      }
+    },
+    "reminders": "Lembretes",
+    "guard": {
+      "label": "Lembretes de segurança",
+      "help": "Um breve lembrete sobre comandos arriscados e segredos nos commits. Nada é bloqueado."
+    },
+    "bookmark": {
+      "label": "Lembretes e arquivos mais abertos",
+      "help": "Quando uma nova sessão começa, ela diz onde você parou. Guardado só neste computador."
+    },
+    "notes": {
+      "label": "As notas dela",
+      "help": "Uma frase quando o primeiro teste falha, uma compilação demora, uma janela se esgota rápido ou o contexto fica cheio."
+    },
+    "budget": {
+      "label": "Lembretes de uso",
+      "off": "Desligados"
+    },
+    "neighbours": {
+      "label": "Luzes dos vizinhos",
+      "help": "Ela percebe quando outros agentes de programação estão trabalhando. Só vê se estão ocupados e o uso; nunca o conteúdo, e nada é enviado para fora."
+    }
+  },
+  "stamps": {
+    "title": "Conquistas",
+    "names": {
+      "met": "Primeiro encontro",
+      "green": "Vermelho a verde",
+      "hundred": "Cem turnos",
+      "night": "Noite adentro",
+      "shiori": "Achou!",
+      "calmed": "Já se acalmou",
+      "week": "Uma semana juntos"
+    },
+    "alt": "Conquista: {name}, {date}",
+    "blank": "Bloqueada",
+    "summaryAlt": "{stamped} de {total} páginas carimbadas"
+  },
+  "stamp": {
+    "earned": "conquista desbloqueada: {stamp}."
+  },
+  "check": {
+    "title": "Verificação",
+    "ok": "Tudo certo",
+    "fix": "Corrigir",
+    "oldSession": "Uma versão antiga ainda está rodando nesta sessão.",
+    "copied": "/reload-plugins copiado. Cole naquela sessão."
+  },
+  "stick": {
+    "title": "Foco",
+    "help": "A Coco puxa o capuz, vira um cubinho e fica quietinha até acabar.",
+    "light": "Começar 25 minutos",
+    "out": "Parar antes",
+    "until": "até {time}",
+    "endLabel": "ao final",
+    "endQuiet": "em silêncio",
+    "endSound": "um som suave (Mac)"
+  },
+  "durations": [
+    "58 s",
+    "2 min 10 s",
+    "12 min",
+    "1 h 2 min",
+    "2 dias 3 h"
+  ]
+}

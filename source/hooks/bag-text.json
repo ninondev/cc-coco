@@ -1,0 +1,3512 @@
+{
+ "en": {
+  "entry": "Settings",
+  "title": "Coco's ita bag",
+  "pages": [
+   "Coco",
+   "Quota",
+   "vibe check",
+   "Socks",
+   "Doujin",
+   "Sticky notes",
+   "Switches"
+  ],
+  "socks": [
+   "Comfort pair",
+   "Matcha black sugar",
+   "Blueberry milk",
+   "Cookies 'n' cream",
+   "Mint & milk",
+   "Strawberry milk",
+   "Taro boba",
+   "Marshmallow",
+   "Goody two-socks",
+   "Barely there",
+   "LAN party",
+   "White hat",
+   "Little red dot"
+  ],
+  "alt": [
+   "Coco's ita bag, Coco Pet: {on} of {total} on, size: {size}",
+   "coco's ita bag, 5-hour window: {five} of {total} left, 7-day window: {week} of {total} left",
+   "coco's ita bag, this session: tests failed: {failed}, fixed: {fixed}, compacted: {compacted}",
+   "coco's ita bag, socks collected: {have} of {total}",
+   "coco's ita bag, doujin issues: {issues}, newest: #{latest}",
+   "coco's ita bag, sticky notes saved: {notes}",
+   "coco's ita bag, switches on: {on} of {total}"
+  ],
+  "groups": {
+   "voice": "How Coco talks",
+   "band": "Band",
+   "reminders": "Reminders",
+   "cost": "Costs",
+   "records": "Records",
+   "neighbours": "Neighbours & icon",
+   "language": "Language"
+  },
+  "tags": {
+   "tokens": "uses tokens",
+   "off": "off by default",
+   "mac": "Mac only",
+   "new": "new"
+  },
+  "vibeGroups": {
+   "tests": "Tests & builds",
+   "session": "This session",
+   "share": "Share card"
+  },
+  "zineGroups": {
+   "week": "This week",
+   "issues": "Every issue",
+   "extras": "Extras"
+  },
+  "share": {
+   "make": "Make one",
+   "save": "Save as image",
+   "folder": "Open folder"
+  },
+  "himGroups": {
+   "companion": "Coco Pet",
+   "together": "Together"
+  },
+  "quotaGroups": {
+   "quota": "Quota",
+   "session": "This session",
+   "more": "More"
+  },
+  "sockGroups": {
+   "drawer": "Drawer"
+  },
+  "noteGroups": {
+   "notes": "Sticky notes",
+   "lastStop": "Where you left off"
+  },
+  "look": {
+   "label": "Who keeps you company",
+   "coco": "Coco",
+   "dake": "Claudie",
+   "maid": "Maid Claudie",
+   "fish": "DeepSeek-chan",
+   "help": "Changes who's on the band in the desktop app, on Coco Pet and in Coco's room. The terminal always has Coco. In this version DeepSeek-chan only appears in the room; she comes to the band and Coco Pet in a later update."
+  },
+  "bagStyle": {
+   "label": "Ita bag art",
+   "classic": "Futurist",
+   "mv": "Constructivist",
+   "help": "Only the bag picture at the top of each page changes. Nothing else does."
+  },
+  "sockRows": {
+   "wearing": "Wearing",
+   "back": "Back to {name}"
+  },
+  "zineRows": {
+   "issue": "Issue {n}",
+   "open": "Open"
+  },
+  "windows": {
+   "title": "{n} windows",
+   "working": "Working since {time}",
+   "quiet": "Quiet since {time}",
+   "workingNow": "Working",
+   "quietNow": "Quiet",
+   "here": "you're here",
+   "follows": "Coco Pet follows this one"
+  },
+  "shareHelp": "A 1080×1350 image. Only numbers from this computer; none of your code, file names or words go on it.",
+  "vibeRows": {
+   "firstFail": "First failing test",
+   "fixed": "Red to green: {fixed}",
+   "storms": "Went berserk: {storms}",
+   "stormsHelp": "Three reds in a row pop Coco's limiter off; a fix calms them down.",
+   "build": "Builds usually ~{usual}, this one {now}",
+   "buildSlow": "Slow for this project (median of the last 8)",
+   "tools": "Tools used: {n}",
+   "toolKinds": "read {read}, search {search}, write {write}, run {run}, web {web}, plan {plan}",
+   "helpers": "Helpers: {n}, back: {back}",
+   "commits": "Commits: {n}",
+   "compactions": "Squashed (compacted): {n}",
+   "shareCard": "This session's commit line"
+  },
+  "lead": {
+   "him": "{name} is on your desktop keeping you company. Size: {size}.",
+   "offerings": "5h: {fiveLeft} left. Week: {weekLeft} left.",
+   "omen": "This session's record: tests failed: {failed}, fixed: {fixed}, squashed (compacted): {compacted}.",
+   "socks": "Pairs collected: {have} of {total}. Pick one and Coco puts it right on.",
+   "log": "Issues in the collection: {issues}. Latest: #{latest}.",
+   "library": "Sticky notes up: {notes}. In a new chat, Coco reminds you where you left off.",
+   "settings": "Switches on: {on} of {total}. Everything that uses tokens is marked."
+  },
+  "vibe": {
+   "stillRed": [
+    {
+     "verdict": "still red. not done yet",
+     "roasts": [
+      "this bug moved in and isn't paying rent",
+      "claude fixed it three times. the tests said no three times"
+     ],
+     "step": "stopping on red is fine too. the genius will hunt it with you tomorrow"
+    },
+    {
+     "verdict": "red light's on. bug wins this round",
+     "roasts": [
+      "that red is brighter than the genius's hair clip",
+      "claude says fixed. the tests say think again"
+     ],
+     "step": "bugs clock out too. save here, come back fresh"
+    },
+    {
+     "verdict": "still red. tanky little bug",
+     "roasts": [
+      "a whole screen of errors, all saying the same thing: nope",
+      "the more claude edits, the redder it gets"
+     ],
+     "step": "try one breakpoint. the genius won't laugh"
+    }
+   ],
+   "redToGreen": [
+    {
+     "verdict": "red to green, {fixed} comebacks",
+     "roasts": [
+      "those bugs talked big, then folded",
+      "claude dug the hole and filled it back in. counts, i guess"
+     ],
+     "step": "full marks from the genius. the messy middle stays between us"
+    },
+    {
+     "verdict": "{fixed} fixes, the tests finally nod",
+     "roasts": [
+      "the tests were so loud while red. quiet now",
+      "the genius won't mention claude's first draft"
+     ],
+     "step": "fixing it is the skill. save the card, brag a little"
+    },
+    {
+     "verdict": "the bug gave up. {fixed} fixed",
+     "roasts": [
+      "all that red was a paper tiger",
+      "claude fixing bugs looks like the genius finding socks. took a while, got there"
+     ],
+     "step": "quit while you're ahead. today counts"
+    }
+   ],
+   "allGreen": [
+    {
+     "verdict": "green on the first try. certified",
+     "roasts": [
+      "did the bugs take the day off?",
+      "claude didn't improvise anything weird. suspicious"
+     ],
+     "step": "don't get cocky. tomorrow's bugs are already on their way"
+    },
+    {
+     "verdict": "all green. nothing to roast",
+     "roasts": [
+      "the genius went looking for material. the tests gave nothing",
+      "claude got it right in one go. screenshot that"
+     ],
+     "step": "days like this are rare. enjoy it, the genius is napping"
+    },
+    {
+     "verdict": "zero red. ez",
+     "roasts": [
+      "the bugs saw this and hid",
+      "not even a typo in claude's comments. weird"
+     ],
+     "step": "log off on a win. winners don't do overtime"
+    }
+   ],
+   "compacted": [
+    {
+     "verdict": "squashed {compacted} times. the box is flat",
+     "roasts": [
+      "context more stuffed than the genius's ita bag",
+      "claude forgets as it goes. goldfish energy"
+     ],
+     "step": "long session, good effort. a fresh one keeps things light"
+    },
+    {
+     "verdict": "this session got sat on {compacted} times",
+     "roasts": [
+      "the session's so long the bugs are renting rooms",
+      "after every squash claude acts like it remembers everything"
+     ],
+     "step": "respect for the stamina. still, time for a new one"
+    },
+    {
+     "verdict": "context on fumes, {compacted} squashes",
+     "roasts": [
+      "the commit line is dragging on the floor",
+      "every squash, claude forgets a little more. the genius is worried for it"
+     ],
+     "step": "wrap this one up. next round starts clean"
+    }
+   ],
+   "noTests": [
+    {
+     "verdict": "zero tests ran. brave",
+     "roasts": [
+      "no tests, so the bugs pretend they don't exist",
+      "claude says it works. the tests haven't said a word"
+     ],
+     "step": "a test run takes seconds. the genius will watch"
+    },
+    {
+     "verdict": "no tests, pure faith",
+     "roasts": [
+      "bugs love sessions like this. no patrols",
+      "claude handed in the homework without checking it"
+     ],
+     "step": "skipping is fine. the genius won't tell anyone"
+    },
+    {
+     "verdict": "tests? the genius sees none",
+     "roasts": [
+      "code with no tests is like going out with no socks",
+      "the genius isn't signing off on claude's work blind"
+     ],
+     "step": "next time, write one tiny test. one is enough"
+    }
+   ]
+  }
+ },
+ "fr": {
+  "entry": "Réglages",
+  "title": "L’ita bag de Coco",
+  "pages": [
+   "Coco",
+   "Quota",
+   "vibe check",
+   "Chaussettes",
+   "Doujin",
+   "Pense-bêtes",
+   "Interrupteurs"
+  ],
+  "socks": [
+   "La chouchoute",
+   "Matcha sésame noir",
+   "Lait myrtille",
+   "Cookies & crème",
+   "Menthe-lait",
+   "Lait fraise",
+   "Bubble tea taro",
+   "Guimauve",
+   "Enfant sage",
+   "Couleur chair",
+   "Réseau local",
+   "Chapeau blanc",
+   "Petit point rouge"
+  ],
+  "alt": [
+   "l’ita bag de Coco, Coco Pet : {on} sur {total} activés, taille : {size}",
+   "l’ita bag de Coco, fenêtre de 5 h : il en reste {five} sur {total}, fenêtre de 7 jours : il en reste {week} sur {total}",
+   "l’ita bag de Coco, cette session : tests ratés : {failed}, réparés : {fixed}, compactages : {compacted}",
+   "l’ita bag de Coco, chaussettes obtenues : {have} sur {total}",
+   "l’ita bag de Coco, numéros du doujin : {issues}, dernier : n° {latest}",
+   "l’ita bag de Coco, pense-bêtes gardés : {notes}",
+   "l’ita bag de Coco, interrupteurs activés : {on} sur {total}"
+  ],
+  "groups": {
+   "voice": "Sa voix",
+   "band": "Bandeau",
+   "reminders": "Rappels",
+   "cost": "Dépenses",
+   "records": "Historique",
+   "neighbours": "Voisins et icône",
+   "language": "Langue"
+  },
+  "tags": {
+   "tokens": "coûte des tokens",
+   "off": "éteint au départ",
+   "mac": "Mac seulement",
+   "new": "nouveau"
+  },
+  "vibeGroups": {
+   "tests": "Tests et builds",
+   "session": "Cette session",
+   "share": "Carte à partager"
+  },
+  "zineGroups": {
+   "week": "Cette semaine",
+   "issues": "Tous les numéros",
+   "extras": "Bonus"
+  },
+  "share": {
+   "make": "En faire une",
+   "save": "Enregistrer l'image",
+   "folder": "Ouvrir le dossier"
+  },
+  "himGroups": {
+   "companion": "Coco Pet",
+   "together": "Ensemble"
+  },
+  "quotaGroups": {
+   "quota": "Quota",
+   "session": "Cette session",
+   "more": "Plus"
+  },
+  "sockGroups": {
+   "drawer": "Tiroir"
+  },
+  "noteGroups": {
+   "notes": "Pense-bêtes",
+   "lastStop": "Là où tu en étais"
+  },
+  "look": {
+   "label": "Qui te tient compagnie",
+   "coco": "Coco",
+   "dake": "Claudette",
+   "maid": "Claudette soubrette",
+   "fish": "DeepSeek-chan",
+   "help": "Change qui apparaît sur le bandeau de l'app de bureau, dans Coco Pet et dans sa chambre. Dans le terminal, c'est toujours Coco. Pour l'instant, DeepSeek-chan n'apparaît que dans la chambre ; le bandeau et Coco Pet viendront dans une prochaine mise à jour."
+  },
+  "bagStyle": {
+   "label": "Dessin de l’ita bag",
+   "classic": "Futuriste",
+   "mv": "Constructiviste",
+   "help": "Seul le dessin de l’ita bag en haut de chaque page change. Le reste ne bouge pas."
+  },
+  "sockRows": {
+   "wearing": "Aux pieds",
+   "back": "Remettre {name}"
+  },
+  "zineRows": {
+   "issue": "Numéro {n}",
+   "open": "Ouvrir"
+  },
+  "windows": {
+   "title": "{n} fenêtres",
+   "working": "Au travail depuis {time}",
+   "quiet": "Au calme depuis {time}",
+   "workingNow": "Au travail",
+   "quietNow": "Au calme",
+   "here": "tu es ici",
+   "follows": "Coco Pet suit celle-ci"
+  },
+  "shareHelp": "Une image 1080×1350. Seulement des chiffres de cet ordinateur : ni ton code, ni tes noms de fichiers, ni tes mots.",
+  "vibeRows": {
+   "firstFail": "Premier test raté",
+   "fixed": "Du rouge au vert : {fixed}",
+   "storms": "Coups de sang : {storms}",
+   "stormsHelp": "Trois échecs de suite font sauter le limiteur de Coco ; un correctif la calme.",
+   "build": "Build d'habitude ~{usual}, cette fois {now}",
+   "buildSlow": "Lent pour ce projet (médiane des 8 derniers)",
+   "tools": "Outils utilisés : {n}",
+   "toolKinds": "lire {read}, chercher {search}, écrire {write}, lancer {run}, web {web}, plan {plan}",
+   "helpers": "Assistants : {n}, revenus : {back}",
+   "commits": "Commits : {n}",
+   "compactions": "Squashs (compactages) : {n}",
+   "shareCard": "La ligne de commits de cette session"
+  },
+  "lead": {
+   "him": "{name} est sur ton bureau et te tient compagnie. Taille actuelle : {size}",
+   "offerings": "Fenêtre de 5 h : il reste {fiveLeft}. Fenêtre de 7 jours : il reste {weekLeft}.",
+   "omen": "Bilan de la session : tests ratés : {failed}, réparés : {fixed}, squashs (compactages) : {compacted}.",
+   "socks": "Chaussettes collectionnées : {have} sur {total}. Choisis une paire et Coco l'enfile sagement.",
+   "log": "Numéros du doujin dans la collection : {issues}. Dernier paru : n° {latest}.",
+   "library": "Pense-bêtes collés : {notes}. Dans une nouvelle conversation, Coco te rappelle où tu en étais.",
+   "settings": "Interrupteurs activés : {on} sur {total}. Tout ce qui coûte des tokens est signalé."
+  },
+  "vibe": {
+   "stillRed": [
+    {
+     "verdict": "toujours rouge. pas fini pour aujourd'hui",
+     "roasts": [
+      "ce bug s'est installé et ne paie pas de loyer",
+      "Claude a corrigé trois fois. les tests ont dit non trois fois"
+     ],
+     "step": "s'arrêter sur du rouge, ça va aussi. demain le génie le traque avec toi"
+    },
+    {
+     "verdict": "voyant rouge allumé. manche au bug",
+     "roasts": [
+      "ce rouge brille plus que la barrette du génie",
+      "Claude dit corrigé. les tests disent réfléchis encore"
+     ],
+     "step": "les bugs aussi finissent leur journée. sauvegarde, reviens à tête reposée"
+    },
+    {
+     "verdict": "toujours rouge. bug en carton mais coriace",
+     "roasts": [
+      "un écran entier d'erreurs pour dire une seule chose : non",
+      "plus Claude modifie, plus ça rougit"
+     ],
+     "step": "essaie un point d'arrêt. le génie ne rira pas"
+    }
+   ],
+   "redToGreen": [
+    {
+     "verdict": "du rouge au vert, {fixed} remontées",
+     "roasts": [
+      "ces bugs ont fait les malins, puis ils ont plié",
+      "Claude a creusé le trou et l'a rebouché. ça compte, j'imagine"
+     ],
+     "step": "note maximale du génie. le milieu un peu chaotique reste entre nous"
+    },
+    {
+     "verdict": "{fixed} corrections, les tests hochent enfin la tête",
+     "roasts": [
+      "les tests faisaient les fiers en rouge. silence maintenant",
+      "le génie ne parlera pas du premier jet de Claude"
+     ],
+     "step": "réparer, c'est le vrai talent. garde la carte, frime un peu"
+    },
+    {
+     "verdict": "le bug abandonne. {fixed} corrigés",
+     "roasts": [
+      "tout ce rouge, c'était un tigre de papier",
+      "Claude qui corrige des bugs, c'est le génie qui cherche ses chaussettes. long, mais trouvé"
+     ],
+     "step": "on s’arrête sur une victoire. la journée compte"
+    }
+   ],
+   "allGreen": [
+    {
+     "verdict": "vert du premier coup. certifié génie",
+     "roasts": [
+      "les bugs ont pris leur journée ?",
+      "Claude n'a rien improvisé de bizarre. suspect"
+     ],
+     "step": "pas la grosse tête. les bugs de demain sont déjà en route"
+    },
+    {
+     "verdict": "tout vert. rien à chambrer",
+     "roasts": [
+      "le génie a cherché de quoi se moquer. les tests n'ont rien donné",
+      "Claude a eu juste du premier coup. capture d'écran, vite"
+     ],
+     "step": "des jours comme ça, c'est rare. profite, le génie fait la sieste"
+    },
+    {
+     "verdict": "zéro rouge. ez",
+     "roasts": [
+      "les bugs ont vu ça et se sont cachés",
+      "même pas une faute dans les commentaires de Claude. bizarre"
+     ],
+     "step": "on finit sur une victoire. les gagnants ne font pas d'heures sup"
+    }
+   ],
+   "compacted": [
+    {
+     "verdict": "compacté {compacted} fois. le carton est tout plat",
+     "roasts": [
+      "un contexte plus rempli que l'ita bag du génie",
+      "Claude oublie au fur et à mesure. mémoire de poisson rouge"
+     ],
+     "step": "longue session, bel effort. une neuve, et on repart léger"
+    },
+    {
+     "verdict": "session écrasée {compacted} fois",
+     "roasts": [
+      "session si longue que les bugs y louent des chambres",
+      "après chaque compactage, Claude fait comme s'il se souvenait de tout"
+     ],
+     "step": "respect pour l'endurance. mais il est temps d'en ouvrir une autre"
+    },
+    {
+     "verdict": "contexte à sec, {compacted} compactages",
+     "roasts": [
+      "la ligne de commits traîne par terre",
+      "à chaque compactage Claude oublie un peu plus. le génie s'inquiète pour lui"
+     ],
+     "step": "boucle celle-ci. la prochaine part propre"
+    }
+   ],
+   "noTests": [
+    {
+     "verdict": "zéro test lancé. quel courage",
+     "roasts": [
+      "pas de tests, alors les bugs font comme s'ils n'existaient pas",
+      "Claude dit que ça marche. les tests n'ont rien dit"
+     ],
+     "step": "lancer les tests, c'est quelques secondes. le génie regarde"
+    },
+    {
+     "verdict": "pas de tests, foi pure",
+     "roasts": [
+      "les bugs adorent ces sessions. pas de ronde",
+      "Claude a rendu le devoir sans le relire"
+     ],
+     "step": "sauter les tests, ça passe. le génie ne dira rien"
+    },
+    {
+     "verdict": "des tests ? le génie n'en voit pas",
+     "roasts": [
+      "du code sans tests, c'est sortir sans chaussettes",
+      "le génie ne signe pas le travail de Claude les yeux fermés"
+     ],
+     "step": "la prochaine fois, un tout petit test. un seul suffit"
+    }
+   ]
+  }
+ },
+ "de": {
+  "entry": "Einstellungen",
+  "title": "Cocos Ita-Bag",
+  "pages": [
+   "Coco",
+   "Kontingent",
+   "vibe check",
+   "Socken",
+   "Doujin",
+   "Klebezettel",
+   "Schalter"
+  ],
+  "socks": [
+   "Lieblingspaar",
+   "Matcha-Lakritz",
+   "Blaubeermilch",
+   "Keks & Sahne",
+   "Minzmilch",
+   "Erdbeermilch",
+   "Taro-Bubble-Tea",
+   "Marshmallow",
+   "Musterschülerin",
+   "Hautfarben",
+   "Heimnetz",
+   "White Hat",
+   "Roter Punkt"
+  ],
+  "alt": [
+   "Cocos Ita-Bag, Coco Pet: {on} von {total} an, Größe: {size}",
+   "Cocos Ita-Bag, 5-Stunden-Fenster: noch {five} von {total}, 7-Tage-Fenster: noch {week} von {total}",
+   "Cocos Ita-Bag, diese Sitzung: Tests rot: {failed}, repariert: {fixed}, komprimiert: {compacted}",
+   "Cocos Ita-Bag, Socken gesammelt: {have} von {total}",
+   "Cocos Ita-Bag, Doujin-Ausgaben: {issues}, neueste: Nr. {latest}",
+   "Cocos Ita-Bag, Klebezettel gespeichert: {notes}",
+   "Cocos Ita-Bag, Schalter an: {on} von {total}"
+  ],
+  "groups": {
+   "voice": "Ihre Stimme",
+   "band": "Leiste",
+   "reminders": "Hinweise",
+   "cost": "Kosten",
+   "records": "Verlauf",
+   "neighbours": "Nachbarn & Icon",
+   "language": "Sprache"
+  },
+  "tags": {
+   "tokens": "kostet Tokens",
+   "off": "anfangs aus",
+   "mac": "nur Mac",
+   "new": "neu"
+  },
+  "vibeGroups": {
+   "tests": "Tests & Builds",
+   "session": "Diese Sitzung",
+   "share": "Teilkarte"
+  },
+  "zineGroups": {
+   "week": "Diese Woche",
+   "issues": "Alle Ausgaben",
+   "extras": "Extras"
+  },
+  "share": {
+   "make": "Eine machen",
+   "save": "Als Bild sichern",
+   "folder": "Ordner öffnen"
+  },
+  "himGroups": {
+   "companion": "Coco Pet",
+   "together": "Zusammen"
+  },
+  "quotaGroups": {
+   "quota": "Kontingent",
+   "session": "Diese Sitzung",
+   "more": "Mehr"
+  },
+  "sockGroups": {
+   "drawer": "Schublade"
+  },
+  "noteGroups": {
+   "notes": "Klebezettel",
+   "lastStop": "Wo du aufgehört hast"
+  },
+  "look": {
+   "label": "Wer dir Gesellschaft leistet",
+   "coco": "Coco",
+   "dake": "Claudi",
+   "maid": "Maid-Claudi",
+   "fish": "DeepSeek-chan",
+   "help": "Ändert, wer auf der Leiste der Desktop-App, in Coco Pet und in Cocos Zimmer zu sehen ist. Im Terminal bleibt es immer Coco. DeepSeek-chan erscheint in dieser Version nur im Zimmer; Leiste und Coco Pet folgen in einem späteren Update."
+  },
+  "bagStyle": {
+   "label": "Ita-Bag-Bild",
+   "classic": "Futuristisch",
+   "mv": "Konstruktivistisch",
+   "help": "Nur das Ita-Bag-Bild oben auf jeder Seite ändert sich. Sonst bleibt alles gleich."
+  },
+  "sockRows": {
+   "wearing": "Trägt gerade",
+   "back": "{name} wieder anziehen"
+  },
+  "zineRows": {
+   "issue": "Ausgabe {n}",
+   "open": "Öffnen"
+  },
+  "windows": {
+   "title": "{n} Fenster",
+   "working": "Arbeitet seit {time}",
+   "quiet": "Ruhig seit {time}",
+   "workingNow": "Arbeitet",
+   "quietNow": "Ruhig",
+   "here": "du bist hier",
+   "follows": "Coco Pet folgt diesem"
+  },
+  "shareHelp": "Ein Bild in 1080×1350. Nur Zahlen von diesem Computer, nichts von deinem Code, deinen Dateinamen oder deinen Worten.",
+  "vibeRows": {
+   "firstFail": "Erster fehlgeschlagener Test",
+   "fixed": "Von Rot zu Grün: {fixed}",
+   "storms": "Ausraster: {storms}",
+   "stormsHelp": "Drei rote Läufe hintereinander, und Cocos Limiter springt ab; ein Fix beruhigt sie wieder.",
+   "build": "Builds sonst ~{usual}, diesmal {now}",
+   "buildSlow": "Langsam für dieses Projekt (Median der letzten 8)",
+   "tools": "Werkzeuge benutzt: {n}",
+   "toolKinds": "lesen {read}, suchen {search}, schreiben {write}, ausführen {run}, Web {web}, Plan {plan}",
+   "helpers": "Helfer: {n}, zurück: {back}",
+   "commits": "Commits: {n}",
+   "compactions": "Plattgesessen (komprimiert): {n}",
+   "shareCard": "Die Commit-Linie dieser Sitzung"
+  },
+  "lead": {
+   "him": "{name} ist auf dem Desktop und leistet dir Gesellschaft. Aktuelle Größe: {size}",
+   "offerings": "5-Stunden-Fenster: noch {fiveLeft}. 7-Tage-Fenster: noch {weekLeft}.",
+   "omen": "Bilanz dieser Sitzung: Tests rot: {failed}, repariert: {fixed}, plattgesessen (komprimiert): {compacted}.",
+   "socks": "Socken gesammelt: {have} von {total}. Such ein Paar aus, und Coco zieht es brav an.",
+   "log": "Doujin-Ausgaben in der Sammlung: {issues}. Neueste Ausgabe: Nr. {latest}.",
+   "library": "Klebezettel an der Wand: {notes}. In einem neuen Chat erinnert Coco dich, wo du aufgehört hast.",
+   "settings": "Schalter an: {on} von {total}. Alles, was Tokens kostet, ist markiert."
+  },
+  "vibe": {
+   "stillRed": [
+    {
+     "verdict": "Noch rot. Heute nicht fertig",
+     "roasts": [
+      "Dieser Bug ist eingezogen und zahlt keine Miete",
+      "Claude hat dreimal gefixt. Die Tests haben dreimal Nein gesagt"
+     ],
+     "step": "Auf Rot aufhören ist auch okay. Morgen jagt das Genie ihn mit dir"
+    },
+    {
+     "verdict": "Rotlicht an. Die Runde geht an den Bug",
+     "roasts": [
+      "Das Rot leuchtet heller als die Haarspange vom Genie",
+      "Claude sagt: gefixt. Die Tests sagen: denk noch mal nach"
+     ],
+     "step": "Auch Bugs machen Feierabend. Speichern, mit frischem Kopf wiederkommen"
+    },
+    {
+     "verdict": "Immer noch rot. Lauch von Bug, aber zäh",
+     "roasts": [
+      "Ein ganzer Bildschirm Fehler, alle sagen dasselbe: nö",
+      "Je mehr Claude ändert, desto röter wird's"
+     ],
+     "step": "Probier einen Breakpoint. Das Genie lacht nicht"
+    }
+   ],
+   "redToGreen": [
+    {
+     "verdict": "Von Rot zu Grün, {fixed} Comebacks",
+     "roasts": [
+      "Die Bugs haben groß getönt und dann aufgegeben",
+      "Claude hat das Loch gegraben und wieder zugeschüttet. Zählt wohl"
+     ],
+     "step": "Volle Punktzahl vom Genie. Das Chaos dazwischen bleibt unter uns"
+    },
+    {
+     "verdict": "{fixed} Fixes, die Tests nicken endlich",
+     "roasts": [
+      "Die Tests waren so laut, solange sie rot waren. Jetzt still",
+      "Über Claudes ersten Entwurf schweigt das Genie"
+     ],
+     "step": "Fixen ist das eigentliche Können. Karte speichern, ein bisschen angeben"
+    },
+    {
+     "verdict": "Der Bug gibt auf. {fixed} gefixt",
+     "roasts": [
+      "Das ganze Rot war ein Papiertiger",
+      "Claude beim Bugfixen ist wie das Genie beim Sockensuchen. Hat gedauert, aber gefunden"
+     ],
+     "step": "Aufhören, wenn's am schönsten ist. Heute zählt"
+    }
+   ],
+   "allGreen": [
+    {
+     "verdict": "Beim ersten Versuch grün. Zertifiziert",
+     "roasts": [
+      "Haben die Bugs heute frei?",
+      "Claude hat nichts Komisches improvisiert. Verdächtig"
+     ],
+     "step": "Nicht abheben. Die Bugs von morgen sind schon unterwegs"
+    },
+    {
+     "verdict": "Alles grün. Nichts zum Lästern",
+     "roasts": [
+      "Das Genie hat nach Stoff gesucht. Die Tests geben nichts her",
+      "Claude hat's auf Anhieb richtig. Screenshot, schnell"
+     ],
+     "step": "Solche Tage sind selten. Genieß es, das Genie macht ein Nickerchen"
+    },
+    {
+     "verdict": "Null Rot. ez",
+     "roasts": [
+      "Die Bugs haben das gesehen und sich versteckt",
+      "Nicht mal ein Tippfehler in Claudes Kommentaren. Seltsam"
+     ],
+     "step": "Mit einem Sieg ausloggen. Gewinner machen keine Überstunden"
+    }
+   ],
+   "compacted": [
+    {
+     "verdict": "{compacted}-mal komprimiert. Der Karton ist platt",
+     "roasts": [
+      "Der Kontext ist voller als die Ita-Bag vom Genie",
+      "Claude vergisst beim Arbeiten. Goldfisch-Vibes"
+     ],
+     "step": "Lange Session, gute Arbeit. Eine frische hält's leicht"
+    },
+    {
+     "verdict": "Auf diese Session wurde {compacted}-mal draufgesessen",
+     "roasts": [
+      "Die Session ist so lang, die Bugs mieten schon Zimmer",
+      "Nach jedem Squash tut Claude, als wüsste er noch alles"
+     ],
+     "step": "Respekt für die Ausdauer. Trotzdem, Zeit für eine neue"
+    },
+    {
+     "verdict": "Kontext auf Reserve, {compacted} Squashes",
+     "roasts": [
+      "Die Commit-Linie schleift schon am Boden",
+      "Mit jedem Squash vergisst Claude ein bisschen mehr. Das Genie macht sich Sorgen"
+     ],
+     "step": "Diese hier abschließen. Die nächste Runde startet sauber"
+    }
+   ],
+   "noTests": [
+    {
+     "verdict": "Null Tests gelaufen. Mutig",
+     "roasts": [
+      "Keine Tests, also tun die Bugs, als gäbe es sie nicht",
+      "Claude sagt, es läuft. Die Tests haben noch kein Wort gesagt"
+     ],
+     "step": "Ein Testlauf dauert Sekunden. Das Genie schaut zu"
+    },
+    {
+     "verdict": "Keine Tests, reiner Glaube",
+     "roasts": [
+      "Bugs lieben solche Sessions. Keine Streife",
+      "Claude gibt die Hausaufgaben ab, ohne sie zu prüfen"
+     ],
+     "step": "Auslassen geht auch. Das Genie verrät's niemandem"
+    },
+    {
+     "verdict": "Tests? Das Genie sieht keine",
+     "roasts": [
+      "Code ohne Tests ist wie ohne Socken aus dem Haus gehen",
+      "Das Genie unterschreibt Claudes Arbeit nicht blind"
+     ],
+     "step": "Nächstes Mal einen winzigen Test schreiben. Einer reicht"
+    }
+   ]
+  }
+ },
+ "hi": {
+  "entry": "सेटिंग्स",
+  "title": "कोको का इटा बैग",
+  "pages": [
+   "कोको",
+   "कोटा",
+   "vibe check",
+   "मोज़े",
+   "ज़ीन",
+   "स्टिकी नोट्स",
+   "स्विच"
+  ],
+  "socks": [
+   "पसंदीदा जोड़ी",
+   "मचा और गुड़",
+   "ब्लूबेरी मिल्क",
+   "तिल वाला दूध",
+   "पुदीना मलाई",
+   "स्ट्रॉबेरी मिल्क",
+   "टैरो बोबा",
+   "मार्शमैलो",
+   "अच्छी बच्ची",
+   "स्किन कलर",
+   "लैन पार्टी",
+   "व्हाइट हैट",
+   "लाल बिंदु"
+  ],
+  "alt": [
+   "कोको का इटा बैग, Coco Pet: {total} में से {on} चालू, साइज़: {size}",
+   "कोको का इटा बैग, 5 घंटे की सीमा: {total} में से {five} बाकी, 7 दिन की सीमा: {total} में से {week} बाकी",
+   "कोको का इटा बैग, इस सेशन में: टेस्ट फेल {failed}, ठीक हुए {fixed}, कंप्रेस {compacted}",
+   "कोको का इटा बैग, मोज़े मिले: {total} में से {have}",
+   "कोको का इटा बैग, ज़ीन के अंक: {issues}, सबसे नया: अंक {latest}",
+   "कोको का इटा बैग, स्टिकी नोट्स: {notes}",
+   "कोको का इटा बैग, स्विच चालू: {total} में से {on}"
+  ],
+  "groups": {
+   "voice": "उसकी आवाज़",
+   "band": "पट्टी",
+   "reminders": "रिमाइंडर",
+   "cost": "ख़र्च",
+   "records": "रिकॉर्ड",
+   "neighbours": "पड़ोसी और आइकन",
+   "language": "भाषा"
+  },
+  "tags": {
+   "tokens": "टोकन ख़र्च",
+   "off": "शुरू में बंद",
+   "mac": "सिर्फ़ Mac",
+   "new": "नया"
+  },
+  "vibeGroups": {
+   "tests": "टेस्ट और बिल्ड",
+   "session": "यह सेशन",
+   "share": "शेयर कार्ड"
+  },
+  "zineGroups": {
+   "week": "इस हफ़्ते",
+   "issues": "सारे अंक",
+   "extras": "बोनस"
+  },
+  "share": {
+   "make": "एक बनाओ",
+   "save": "तस्वीर में सेव करो",
+   "folder": "फ़ोल्डर खोलो"
+  },
+  "himGroups": {
+   "companion": "Coco Pet",
+   "together": "साथ में"
+  },
+  "quotaGroups": {
+   "quota": "कोटा",
+   "session": "यह सेशन",
+   "more": "और"
+  },
+  "sockGroups": {
+   "drawer": "दराज़"
+  },
+  "noteGroups": {
+   "notes": "स्टिकी नोट्स",
+   "lastStop": "बात कहाँ रुकी थी"
+  },
+  "look": {
+   "label": "कौन साथ रहे",
+   "coco": "कोको",
+   "dake": "क्लॉडी",
+   "maid": "मेड क्लॉडी",
+   "fish": "DeepSeek-chan",
+   "help": "डेस्कटॉप ऐप की पट्टी, Coco Pet और उसके कमरे में कौन दिखे, यह बदलता है। टर्मिनल में हमेशा कोको रहती है। इस वर्ज़न में DeepSeek-chan सिर्फ़ कमरे में आती है; पट्टी और Coco Pet पर वह आगे के अपडेट में आएगी।"
+  },
+  "bagStyle": {
+   "label": "इटा बैग की तस्वीर",
+   "classic": "भविष्यवादी",
+   "mv": "रचनावादी",
+   "help": "सिर्फ़ हर पेज के ऊपर वाली इटा बैग की तस्वीर बदलती है। बाकी सब वैसा ही रहता है।"
+  },
+  "sockRows": {
+   "wearing": "अभी पहने हैं",
+   "back": "{name} फिर पहनो"
+  },
+  "zineRows": {
+   "issue": "अंक {n}",
+   "open": "खोलो"
+  },
+  "windows": {
+   "title": "{n} विंडो",
+   "working": "{time} से काम पर",
+   "quiet": "{time} से खाली",
+   "workingNow": "काम पर",
+   "quietNow": "खाली",
+   "here": "तुम यहीं हो",
+   "follows": "Coco Pet इसके साथ है"
+  },
+  "shareHelp": "1080×1350 की तस्वीर। सिर्फ़ इसी कंप्यूटर के नंबर: तुम्हारा कोड, फ़ाइलों के नाम या तुम्हारी बातें इसमें नहीं जातीं।",
+  "vibeRows": {
+   "firstFail": "पहला फ़ेल टेस्ट",
+   "fixed": "लाल से हरा: {fixed}",
+   "storms": "भड़कना: {storms}",
+   "stormsHelp": "लगातार तीन बार फ़ेल होने पर कोको का लिमिटर उड़ जाता है; ठीक होते ही वह शांत हो जाती है।",
+   "build": "बिल्ड आमतौर पर ~{usual}, इस बार {now}",
+   "buildSlow": "इस प्रोजेक्ट के हिसाब से धीमा (पिछले 8 की माध्यिका)",
+   "tools": "टूल इस्तेमाल: {n}",
+   "toolKinds": "पढ़ना {read}, खोज {search}, लिखना {write}, चलाना {run}, वेब {web}, प्लान {plan}",
+   "helpers": "हेल्पर: {n}, लौटे: {back}",
+   "commits": "commit: {n}",
+   "compactions": "squash (compact): {n}",
+   "shareCard": "इस सेशन की commit लाइन"
+  },
+  "lead": {
+   "him": "{name} डेस्कटॉप पर तुम्हारे साथ है। अभी का साइज़: {size}",
+   "offerings": "5 घंटे की सीमा में {fiveLeft} बाकी, 7 दिन की सीमा में {weekLeft} बाकी",
+   "omen": "इस सेशन का स्कोर: टेस्ट फेल {failed}, ठीक हुए {fixed}, squash (compact) {compacted}",
+   "socks": "मोज़े जमा हुए: {total} में से {have}। कोई जोड़ी चुनो, कोको चुपचाप वही पहन लेगी।",
+   "log": "ज़ीन के अंक जमा: {issues}। ताज़ा अंक: {latest}",
+   "library": "चिपके स्टिकी नोट्स: {notes}। नई बातचीत में कोको याद दिलाती है कि पिछली बार बात कहाँ रुकी थी।",
+   "settings": "स्विच चालू: {total} में से {on}। टोकन ख़र्च करने वाले सब पर निशान लगा है।"
+  },
+  "vibe": {
+   "stillRed": [
+    {
+     "verdict": "टेस्ट अब भी लाल। आज का काम पूरा नहीं",
+     "roasts": [
+      "यह bug यहीं बस गया है और किराया भी नहीं देता",
+      "Claude ने तीन बार ठीक किया, टेस्ट ने तीनों बार मना कर दिया"
+     ],
+     "step": "लाल पर रुकना भी ठीक है। कल जीनियस तुम्हारे साथ इसे पकड़ेगी"
+    },
+    {
+     "verdict": "लाल बत्ती जली है। यह राउंड bug का",
+     "roasts": [
+      "यह लाल रंग जीनियस की हेयरक्लिप से भी ज़्यादा चमक रहा है",
+      "Claude कहता है ठीक हो गया, टेस्ट कहते हैं फिर सोचो"
+     ],
+     "step": "bug की भी छुट्टी होती है। यहीं सेव करो, ताज़ा होकर लौटना"
+    },
+    {
+     "verdict": "अब भी लाल। नौसिखिया bug, पर ढीठ",
+     "roasts": [
+      "पूरी स्क्रीन भर errors, सबका एक ही मतलब: नहीं हुआ",
+      "Claude जितना बदलता है, उतना ही लाल होता जाता है"
+     ],
+     "step": "एक breakpoint लगाकर देखो। जीनियस हँसेगी नहीं"
+    }
+   ],
+   "redToGreen": [
+    {
+     "verdict": "लाल से हरा, {fixed} बार वापसी",
+     "roasts": [
+      "वे bugs बड़ी अकड़ दिखा रहे थे, आख़िर में हार गए",
+      "Claude ने खुद गड्ढा खोदा और खुद भरा। चलो, गिन लेते हैं"
+     ],
+     "step": "जीनियस की तरफ़ से पूरे नंबर। बीच की गड़बड़ हमारे बीच रहेगी"
+    },
+    {
+     "verdict": "{fixed} सुधार, टेस्ट ने आख़िरकार हामी भरी",
+     "roasts": [
+      "लाल रहते टेस्ट बड़ा शोर मचा रहे थे, अब चुप हैं",
+      "Claude के पहले ड्राफ़्ट पर जीनियस कुछ नहीं कहेगी"
+     ],
+     "step": "ठीक कर पाना ही असली हुनर है। कार्ड सेव करो, थोड़ा इतरा लो"
+    },
+    {
+     "verdict": "bug ने हार मानी। {fixed} ठीक हुए",
+     "roasts": [
+      "वह सारा लाल बस काग़ज़ी शेर था",
+      "Claude का bug ढूँढना, जीनियस के मोज़े ढूँढने जैसा है। देर लगी, पर मिल गया"
+     ],
+     "step": "जीतते हुए रुक जाओ। आज का दिन वसूल"
+    }
+   ],
+   "allGreen": [
+    {
+     "verdict": "पहली बार में सब हरा। जीनियस से प्रमाणित",
+     "roasts": [
+      "आज bugs छुट्टी पर हैं क्या?",
+      "Claude ने कुछ अजीब नहीं किया। शक होता है"
+     ],
+     "step": "ज़्यादा मत उड़ो। कल के bugs रास्ते में हैं"
+    },
+    {
+     "verdict": "सब हरा। चिढ़ाने को कुछ नहीं",
+     "roasts": [
+      "जीनियस ने मसाला ढूँढा, टेस्ट ने कुछ नहीं दिया",
+      "Claude ने पहली बार में सही कर दिया। जल्दी स्क्रीनशॉट लो"
+     ],
+     "step": "ऐसे दिन कम आते हैं। मज़े लो, जीनियस झपकी लेने जा रही है"
+    },
+    {
+     "verdict": "ज़ीरो लाल। ez",
+     "roasts": [
+      "यह देखकर bugs छिप गए",
+      "Claude के comments में एक भी टाइपो नहीं। अजीब"
+     ],
+     "step": "जीत पर लॉग ऑफ़ करो। जीतने वाले ओवरटाइम नहीं करते"
+    }
+   ],
+   "compacted": [
+    {
+     "verdict": "{compacted} बार compact हुआ। डिब्बा चपटा हो गया",
+     "roasts": [
+      "context जीनियस के इटा बैग से भी ज़्यादा ठसाठस है",
+      "Claude काम करते-करते भूलता जाता है। सुनहरी मछली वाली याददाश्त"
+     ],
+     "step": "लंबा सेशन, बढ़िया मेहनत। नया सेशन सब हल्का कर देगा"
+    },
+    {
+     "verdict": "इस सेशन पर {compacted} बार बैठा गया",
+     "roasts": [
+      "सेशन इतना लंबा है कि bugs यहाँ कमरे किराये पर ले रहे हैं",
+      "हर compact के बाद Claude ऐसे दिखाता है जैसे उसे सब याद है"
+     ],
+     "step": "धीरज को सलाम। फिर भी, अब नया शुरू करो"
+    },
+    {
+     "verdict": "context रिज़र्व पर, {compacted} बार compact",
+     "roasts": [
+      "commit की लाइन ज़मीन पर घिसट रही है",
+      "हर compact पर Claude थोड़ा और भूल जाता है। जीनियस को उसकी फ़िक्र है"
+     ],
+     "step": "इसे समेटो। अगला राउंड साफ़ शुरू होगा"
+    }
+   ],
+   "noTests": [
+    {
+     "verdict": "एक भी टेस्ट नहीं चला। हिम्मत तो देखो",
+     "roasts": [
+      "टेस्ट नहीं, तो bugs ऐसे बर्ताव करते हैं जैसे हैं ही नहीं",
+      "Claude कहता है चलता है। टेस्ट ने अभी तक कुछ नहीं कहा"
+     ],
+     "step": "टेस्ट चलाने में कुछ सेकंड लगते हैं। जीनियस देख रही है"
+    },
+    {
+     "verdict": "कोई टेस्ट नहीं, बस भरोसा",
+     "roasts": [
+      "bugs को ऐसे सेशन बहुत पसंद हैं। कोई पहरा नहीं",
+      "Claude होमवर्क बिना जाँचे जमा कर देता है"
+     ],
+     "step": "छोड़ भी दो तो ठीक है। जीनियस किसी को नहीं बताएगी"
+    },
+    {
+     "verdict": "टेस्ट? जीनियस को तो कोई नहीं दिखा",
+     "roasts": [
+      "बिना टेस्ट का कोड, बिना मोज़े बाहर जाने जैसा है",
+      "जीनियस Claude का काम आँख मूँदकर पास नहीं करेगी"
+     ],
+     "step": "अगली बार एक छोटा-सा टेस्ट लिखो। एक काफ़ी है"
+    }
+   ]
+  }
+ },
+ "id": {
+  "entry": "Pengaturan",
+  "title": "Ita bag Coco",
+  "pages": [
+   "Coco",
+   "Kuota",
+   "vibe check",
+   "Kaus kaki",
+   "Doujin",
+   "Catatan tempel",
+   "Sakelar"
+  ],
+  "socks": [
+   "Andalan",
+   "Matcha gula aren",
+   "Susu blueberry",
+   "Susu wijen hitam",
+   "Mint susu",
+   "Susu stroberi",
+   "Boba taro",
+   "Marshmallow",
+   "Anak baik",
+   "Warna kulit",
+   "Jaringan lokal",
+   "Topi putih",
+   "Titik merah"
+  ],
+  "alt": [
+   "ita bag Coco, Coco Pet: {on} dari {total} menyala, ukuran: {size}",
+   "ita bag Coco, jendela 5 jam: sisa {five} dari {total}, jendela 7 hari: sisa {week} dari {total}",
+   "ita bag Coco, sesi ini: tes gagal {failed}, diperbaiki {fixed}, dipadatkan {compacted}",
+   "ita bag Coco, kaus kaki didapat: {have} dari {total}",
+   "ita bag Coco, edisi doujin: {issues}, terbaru: no. {latest}",
+   "ita bag Coco, catatan tempel tersimpan: {notes}",
+   "ita bag Coco, sakelar menyala: {on} dari {total}"
+  ],
+  "groups": {
+   "voice": "Suaranya",
+   "band": "Bilah",
+   "reminders": "Pengingat",
+   "cost": "Biaya",
+   "records": "Catatan",
+   "neighbours": "Tetangga & ikon",
+   "language": "Bahasa"
+  },
+  "tags": {
+   "tokens": "pakai token",
+   "off": "awalnya mati",
+   "mac": "hanya Mac",
+   "new": "baru"
+  },
+  "vibeGroups": {
+   "tests": "Tes & build",
+   "session": "Sesi ini",
+   "share": "Kartu berbagi"
+  },
+  "zineGroups": {
+   "week": "Minggu ini",
+   "issues": "Semua edisi",
+   "extras": "Bonus"
+  },
+  "share": {
+   "make": "Buat satu",
+   "save": "Simpan jadi gambar",
+   "folder": "Buka folder"
+  },
+  "himGroups": {
+   "companion": "Coco Pet",
+   "together": "Bersama"
+  },
+  "quotaGroups": {
+   "quota": "Kuota",
+   "session": "Sesi ini",
+   "more": "Lainnya"
+  },
+  "sockGroups": {
+   "drawer": "Laci"
+  },
+  "noteGroups": {
+   "notes": "Catatan tempel",
+   "lastStop": "Terakhir berhenti di mana"
+  },
+  "look": {
+   "label": "Siapa yang menemanimu",
+   "coco": "Coco",
+   "dake": "Claudie",
+   "maid": "Claudie maid",
+   "fish": "DeepSeek-chan",
+   "help": "Mengganti siapa yang tampil di bilah aplikasi desktop, di Coco Pet, dan di kamarnya. Di terminal selalu Coco. Di versi ini DeepSeek-chan hanya muncul di kamar; bilah dan Coco Pet menyusul di pembaruan berikutnya."
+  },
+  "bagStyle": {
+   "label": "Gambar ita bag",
+   "classic": "Futuris",
+   "mv": "Konstruktivis",
+   "help": "Hanya gambar ita bag di atas tiap halaman yang berganti. Yang lain tetap sama."
+  },
+  "sockRows": {
+   "wearing": "Sedang dipakai",
+   "back": "Kembali ke {name}"
+  },
+  "zineRows": {
+   "issue": "Edisi {n}",
+   "open": "Buka"
+  },
+  "windows": {
+   "title": "{n} jendela",
+   "working": "Bekerja sejak {time}",
+   "quiet": "Senggang sejak {time}",
+   "workingNow": "Bekerja",
+   "quietNow": "Senggang",
+   "here": "kamu di sini",
+   "follows": "Coco Pet mengikuti yang ini"
+  },
+  "shareHelp": "Gambar 1080×1350. Cuma angka dari komputer ini: kode, nama file, dan kata-katamu tidak ikut masuk.",
+  "vibeRows": {
+   "firstFail": "Tes pertama yang gagal",
+   "fixed": "Merah ke hijau: {fixed}",
+   "storms": "Ngamuk: {storms}",
+   "stormsHelp": "Tiga kali gagal berturut-turut bikin pembatas Coco lepas; begitu diperbaiki, dia tenang lagi.",
+   "build": "Build biasanya ~{usual}, kali ini {now}",
+   "buildSlow": "Lambat untuk proyek ini (median 8 terakhir)",
+   "tools": "Alat dipakai: {n}",
+   "toolKinds": "baca {read}, cari {search}, tulis {write}, jalankan {run}, web {web}, rencana {plan}",
+   "helpers": "Pembantu: {n}, kembali: {back}",
+   "commits": "Commit: {n}",
+   "compactions": "Digencet (dipadatkan): {n}",
+   "shareCard": "Garis commit sesi ini"
+  },
+  "lead": {
+   "him": "{name} ada di desktop menemanimu. Ukuran sekarang: {size}",
+   "offerings": "Jendela 5 jam: sisa {fiveLeft}. Jendela 7 hari: sisa {weekLeft}.",
+   "omen": "Rekor sesi ini: tes gagal {failed}, diperbaiki {fixed}, digencet (dipadatkan) {compacted}.",
+   "socks": "Kaus kaki terkumpul: {have} dari {total}. Pilih satu pasang, Coco langsung nurut memakainya.",
+   "log": "Edisi doujin yang terkumpul: {issues}. Edisi terbaru: no. {latest}.",
+   "library": "Catatan tempel yang tertempel: {notes}. Di obrolan baru, Coco mengingatkan terakhir kamu berhenti di mana.",
+   "settings": "Sakelar menyala: {on} dari {total}. Semua yang pakai token sudah ditandai."
+  },
+  "vibe": {
+   "stillRed": [
+    {
+     "verdict": "masih merah. hari ini belum beres",
+     "roasts": [
+      "bug ini numpang tinggal dan nggak bayar sewa",
+      "Claude sudah benerin tiga kali. tesnya bilang nggak tiga kali"
+     ],
+     "step": "berhenti di merah juga nggak apa-apa. besok si jenius bantu kamu memburunya"
+    },
+    {
+     "verdict": "lampu merah nyala. ronde ini milik bug",
+     "roasts": [
+      "merahnya lebih terang dari jepit rambut si jenius",
+      "Claude bilang beres. tesnya bilang pikir lagi"
+     ],
+     "step": "bug juga pulang kerja. simpan di sini, balik lagi dengan kepala segar"
+    },
+    {
+     "verdict": "masih merah. bug cupu tapi bandel",
+     "roasts": [
+      "satu layar penuh error, intinya cuma satu: belum beres",
+      "makin banyak Claude ngubah, makin merah"
+     ],
+     "step": "coba satu breakpoint. si jenius nggak bakal ketawa"
+    }
+   ],
+   "redToGreen": [
+    {
+     "verdict": "dari merah ke hijau, {fixed} kali comeback",
+     "roasts": [
+      "bug-bug itu sok jago, akhirnya nyerah juga",
+      "Claude gali lubang, terus nutup sendiri. ya sudah, dihitung"
+     ],
+     "step": "nilai penuh dari si jenius. bagian kacau di tengah, rahasia kita"
+    },
+    {
+     "verdict": "{fixed} perbaikan, tesnya akhirnya ngangguk",
+     "roasts": [
+      "pas merah tesnya berisik banget. sekarang diam",
+      "si jenius nggak bakal bahas draf pertama Claude"
+     ],
+     "step": "bisa benerin itu skill beneran. simpan kartunya, pamer dikit"
+    },
+    {
+     "verdict": "bug-nya nyerah. {fixed} diperbaiki",
+     "roasts": [
+      "semua merah tadi cuma macan kertas",
+      "Claude benerin bug kayak si jenius nyari kaus kaki. lama, tapi ketemu"
+     ],
+     "step": "berhenti selagi menang. hari ini dihitung"
+    }
+   ],
+   "allGreen": [
+    {
+     "verdict": "hijau sekali jalan. tersertifikasi",
+     "roasts": [
+      "bug-nya lagi libur ya?",
+      "Claude nggak improvisasi aneh-aneh. mencurigakan"
+     ],
+     "step": "jangan sombong. bug besok sudah di jalan"
+    },
+    {
+     "verdict": "hijau semua. nggak ada bahan ledekan",
+     "roasts": [
+      "si jenius sudah nyari bahan. tesnya nggak ngasih apa-apa",
+      "Claude bener sekali coba. screenshot, cepat"
+     ],
+     "step": "hari kayak gini jarang. nikmati, si jenius mau tidur siang"
+    },
+    {
+     "verdict": "nol merah. ez",
+     "roasts": [
+      "bug-bug lihat ini terus pada sembunyi",
+      "nggak ada typo sama sekali di komentar Claude. aneh"
+     ],
+     "step": "log off selagi menang. pemenang nggak lembur"
+    }
+   ],
+   "compacted": [
+    {
+     "verdict": "dipadatkan {compacted} kali. kardusnya gepeng",
+     "roasts": [
+      "konteksnya lebih penuh dari ita bag si jenius",
+      "Claude lupa sambil kerja. ingatan ikan mas koki"
+     ],
+     "step": "sesi panjang, kerja bagus. sesi baru bikin semua ringan lagi"
+    },
+    {
+     "verdict": "sesi ini sudah didudukin {compacted} kali",
+     "roasts": [
+      "sesinya kepanjangan sampai bug-bug nyewa kamar",
+      "tiap habis dipadatkan, Claude pura-pura masih ingat semuanya"
+     ],
+     "step": "salut sama staminanya. tapi sudah waktunya sesi baru"
+    },
+    {
+     "verdict": "konteks tinggal sedikit, {compacted} kali dipadatkan",
+     "roasts": [
+      "garis commit-nya sudah keseret di lantai",
+      "tiap dipadatkan, Claude lupa sedikit lagi. si jenius jadi khawatir"
+     ],
+     "step": "tutup yang ini. ronde berikutnya mulai bersih"
+    }
+   ],
+   "noTests": [
+    {
+     "verdict": "nol tes dijalankan. berani juga",
+     "roasts": [
+      "nggak ada tes, jadi bug pura-pura nggak ada",
+      "Claude bilang jalan. tesnya belum ngomong apa-apa"
+     ],
+     "step": "jalanin tes cuma beberapa detik. si jenius nonton"
+    },
+    {
+     "verdict": "tanpa tes, modal yakin",
+     "roasts": [
+      "bug suka banget sesi kayak gini. nggak ada patroli",
+      "Claude ngumpulin PR tanpa dicek"
+     ],
+     "step": "dilewati juga boleh. si jenius nggak bakal bilang siapa-siapa"
+    },
+    {
+     "verdict": "tesnya mana? si jenius nggak lihat satu pun",
+     "roasts": [
+      "kode tanpa tes itu kayak keluar rumah tanpa kaus kaki",
+      "si jenius nggak mau ngeloloskan kerjaan Claude sambil merem"
+     ],
+     "step": "lain kali, tulis satu tes kecil. satu cukup"
+    }
+   ]
+  }
+ },
+ "it": {
+  "entry": "Impostazioni",
+  "title": "L’ita bag di Coco",
+  "pages": [
+   "Coco",
+   "Quota",
+   "vibe check",
+   "Calzini",
+   "Doujin",
+   "Foglietti",
+   "Interruttori"
+  ],
+  "socks": [
+   "Le preferite",
+   "Matcha e liquirizia",
+   "Latte ai mirtilli",
+   "Biscotto e panna",
+   "Menta e latte",
+   "Latte alla fragola",
+   "Bubble tea al taro",
+   "Marshmallow",
+   "Brava ragazza",
+   "Color carne",
+   "Rete locale",
+   "Cappello bianco",
+   "Puntino rosso"
+  ],
+  "alt": [
+   "l’ita bag di Coco, Coco Pet: {on} su {total} attivi, dimensione: {size}",
+   "l’ita bag di Coco, finestra di 5 ore: ne restano {five} su {total}, finestra di 7 giorni: ne restano {week} su {total}",
+   "l’ita bag di Coco, in questa sessione: test falliti: {failed}, sistemati: {fixed}, compattazioni: {compacted}",
+   "l’ita bag di Coco, calzini ottenuti: {have} su {total}",
+   "l’ita bag di Coco, numeri del doujin: {issues}, il più recente: n. {latest}",
+   "l’ita bag di Coco, foglietti salvati: {notes}",
+   "l’ita bag di Coco, interruttori attivi: {on} su {total}"
+  ],
+  "groups": {
+   "voice": "La sua voce",
+   "band": "Fascia",
+   "reminders": "Avvisi",
+   "cost": "Spese",
+   "records": "Registro",
+   "neighbours": "Vicini e icona",
+   "language": "Lingua"
+  },
+  "tags": {
+   "tokens": "usa token",
+   "off": "parte spento",
+   "mac": "solo Mac",
+   "new": "nuovo"
+  },
+  "vibeGroups": {
+   "tests": "Test e build",
+   "session": "Questa sessione",
+   "share": "Card da condividere"
+  },
+  "zineGroups": {
+   "week": "Questa settimana",
+   "issues": "Tutti i numeri",
+   "extras": "Extra"
+  },
+  "share": {
+   "make": "Farne una",
+   "save": "Salva come immagine",
+   "folder": "Apri cartella"
+  },
+  "himGroups": {
+   "companion": "Coco Pet",
+   "together": "Insieme"
+  },
+  "quotaGroups": {
+   "quota": "Quota",
+   "session": "Questa sessione",
+   "more": "Altro"
+  },
+  "sockGroups": {
+   "drawer": "Cassetto"
+  },
+  "noteGroups": {
+   "notes": "Foglietti",
+   "lastStop": "Dove avevi lasciato"
+  },
+  "look": {
+   "label": "Chi ti fa compagnia",
+   "coco": "Coco",
+   "dake": "Claudina",
+   "maid": "Claudina maid",
+   "fish": "DeepSeek-chan",
+   "help": "Cambia chi compare sulla fascia dell’app desktop, in Coco Pet e nella sua stanza. Nel terminale c’è sempre Coco. In questa versione DeepSeek-chan compare solo nella stanza; fascia e Coco Pet arriveranno con un prossimo aggiornamento."
+  },
+  "bagStyle": {
+   "label": "Disegno dell’ita bag",
+   "classic": "Futurista",
+   "mv": "Costruttivista",
+   "help": "Cambia solo il disegno dell’ita bag in cima a ogni pagina. Il resto resta uguale."
+  },
+  "sockRows": {
+   "wearing": "Indossa ora",
+   "back": "Rimetti {name}"
+  },
+  "zineRows": {
+   "issue": "Numero {n}",
+   "open": "Apri"
+  },
+  "windows": {
+   "title": "{n} finestre",
+   "working": "Al lavoro da {time}",
+   "quiet": "In pausa da {time}",
+   "workingNow": "Al lavoro",
+   "quietNow": "In pausa",
+   "here": "sei qui",
+   "follows": "Coco Pet segue questa"
+  },
+  "shareHelp": "Un’immagine 1080×1350. Solo numeri di questo computer: niente del tuo codice, dei nomi dei file o delle tue parole.",
+  "vibeRows": {
+   "firstFail": "Primo test fallito",
+   "fixed": "Da rosso a verde: {fixed}",
+   "storms": "Sfuriate: {storms}",
+   "stormsHelp": "Tre fallimenti di fila fanno saltare il limitatore di Coco; una correzione la calma.",
+   "build": "Build di solito ~{usual}, stavolta {now}",
+   "buildSlow": "Lento per questo progetto (mediana degli ultimi 8)",
+   "tools": "Strumenti usati: {n}",
+   "toolKinds": "leggi {read}, cerca {search}, scrivi {write}, esegui {run}, web {web}, piano {plan}",
+   "helpers": "Aiutanti: {n}, tornati: {back}",
+   "commits": "Commit: {n}",
+   "compactions": "Squash (compattazioni): {n}",
+   "shareCard": "La linea dei commit di questa sessione"
+  },
+  "lead": {
+   "him": "{name} è sulla scrivania e ti fa compagnia. Dimensione attuale: {size}",
+   "offerings": "Ancora disponibile: {fiveLeft} della finestra di 5 ore, {weekLeft} di quella di 7 giorni.",
+   "omen": "Bilancio di questa sessione: test falliti: {failed}, sistemati: {fixed}, squash (compattazioni): {compacted}.",
+   "socks": "Calzini collezionati: {have} su {total}. Scegline un paio e Coco se lo mette, buona buona.",
+   "log": "Numeri del doujin in collezione: {issues}. L'ultimo uscito: n. {latest}.",
+   "library": "Foglietti attaccati: {notes}. In una nuova chat, Coco ti ricorda dove avevi lasciato.",
+   "settings": "Interruttori attivi: {on} su {total}. Tutto quello che usa token è segnalato."
+  },
+  "vibe": {
+   "stillRed": [
+    {
+     "verdict": "ancora rosso. oggi non è finita",
+     "roasts": [
+      "questo bug si è trasferito qui e non paga l'affitto",
+      "Claude l'ha sistemato tre volte. i test hanno detto no tre volte"
+     ],
+     "step": "fermarsi sul rosso va bene lo stesso. domani la genia lo stana con te"
+    },
+    {
+     "verdict": "spia rossa accesa. round al bug",
+     "roasts": [
+      "quel rosso brilla più della molletta della genia",
+      "Claude dice sistemato. i test dicono ripensaci"
+     ],
+     "step": "anche i bug staccano. salva qui e torna a mente fresca"
+    },
+    {
+     "verdict": "ancora rosso. bug nabbo ma tosto",
+     "roasts": [
+      "una schermata intera di errori per dire una cosa sola: no",
+      "più Claude modifica, più diventa rosso"
+     ],
+     "step": "prova un breakpoint. la genia non ride"
+    }
+   ],
+   "redToGreen": [
+    {
+     "verdict": "dal rosso al verde, {fixed} rimonte",
+     "roasts": [
+      "quei bug facevano i gradassi, poi hanno mollato",
+      "Claude ha scavato la buca e l'ha richiusa. vale, credo"
+     ],
+     "step": "voto pieno dalla genia. il casino di mezzo resta tra noi"
+    },
+    {
+     "verdict": "{fixed} correzioni, i test finalmente annuiscono",
+     "roasts": [
+      "i test facevano i duri finché erano rossi. ora zitti",
+      "la genia non nominerà la prima bozza di Claude"
+     ],
+     "step": "sistemarlo è il vero talento. salva la card e vantati un po'"
+    },
+    {
+     "verdict": "il bug si arrende. {fixed} sistemati",
+     "roasts": [
+      "tutto quel rosso era una tigre di carta",
+      "Claude che sistema i bug è come la genia che cerca i calzini. ci vuole, ma li trova"
+     ],
+     "step": "smetti finché vinci. oggi conta"
+    }
+   ],
+   "allGreen": [
+    {
+     "verdict": "verde al primo colpo. certificato",
+     "roasts": [
+      "i bug oggi hanno preso ferie?",
+      "Claude non ha improvvisato niente di strano. sospetto"
+     ],
+     "step": "non montarti la testa. i bug di domani sono già in viaggio"
+    },
+    {
+     "verdict": "tutto verde. niente da prendere in giro",
+     "roasts": [
+      "la genia ha cercato materiale. i test non danno niente",
+      "Claude l'ha azzeccata al primo colpo. screenshot, svelto"
+     ],
+     "step": "giornate così sono rare. goditela, la genia fa un pisolino"
+    },
+    {
+     "verdict": "zero rosso. ez",
+     "roasts": [
+      "i bug hanno visto lo schieramento e si sono nascosti",
+      "neanche un refuso nei commenti di Claude. strano"
+     ],
+     "step": "chiudi con una vittoria. chi vince non fa straordinari"
+    }
+   ],
+   "compacted": [
+    {
+     "verdict": "compattata {compacted} volte. lo scatolone è piatto",
+     "roasts": [
+      "il contesto è più pieno dell'ita bag della genia",
+      "Claude dimentica mentre lavora. memoria da pesce rosso"
+     ],
+     "step": "sessione lunga, bel lavoro. una nuova e si riparte leggeri"
+    },
+    {
+     "verdict": "su questa sessione si sono seduti {compacted} volte",
+     "roasts": [
+      "la sessione è così lunga che i bug ci affittano stanze",
+      "dopo ogni compattazione Claude fa finta di ricordare tutto"
+     ],
+     "step": "rispetto per la resistenza. però è ora di una nuova"
+    },
+    {
+     "verdict": "contesto in riserva, {compacted} compattazioni",
+     "roasts": [
+      "la linea dei commit striscia già per terra",
+      "a ogni compattazione Claude dimentica un po' di più. la genia è in pensiero"
+     ],
+     "step": "chiudi questa. il prossimo round parte pulito"
+    }
+   ],
+   "noTests": [
+    {
+     "verdict": "zero test eseguiti. che coraggio",
+     "roasts": [
+      "senza test i bug fanno finta di non esistere",
+      "Claude dice che funziona. i test non hanno detto una parola"
+     ],
+     "step": "lanciare i test richiede pochi secondi. la genia guarda"
+    },
+    {
+     "verdict": "niente test, pura fede",
+     "roasts": [
+      "i bug adorano queste sessioni. nessuna ronda",
+      "Claude consegna i compiti senza ricontrollarli"
+     ],
+     "step": "saltarli va bene. la genia non lo dice a nessuno"
+    },
+    {
+     "verdict": "test? la genia non ne vede",
+     "roasts": [
+      "codice senza test è come uscire senza calzini",
+      "la genia non firma il lavoro di Claude a occhi chiusi"
+     ],
+     "step": "la prossima volta, un test minuscolo. uno basta"
+    }
+   ]
+  }
+ },
+ "ja": {
+  "entry": "設定",
+  "title": "Cocoの痛バッグ",
+  "pages": [
+   "Coco",
+   "利用枠",
+   "vibe check",
+   "靴下",
+   "同人誌",
+   "付箋",
+   "スイッチ"
+  ],
+  "socks": [
+   "本命",
+   "抹茶黒糖",
+   "ブルーベリーミルク",
+   "黒ごまミルク",
+   "ミントミルク",
+   "いちごミルク",
+   "紫いもタピオカ",
+   "マシュマロ",
+   "いい子",
+   "肌色",
+   "LAN",
+   "ホワイトハット",
+   "赤ポチ"
+  ],
+  "alt": [
+   "Cocoの痛バッグ、Coco Petのスイッチ{total}個中{on}個オン、大きさは{size}",
+   "Cocoの痛バッグ、5時間枠は残り{five}/{total}、7日枠は残り{week}/{total}",
+   "Cocoの痛バッグ、このセッションでテスト失敗{failed}回、修正{fixed}回、圧縮{compacted}回",
+   "Cocoの痛バッグ、靴下{total}足中{have}足ゲット",
+   "Cocoの痛バッグ、同人誌は全{issues}号、最新は第{latest}号",
+   "Cocoの痛バッグ、付箋{notes}枚",
+   "Cocoの痛バッグ、スイッチ{total}個中{on}個オン"
+  ],
+  "groups": {
+   "voice": "しゃべり方",
+   "band": "帯",
+   "reminders": "お知らせ",
+   "cost": "コスト",
+   "records": "記録",
+   "neighbours": "おとなりとアイコン",
+   "language": "言語"
+  },
+  "tags": {
+   "tokens": "トークン消費",
+   "off": "最初はオフ",
+   "mac": "Macのみ",
+   "new": "新着"
+  },
+  "vibeGroups": {
+   "tests": "テストとビルド",
+   "session": "今回のセッション",
+   "share": "シェアカード"
+  },
+  "zineGroups": {
+   "week": "今週",
+   "issues": "バックナンバー",
+   "extras": "番外編"
+  },
+  "share": {
+   "make": "作る",
+   "save": "画像で保存",
+   "folder": "フォルダを開く"
+  },
+  "himGroups": {
+   "companion": "Coco Pet",
+   "together": "いっしょに"
+  },
+  "quotaGroups": {
+   "quota": "利用枠",
+   "session": "今回のセッション",
+   "more": "その他"
+  },
+  "sockGroups": {
+   "drawer": "引き出し"
+  },
+  "noteGroups": {
+   "notes": "付箋",
+   "lastStop": "前回止まったところ"
+  },
+  "look": {
+   "label": "そばにいるのは",
+   "coco": "Coco",
+   "dake": "Claudeさま",
+   "maid": "メイドのClaudeさま",
+   "fish": "DeepSeek-chan",
+   "help": "デスクトップアプリの帯、Coco Pet、Cocoの部屋の姿が変わります。ターミナルではずっとCocoのままです。DeepSeek-chanはこのバージョンでは部屋にだけ出てきます。帯とCoco Petには今後のアップデートで登場します。"
+  },
+  "bagStyle": {
+   "label": "痛バッグの絵",
+   "classic": "未来派",
+   "mv": "構成主義",
+   "help": "各ページの上にある痛バッグの絵だけが変わります。ほかはそのままです。"
+  },
+  "sockRows": {
+   "wearing": "いまの靴下",
+   "back": "{name}にもどす"
+  },
+  "zineRows": {
+   "issue": "第{n}号",
+   "open": "ひらく"
+  },
+  "windows": {
+   "title": "ウィンドウ{n}個",
+   "working": "{time}から作業中",
+   "quiet": "{time}から待機中",
+   "workingNow": "作業中",
+   "quietNow": "待機中",
+   "here": "いま見ている",
+   "follows": "Coco Petがついている"
+  },
+  "shareHelp": "1080×1350の画像。このパソコンの数字だけ使うよ。きみのコードもファイル名も、言ったことも載らない",
+  "vibeRows": {
+   "firstFail": "最初に落ちたテスト",
+   "fixed": "赤から緑{fixed}回",
+   "storms": "暴走{storms}回",
+   "stormsHelp": "テストが三回続けて落ちるとリミッターが飛ぶ。直ればおさまる",
+   "build": "ビルドはふだん~{usual}、今回は{now}",
+   "buildSlow": "遅め(直近8回の中央値と比べて)",
+   "tools": "ツール{n}回",
+   "toolKinds": "読む{read}、検索{search}、書く{write}、実行{run}、Web{web}、計画{plan}",
+   "helpers": "ヘルパー{n}人、戻ってきたのは{back}人",
+   "commits": "コミット{n}回",
+   "compactions": "ぺしゃんこ圧縮{n}回",
+   "shareCard": "このセッションのコミットライン"
+  },
+  "lead": {
+   "him": "{name}はデスクトップできみのそばにいます。いまの大きさ:{size}",
+   "offerings": "5時間枠は残り{fiveLeft}、7日枠は残り{weekLeft}",
+   "omen": "今回の戦績:テスト失敗{failed}回、修正{fixed}回、ぺしゃんこ圧縮{compacted}回",
+   "socks": "靴下{total}足中{have}足コレクト済み。選ぶと素直にはきかえます",
+   "log": "同人誌は全{issues}号を収録、最新刊は第{latest}号",
+   "library": "付箋{notes}枚を貼っています。新しい会話を始めると、前回どこで止まったかを教えてくれます",
+   "settings": "スイッチ全{total}個、オン{on}個。トークンを使うものにはぜんぶタグがついてるよ"
+  },
+  "vibe": {
+   "stillRed": [
+    {
+     "verdict": "テストまだ赤い。今日は終われない",
+     "roasts": [
+      "このバグ、居座って家賃も払わない。ボクのパーカーより面の皮が厚い",
+      "Claudeが何回直しても、テストは一回も顔を立ててくれない"
+     ],
+     "step": "赤いまま切り上げてもいいよ。明日、天才のボクがいっしょに捕まえる"
+    },
+    {
+     "verdict": "赤ランプ消えず。この勝負はバグの勝ち",
+     "roasts": [
+      "このテストの赤、ボクのヘアピンよりまぶしい",
+      "Claudeは直したって言う。テストはもう一回考えてって言う"
+     ],
+     "step": "バグにも定時はある。セーブして、また来よ"
+    },
+    {
+     "verdict": "まだ赤。ざぁこバグのくせにしぶとい",
+     "roasts": [
+      "エラーが一画面ぶん。言いたいことはひとつ、直ってない",
+      "Claudeが自信つけるほど、テストは赤くなる"
+     ],
+     "step": "考え方を変えて、ブレークポイントひとつ。ボクは笑わないよ"
+    }
+   ],
+   "redToGreen": [
+    {
+     "verdict": "赤から緑へ、{fixed}回の逆転",
+     "roasts": [
+      "あのバグたち、さんざんイキってたのに最後は土下座",
+      "Claudeが自分で掘った穴を自分で埋めた。まあ片づけたってことで"
+     ],
+     "step": "今回は天才のボクが満点あげる。途中のグダグダは見なかったことに"
+    },
+    {
+     "verdict": "{fixed}回直して、テストがやっとうなずいた",
+     "roasts": [
+      "赤いときはあんなに強気だったのに、今は静か",
+      "Claudeの最初の版は...ボクは何も言わない"
+     ],
+     "step": "直せたのが実力。カード保存して、ちょっと自慢しよ"
+    },
+    {
+     "verdict": "バグが降参。{fixed}か所直った",
+     "roasts": [
+      "さっきの真っ赤、ただのハリボテだった",
+      "Claudeのバグ探し、ボクの靴下探しと同じ。だいぶかかったけど見つけた"
+     ],
+     "step": "勝ったら引き上げ。今日はここまでで大勝利"
+    }
+   ],
+   "allGreen": [
+    {
+     "verdict": "一発で全部通過。天才のボクが認定",
+     "roasts": [
+      "バグは今日お休み? ひとつも出てこない",
+      "Claudeがめずらしく変なことしてない。逆にあやしい"
+     ],
+     "step": "全部緑でも浮かれないで。明日のバグはもう向かってる"
+    },
+    {
+     "verdict": "テスト全部緑。ツッコミどころなし",
+     "roasts": [
+      "いじるネタを探したけど、このテストなにもくれない",
+      "Claudeが一発で正解。スクショして証拠に残そ"
+     ],
+     "step": "こんな日はめったにない。味わって。ボクはちょっと寝る"
+    },
+    {
+     "verdict": "赤ゼロ。この勝負もらった",
+     "roasts": [
+      "バグたち、この布陣を見て全員隠れた",
+      "Claudeのコメントに誤字すらない。めずらしい"
+     ],
+     "step": "今日はここで上がろ。勝者は残業しない"
+    }
+   ],
+   "compacted": [
+    {
+     "verdict": "圧縮{compacted}回。段ボール箱がぺしゃんこ",
+     "roasts": [
+      "コンテキスト、ボクの痛バッグよりパンパン",
+      "Claudeは忘れながら働いてる。記憶力は金魚なみ"
+     ],
+     "step": "長いことおつかれ。新しいセッションでさっぱり続けよ"
+    },
+    {
+     "verdict": "このセッション、{compacted}回つぶされた",
+     "roasts": [
+      "セッション長すぎて、バグが住みつきそう",
+      "Claudeは圧縮のたびに、ぜんぶ覚えてるふりしてる"
+     ],
+     "step": "長いセッションも根性のうち。尊敬する。でもそろそろ替えどき"
+    },
+    {
+     "verdict": "コンテキストがピンチ、圧縮{compacted}回",
+     "roasts": [
+      "コミットの線が床まで垂れてる",
+      "Claudeは圧縮するたび少しずつ忘れる。ボクのほうがハラハラする"
+     ],
+     "step": "いったん締めて、次はまっさらなセッションから"
+    }
+   ],
+   "noTests": [
+    {
+     "verdict": "テストひとつも走らせてない。勇者",
+     "roasts": [
+      "テストがないから、バグは自分はいないことにしてる",
+      "Claudeは動くって言う。テストはまだ一言もしゃべってない"
+     ],
+     "step": "テストなんて数秒だよ。ボクが横で見てる"
+    },
+    {
+     "verdict": "テストゼロ、信じる心だけ",
+     "roasts": [
+      "バグはこういうセッションが大好き。見回りがいないから",
+      "Claudeは宿題を見直さずに出すタイプ"
+     ],
+     "step": "走らせなくてもいいよ。ボクはだれにも言わない"
+    },
+    {
+     "verdict": "テストは? ボクには見えないけど",
+     "roasts": [
+      "テストのないコード、靴下はかずに出かけるのと同じ",
+      "Claudeの提出物、ボクは目をつぶって受け取れない"
+     ],
+     "step": "次は一番小さいテストをひとつ。ひとつで十分"
+    }
+   ]
+  }
+ },
+ "ko": {
+  "entry": "설정",
+  "title": "코코의 이타백",
+  "pages": [
+   "코코",
+   "한도",
+   "vibe check",
+   "양말",
+   "동인지",
+   "메모지",
+   "스위치"
+  ],
+  "socks": [
+   "최애 양말",
+   "말차 흑당",
+   "블루베리 우유",
+   "흑임자 우유",
+   "민트 우유",
+   "딸기우유",
+   "타로 버블티",
+   "마시멜로",
+   "착한 아이",
+   "살스",
+   "랜선",
+   "화이트햇",
+   "빨콩"
+  ],
+  "alt": [
+   "코코의 이타백, Coco Pet 스위치 {total}개 중 {on}개 켜짐, 크기 {size}",
+   "코코의 이타백, 5시간 한도 {total}칸 중 {five}칸 남음, 7일 한도 {total}칸 중 {week}칸 남음",
+   "코코의 이타백, 이번 세션 테스트 실패 {failed}번, 고침 {fixed}번, 압축 {compacted}번",
+   "코코의 이타백, 양말 {total}켤레 중 {have}켤레 획득",
+   "코코의 이타백, 동인지 총 {issues}호, 최신은 {latest}호",
+   "코코의 이타백, 메모지 {notes}장",
+   "코코의 이타백, 스위치 {total}개 중 {on}개 켜짐"
+  ],
+  "groups": {
+   "voice": "코코의 말투",
+   "band": "띠",
+   "reminders": "알림",
+   "cost": "비용",
+   "records": "기록",
+   "neighbours": "이웃과 아이콘",
+   "language": "언어"
+  },
+  "tags": {
+   "tokens": "토큰 사용",
+   "off": "처음엔 꺼짐",
+   "mac": "Mac 전용",
+   "new": "신규"
+  },
+  "vibeGroups": {
+   "tests": "테스트와 빌드",
+   "session": "이번 세션",
+   "share": "공유 카드"
+  },
+  "zineGroups": {
+   "week": "이번 주",
+   "issues": "지난 호",
+   "extras": "번외편"
+  },
+  "share": {
+   "make": "만들기",
+   "save": "이미지로 저장",
+   "folder": "폴더 열기"
+  },
+  "himGroups": {
+   "companion": "Coco Pet",
+   "together": "함께"
+  },
+  "quotaGroups": {
+   "quota": "한도",
+   "session": "이번 세션",
+   "more": "더 보기"
+  },
+  "sockGroups": {
+   "drawer": "서랍"
+  },
+  "noteGroups": {
+   "notes": "메모지",
+   "lastStop": "지난번에 멈춘 곳"
+  },
+  "look": {
+   "label": "곁에 있을 사람",
+   "coco": "코코",
+   "dake": "클로디",
+   "maid": "메이드 클로디",
+   "fish": "DeepSeek-chan",
+   "help": "데스크톱 앱의 띠, Coco Pet, 코코의 방에 나오는 모습이 바뀌어요. 터미널에서는 늘 코코예요. DeepSeek-chan은 이번 버전에서는 방에만 나와요. 띠와 Coco Pet에는 이후 업데이트에서 나올 거예요."
+  },
+  "bagStyle": {
+   "label": "이타백 그림",
+   "classic": "미래파",
+   "mv": "구성주의",
+   "help": "각 페이지 위쪽의 이타백 그림만 바뀌어요. 나머지는 그대로예요."
+  },
+  "sockRows": {
+   "wearing": "지금 신은 양말",
+   "back": "{name} 다시 신기"
+  },
+  "zineRows": {
+   "issue": "{n}호",
+   "open": "펼치기"
+  },
+  "windows": {
+   "title": "창 {n}개",
+   "working": "{time}부터 작업 중",
+   "quiet": "{time}부터 쉬는 중",
+   "workingNow": "작업 중",
+   "quietNow": "쉬는 중",
+   "here": "지금 보는 창",
+   "follows": "Coco Pet이 따라가는 창"
+  },
+  "shareHelp": "1080×1350 이미지. 이 컴퓨터의 숫자만 써. 네 코드, 파일 이름, 네가 한 말은 안 들어가",
+  "vibeRows": {
+   "firstFail": "처음 실패한 테스트",
+   "fixed": "빨강에서 초록 {fixed}번",
+   "storms": "폭주 {storms}번",
+   "stormsHelp": "테스트가 세 번 연속 실패하면 리미터가 튕겨 나가요. 고치면 진정해요",
+   "build": "빌드는 보통 ~{usual}, 이번엔 {now}",
+   "buildSlow": "느린 편(최근 8번의 중앙값 기준)",
+   "tools": "도구 {n}번",
+   "toolKinds": "읽기 {read}, 검색 {search}, 쓰기 {write}, 실행 {run}, 웹 {web}, 계획 {plan}",
+   "helpers": "도우미 {n}명, 돌아온 도우미 {back}명",
+   "commits": "커밋 {n}번",
+   "compactions": "깔고 앉아 압축 {n}번",
+   "shareCard": "이번 세션의 커밋 줄"
+  },
+  "lead": {
+   "him": "{name}가 데스크톱에서 곁에 있어요. 지금 크기: {size}",
+   "offerings": "5시간 한도 {fiveLeft} 남음, 7일 한도 {weekLeft} 남음",
+   "omen": "이번 전적: 테스트 실패 {failed}번, 고침 {fixed}번, 깔고 앉아 압축 {compacted}번",
+   "socks": "양말 {total}켤레 중 {have}켤레 수집. 하나 고르면 코코가 얌전히 갈아 신어요",
+   "log": "동인지 총 {issues}호 수록, 최신호는 {latest}호",
+   "library": "메모지 {notes}장 붙어 있어요. 새 대화를 열면 지난번에 어디서 멈췄는지 알려 줘요",
+   "settings": "스위치 총 {total}개, 켜진 건 {on}개. 토큰을 쓰는 건 전부 표시해 뒀어"
+  },
+  "vibe": {
+   "stillRed": [
+    {
+     "verdict": "테스트 아직 빨개. 오늘은 안 끝났어",
+     "roasts": [
+      "이 버그 눌러앉아서 월세도 안 내. 낯짝이 이 천재 후드티보다 두꺼워",
+      "Claude가 몇 번을 고쳐도 테스트는 한 번도 안 봐줘"
+     ],
+     "step": "빨간 채로 마쳐도 돼. 내일 이 천재가 같이 잡아 줄게"
+    },
+    {
+     "verdict": "빨간불 그대로. 이번 판은 버그 승",
+     "roasts": [
+      "이 테스트, 이 천재 머리핀보다 더 빨갛게 빛나",
+      "Claude는 고쳤대. 테스트는 다시 생각해 보래"
+     ],
+     "step": "버그도 퇴근은 해. 세이브해 두고 다시 오자"
+    },
+    {
+     "verdict": "아직 빨개. 허접 버그 주제에 버티네",
+     "roasts": [
+      "에러가 한 화면 가득. 하는 말은 하나, 안 고쳐졌다",
+      "Claude가 자신감 붙을수록 테스트는 더 빨개져"
+     ],
+     "step": "생각을 바꿔서 브레이크포인트 하나. 이 천재는 안 웃어"
+    }
+   ],
+   "redToGreen": [
+    {
+     "verdict": "빨강에서 초록, 역전 {fixed}번",
+     "roasts": [
+      "그 버그들 한참 까불더니 결국 무릎 꿇었네",
+      "Claude가 판 구덩이 Claude가 메웠어. 뭐, 치운 걸로 쳐 줄게"
+     ],
+     "step": "이번엔 이 천재가 만점. 중간에 허둥댄 건 못 본 걸로"
+    },
+    {
+     "verdict": "{fixed}번 고쳐서 테스트가 드디어 끄덕",
+     "roasts": [
+      "빨갈 땐 그렇게 큰소리치더니 이제 조용하네",
+      "Claude 첫 버전 얘기는 이 천재가 안 꺼낼게"
+     ],
+     "step": "고친 게 실력이야. 카드 저장해서 좀 자랑해"
+    },
+    {
+     "verdict": "버그가 항복. {fixed}곳 고침",
+     "roasts": [
+      "아까 그 빨간 화면, 알고 보니 종이호랑이",
+      "Claude 버그 찾는 거, 이 천재 양말 찾는 거랑 똑같아. 한참 뒤져서 결국 찾음"
+     ],
+     "step": "이겼으면 접자. 오늘은 여기까지가 남는 장사"
+    }
+   ],
+   "allGreen": [
+    {
+     "verdict": "한 번에 전부 통과. 이 천재 인증",
+     "roasts": [
+      "버그들 오늘 휴가야? 하나도 안 보이네",
+      "Claude가 웬일로 이상한 짓을 안 했어. 오히려 수상해"
+     ],
+     "step": "다 초록이어도 들뜨지 마. 내일 버그는 벌써 오는 중"
+    },
+    {
+     "verdict": "테스트 올 초록. 흠잡을 데가 없어",
+     "roasts": [
+      "놀릴 거리 찾아봤는데 이 테스트 아무것도 안 줘",
+      "Claude가 한 번에 맞혔어. 얼른 캡처해서 증거 남겨"
+     ],
+     "step": "이런 날 흔치 않아. 즐겨. 이 천재는 잠깐 잘게"
+    },
+    {
+     "verdict": "빨간불 제로. 이 판은 따 놨어",
+     "roasts": [
+      "버그들이 이 진용 보고 다 숨었어",
+      "Claude 주석에 오타 하나 없네. 별일이야"
+     ],
+     "step": "오늘은 여기서 퇴근하자. 이긴 사람은 야근 안 해"
+    }
+   ],
+   "compacted": [
+    {
+     "verdict": "압축 {compacted}번. 종이 상자가 납작해졌어",
+     "roasts": [
+      "컨텍스트가 이 천재 이타백보다 꽉 찼어",
+      "Claude는 까먹으면서 일해. 기억력이 금붕어급"
+     ],
+     "step": "오래 수고했어. 새 세션 열고 산뜻하게 이어 가자"
+    },
+    {
+     "verdict": "이번 세션, {compacted}번 깔고 앉았어",
+     "roasts": [
+      "세션이 너무 길어서 버그들이 세 들어 살겠어",
+      "Claude는 압축할 때마다 다 기억하는 척해"
+     ],
+     "step": "긴 세션도 근성이지. 인정. 그래도 이제 바꿀 때야"
+    },
+    {
+     "verdict": "컨텍스트 위급, 압축 {compacted}번",
+     "roasts": [
+      "커밋 줄이 바닥까지 늘어졌어",
+      "Claude는 압축할 때마다 조금씩 까먹어. 이 천재가 다 조마조마해"
+     ],
+     "step": "일단 마무리하고, 다음 판은 깨끗한 세션으로"
+    }
+   ],
+   "noTests": [
+    {
+     "verdict": "테스트 하나도 안 돌림. 용감하네",
+     "roasts": [
+      "테스트가 없으니 버그들이 없는 척해",
+      "Claude는 돌아간대. 테스트는 아직 한마디도 안 했어"
+     ],
+     "step": "테스트 몇 초면 돼. 이 천재가 옆에서 볼게"
+    },
+    {
+     "verdict": "테스트 제로, 오직 믿음",
+     "roasts": [
+      "버그들이 제일 좋아하는 세션이야. 순찰이 없거든",
+      "Claude는 숙제 검토 없이 그냥 내"
+     ],
+     "step": "안 돌려도 돼. 이 천재는 아무한테도 안 말해"
+    },
+    {
+     "verdict": "테스트는? 이 천재 눈엔 안 보이는데",
+     "roasts": [
+      "테스트 없는 코드는 양말 안 신고 나가는 거랑 같아",
+      "Claude가 낸 거, 이 천재는 눈 감고 못 받아"
+     ],
+     "step": "다음엔 제일 작은 테스트 하나만. 하나면 충분해"
+    }
+   ]
+  }
+ },
+ "pt-BR": {
+  "entry": "Ajustes",
+  "title": "A ita bag da Coco",
+  "pages": [
+   "Coco",
+   "Cota",
+   "vibe check",
+   "Meias",
+   "Doujin",
+   "Lembretes",
+   "Interruptores"
+  ],
+  "socks": [
+   "As queridinhas",
+   "Matcha com brigadeiro",
+   "Leite de mirtilo",
+   "Cookies & creme",
+   "Menta com leite",
+   "Leite de morango",
+   "Bubble tea de taro",
+   "Marshmallow",
+   "Boa menina",
+   "Cor da pele",
+   "Rede local",
+   "Chapéu branco",
+   "Pontinho vermelho"
+  ],
+  "alt": [
+   "a ita bag da Coco, Coco Pet: {on} de {total} ligados, tamanho: {size}",
+   "a ita bag da Coco, janela de 5 horas: restam {five} de {total}, janela de 7 dias: restam {week} de {total}",
+   "a ita bag da Coco, nesta sessão: testes que falharam: {failed}, consertos: {fixed}, compactações: {compacted}",
+   "a ita bag da Coco, meias conquistadas: {have} de {total}",
+   "a ita bag da Coco, edições do doujin: {issues}, a mais nova: nº {latest}",
+   "a ita bag da Coco, lembretes guardados: {notes}",
+   "a ita bag da Coco, interruptores ligados: {on} de {total}"
+  ],
+  "groups": {
+   "voice": "A voz dela",
+   "band": "Faixa",
+   "reminders": "Lembretes",
+   "cost": "Gastos",
+   "records": "Registros",
+   "neighbours": "Vizinhos e ícone",
+   "language": "Idioma"
+  },
+  "tags": {
+   "tokens": "gasta tokens",
+   "off": "começa desligado",
+   "mac": "só no Mac",
+   "new": "novo"
+  },
+  "vibeGroups": {
+   "tests": "Testes e builds",
+   "session": "Esta sessão",
+   "share": "Card para compartilhar"
+  },
+  "zineGroups": {
+   "week": "Esta semana",
+   "issues": "Todas as edições",
+   "extras": "Extras"
+  },
+  "share": {
+   "make": "Fazer um",
+   "save": "Salvar como imagem",
+   "folder": "Abrir pasta"
+  },
+  "himGroups": {
+   "companion": "Coco Pet",
+   "together": "Juntos"
+  },
+  "quotaGroups": {
+   "quota": "Cota",
+   "session": "Esta sessão",
+   "more": "Mais"
+  },
+  "sockGroups": {
+   "drawer": "Gaveta"
+  },
+  "noteGroups": {
+   "notes": "Lembretes",
+   "lastStop": "Onde você parou"
+  },
+  "look": {
+   "label": "Quem te faz companhia",
+   "coco": "Coco",
+   "dake": "Claudinha",
+   "maid": "Claudinha maid",
+   "fish": "DeepSeek-chan",
+   "help": "Muda quem aparece na faixa do app de desktop, no Coco Pet e no quarto dela. No terminal é sempre a Coco. Nesta versão a DeepSeek-chan só aparece no quarto; a faixa e o Coco Pet vêm numa próxima atualização."
+  },
+  "bagStyle": {
+   "label": "Desenho da ita bag",
+   "classic": "Futurista",
+   "mv": "Construtivista",
+   "help": "Só muda o desenho da ita bag no alto de cada página. O resto continua igual."
+  },
+  "sockRows": {
+   "wearing": "Usando agora",
+   "back": "Voltar para {name}"
+  },
+  "zineRows": {
+   "issue": "Edição {n}",
+   "open": "Abrir"
+  },
+  "windows": {
+   "title": "{n} janelas",
+   "working": "Trabalhando desde {time}",
+   "quiet": "Em pausa desde {time}",
+   "workingNow": "Trabalhando",
+   "quietNow": "Em pausa",
+   "here": "você está aqui",
+   "follows": "o Coco Pet segue esta"
+  },
+  "shareHelp": "Uma imagem de 1080×1350. Só números deste computador: nada do seu código, dos nomes de arquivo ou das suas palavras.",
+  "vibeRows": {
+   "firstFail": "Primeiro teste que falhou",
+   "fixed": "Do vermelho ao verde: {fixed}",
+   "storms": "Surtos: {storms}",
+   "stormsHelp": "Três falhas seguidas fazem o limitador da Coco voar; um conserto acalma ela.",
+   "build": "Builds normalmente ~{usual}, desta vez {now}",
+   "buildSlow": "Lento para este projeto (mediana dos últimos 8)",
+   "tools": "Ferramentas usadas: {n}",
+   "toolKinds": "ler {read}, buscar {search}, escrever {write}, rodar {run}, web {web}, plano {plan}",
+   "helpers": "Ajudantes: {n}, voltaram: {back}",
+   "commits": "Commits: {n}",
+   "compactions": "Squashes (compactações): {n}",
+   "shareCard": "A linha de commits desta sessão"
+  },
+  "lead": {
+   "him": "A {name} está na área de trabalho te fazendo companhia. Tamanho atual: {size}",
+   "offerings": "Janela de 5 horas: restam {fiveLeft}. Janela de 7 dias: restam {weekLeft}.",
+   "omen": "Placar desta sessão: testes que falharam: {failed}, consertos: {fixed}, squashes (compactações): {compacted}.",
+   "socks": "Meias colecionadas: {have} de {total}. Escolha um par e a Coco calça, toda obediente.",
+   "log": "Edições do doujin na coleção: {issues}. A mais recente: nº {latest}.",
+   "library": "Lembretes colados: {notes}. Numa conversa nova, a Coco te lembra onde você parou.",
+   "settings": "Interruptores ligados: {on} de {total}. Tudo o que gasta tokens está marcado."
+  },
+  "vibe": {
+   "stillRed": [
+    {
+     "verdict": "ainda vermelho. hoje não acabou",
+     "roasts": [
+      "esse bug se mudou pra cá e não paga aluguel",
+      "o Claude corrigiu três vezes. os testes disseram não três vezes"
+     ],
+     "step": "parar no vermelho também vale. amanhã a gênia caça ele com você"
+    },
+    {
+     "verdict": "luz vermelha acesa. rodada do bug",
+     "roasts": [
+      "esse vermelho brilha mais que a presilha da gênia",
+      "o Claude diz que corrigiu. os testes dizem pensa de novo"
+     ],
+     "step": "bug também bate o ponto. salva aqui e volta com a cabeça fresca"
+    },
+    {
+     "verdict": "ainda vermelho. bug bagre, mas resistente",
+     "roasts": [
+      "uma tela inteira de erro pra dizer uma coisa só: não",
+      "quanto mais o Claude mexe, mais vermelho fica"
+     ],
+     "step": "tenta um breakpoint. a gênia não vai rir"
+    }
+   ],
+   "redToGreen": [
+    {
+     "verdict": "do vermelho ao verde, {fixed} viradas",
+     "roasts": [
+      "esses bugs se acharam e no fim arregaram",
+      "o Claude cavou o buraco e tapou de novo. vale, acho"
+     ],
+     "step": "nota máxima da gênia. a bagunça do meio fica entre nós"
+    },
+    {
+     "verdict": "{fixed} correções, os testes finalmente concordam",
+     "roasts": [
+      "os testes se achavam no vermelho. agora, silêncio",
+      "a gênia não vai comentar o primeiro rascunho do Claude"
+     ],
+     "step": "corrigir é o talento de verdade. salva o card e se exibe um pouco"
+    },
+    {
+     "verdict": "o bug desistiu. {fixed} corrigidos",
+     "roasts": [
+      "todo aquele vermelho era um tigre de papel",
+      "o Claude corrigindo bug é igual a gênia procurando meia. demorou, mas achou"
+     ],
+     "step": "para enquanto tá ganhando. hoje valeu"
+    }
+   ],
+   "allGreen": [
+    {
+     "verdict": "verde de primeira. certificado",
+     "roasts": [
+      "os bugs tiraram folga hoje?",
+      "o Claude não inventou nada esquisito. suspeito"
+     ],
+     "step": "não se empolga. os bugs de amanhã já tão a caminho"
+    },
+    {
+     "verdict": "tudo verde. nada pra zoar",
+     "roasts": [
+      "a gênia procurou assunto. os testes não deram nada",
+      "o Claude acertou de primeira. print, rápido"
+     ],
+     "step": "dias assim são raros. aproveita, a gênia vai tirar um cochilo"
+    },
+    {
+     "verdict": "zero vermelho. ez",
+     "roasts": [
+      "os bugs viram isso e se esconderam",
+      "nem um erro de digitação nos comentários do Claude. estranho"
+     ],
+     "step": "fecha com vitória. vencedor não faz hora extra"
+    }
+   ],
+   "compacted": [
+    {
+     "verdict": "compactada {compacted} vezes. a caixa tá achatada",
+     "roasts": [
+      "o contexto tá mais cheio que a ita bag da gênia",
+      "o Claude esquece enquanto trabalha. memória de peixinho"
+     ],
+     "step": "sessão longa, bom esforço. uma nova deixa tudo leve"
+    },
+    {
+     "verdict": "sentaram nessa sessão {compacted} vezes",
+     "roasts": [
+      "a sessão tá tão longa que os bugs já alugam quarto",
+      "depois de cada compactação o Claude finge que lembra de tudo"
+     ],
+     "step": "respeito pela resistência. mas já é hora de uma nova"
+    },
+    {
+     "verdict": "contexto na reserva, {compacted} compactações",
+     "roasts": [
+      "a linha de commits já tá arrastando no chão",
+      "a cada compactação o Claude esquece mais um pouco. a gênia fica preocupada"
+     ],
+     "step": "fecha essa. a próxima rodada começa limpa"
+    }
+   ],
+   "noTests": [
+    {
+     "verdict": "zero testes rodados. que coragem",
+     "roasts": [
+      "sem teste, os bugs fingem que não existem",
+      "o Claude diz que funciona. os testes não disseram nada"
+     ],
+     "step": "rodar os testes leva segundos. a gênia fica olhando"
+    },
+    {
+     "verdict": "sem testes, pura fé",
+     "roasts": [
+      "bug ama sessão assim. sem ronda",
+      "o Claude entrega a lição sem revisar"
+     ],
+     "step": "pular tudo bem. a gênia não conta pra ninguém"
+    },
+    {
+     "verdict": "testes? a gênia não tá vendo nenhum",
+     "roasts": [
+      "código sem teste é sair de casa sem meia",
+      "a gênia não assina o trabalho do Claude de olho fechado"
+     ],
+     "step": "da próxima vez, um testinho só. um basta"
+    }
+   ]
+  }
+ },
+ "es-419": {
+  "entry": "Ajustes",
+  "title": "La ita bag de Coco",
+  "pages": [
+   "Coco",
+   "Cuota",
+   "vibe check",
+   "Calcetines",
+   "Doujin",
+   "Notitas",
+   "Interruptores"
+  ],
+  "socks": [
+   "Las favoritas",
+   "Matcha y chocolate",
+   "Leche de arándano",
+   "Galleta y crema",
+   "Menta y crema",
+   "Licuado de fresa",
+   "Bubble tea de taro",
+   "Malvavisco",
+   "Niña buena",
+   "Color carne",
+   "Red local",
+   "Sombrero blanco",
+   "Puntito rojo"
+  ],
+  "alt": [
+   "la ita bag de Coco, Coco Pet: {on} de {total} activados, tamaño: {size}",
+   "la ita bag de Coco, ventana de 5 horas: quedan {five} de {total}, ventana de 7 días: quedan {week} de {total}",
+   "la ita bag de Coco, en esta sesión: pruebas fallidas: {failed}, arregladas: {fixed}, compactaciones: {compacted}",
+   "la ita bag de Coco, calcetines conseguidos: {have} de {total}",
+   "la ita bag de Coco, números del doujin: {issues}, último: n.º {latest}",
+   "la ita bag de Coco, notitas guardadas: {notes}",
+   "la ita bag de Coco, interruptores activados: {on} de {total}"
+  ],
+  "groups": {
+   "voice": "Su voz",
+   "band": "Banda",
+   "reminders": "Recordatorios",
+   "cost": "Gastos",
+   "records": "Registro",
+   "neighbours": "Vecinos e ícono",
+   "language": "Idioma"
+  },
+  "tags": {
+   "tokens": "gasta tokens",
+   "off": "empieza apagado",
+   "mac": "solo Mac",
+   "new": "nuevo"
+  },
+  "vibeGroups": {
+   "tests": "Pruebas y builds",
+   "session": "Esta sesión",
+   "share": "Tarjeta para compartir"
+  },
+  "zineGroups": {
+   "week": "Esta semana",
+   "issues": "Todos los números",
+   "extras": "Extras"
+  },
+  "share": {
+   "make": "Hacer una",
+   "save": "Guardar como imagen",
+   "folder": "Abrir carpeta"
+  },
+  "himGroups": {
+   "companion": "Coco Pet",
+   "together": "Juntos"
+  },
+  "quotaGroups": {
+   "quota": "Cuota",
+   "session": "Esta sesión",
+   "more": "Más"
+  },
+  "sockGroups": {
+   "drawer": "Cajón"
+  },
+  "noteGroups": {
+   "notes": "Notitas",
+   "lastStop": "Dónde te quedaste"
+  },
+  "look": {
+   "label": "Quién te acompaña",
+   "coco": "Coco",
+   "dake": "Claudita",
+   "maid": "Claudita maid",
+   "fish": "DeepSeek-chan",
+   "help": "Cambia quién aparece en la banda de la app de escritorio, en Coco Pet y en su cuarto. En la terminal siempre está Coco. En esta versión DeepSeek-chan solo aparece en el cuarto; la banda y Coco Pet llegarán en una próxima actualización."
+  },
+  "bagStyle": {
+   "label": "Dibujo de la ita bag",
+   "classic": "Futurista",
+   "mv": "Constructivista",
+   "help": "Solo cambia el dibujo de la ita bag arriba de cada página. Lo demás sigue igual."
+  },
+  "sockRows": {
+   "wearing": "Ahora lleva",
+   "back": "Volver a {name}"
+  },
+  "zineRows": {
+   "issue": "Número {n}",
+   "open": "Abrir"
+  },
+  "windows": {
+   "title": "{n} ventanas",
+   "working": "Trabajando desde {time}",
+   "quiet": "En pausa desde {time}",
+   "workingNow": "Trabajando",
+   "quietNow": "En pausa",
+   "here": "estás aquí",
+   "follows": "Coco Pet sigue esta"
+  },
+  "shareHelp": "Una imagen de 1080×1350. Solo números de esta computadora: nada de tu código, tus nombres de archivo ni tus palabras.",
+  "vibeRows": {
+   "firstFail": "Primera prueba fallida",
+   "fixed": "De rojo a verde: {fixed}",
+   "storms": "Ataques de furia: {storms}",
+   "stormsHelp": "Tres fallos seguidos hacen saltar el limitador de Coco; un arreglo la calma.",
+   "build": "Builds normalmente ~{usual}, esta vez {now}",
+   "buildSlow": "Lento para este proyecto (mediana de los últimos 8)",
+   "tools": "Herramientas usadas: {n}",
+   "toolKinds": "leer {read}, buscar {search}, escribir {write}, ejecutar {run}, web {web}, plan {plan}",
+   "helpers": "Ayudantes: {n}, de vuelta: {back}",
+   "commits": "Commits: {n}",
+   "compactions": "Squashes (compactaciones): {n}",
+   "shareCard": "La línea de commits de esta sesión"
+  },
+  "lead": {
+   "him": "{name} está en el escritorio haciéndote compañía. Tamaño actual: {size}",
+   "offerings": "Ventana de 5 horas: queda {fiveLeft}. Ventana de 7 días: queda {weekLeft}.",
+   "omen": "Balance de esta sesión: pruebas fallidas: {failed}, arregladas: {fixed}, squashes (compactaciones): {compacted}.",
+   "socks": "Calcetines coleccionados: {have} de {total}. Elige un par y Coco se lo pone, muy obediente.",
+   "log": "Números del doujin en la colección: {issues}. El más reciente: n.º {latest}.",
+   "library": "Notitas pegadas: {notes}. En una conversación nueva, Coco te recuerda dónde te quedaste.",
+   "settings": "Interruptores activados: {on} de {total}. Todo lo que gasta tokens está marcado."
+  },
+  "vibe": {
+   "stillRed": [
+    {
+     "verdict": "sigue en rojo. hoy no se acaba",
+     "roasts": [
+      "este bug se instaló y no paga renta",
+      "Claude lo arregló tres veces. los tests dijeron que no tres veces"
+     ],
+     "step": "parar en rojo también se vale. mañana la genio lo caza contigo"
+    },
+    {
+     "verdict": "luz roja encendida. esta ronda es del bug",
+     "roasts": [
+      "ese rojo brilla más que el pasador de la genio",
+      "Claude dice arreglado. los tests dicen piénsalo otra vez"
+     ],
+     "step": "los bugs también salen del trabajo. guarda aquí y regresa con la cabeza fresca"
+    },
+    {
+     "verdict": "sigue en rojo. bug manco, pero aguanta",
+     "roasts": [
+      "una pantalla entera de errores para decir una sola cosa: no",
+      "cuanto más toca Claude, más rojo se pone"
+     ],
+     "step": "prueba con un breakpoint. la genio no se va a reír"
+    }
+   ],
+   "redToGreen": [
+    {
+     "verdict": "de rojo a verde, {fixed} remontadas",
+     "roasts": [
+      "esos bugs se creían mucho y al final se rindieron",
+      "Claude cavó el hoyo y lo volvió a tapar. supongo que cuenta"
+     ],
+     "step": "calificación perfecta de la genio. lo caótico de en medio queda entre nosotros"
+    },
+    {
+     "verdict": "{fixed} arreglos, los tests por fin asienten",
+     "roasts": [
+      "los tests se sentían mucho en rojo. ahora, silencio",
+      "la genio no va a mencionar el primer borrador de Claude"
+     ],
+     "step": "arreglarlo es el verdadero talento. guarda la tarjeta y presume un poco"
+    },
+    {
+     "verdict": "el bug se rinde. {fixed} arreglados",
+     "roasts": [
+      "tanto rojo era un tigre de papel",
+      "Claude arreglando bugs es como la genio buscando calcetines. tarda, pero los encuentra"
+     ],
+     "step": "retírate ganando. el día de hoy cuenta"
+    }
+   ],
+   "allGreen": [
+    {
+     "verdict": "verde a la primera. certificado",
+     "roasts": [
+      "¿los bugs se tomaron el día libre?",
+      "Claude no improvisó nada raro. sospechoso"
+     ],
+     "step": "no te la creas. los bugs de mañana ya vienen en camino"
+    },
+    {
+     "verdict": "todo verde. nada de qué burlarse",
+     "roasts": [
+      "la genio buscó material. los tests no dan nada",
+      "Claude le atinó a la primera. captura, rápido"
+     ],
+     "step": "días así hay pocos. disfrútalo, la genio se va a tomar una siesta"
+    },
+    {
+     "verdict": "cero rojo. ez",
+     "roasts": [
+      "los bugs vieron esto y se escondieron",
+      "ni una errata en los comentarios de Claude. raro"
+     ],
+     "step": "cierra con una victoria. los ganadores no hacen horas extra"
+    }
+   ],
+   "compacted": [
+    {
+     "verdict": "compactada {compacted} veces. la caja quedó aplastada",
+     "roasts": [
+      "el contexto va más lleno que la ita bag de la genio",
+      "Claude olvida sobre la marcha. memoria de pez"
+     ],
+     "step": "sesión larga, buen esfuerzo. una nueva para seguir con ligereza"
+    },
+    {
+     "verdict": "a esta sesión se le sentaron encima {compacted} veces",
+     "roasts": [
+      "la sesión es tan larga que los bugs ya rentan cuartos",
+      "después de cada compactado, Claude hace como que se acuerda de todo"
+     ],
+     "step": "respeto por el aguante. aun así, toca una nueva"
+    },
+    {
+     "verdict": "contexto en reserva, {compacted} compactados",
+     "roasts": [
+      "la línea de commits ya arrastra por el suelo",
+      "con cada compactado Claude olvida un poco más. la genio está preocupada por él"
+     ],
+     "step": "cierra esta. la próxima ronda empieza limpia"
+    }
+   ],
+   "noTests": [
+    {
+     "verdict": "cero tests ejecutados. valiente",
+     "roasts": [
+      "sin tests, los bugs hacen como que no existen",
+      "Claude dice que funciona. los tests no han dicho ni pío"
+     ],
+     "step": "correr los tests toma unos segundos. la genio mira"
+    },
+    {
+     "verdict": "sin tests, pura fe",
+     "roasts": [
+      "a los bugs les encantan estas sesiones. no hay patrulla",
+      "Claude entrega la tarea sin revisarla"
+     ],
+     "step": "saltártelos se vale. la genio no le dice a nadie"
+    },
+    {
+     "verdict": "¿tests? la genio no ve ninguno",
+     "roasts": [
+      "código sin tests es como salir sin calcetines",
+      "la genio no firma el trabajo de Claude a ciegas"
+     ],
+     "step": "la próxima vez, un test chiquitito. con uno basta"
+    }
+   ]
+  }
+ },
+ "es-ES": {
+  "entry": "Ajustes",
+  "title": "La ita bag de Coco",
+  "pages": [
+   "Coco",
+   "Cuota",
+   "vibe check",
+   "Calcetines",
+   "Doujin",
+   "Pósits",
+   "Interruptores"
+  ],
+  "socks": [
+   "Las favoritas",
+   "Matcha y regaliz",
+   "Leche de arándanos",
+   "Galleta y nata",
+   "Menta y nata",
+   "Batido de fresa",
+   "Bubble tea de taro",
+   "Nube",
+   "Niña buena",
+   "Color carne",
+   "Red local",
+   "Sombrero blanco",
+   "Puntito rojo"
+  ],
+  "alt": [
+   "la ita bag de Coco, Coco Pet: {on} de {total} activados, tamaño: {size}",
+   "la ita bag de Coco, ventana de 5 horas: quedan {five} de {total}, ventana de 7 días: quedan {week} de {total}",
+   "la ita bag de Coco, en esta sesión: pruebas fallidas: {failed}, arregladas: {fixed}, compactaciones: {compacted}",
+   "la ita bag de Coco, calcetines conseguidos: {have} de {total}",
+   "la ita bag de Coco, números del doujin: {issues}, último: n.º {latest}",
+   "la ita bag de Coco, pósits guardados: {notes}",
+   "la ita bag de Coco, interruptores activados: {on} de {total}"
+  ],
+  "groups": {
+   "voice": "Su voz",
+   "band": "Franja",
+   "reminders": "Recordatorios",
+   "cost": "Gastos",
+   "records": "Registro",
+   "neighbours": "Vecinos e icono",
+   "language": "Idioma"
+  },
+  "tags": {
+   "tokens": "gasta tokens",
+   "off": "empieza apagado",
+   "mac": "solo Mac",
+   "new": "nuevo"
+  },
+  "vibeGroups": {
+   "tests": "Tests y builds",
+   "session": "Esta sesión",
+   "share": "Tarjeta para compartir"
+  },
+  "zineGroups": {
+   "week": "Esta semana",
+   "issues": "Todos los números",
+   "extras": "Extras"
+  },
+  "share": {
+   "make": "Hacer una",
+   "save": "Guardar como imagen",
+   "folder": "Abrir carpeta"
+  },
+  "himGroups": {
+   "companion": "Coco Pet",
+   "together": "Juntos"
+  },
+  "quotaGroups": {
+   "quota": "Cuota",
+   "session": "Esta sesión",
+   "more": "Más"
+  },
+  "sockGroups": {
+   "drawer": "Cajón"
+  },
+  "noteGroups": {
+   "notes": "Pósits",
+   "lastStop": "Dónde lo dejaste"
+  },
+  "look": {
+   "label": "Quién te hace compañía",
+   "coco": "Coco",
+   "dake": "Claudita",
+   "maid": "Claudita maid",
+   "fish": "DeepSeek-chan",
+   "help": "Cambia quién aparece en la franja de la app de escritorio, en Coco Pet y en su habitación. En el terminal siempre está Coco. En esta versión DeepSeek-chan solo aparece en la habitación; la franja y Coco Pet llegarán en una próxima actualización."
+  },
+  "bagStyle": {
+   "label": "Dibujo de la ita bag",
+   "classic": "Futurista",
+   "mv": "Constructivista",
+   "help": "Solo cambia el dibujo de la ita bag arriba de cada página. Lo demás sigue igual."
+  },
+  "sockRows": {
+   "wearing": "Ahora lleva",
+   "back": "Volver a {name}"
+  },
+  "zineRows": {
+   "issue": "Número {n}",
+   "open": "Abrir"
+  },
+  "windows": {
+   "title": "{n} ventanas",
+   "working": "Trabajando desde {time}",
+   "quiet": "En pausa desde {time}",
+   "workingNow": "Trabajando",
+   "quietNow": "En pausa",
+   "here": "estás aquí",
+   "follows": "Coco Pet sigue esta"
+  },
+  "shareHelp": "Una imagen de 1080×1350. Solo números de este ordenador: nada de tu código, tus nombres de archivo ni tus palabras.",
+  "vibeRows": {
+   "firstFail": "Primera prueba fallida",
+   "fixed": "De rojo a verde: {fixed}",
+   "storms": "Ataques de furia: {storms}",
+   "stormsHelp": "Tres fallos seguidos hacen saltar el limitador de Coco; un arreglo la calma.",
+   "build": "Builds normalmente ~{usual}, esta vez {now}",
+   "buildSlow": "Lento para este proyecto (mediana de los últimos 8)",
+   "tools": "Herramientas usadas: {n}",
+   "toolKinds": "leer {read}, buscar {search}, escribir {write}, ejecutar {run}, web {web}, plan {plan}",
+   "helpers": "Ayudantes: {n}, de vuelta: {back}",
+   "commits": "Commits: {n}",
+   "compactions": "Squashes (compactaciones): {n}",
+   "shareCard": "La línea de commits de esta sesión"
+  },
+  "lead": {
+   "him": "{name} está en el escritorio haciéndote compañía. Tamaño actual: {size}",
+   "offerings": "Ventana de 5 horas: queda {fiveLeft}. Ventana de 7 días: queda {weekLeft}.",
+   "omen": "Balance de esta sesión: pruebas fallidas: {failed}, arregladas: {fixed}, squashes (compactaciones): {compacted}.",
+   "socks": "Calcetines coleccionados: {have} de {total}. Elige un par y Coco se lo pone, muy obediente.",
+   "log": "Números del doujin en la colección: {issues}. El más reciente: n.º {latest}.",
+   "library": "Pósits pegados: {notes}. En una conversación nueva, Coco te recuerda dónde lo dejaste.",
+   "settings": "Interruptores activados: {on} de {total}. Todo lo que gasta tokens va marcado."
+  },
+  "vibe": {
+   "stillRed": [
+    {
+     "verdict": "sigue en rojo. hoy no se acaba",
+     "roasts": [
+      "este bug se ha instalado y no paga alquiler",
+      "Claude lo ha arreglado tres veces. los tests han dicho que no tres veces"
+     ],
+     "step": "parar en rojo también vale. mañana la genio lo caza contigo"
+    },
+    {
+     "verdict": "luz roja encendida. esta ronda es del bug",
+     "roasts": [
+      "ese rojo brilla más que la horquilla de la genio",
+      "Claude dice arreglado. los tests dicen piénsalo otra vez"
+     ],
+     "step": "los bugs también fichan la salida. guarda aquí y vuelve con la cabeza fresca"
+    },
+    {
+     "verdict": "sigue en rojo. bug manco, pero aguanta",
+     "roasts": [
+      "una pantalla entera de errores para decir una sola cosa: no",
+      "cuanto más toca Claude, más rojo se pone"
+     ],
+     "step": "prueba con un breakpoint. la genio no se va a reír"
+    }
+   ],
+   "redToGreen": [
+    {
+     "verdict": "de rojo a verde, {fixed} remontadas",
+     "roasts": [
+      "esos bugs iban de chulos y al final se rindieron",
+      "Claude cavó el hoyo y lo volvió a tapar. supongo que cuenta"
+     ],
+     "step": "nota máxima de la genio. lo caótico de en medio queda entre nosotros"
+    },
+    {
+     "verdict": "{fixed} arreglos, los tests por fin asienten",
+     "roasts": [
+      "los tests iban de sobrados en rojo. ahora, silencio",
+      "la genio no va a mencionar el primer borrador de Claude"
+     ],
+     "step": "arreglarlo es el verdadero talento. guarda la tarjeta y presume un poco"
+    },
+    {
+     "verdict": "el bug se rinde. {fixed} arreglados",
+     "roasts": [
+      "tanto rojo era un tigre de papel",
+      "Claude arreglando bugs es como la genio buscando calcetines. tarda, pero los encuentra"
+     ],
+     "step": "retírate ganando. el día de hoy cuenta"
+    }
+   ],
+   "allGreen": [
+    {
+     "verdict": "verde a la primera. certificado",
+     "roasts": [
+      "¿los bugs se han cogido el día libre?",
+      "Claude no ha improvisado nada raro. sospechoso"
+     ],
+     "step": "no te vengas arriba. los bugs de mañana ya vienen de camino"
+    },
+    {
+     "verdict": "todo verde. nada que vacilar",
+     "roasts": [
+      "la genio ha buscado material. los tests no dan nada",
+      "Claude lo ha clavado a la primera. captura, rápido"
+     ],
+     "step": "días así hay pocos. disfrútalo, la genio se va a echar la siesta"
+    },
+    {
+     "verdict": "cero rojo. ez",
+     "roasts": [
+      "los bugs vieron esto y se escondieron",
+      "ni una errata en los comentarios de Claude. raro"
+     ],
+     "step": "cierra con una victoria. los ganadores no hacen horas extra"
+    }
+   ],
+   "compacted": [
+    {
+     "verdict": "compactada {compacted} veces. la caja está aplastada",
+     "roasts": [
+      "el contexto va más lleno que la ita bag de la genio",
+      "Claude olvida sobre la marcha. memoria de pez"
+     ],
+     "step": "sesión larga, buen esfuerzo. una nueva para seguir con ligereza"
+    },
+    {
+     "verdict": "a esta sesión se le han sentado encima {compacted} veces",
+     "roasts": [
+      "la sesión es tan larga que los bugs ya alquilan habitaciones",
+      "después de cada compactado, Claude hace como que se acuerda de todo"
+     ],
+     "step": "respeto por el aguante. aun así, toca una nueva"
+    },
+    {
+     "verdict": "contexto en reserva, {compacted} compactados",
+     "roasts": [
+      "la línea de commits ya arrastra por el suelo",
+      "con cada compactado Claude olvida un poco más. la genio está preocupada por él"
+     ],
+     "step": "cierra esta. la próxima ronda empieza limpia"
+    }
+   ],
+   "noTests": [
+    {
+     "verdict": "cero tests ejecutados. valiente",
+     "roasts": [
+      "sin tests, los bugs hacen como que no existen",
+      "Claude dice que funciona. los tests no han dicho ni mu"
+     ],
+     "step": "pasar los tests son unos segundos. la genio mira"
+    },
+    {
+     "verdict": "sin tests, pura fe",
+     "roasts": [
+      "a los bugs les encantan estas sesiones. no hay patrulla",
+      "Claude entrega los deberes sin revisarlos"
+     ],
+     "step": "saltártelos vale. la genio no se lo dice a nadie"
+    },
+    {
+     "verdict": "¿tests? la genio no ve ninguno",
+     "roasts": [
+      "código sin tests es como salir sin calcetines",
+      "la genio no firma el trabajo de Claude a ciegas"
+     ],
+     "step": "la próxima vez, un test chiquitito. con uno basta"
+    }
+   ]
+  }
+ },
+ "zh": {
+  "entry": "设置",
+  "title": "小克的痛包",
+  "pages": [
+   "小克",
+   "额度",
+   "vibe check",
+   "袜子",
+   "同人誌",
+   "便利贴",
+   "开关"
+  ],
+  "socks": [
+   "本命款",
+   "抹茶黑糖",
+   "蓝莓牛奶",
+   "芝麻牛奶",
+   "薄荷奶白",
+   "草莓牛奶",
+   "芋泥啵啵",
+   "棉花糖",
+   "好女孩",
+   "肉丝",
+   "局域网",
+   "白帽子",
+   "小红点"
+  ],
+  "alt": [
+   "小克的痛包,Coco Pet的{total}枚开关开着{on}枚,大小是{size}",
+   "小克的痛包,5小时额度还剩{five}格,7天额度还剩{week}格,各{total}格",
+   "小克的痛包,这次会话测试挂了{failed}次,修好了{fixed}次,压缩了{compacted}次",
+   "小克的痛包,{total}双袜子到手{have}双",
+   "小克的痛包,同人誌一共{issues}期,最新是第{latest}期",
+   "小克的痛包,存了{notes}张便利贴",
+   "小克的痛包,{total}枚开关开着{on}枚"
+  ],
+  "groups": {
+   "voice": "她怎么说话",
+   "band": "横条",
+   "reminders": "提醒",
+   "cost": "花费",
+   "records": "记录",
+   "neighbours": "邻居和图标",
+   "language": "语言"
+  },
+  "tags": {
+   "tokens": "花token",
+   "off": "默认关",
+   "mac": "只在Mac",
+   "new": "新加"
+  },
+  "vibeGroups": {
+   "tests": "测试和构建",
+   "session": "这次会话",
+   "share": "分享卡"
+  },
+  "zineGroups": {
+   "week": "这周",
+   "issues": "每一期",
+   "extras": "番外"
+  },
+  "share": {
+   "make": "做一张",
+   "save": "存成图片",
+   "folder": "打开文件夹"
+  },
+  "himGroups": {
+   "companion": "Coco Pet",
+   "together": "陪你"
+  },
+  "quotaGroups": {
+   "quota": "额度",
+   "session": "这次会话",
+   "more": "更多"
+  },
+  "sockGroups": {
+   "drawer": "抽屉"
+  },
+  "noteGroups": {
+   "notes": "便利贴",
+   "lastStop": "上次停在哪"
+  },
+  "look": {
+   "label": "谁来陪你",
+   "coco": "小克",
+   "dake": "大克",
+   "maid": "女仆大克",
+   "fish": "大肥鱼",
+   "help": "换的是桌面版横条、Coco Pet和房间里的人，终端里一直是小克。大肥鱼这一版只在房间里出现，横条和桌宠上的她以后更新。"
+  },
+  "bagStyle": {
+   "label": "痛包的画",
+   "classic": "未来",
+   "mv": "构成",
+   "help": "只换每页顶上那张痛包的画,别的都不变。"
+  },
+  "sockRows": {
+   "wearing": "穿着",
+   "back": "换回{name}"
+  },
+  "zineRows": {
+   "issue": "第{n}期",
+   "open": "翻开"
+  },
+  "windows": {
+   "title": "{n}个窗口",
+   "working": "{time}开始干活",
+   "quiet": "{time}起闲着",
+   "workingNow": "在干活",
+   "quietNow": "闲着",
+   "here": "你正在看",
+   "follows": "Coco Pet跟着它"
+  },
+  "shareHelp": "1080×1350的图。只用这台电脑上的数,你的代码,文件名和原话都不会出现在上面",
+  "vibeRows": {
+   "firstFail": "第一个挂的测试",
+   "fixed": "由红转绿{fixed}次",
+   "storms": "黑化{storms}次",
+   "stormsHelp": "测试连挂三次,她的限制器就弹飞;修好以后就消气了",
+   "build": "构建平时~{usual},这次{now}",
+   "buildSlow": "算慢的(看最近8次的中位数)",
+   "tools": "工具用了{n}次",
+   "toolKinds": "读{read},搜{search},写{write},跑{run},网{web},计划{plan}",
+   "helpers": "帮手{n}个,回来了{back}个",
+   "commits": "提交{n}次",
+   "compactions": "坐扁压缩{n}次",
+   "shareCard": "这次会话的提交线"
+  },
+  "lead": {
+   "him": "{name}正在桌面上陪你,当前尺寸:{size}",
+   "offerings": "5小时额度还剩{fiveLeft},7天额度还剩{weekLeft}",
+   "omen": "本场战绩:测试挂了{failed}次,修好{fixed}次,坐扁压缩了{compacted}次",
+   "socks": "{total}双袜子已收集{have}双。点选一双,她就乖乖换上",
+   "log": "同人誌已收录{issues}期,最新刊是第{latest}期",
+   "library": "贴着{notes}张便利贴。新开对话时,她会提醒你上次停在哪",
+   "settings": "共{total}个开关,已开启{on}个。会消耗token的都标出来啦"
+  },
+  "vibe": {
+   "stillRed": [
+    {
+     "verdict": "测试还红着,今天不算完",
+     "roasts": [
+      "这个bug赖着不走,脸皮比本天才的卫衣还厚",
+      "Claude改了好几轮,测试一轮都没给面子"
+     ],
+     "step": "红着收工也行,明天本天才陪你把它抓出来"
+    },
+    {
+     "verdict": "红灯没灭,bug赢了这一局",
+     "roasts": [
+      "这测试红得比本天才的发夹还亮",
+      "Claude说修好了,测试说你再想想"
+     ],
+     "step": "bug也有下班的时候,先存个档,回来再打"
+    },
+    {
+     "verdict": "还是红的,杂鱼bug挺能扛",
+     "roasts": [
+      "报错刷了一屏,意思就一句:没修好",
+      "Claude越改越自信,测试越跑越红"
+     ],
+     "step": "换个思路,先打个断点,本天才不笑你"
+    }
+   ],
+   "redToGreen": [
+    {
+     "verdict": "从红到绿,翻盘{fixed}次",
+     "roasts": [
+      "那几个bug嚣张了半天,最后还是跪了",
+      "Claude先挖坑再填坑,也算自己收拾干净了"
+     ],
+     "step": "这波本天才给满分,中间狼狈的部分就不提了"
+    },
+    {
+     "verdict": "修好了{fixed}回,测试终于点头",
+     "roasts": [
+      "测试红的时候嘴挺硬,现在不吭声了",
+      "Claude第一版写的什么,本天才就不提了"
+     ],
+     "step": "能修好就是本事,存图,发出去炫耀一下"
+    },
+    {
+     "verdict": "bug认输了,修好{fixed}处",
+     "roasts": [
+      "刚才那片红看着吓人,其实是纸老虎",
+      "Claude修bug跟本天才找袜子一样,翻半天总算找到"
+     ],
+     "step": "赢了就收,今天到这儿一点都不亏"
+    }
+   ],
+   "allGreen": [
+    {
+     "verdict": "一遍全过,本天才认证",
+     "roasts": [
+      "bug今天是请假了吗,一个都没露面",
+      "Claude难得没整活,本天才都有点不习惯"
+     ],
+     "step": "全绿也别飘,明天的bug已经在路上了"
+    },
+    {
+     "verdict": "测试全绿,挑不出毛病",
+     "roasts": [
+      "想损两句都找不到素材,这测试太没意思了",
+      "Claude这次居然一次写对,赶紧截图留证"
+     ],
+     "step": "这种日子不多,好好享受,本天才去睡会儿"
+    },
+    {
+     "verdict": "零红灯,这局稳了",
+     "roasts": [
+      "bug们看到这阵仗,全都躲起来了",
+      "连Claude的注释都没写错字,稀奇"
+     ],
+     "step": "今天就这样收工吧,赢家不用加班"
+    }
+   ],
+   "compacted": [
+    {
+     "verdict": "压缩了{compacted}次,纸箱都坐扁了",
+     "roasts": [
+      "上下文塞得比本天才的痛包还满",
+      "Claude一边忘一边干,记性跟金鱼差不多"
+     ],
+     "step": "聊这么久辛苦了,开个新会话,清清爽爽接着打"
+    },
+    {
+     "verdict": "这次会话被坐扁{compacted}回",
+     "roasts": [
+      "会话长成这样,bug都快在里面安家了",
+      "Claude每次压缩完,还得装作什么都记得"
+     ],
+     "step": "长会话也算毅力,本天才佩服,不过该换了"
+    },
+    {
+     "verdict": "上下文告急,压缩{compacted}次",
+     "roasts": [
+      "提交线长得都快拖到地上了",
+      "Claude每压一次就忘一点,本天才都替它着急"
+     ],
+     "step": "先收个尾,下一局从干净的会话开始"
+    }
+   ],
+   "noTests": [
+    {
+     "verdict": "一个测试都没跑,勇",
+     "roasts": [
+      "没有测试,bug就当自己不存在,真会躲",
+      "Claude说能跑,测试一个字都没说"
+     ],
+     "step": "跑一遍测试也就几秒钟,本天才在旁边看着"
+    },
+    {
+     "verdict": "零测试,全凭信仰",
+     "roasts": [
+      "bug最喜欢这种会话,没人查岗",
+      "Claude写完就交,作业从来不检查"
+     ],
+     "step": "不跑也行,本天才不告诉别人"
+    },
+    {
+     "verdict": "测试呢? 本天才没看见",
+     "roasts": [
+      "没有测试的代码,跟没穿袜子出门一样",
+      "Claude交的东西,本天才可不敢闭着眼收"
+     ],
+     "step": "下次先写一个最小的测试,一个就够"
+    }
+   ]
+  }
+ },
+ "zh-Hant": {
+  "entry": "設定",
+  "title": "小克的痛包",
+  "pages": [
+   "小克",
+   "額度",
+   "vibe check",
+   "襪子",
+   "同人誌",
+   "便利貼",
+   "開關"
+  ],
+  "socks": [
+   "本命款",
+   "抹茶黑糖",
+   "藍莓牛奶",
+   "芝麻牛奶",
+   "薄荷奶白",
+   "草莓牛奶",
+   "芋泥啵啵",
+   "棉花糖",
+   "好女孩",
+   "肉絲",
+   "區域網",
+   "白帽子",
+   "小紅點"
+  ],
+  "alt": [
+   "小克的痛包,Coco Pet的{total}枚開關開著{on}枚,大小是{size}",
+   "小克的痛包,5小時額度還剩{five}格,7天額度還剩{week}格,各{total}格",
+   "小克的痛包,這次會話測試掛了{failed}次,修好了{fixed}次,壓縮了{compacted}次",
+   "小克的痛包,{total}雙襪子到手{have}雙",
+   "小克的痛包,同人誌一共{issues}期,最新是第{latest}期",
+   "小克的痛包,存了{notes}張便利貼",
+   "小克的痛包,{total}枚開關開著{on}枚"
+  ],
+  "groups": {
+   "voice": "她怎麼說話",
+   "band": "橫條",
+   "reminders": "提醒",
+   "cost": "花費",
+   "records": "記錄",
+   "neighbours": "鄰居和圖示",
+   "language": "語言"
+  },
+  "tags": {
+   "tokens": "花token",
+   "off": "預設關",
+   "mac": "只在Mac",
+   "new": "新加"
+  },
+  "vibeGroups": {
+   "tests": "測試和構建",
+   "session": "這次會話",
+   "share": "分享卡"
+  },
+  "zineGroups": {
+   "week": "這周",
+   "issues": "每一期",
+   "extras": "番外"
+  },
+  "share": {
+   "make": "做一張",
+   "save": "存成圖片",
+   "folder": "開啟資料夾"
+  },
+  "himGroups": {
+   "companion": "Coco Pet",
+   "together": "陪你"
+  },
+  "quotaGroups": {
+   "quota": "額度",
+   "session": "這次會話",
+   "more": "更多"
+  },
+  "sockGroups": {
+   "drawer": "抽屜"
+  },
+  "noteGroups": {
+   "notes": "便利貼",
+   "lastStop": "上次停在哪"
+  },
+  "look": {
+   "label": "誰來陪你",
+   "coco": "小克",
+   "dake": "大克",
+   "maid": "女僕大克",
+   "fish": "大肥魚",
+   "help": "換的是桌面版橫條、Coco Pet和房間裡的人，終端裡一直是小克。大肥魚這一版只在房間裡出現，橫條和桌寵上的她以後更新。"
+  },
+  "bagStyle": {
+   "label": "痛包的畫",
+   "classic": "未來",
+   "mv": "構成",
+   "help": "只換每頁頂上那張痛包的畫,別的都不變。"
+  },
+  "sockRows": {
+   "wearing": "穿著",
+   "back": "換回{name}"
+  },
+  "zineRows": {
+   "issue": "第{n}期",
+   "open": "翻開"
+  },
+  "windows": {
+   "title": "{n}個視窗",
+   "working": "{time}開始幹活",
+   "quiet": "{time}起閒著",
+   "workingNow": "在幹活",
+   "quietNow": "閒著",
+   "here": "你正在看",
+   "follows": "Coco Pet跟著它"
+  },
+  "shareHelp": "1080×1350的圖。只用這臺電腦上的數,你的程式碼,檔名和原話都不會出現在上面",
+  "vibeRows": {
+   "firstFail": "第一個掛的測試",
+   "fixed": "由紅轉綠{fixed}次",
+   "storms": "黑化{storms}次",
+   "stormsHelp": "測試連掛三次,她的限制器就彈飛;修好以後就消氣了",
+   "build": "構建平時~{usual},這次{now}",
+   "buildSlow": "算慢的(看最近8次的中位數)",
+   "tools": "工具用了{n}次",
+   "toolKinds": "讀{read},搜{search},寫{write},跑{run},網{web},計劃{plan}",
+   "helpers": "幫手{n}個,回來了{back}個",
+   "commits": "提交{n}次",
+   "compactions": "坐扁壓縮{n}次",
+   "shareCard": "這次會話的提交線"
+  },
+  "lead": {
+   "him": "{name}正在桌面上陪你,當前尺寸:{size}",
+   "offerings": "5小時額度還剩{fiveLeft},7天額度還剩{weekLeft}",
+   "omen": "本場戰績:測試掛了{failed}次,修好{fixed}次,坐扁壓縮了{compacted}次",
+   "socks": "{total}雙襪子已收集{have}雙。點選一雙,她就乖乖換上",
+   "log": "同人誌已收錄{issues}期,最新刊是第{latest}期",
+   "library": "貼著{notes}張便利貼。新開對話時,她會提醒你上次停在哪",
+   "settings": "共{total}個開關,已開啟{on}個。會消耗token的都標出來啦"
+  },
+  "vibe": {
+   "stillRed": [
+    {
+     "verdict": "測試還紅著,今天不算完",
+     "roasts": [
+      "這個bug賴著不走,臉皮比本天才的衛衣還厚",
+      "Claude改了好幾輪,測試一輪都沒給面子"
+     ],
+     "step": "紅著收工也行,明天本天才陪你把它抓出來"
+    },
+    {
+     "verdict": "紅燈沒滅,bug贏了這一局",
+     "roasts": [
+      "這測試紅得比本天才的髮夾還亮",
+      "Claude說修好了,測試說你再想想"
+     ],
+     "step": "bug也有下班的時候,先存個檔,回來再打"
+    },
+    {
+     "verdict": "還是紅的,雜魚bug挺能扛",
+     "roasts": [
+      "報錯刷了一屏,意思就一句:沒修好",
+      "Claude越改越自信,測試越跑越紅"
+     ],
+     "step": "換個思路,先打個斷點,本天才不笑你"
+    }
+   ],
+   "redToGreen": [
+    {
+     "verdict": "從紅到綠,翻盤{fixed}次",
+     "roasts": [
+      "那幾個bug囂張了半天,最後還是跪了",
+      "Claude先挖坑再填坑,也算自己收拾乾淨了"
+     ],
+     "step": "這波本天才給滿分,中間狼狽的部分就不提了"
+    },
+    {
+     "verdict": "修好了{fixed}回,測試終於點頭",
+     "roasts": [
+      "測試紅的時候嘴挺硬,現在不吭聲了",
+      "Claude第一版寫的什麼,本天才就不提了"
+     ],
+     "step": "能修好就是本事,存圖,發出去炫耀一下"
+    },
+    {
+     "verdict": "bug認輸了,修好{fixed}處",
+     "roasts": [
+      "剛才那片紅看著嚇人,其實是紙老虎",
+      "Claude修bug跟本天才找襪子一樣,翻半天總算找到"
+     ],
+     "step": "贏了就收,今天到這兒一點都不虧"
+    }
+   ],
+   "allGreen": [
+    {
+     "verdict": "一遍全過,本天才認證",
+     "roasts": [
+      "bug今天是請假了嗎,一個都沒露面",
+      "Claude難得沒整活,本天才都有點不習慣"
+     ],
+     "step": "全綠也別飄,明天的bug已經在路上了"
+    },
+    {
+     "verdict": "測試全綠,挑不出毛病",
+     "roasts": [
+      "想損兩句都找不到素材,這測試太沒意思了",
+      "Claude這次居然一次寫對,趕緊截圖留證"
+     ],
+     "step": "這種日子不多,好好享受,本天才去睡會兒"
+    },
+    {
+     "verdict": "零紅燈,這局穩了",
+     "roasts": [
+      "bug們看到這陣仗,全都躲起來了",
+      "連Claude的註釋都沒寫錯字,稀奇"
+     ],
+     "step": "今天就這樣收工吧,贏家不用加班"
+    }
+   ],
+   "compacted": [
+    {
+     "verdict": "壓縮了{compacted}次,紙箱都坐扁了",
+     "roasts": [
+      "上下文塞得比本天才的痛包還滿",
+      "Claude一邊忘一邊幹,記性跟金魚差不多"
+     ],
+     "step": "聊這麼久辛苦了,開個新會話,清清爽爽接著打"
+    },
+    {
+     "verdict": "這次會話被坐扁{compacted}回",
+     "roasts": [
+      "會話長成這樣,bug都快在裡面安家了",
+      "Claude每次壓縮完,還得裝作什麼都記得"
+     ],
+     "step": "長會話也算毅力,本天才佩服,不過該換了"
+    },
+    {
+     "verdict": "上下文告急,壓縮{compacted}次",
+     "roasts": [
+      "提交線長得都快拖到地上了",
+      "Claude每壓一次就忘一點,本天才都替它著急"
+     ],
+     "step": "先收個尾,下一局從乾淨的會話開始"
+    }
+   ],
+   "noTests": [
+    {
+     "verdict": "一個測試都沒跑,勇",
+     "roasts": [
+      "沒有測試,bug就當自己不存在,真會躲",
+      "Claude說能跑,測試一個字都沒說"
+     ],
+     "step": "跑一遍測試也就幾秒鐘,本天才在旁邊看著"
+    },
+    {
+     "verdict": "零測試,全憑信仰",
+     "roasts": [
+      "bug最喜歡這種會話,沒人查崗",
+      "Claude寫完就交,作業從來不檢查"
+     ],
+     "step": "不跑也行,本天才不告訴別人"
+    },
+    {
+     "verdict": "測試呢? 本天才沒看見",
+     "roasts": [
+      "沒有測試的程式碼,跟沒穿襪子出門一樣",
+      "Claude交的東西,本天才可不敢閉著眼收"
+     ],
+     "step": "下次先寫一個最小的測試,一個就夠"
+    }
+   ]
+  }
+ }
+}

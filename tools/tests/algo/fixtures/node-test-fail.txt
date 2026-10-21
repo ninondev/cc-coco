@@ -1,0 +1,17 @@
+▶ orders service
+  ✔ queues an order (1.289ms)
+  ✖ cancels an order (0.912ms)
+    code: ERR_ASSERTION
+    expected: 'cancelled'
+    actual: 'pending'
+        at TestContext.<anonymous> (/home/user/src/blog/test/orders.mjs:22:14)
+  ✔ refunds an order (0.4ms)
+▶ orders service (3.1ms)
+ℹ tests 3
+ℹ suites 1
+ℹ pass 2
+ℹ fail 1
+ℹ cancelled 0
+ℹ skipped 0
+ℹ todo 0
+ℹ duration_ms 41.88218

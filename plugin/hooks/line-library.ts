@@ -1,0 +1,3 @@
+// Generated live public facade. Authoritative implementation: hooks-source/line-library.ts
+export {line_library__LINES_PER_GROUP as LINES_PER_GROUP,line_library__LINE_CELLS as LINE_CELLS,line_library__LINE_GROUPS as LINE_GROUPS,line_library__claudieUnsaid as claudieUnsaid,line_library__installEdited as installEdited,line_library__installWritten as installWritten,line_library__libraryLines as libraryLines,line_library__lineCells as lineCells,line_library__linesFromText as linesFromText,line_library__linesText as linesText,line_library__shippedLines as shippedLines,line_library__useWritten as useWritten,line_library__writtenLinesFrom as writtenLinesFrom} from './m1-compiled/motion_stills.js'
+export type {LineCharacter,LineMix,LineSet} from '../hooks-source/line-library'

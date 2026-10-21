@@ -1,0 +1,16 @@
+test_add (test_billing.TestCalculator.test_add) ... FAIL
+test_subtract (test_billing.TestCalculator.test_subtract) ... ok
+test_round (test_billing.TestCalculator.test_round) ... ok
+
+======================================================================
+FAIL: test_add (test_billing.TestCalculator.test_add)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/home/user/src/blog/test/test_billing.py", line 12, in test_add
+    self.assertEqual(add(2, 2), 5)
+AssertionError: 4 != 5
+
+----------------------------------------------------------------------
+Ran 3 tests in 0.002s
+
+FAILED (failures=1)

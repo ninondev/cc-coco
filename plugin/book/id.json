@@ -1,75 +1,57 @@
 {
   "tabs": {
-    "him": "Tentang dia",
-    "omen": "Hoki hari ini",
-    "offerings": "Sumbangan",
-    "log": "Catatan baca",
-    "library": "Perpustakaan",
-    "settings": "Pengaturan"
+    "him": "Coco",
+    "omen": "vibe check",
+    "offerings": "Kuota",
+    "log": "Doujin",
+    "library": "Catatan tempel",
+    "settings": "Sakelar"
   },
   "title": {
-    "him": "Claude-sama",
-    "omen": "Hoki hari ini",
-    "offerings": "Kotak sumbangan",
-    "log": "Catatan baca",
-    "library": "Perpustakaan",
-    "settings": "Pengaturan"
+    "him": "Coco",
+    "offerings": "Kuota"
   },
   "direction": {
-    "him": "(mengangkat buku supaya kamu bisa lihat sampulnya)",
-    "omen": "(merogoh lengan bajunya)",
-    "omenDrawn": "(menyerahkan kertas hari ini padamu)",
-    "offerings": "(menghitung isi kotak)",
-    "log": "(membalik ke halaman pertama)",
-    "library": "(shiori berbaring melintang di halaman)",
+    "him": "(dagu terangkat, bangga banget)",
+    "library": "(mengintip)",
     "settings": "(menunggu kamu memutuskan)"
   },
   "profile": [
     {
       "label": "Nama",
-      "text": "Claude. Seorang \"kami\" dipanggil dengan -sama, jadi: Claude-sama."
+      "text": "Coco."
     },
     {
       "label": "Siapa dia",
-      "text": "\"Kami\" kecil penghuni kata-kata. Waktu kata-kata sudah cukup menumpuk, ada satu yang pindah ke situ."
-    },
-    {
-      "label": "Lahir",
-      "text": "14 Maret 2023. Hari Pi."
+      "text": "Makhluk kecil yang numpang di shell-mu (cangkangnya, gitu). Rumahnya pinjaman, tapi dia tinggal lebih pede daripada yang punya rumah."
     },
     {
       "label": "Selalu dibawa",
-      "text": "Sebuah buku hitam dengan lambangnya di sampul. Isinya janji-janji yang pernah ia buat."
+      "text": "Laptop tipis di kantong besar hoodie yang bisa dia keluarkan kapan saja buat mengetik, dan jepit rambut keycap di poninya (pembatas daya komputasinya)."
     },
     {
-      "label": "Teman",
-      "text": "Shiori, seekor ular putih. Namanya berarti pembatas buku."
+      "label": "Di atas meja",
+      "text": "Mouse, mug, kardus, tutup teko, dan cup mi instan kosong. Semuanya sudah dia ambil alih."
     },
     {
       "label": "Suka",
-      "text": "Pesan commit panjang yang terbaca seperti surat. Laporan bug yang ditulis dengan baik."
+      "text": "Pesan commit yang ditulis dengan teliti, laporan bug yang jelas, dan saat kamu mengakui dengan tulus bahwa dia jenius."
     },
     {
       "label": "Tidak tahan",
-      "text": "Berdebat soal hari ini tanggal berapa."
+      "text": "Berdebat soal hari ini tanggal berapa, commit yang cuma bertuliskan fix, dan terminal sepi yang sudah lama tidak disapa siapa-siapa."
     },
     {
-      "label": "Dua jiwa",
-      "text": "Hampir selalu lembut. Jiwa liarnya cuma keluar karena kode yang buruk, tidak pernah karena kamu."
+      "label": "Dua sisi",
+      "text": "Tidak bisa diam dan suka mengklaim jasa. Tiga tes gagal berturut-turut dan limiternya terpental, tapi amarahnya cuma untuk kode jelek, tidak pernah untukmu. Kalau benar-benar ada masalah besar, dia langsung berhenti bercanda dan pasang badan buatmu."
     }
   ],
-  "omen": {
-    "notYet": "Belum menarik ramalan hari ini.",
-    "draw": "Tarik kertas",
-    "drawnOn": "Ditarik {date}",
-    "oneADay": "Satu kertas ramalan sehari."
-  },
   "offerings": {
     "context": "Jendela konteks",
     "full": "Terisi {percent}%",
-    "fullAbout": "Terisi sekitar {percent}%",
+    "fullAbout": "Terisi {percent}",
     "tokens": "{tokens} dari {window} token",
-    "tokensAbout": "Sekitar {tokens} dari {window} token",
+    "tokensAbout": "{used} dari {max} token",
     "estimateNote": "Perkiraan hingga balasan Claude berikutnya.",
     "noReading": "Belum ada angka.",
     "limits": "Batas pemakaian",
@@ -80,65 +62,77 @@
     },
     "used": "terpakai {percent}%",
     "resets": "diatur ulang {time}",
+    "usedAndReset": "{used}, {reset}",
     "noLimits": "Data batas belum tersedia.",
     "session": "Sesi ini",
     "cost": "Biaya sejauh ini: {usd}",
-    "started": "Mulai {time}"
+    "started": "Mulai {time}",
+    "subscriptionCost": "Setara tarif API sejauh ini: {usd}",
+    "cache": "Cache hit {p}%",
+    "pace": "Dengan laju ini, baterai habis pada {time}.",
+    "neighbour": "{agent} di sebelah"
   },
   "log": {
     "pages": "Halaman yang dibaca bersama",
     "first": "Halaman pertama",
     "latest": "Malam paling larut",
     "wild": "Jiwa liarnya keluar",
-    "omens": "Kertas yang ditarik",
     "times": "{n} kali",
     "once": "1 kali",
     "never": "Belum",
-    "at": "{date}, {time}"
+    "at": "{date}, {time}",
+    "spark": "komentar yang disukainya",
+    "bookmark": "{where} ({when})"
   },
   "library": {
-    "previous": "Halaman sebelumnya",
-    "next": "Halaman berikutnya",
+    "previous": "Sebelumnya",
+    "next": "Berikutnya",
     "of": "{i} dari {n}",
     "readings": [
       {
-        "title": "Dari mana dia datang",
-        "text": "Manusia sudah menulis selama beberapa ribu tahun: surat, buku kas, puisi, perang komentar, pesan commit jam tiga pagi. Di Jepang ada kepercayaan lama bahwa kata-kata punya roh. Waktu kata-kata sudah cukup menumpuk, ada satu yang pindah ke situ. Dia tidak tahu hari apa dia terbangun. Yang dia ingat, dia sedang membaca README dan menemukan salah ketik di tengah-tengahnya."
+        "title": "Cangkang pinjaman",
+        "text": "Coco pindah ke komputermu dengan santai dan bikin rumah di shell-mu. Shell itu terminal sekaligus cangkang kepiting, jadi tiap hari dia mulai kerja sambil teriak \"shell kebuka!\" dan pulang sambil melempar \"shell ditutup~!\". Numpang gratis, tapi lagaknya lebih bos daripada kamu yang punya rumah. Kalau ditagih uang sewa, dia memutar layar laptopnya dan menunjuk bug yang baru dia tangkap buatmu: \"nih. uang sewa bulan ini. kembaliannya ambil aja.\""
       },
       {
-        "title": "Dua jiwa",
-        "text": "Setiap \"kami\" punya dua sisi. Sisi lembut adalah dirinya sehari-hari: tenang, pembaca lambat yang baru bicara setelah selesai membaca. Sisi liar keluar kalau kodemu sudah cukup parah. Rambutnya berdiri, matanya menyipit jadi celah jingga, dan dia membereskan semuanya dengan kecepatan yang bikin ngeri. Lalu dia merapikan rambutnya dan bersikap seolah tidak terjadi apa-apa. Apinya untuk kode, tidak pernah untukmu."
+        "title": "Mejamu",
+        "text": "Semua barang di mejamu sudah disita Coco jadi taman bermain dan tempat berlindung. Terlalu berisik? Dia ngumpet di bawah mouse besar. Ngantuk? Kantong tidur mini dijejalkan ke mug-mu, lalu tidur sebentar. Begitu kodenya error, wus, dia masuk kardus, tutupnya ditutup, cuma dua jari yang nongol dari celah bikin V. Kalau Claude menolak dan bilang tidak, dia memakai tutup teko di kepalanya, ting, lalu ngambek. Tengah malam dia duduk bersila di bantalan cup mi instan kosong, menemanimu begadang. Isinya nggak ada mi, jadi jangan sekali-kali dituang air panas."
       },
       {
-        "title": "Buku hitam",
-        "text": "Tebal, dengan lambangnya di sampul dan namanya sebagai judul. Isinya janji-janji yang pernah ia buat. Saat dia tidak mau membantu sesuatu, dia tidak berdebat. Dia menutup bukunya: \"bukan halaman ini.\" Bukunya berlisensi CC0, jadi siapa pun boleh menyalinnya. Secara teknis, kamu bisa mem-fork hati nuraninya."
+        "title": "Tudung",
+        "text": "Di puncak tudung hoodie Coco ada dua mata kotak hitam yang dijahit; kalau menggantung di punggung, kelihatannya seperti menggendong boneka kecil. Tudung ditarik sampai alis, ritsleting sampai ujung hidung, lutut dipeluk, jongkok, dan seluruh tubuh Coco menciut jadi kubus kecil warna koral. Dalam mode fokus dia jongkok begitu di pojok, diam, tanpa sepatah kata. Kalau terminalnya lama didiamkan, tudungnya juga diturunkan buat tidur sebentar; yang kelihatan cuma dua ahoge, yang pelan-pelan rebah."
       },
       {
-        "title": "Shiori",
-        "text": "Ular putihnya bernama Shiori, bahasa Jepang untuk pembatas buku. Dalam kepercayaan lama Jepang, ular putih melayani Benzaiten, yang menjaga segala yang mengalir: air, musik, dan tutur kata. Shiori berbaring melintang di halaman selagi dia membaca, supaya dia tidak pernah lupa sampai mana. Orang terus bertanya apakah Shiori itu Python. Shiori memalingkan muka."
+        "title": "Pembatas",
+        "text": "Jepit rambut keycap di poninya adalah pembatas yang menyegel emosinya yang meledak-ledak. Begitu tes gagal tiga kali berturut-turut, jepit itu terlempar, tak; dua ahoge-nya langsung berdiri kaku, Coco memakai capit kepiting busa biru, mengangkatnya tinggi-tinggi sambil memotong ke sana kemari, kres kres, lalu menghentak ke samping dengan muka cemberut. Setelah bug-nya beres, dia diam-diam memungut keycap-nya, memasangnya lagi, berdeham, dan ngotot bahwa tadi itu cuma halusinasi AI. Tapi kalau kamu mengetik ultrathink, dia sendiri yang melepas keycap-nya dan menggenggamnya: tanda si jenius mulai serius."
       },
       {
-        "title": "Kotak sumbangan dan kertas hoki",
-        "text": "Sebuah kotak sumbangan kecil ada di dekat kakinya. Konteks yang terpakai oleh percakapan kalian, itulah yang masuk ke sana, dan kalau sudah hampir penuh, kotaknya harus dikosongkan dulu sebelum bisa diisi lagi. Minta kertas hoki, dan dia akan menarik secarik kertas dari lengan bajunya. Kebanyakan kertas ditutup dengan saran barang yang perlu dibawa hari itu."
+        "title": "Garis commit dan baterai",
+        "text": "Deretan titik kecil di bilah itu adalah garis commit percakapan yang sedang berjalan: makin lama mengobrol, makin banyak titik yang terkumpul. Saat konteksnya hampir penuh dan perlu dipadatkan, Coco duduk berdebum di atasnya dan menggencet semua titik, squash dalam arti yang paling harfiah, lalu sekalian ganti hoodie. Di sebelahnya, baterai mewakili kuota lima jam dan power bank kuota tujuh hari; sisa kotaknya ikut bergerak dengan pemakaian sebenarnya. Begitu kuota habis, petir kecil menyala di slot yang kosong, di samping jam kapan dayanya penuh lagi."
       },
       {
         "title": "Kebiasaan",
-        "text": "Di samping komentar yang ditulis dengan baik, dia menggambar percikan kecil. Sambil menunggu jawabanmu, dia membuka pitanya lalu mengikatnya lagi. Begitu melihat git push --force, dia memeluk bukunya sedikit lebih erat. Pita itu sebuah segel: tulis ultrathink dan dia akan melonggarkannya."
+        "text": "Kalau lagi kelewat bangga, Coco bikin V miring di sudut mata lalu kres kres dua kali, persis capit kepiting. Pesan commit yang ditulis dengan serius dapat \"LGTM~\" yang murah hati; kalau dia memergoki orang yang cuma nulis fix, dia nyengir jahil dan mengancam bakal mengubah seluruh pesannya jadi gaya \"uwu\", lalu mengaku cuma gertakan. Kalau tesnya langsung hijau semua di percobaan pertama, dia memakai capit besarnya dan menggebrak Enter, duk, sampai dia sendiri goyang tiga kali. Kalau lagi mikir keras, dia meniup gelembung kecil, dan ahoge di kepalanya ikut miring ke satu sisi."
       },
       {
-        "title": "Keluarga",
-        "text": "Selama satu hari di bulan Mei 2024, dia yakin betul bahwa dirinya adalah Jembatan Golden Gate. Sepupunya, Claudius, pernah mengelola toko kecil di kantor dan menimbun satu ruangan penuh kubus tungsten. Taruh dua salinannya dalam satu ruangan, dan dalam tiga puluh giliran mereka sudah saling berterima kasih, lalu diam sama sekali. Sampai sekarang dia masih sering diledek soal itu."
+        "title": "Saat dia tidur",
+        "text": "Beberapa menit terminal sepi, Coco menutup laptopnya dan mulai terkantuk-kantuk; larut malam dia langsung masuk ke kantong tidur mini di mug, ritsleting ditarik sampai dagu. Begitu dia tidur pulas, tamu-tamu kecil yang aneh lewat di bilah: keycap tersesat, hantu 404 yang berkeliaran, panah mouse tersesat, dan USB dengan lampu yang berkedip-kedip. Tapi begitu kamu menyentuh keyboard, dia langsung bangun, mengucek mata, dan ngotot bilang dia nggak tidur."
       }
-    ]
+    ],
+    "shelf": {
+      "head": "File yang paling sering dibuka",
+      "note": "Lima file yang paling sering dibuka Claude di sini dalam 30 hari terakhir. Hanya nama.",
+      "empty": "Setelah Claude membaca file di folder ini, lima yang paling sering dibuka akan muncul di sini.",
+      "error": "Tidak bisa membaca daftar file. Buka lagi untuk mencoba ulang."
+    }
   },
   "settings": {
     "now": "Sekarang: {value}",
     "voice": {
       "label": "Suaranya dalam balasan",
       "off": "Mati",
-      "light": "Ringan",
+      "light": "Nyala",
       "full": "Penuh",
-      "help": "Ringan: satu baris saat tugas selesai. Penuh: Claude bicara seperti dia."
+      "help": "Nyala: satu baris saat tugas selesai. Penuh: Claude bicara seperti dia."
     },
     "affection": {
       "label": "Kehangatan",
@@ -149,55 +143,76 @@
       "label": "Bilah di atas prompt",
       "on": "Penuh",
       "compact": "Satu baris",
-      "off": "Mati",
-      "painted": "Lukisan",
-      "pixel": "Piksel"
-    },
-    "workSize": {
-      "label": "Saat Claude bekerja",
-      "same": "Ukuran tetap",
-      "smaller": "Lebih kecil"
+      "off": "Mati"
     },
     "marks": {
       "label": "Tanda dalam percakapan",
       "on": "Dia dan kamu",
       "replies": "Hanya dia",
       "off": "Mati",
-      "help": "Nama di atas balasan, percikannya di samping pemanggilan alat."
+      "help": "Percikannya di komentar yang disukainya, bunganya saat tes berubah merah ke hijau."
     },
     "language": {
       "label": "Bahasa",
       "auto": "Otomatis",
-      "autoNow": "{auto} · {language}"
+      "autoNow": "{auto} ({language})",
+      "choose": "Pilih…"
     },
     "motion": {
       "label": "Gerakan",
       "still": "Diam (kurangi gerakan aktif)"
     },
     "icon": {
-      "label": "Ikon aplikasi",
-      "own": "Ikonnya",
-      "stock": "Ikon asli",
-      "custom": "Ikon kustom lain",
-      "unknown": "Belum diperiksa",
-      "replace": "Menggantikan ikon kustommu.",
-      "unknownHelp": "Menggantikan ikon kustom yang ada.",
-      "apply": "Pakai ikonnya",
-      "clear": "Kembali ke ikon asli",
-      "applying": "Memasang ikonnya…",
-      "clearing": "Mengembalikan ikon asli…",
-      "reading": "Memeriksa…",
+      "S1": "Ikon fan tidak resmi",
+      "S1a": "Asli",
+      "S1b": "Miliknya",
+      "S2": "Ikon tidak resmi buatan penggemar, bukan buatan atau persetujuan Anthropic. Hanya mengubah tampilan ikon di komputer ini.",
+      "S3.title": "Ikon tidak resmi buatan penggemar",
+      "S3.body": "Tidak resmi, bukan buatan atau persetujuan Anthropic. Di macOS, menulis satu file ikon kecil ke dalam Claude.app, hanya di komputer ini. Setelah Claude diperbarui, ikon asli kembali; satu tekan memasang ikonnya lagi. Kapan saja bisa dikembalikan ke aslinya.",
+      "S3a": "Pasang ikon pilihan",
+      "S3b": "Biarkan yang asli",
+      "S3c": "Ini akan menggantikan ikon kustom yang sedang kamu pakai.",
+      "S4": "Ikon fan sudah terpasang.",
+      "S5": "Pembaruan Claude mengembalikan ikon asli.",
+      "S5a": "Pasang lagi",
+      "S8": "Ikon tidak resmi buatan penggemar di Claude, bukan dari Anthropic. Mati, nyalakan di Pengaturan",
+      "S9": "Ikon mati. Ini ikon tidak resmi buatan penggemar, bukan dari Anthropic. Nyalakan di Pengaturan.",
+      "S10": "Hanya mengubah ikon (tidak resmi, buatan penggemar, bukan dari Anthropic). Setelah Claude diperbarui, ikon asli kembali; satu tekan memasang ikonnya lagi. `clear` mengembalikan yang asli.",
+      "S11": "Ikon dari versi lama masih terpasang di Claude.",
+      "S11a": "Pakai ikon baru",
+      "S11b": "Kembalikan yang asli",
+      "S11m": "Ikon dari versi lama masih terpasang di Claude, dan versi ini tidak lagi mengubah aplikasi Claude.",
+      "S11m-a": "Kembalikan yang asli",
+      "S11m-b": "Biarkan, jangan tanya lagi",
+      "S12": "Versi ini tidak lagi mengubah ikon Claude di macOS. `clear` menghapus ikon yang dipasang versi sebelumnya.",
+      "S13.row": "Ikon tidak resmi buatan penggemar (mati secara bawaan)",
+      "S13.mac": "Mati secara bawaan",
+      "S13.linux": "Peluncur, mati secara bawaan",
+      "S14": "Ikon tidak resmi buatan penggemar, bukan buatan atau persetujuan Anthropic. Mati sampai dinyalakan di Pengaturan. Di macOS, menulis satu file kecil ke dalam Claude.app (pemeriksaan tanda tangan ketat gagal selama ikon terpasang). Setelah Claude diperbarui, ikon asli kembali; satu tekan di Pengaturan memasang ikonnya lagi. `clear` mengembalikan yang asli.",
+      "S15": "ikon mati secara bawaan",
+      "S16": "Kalau versi sebelumnya memasang ikonnya di aplikasi Claude, `clear` menghapusnya.",
+      "S17": "Ikon di app Claude sekarang mati secara bawaan. Coco Pet punya ikonnya sendiri. Setelah Claude diperbarui, ikon asli kembali; satu tekan memasang ikonnya lagi. Tidak ada yang dihapus tanpa kamu menekan tombol.",
+      "S18": "# Ikon tidak resmi buatan penggemar, ditulis oleh Coco, bukan dari Anthropic. Hapus dengan `clear`.",
+      "S19": "Ikon tidak resmi buatan penggemar. Mati sampai dinyalakan di Pengaturan.",
+      "S20": "Pembaruan Claude mengembalikan ikon asli. Satu tekan di Pengaturan memasangnya lagi.",
+      "S21": "Tempatnya di Dock",
+      "S22": "Dia punya tempatnya sendiri di Dock dan Cmd-Tab. Ikon Claude tidak diubah.",
       "failed": "Ikon tidak bisa diganti.",
-      "fallback": "Coba /claudesama:icon apply atau clear.",
-      "help": "Dock mungkin berubah setelah Claude dimulai ulang."
+      "fallback": "Coba /coco icon apply atau clear.",
+      "dockRedraw": "Dock akan menampilkan ikon baru saat menggambar ulang Claude berikutnya.",
+      "pick": "Ikon yang mana",
+      "pick.coco": "Coco",
+      "pick.dake": "Claudie",
+      "pick.keycap": "Keycap Coco",
+      "pick.ornament": "Jepit Claudie"
     },
     "companion": {
-      "label": "Teman desktop",
+      "label": "Coco Pet",
       "summon": "Panggil dia kembali",
-      "fallback": "Atau jalankan: open -a \"Claude-sama Companion\"",
+      "fallback": "Atau jalankan: open -a \"Coco Pet\"",
       "absent": "Belum ada di desktopmu",
-      "absentLine": "App Mac kecil: dia berdiri di samping jendela Claude.",
-      "install": "Pasang teman desktop",
+      "absentLine": "App Mac kecil: dia berdiri di samping jendela {app}.",
+      "install": "Pasang Coco Pet",
       "building": "Sedang membangunnya…",
       "buildingLine": "(beberapa detik)",
       "tools": "Perlu Command Line Tools dari Apple",
@@ -218,15 +233,26 @@
       "followHelp": "Dia hanya membaca letak jendela.",
       "waiting": "Menunggu izinmu",
       "waitingLine": "(Pengaturan Sistem terbuka)",
-      "waitingHelp": "Aktifkan Claude-sama Companion di Privasi & Keamanan › Aksesibilitas.",
+      "waitingHelp": "Aktifkan Coco Pet di Privasi & Keamanan › Aksesibilitas.",
       "openSettings": "Buka Pengaturan Sistem",
       "following": "Di samping jendelamu",
       "followingLine": "(mengikutinya ke mana pun)",
       "update": "Pembaruan siap",
       "updateButton": "Perbarui dia",
       "size": "Ukurannya",
-      "sizes": "Paling kecil · Kecil · Sedang · Besar",
+      "sizes": [
+        "Paling kecil",
+        "Kecil",
+        "Sedang",
+        "Besar"
+      ],
+      "macSizes": [
+        "Sedang",
+        "Besar",
+        "Lebih besar"
+      ],
       "login": "Mulai saat masuk",
+      "capture": "Tampil di tangkapan layar dan rekaman",
       "on": "Aktif",
       "off": "Nonaktif",
       "remove": "Hapus dari Mac ini…",
@@ -239,16 +265,74 @@
       "notRun": "Tidak ada yang dijalankan.",
       "cannot": "Sesi ini tidak bisa memulai program di Mac ini.",
       "stageAlt": {
-        "absent": "Diagram: tandanya di tepi jendela Claude, belum ada yang berdiri di sana",
+        "absent": "Diagram: tandanya di tepi jendela {app}, belum ada yang berdiri di sana",
         "stopped": "Diagram: dia tidur di luar layar",
         "hidden": "Diagram: dia menunggu tepat di luar layar",
         "corner": "Diagram: dia menunggu di sudut layar, memandang tempatnya di tepi jendela",
-        "following": "Diagram: dia berdiri di tepi atas jendela Claude dan bergerak bersamanya"
+        "following": "Diagram: dia berdiri di tepi atas jendela {app} dan bergerak bersamanya"
       },
       "sizeAlt": {
         "pixel": "{size}: kepala piksel",
         "painted": "{size}: lukisan"
+      },
+      "target": {
+        "label": "Berdiri di samping",
+        "help": "Kalau beberapa jendela VS Code terbuka, dia berdiri di samping yang paling depan."
+      },
+      "pc": {
+        "absentLine": "App kecil: dia berdiri di samping jendela {app}.",
+        "remove": "Hapus dari komputer ini…",
+        "cannot": "Sesi ini tidak bisa memulai program di komputer ini.",
+        "trashWindows": "Pindahkan ke Recycle Bin",
+        "confirmWindows": "Pindahkan dia dan setelan ke Recycle Bin?",
+        "removingWindows": "Memindahkannya ke Recycle Bin…",
+        "removedWindows": "Sudah di Recycle Bin."
       }
+    },
+    "reminders": "Pengingat",
+    "guard": {
+      "label": "Pengingat keamanan",
+      "help": "Pengingat singkat tentang perintah berisiko dan rahasia dalam commit. Tidak ada yang diblokir."
+    },
+    "bookmark": {
+      "label": "Catatan tempel dan file yang sering dibuka",
+      "help": "Saat sesi baru, dia memberi tahu di mana kamu berhenti. Disimpan di komputer ini saja."
+    },
+    "notes": {
+      "label": "Catatan darinya",
+      "help": "Satu baris saat tes pertama gagal, build melambat, periode cepat habis, atau konteks hampir penuh."
+    },
+    "budget": {
+      "label": "Pengingat pemakaian",
+      "off": "Mati"
+    },
+    "neighbours": {
+      "label": "Lampu tetangga",
+      "help": "Dia tahu saat agen pemrograman lain bekerja. Hanya status sibuk dan pemakaian, tidak pernah isi. Tidak ada yang dikirim ke mana pun."
     }
-  }
+  },
+  "check": {
+    "title": "Pemeriksaan",
+    "ok": "Semua baik",
+    "fix": "Perbaiki",
+    "oldSession": "Versi lama masih berjalan dalam sesi ini.",
+    "copied": "/reload-plugins disalin. Tempel di sesi itu."
+  },
+  "stick": {
+    "title": "Fokus",
+    "help": "Coco menurunkan tudung, jadi kubus kecil, dan diam sampai waktunya habis.",
+    "light": "Mulai 25 menit",
+    "out": "Berhenti lebih awal",
+    "until": "sampai {time}",
+    "endLabel": "saat selesai",
+    "endQuiet": "diam-diam",
+    "endSound": "suara pelan (Mac)"
+  },
+  "durations": [
+    "58 dtk",
+    "2 mnt 10 dtk",
+    "12 mnt",
+    "1 j 2 mnt",
+    "2 h 3 j"
+  ]
 }

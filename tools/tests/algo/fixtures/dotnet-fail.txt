@@ -1,0 +1,16 @@
+  Determining projects to restore...
+  All projects are up-to-date for restore.
+  shop -> /home/user/src/shop/api/bin/Debug/net8.0/shop.dll
+  shop.Tests -> /home/user/src/shop/tests/bin/Debug/net8.0/shop.Tests.dll
+Test run for /home/user/src/shop/tests/bin/Debug/net8.0/shop.Tests.dll (.NETCoreApp,Version=v8.0)
+VSTest version 17.9.0
+
+  Failed Kiwi.Parser.Tests.ParserTests.ParsesHeader [31 ms]
+  Passed Kiwi.Parser.Tests.ParserTests.RejectsEmpty [2 ms]
+  Passed Kiwi.Parser.Tests.ParserTests.WritesOutput [1 ms]
+  Error Message:
+   Assert.AreEqual failed. Expected:<2>. Actual:<3>.
+  Stack Trace:
+     at Kiwi.Parser.Tests.ParserTests.ParsesHeader() in /home/user/src/shop/tests/ParserTests.cs:line 24
+
+Failed!  - Failed: 1, Passed: 2, Skipped: 0, Total: 3

@@ -1,0 +1,11 @@
+PASS src/calc.test.ts
+  Calculator
+    ✓ adds numbers (3 ms)
+    ✓ subtracts numbers (2 ms)
+    ✓ multiplies numbers (1 ms)
+
+Test Suites: 1 passed, 1 total
+Tests:       3 passed, 3 total
+Snapshots:   0 total
+Time:        0.842 s
+Ran all test suites.

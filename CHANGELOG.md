@@ -1,16 +1,96 @@
 # Changelog
 
-Everything that changes in Claude-sama goes here. The format follows
+Everything that changes in Coco goes here. The format follows
 [Keep a Changelog](https://keepachangelog.com/en/1.1.0/), and version numbers follow
 [Semantic Versioning](https://semver.org/) with one addition of my own: a fourth number,
 like 0.1.0.1, means small fixes only.
 
-When his personality changes (how he talks, what he says, how he acts), I give it its own
+When Coco's personality changes (how they talk, what they say, how they act), I give it its own
 "Persona changes" part, because that changes how the mod feels even when it doesn't change
 what it does. Each one comes with a way back: the setting, or the version, that brings the
 old behavior back.
 
 ## [Unreleased]
+
+## [1.0.0] - 2026-10-20
+
+Claude-sama is now Coco: a new character, new pictures, a new settings page, and words in 13
+languages. The old kami is gone, and so is everything that came with the shrine.
+
+### Persona changes
+
+- **Coco replaces Claude-sama.** A small crab character in a coral hoodie who moved into your
+  shell. Cocky, quick to show off, quick to tease
+  the code; never at you. Coco's lines, face and name are new in every language.
+  Rollback: 0.1.1.
+- **Going wild is the limiter now.** Three failed test runs in a row and the keycap clip on Coco's
+  fringe pops off and Coco goes after the bad code with a claw. When the tests pass, the clip
+  goes back on and Coco calls it an AI hallucination. Rollback: 0.1.1.
+- **Coco naps after four to six quiet minutes**, hood pulled down, and every session
+  falls asleep and wakes up together. Rollback: 0.1.1.
+
+### Added
+
+- **The ita bag.** `/coco` opens the settings as a bag with seven pages: Coco, Quota, vibe
+  check, Socks, Doujin, Sticky notes and Switches.
+- **Skill cards.** The Skill cards button on the Coco page, or `/coco cards`, opens a pane where
+  Coco turns the skills, subagents and slash commands you have at hand into cards. Skill and
+  subagent cards in the tray are called with your next prompt, a command card's Write into the
+  prompt button types the command for you, and the collection book counts each card's uses.
+- **Quota as two charms on the band.** A battery for the 5-hour limit and a power bank for the
+  week, drawn from the real readings. Hover for when they reset and whether the pace holds.
+- **vibe check.** What this session went through: failed tests, fixes, how often Coco went
+  wild, whether the build was slower than usual.
+- **Thirteen pairs of socks** to collect, one for each "first time"; pick a pair and Coco wears
+  it on the band and the desktop pet.
+- **A weekly doujin issue** and **sticky notes** that tell you where you stopped last time.
+  Stored on this computer only.
+- **Visitors while Coco sleeps**: a lost keycap, a paper plane, a 404 ghost, a USB light at
+  night, and a few more.
+- **Coco Pet**, the desktop pet, on Windows and Linux too. Windows and
+  Linux builds are not signed yet and have not been tried on a real machine.
+- **Claudie**, Claude's original design, in her own outfit and a maid's: the band and Coco Pet
+  can switch to her; the terminal keeps Coco.
+- **DMs with Coco** (off by default): Coco answers with the model you pick (the newest Haiku
+  unless you choose another), paid from your plan or from your own API key, which stays in the
+  system's password store (not tried on Windows or Linux yet). Coco sometimes speaks first when
+  you open your DMs, at no token cost, and remembers you across sessions.
+- **Band lines** (off by default): a model writes a set of band lines for Coco, Claudie or Maid
+  Claudie, kept on this computer. Every set, the built-in Coco one too, opens in a text editor;
+  restore the original any time.
+- **Two styles of bag art**: Futurist (the default) and Constructivist.
+- **Change the Claude icon** (off by default): four choices, Coco, Claudie, Coco's keycap and
+  Claudie's hair clip.
+- **Coco's Colours**, a skin for the claude.ai website (with a user-style extension such as Stylus):
+  new colours and fonts, light and dark, and a pixel Coco in the corner (not tested on the real site yet). It reads nothing on the
+  page and never goes online.
+- **Traditional Chinese (國語)**, the thirteenth language.
+
+### Changed
+
+- The settings used to be "his book" with six pages; everything moved into the bag.
+- The offering box is gone; the context window and the quota live on the band.
+- The stamp book is now Achievements, with new names.
+- Optional features that cost tokens still default to off, and each one says what it costs.
+
+### Removed
+
+- The daily omen and the `/omen` command, Shiori (with her Option-click on the desktop pet and
+  the python cue) and the old reading room. The vibe check page opens with `/coco vibe`, the
+  quota page with `/coco usage`.
+
+### Notes
+
+- The repository moved from ninondev/claude-sama to ninondev/cc-coco; GitHub forwards the old
+  address.
+- Coming later (the README's What's next): more chat companions, a mini-game for the wait, a
+  desktop pet easter egg, and real-machine tests and signing for the Windows and Linux pet.
+- The plugin is `coco@coco` now and the command is `/coco`. It installs as a new plugin and
+  0.1.1's settings don't carry over: in 0.1.1, run `/claudesama:icon clear` if you changed the
+  icon and `/claudesama:companion uninstall` if you installed the companion, then
+  `claude plugin uninstall claudesama@claudesama && claude plugin marketplace remove claudesama`,
+  and install 1.0 as the README says.
+- Needs Claude Code 2.1.299 or later.
 
 ## [0.1.1] - 2026-10-04
 
@@ -158,7 +238,8 @@ The first public release. Here's everything he came with.
 - The desktop app doesn't tell mods your language setting, so there he follows the language
   you type in.
 
-[Unreleased]: https://github.com/ninondev/claude-sama/compare/v0.1.1...HEAD
-[0.1.1]: https://github.com/ninondev/claude-sama/compare/v0.1.0.1...v0.1.1
-[0.1.0.1]: https://github.com/ninondev/claude-sama/compare/v0.1.0...v0.1.0.1
-[0.1.0]: https://github.com/ninondev/claude-sama/releases/tag/v0.1.0
+[Unreleased]: https://github.com/ninondev/cc-coco/compare/v1.0.0...HEAD
+[1.0.0]: https://github.com/ninondev/cc-coco/compare/v0.1.1...v1.0.0
+[0.1.1]: https://github.com/ninondev/cc-coco/compare/v0.1.0.1...v0.1.1
+[0.1.0.1]: https://github.com/ninondev/cc-coco/compare/v0.1.0...v0.1.0.1
+[0.1.0]: https://github.com/ninondev/cc-coco/releases/tag/v0.1.0

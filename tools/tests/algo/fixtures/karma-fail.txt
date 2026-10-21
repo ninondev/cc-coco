@@ -1,0 +1,8 @@
+08 10 2025 11:02:41.913:INFO [karma-server]: Karma v6.4.2 server started at http://localhost:9876/
+08 10 2025 11:02:41.915:INFO [launcher]: Launching browsers ChromeHeadless
+Chrome 129.0.0.0 (Mac OS) kiwi parser should read a header FAILED
+	Expected 1 to be 2.
+	/Users/user/src/kiwi/test/parser.spec.js:13:19
+Chrome 129.0.0.0 (Mac OS): Executed 5 of 5 (1 FAILED) (0.421 secs / 0.318 secs)
+TOTAL: 1 FAILED, 4 SUCCESS
+08 10 2025 11:02:42.514:INFO [karma-server]: Run complete, exiting.

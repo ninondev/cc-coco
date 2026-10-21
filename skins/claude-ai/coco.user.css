@@ -1,0 +1,1124 @@
+/* ==UserStyle==
+@name           Coco's Colours (unofficial fan skin)
+@namespace      coco
+@version        1.0.0
+@description    Recolours claude.ai in your browser, light and dark. Needs a user-style extension such as Stylus. Unofficial fan skin, not affiliated with Anthropic.
+@license        MIT
+@preprocessor   default
+==/UserStyle== */
+
+@-moz-document domain("claude.ai") {
+  /* Forced colours (a Windows contrast theme, or the browser's own colour override): the skin steps aside
+     and the system's colours rule. Only the conversation's type stays. */
+  @media (forced-colors: none) {
+
+    /* Page, text, links, focus rings and hairlines: light. */
+    html:root[data-theme=claude][data-mode=light] {
+      --accent-000: 210 50% 36%;
+      --accent-100: 210 50.6% 30.2%;
+      --accent-200: 210 50.6% 30.2%;
+      --danger-000: 3.6 69.5% 37.3%;
+      --text-000: 12 16.7% 11.8%;
+      --text-100: 12 16.7% 11.8%;
+      --text-200: 15 25.9% 33.3%;
+      --text-300: 15 25.9% 33.3%;
+      --text-400: 16.1 20.2% 39.8%;
+      --text-500: 16.1 20.2% 39.8%;
+      --border-100: 12 16.7% 11.8%;
+      --border-200: 12 16.7% 11.8%;
+      --border-300: 12 16.7% 11.8%;
+      --border-400: 12 16.7% 11.8%;
+      --bg-000: 25.7 100% 98.6%;
+      --bg-100: 23 62% 96%;
+      --bg-200: 22.5 47.1% 93.3%;
+      --bg-300: 22.5 47.1% 93.3%;
+    }
+
+    @media (prefers-color-scheme: light) {
+    /* Page, text, links, focus rings and hairlines: light by system. */
+    html:root[data-theme=claude][data-mode=system] {
+      --accent-000: 210 50% 36%;
+      --accent-100: 210 50.6% 30.2%;
+      --accent-200: 210 50.6% 30.2%;
+      --danger-000: 3.6 69.5% 37.3%;
+      --text-000: 12 16.7% 11.8%;
+      --text-100: 12 16.7% 11.8%;
+      --text-200: 15 25.9% 33.3%;
+      --text-300: 15 25.9% 33.3%;
+      --text-400: 16.1 20.2% 39.8%;
+      --text-500: 16.1 20.2% 39.8%;
+      --border-100: 12 16.7% 11.8%;
+      --border-200: 12 16.7% 11.8%;
+      --border-300: 12 16.7% 11.8%;
+      --border-400: 12 16.7% 11.8%;
+      --bg-000: 25.7 100% 98.6%;
+      --bg-100: 23 62% 96%;
+      --bg-200: 22.5 47.1% 93.3%;
+      --bg-300: 22.5 47.1% 93.3%;
+    }
+    }
+
+    /* Page, text, links, focus rings and hairlines: dark. */
+    html:root[data-theme=claude][data-mode=dark] {
+      --accent-000: 211.1 55.1% 71.2%;
+      --accent-100: 210.9 56.1% 77.6%;
+      --accent-200: 210.9 56.1% 77.6%;
+      --danger-000: 4.8 81.2% 72.9%;
+      --text-000: 28.6 46.7% 91.2%;
+      --text-100: 28.6 46.7% 91.2%;
+      --text-200: 20 28.1% 72.7%;
+      --text-300: 20 28.1% 72.7%;
+      --text-400: 18.9 18.8% 60.4%;
+      --text-500: 18.9 18.8% 60.4%;
+      --border-100: 28.6 46.7% 91.2%;
+      --border-200: 28.6 46.7% 91.2%;
+      --border-300: 28.6 46.7% 91.2%;
+      --border-400: 28.6 46.7% 91.2%;
+      --bg-000: 18 18% 14%;
+      --bg-100: 15 18.2% 8.6%;
+      --bg-200: 17 23% 6%;
+      --bg-300: 17 23% 6%;
+    }
+
+    @media (prefers-color-scheme: dark) {
+    /* Page, text, links, focus rings and hairlines: dark by system. */
+    html:root[data-theme=claude][data-mode=system] {
+      --accent-000: 211.1 55.1% 71.2%;
+      --accent-100: 210.9 56.1% 77.6%;
+      --accent-200: 210.9 56.1% 77.6%;
+      --danger-000: 4.8 81.2% 72.9%;
+      --text-000: 28.6 46.7% 91.2%;
+      --text-100: 28.6 46.7% 91.2%;
+      --text-200: 20 28.1% 72.7%;
+      --text-300: 20 28.1% 72.7%;
+      --text-400: 18.9 18.8% 60.4%;
+      --text-500: 18.9 18.8% 60.4%;
+      --border-100: 28.6 46.7% 91.2%;
+      --border-200: 28.6 46.7% 91.2%;
+      --border-300: 28.6 46.7% 91.2%;
+      --border-400: 28.6 46.7% 91.2%;
+      --bg-000: 18 18% 14%;
+      --bg-100: 15 18.2% 8.6%;
+      --bg-200: 17 23% 6%;
+      --bg-300: 17 23% 6%;
+    }
+    }
+
+    /* Page, surfaces, messages, text, controls, code ground and state colours: light. */
+    html[data-mode=light] .cds-root:not([data-mode=light]):not([data-mode=dark]):not([data-mode=system]),
+    html[data-mode=light] .cds-root[data-mode=light],
+    html.cds-root[data-mode=light] {
+      --cds-neutral-0: hsl(25.7 100% 98.6%);
+      --cds-neutral-20: hsl(22.5 47.1% 93.3%);
+      --cds-neutral-30: hsl(22 45% 91.6%);
+      --cds-neutral-40: hsl(22 43% 90%);
+      --cds-neutral-50: hsl(21 41% 88.4%);
+      --cds-neutral-60: hsl(21 40% 86.6%);
+      --cds-neutral-70: hsl(21 38% 85%);
+      --cds-neutral-150: hsl(20 32% 75%);
+      --cds-neutral-400: hsl(16.1 20.2% 39.8%);
+      --cds-neutral-600: hsl(15 25.9% 33.3%);
+      --cds-neutral-700: hsl(14 22% 25%);
+      --cds-neutral-750: hsl(13 20% 19.6%);
+      --cds-neutral-900: hsl(12 16.7% 11.8%);
+      --cds-page-bg: hsl(23 62% 96%);
+      --cds-surface-0: hsl(22.5 47.1% 93.3%);
+      --cds-surface-1: hsl(23 62% 96%);
+      --cds-surface-2: hsl(25.7 100% 98.6%);
+      --cds-surface-3: hsl(25.7 100% 98.6%);
+      --cds-text-primary: hsl(12 16.7% 11.8%);
+      --cds-text-secondary: hsl(15 25.9% 33.3%);
+      --cds-text-muted: hsl(16.1 20.2% 39.8%);
+      --cds-text-accent: hsl(210 50% 36%);
+      --cds-fill-accent: hsl(210 50% 36%);
+      --cds-fill-accent-hover: hsl(210 50.6% 30.2%);
+      --cds-on-accent: hsl(25.7 100% 98.6%);
+      --cds-border-accent: hsl(210 50% 36%);
+      --cds-bg-accent: hsl(212 38% 92%);
+      --cds-text-danger: hsl(3.6 69.5% 37.3%);
+      --cds-fill-danger: hsl(3.6 69.5% 37.3%);
+      --cds-fill-danger-hover: hsl(3.6 70% 31.8%);
+      --cds-on-danger: hsl(25.7 100% 98.6%);
+      --cds-border-danger: hsl(5 52% 70%);
+      --cds-bg-danger: hsl(7 62% 92%);
+      --cds-text-success: hsl(105.4 46.1% 29.8%);
+      --cds-fill-success: hsl(105.4 46.1% 29.8%);
+      --cds-fill-success-hover: hsl(105.4 46% 25%);
+      --cds-on-success: hsl(25.7 100% 98.6%);
+      --cds-border-success: hsl(102 28% 64%);
+      --cds-bg-success: hsl(100 33% 90%);
+      --cds-fill-primary: hsl(12 16.7% 11.8%);
+      --cds-fill-primary-hover: hsl(13 20% 19.6%);
+      --cds-on-primary: hsl(25.7 100% 98.6%);
+      --cds-border: hsl(16.5 42.6% 81.6%);
+      --cds-border-strong: hsl(17 38% 74%);
+      --cds-border-stronger: hsl(17.5 19.5% 51.8%);
+      --cds-ring-color: hsl(17 38% 74%);
+      --cds-fill-field-ring: hsl(17.5 19.5% 51.8%);
+      --cds-fill-secondary-ring: hsl(17.5 19.5% 51.8%);
+      --cds-fill-secondary-pressed-ring: hsl(17.5 19.5% 51.8%);
+      --cds-bg-user-message: hsl(20.7 50.9% 88.8%);
+      --cds-bg-neutral: rgb(181 123 98 / 10%);
+      --cds-bg-neutral-hover: rgb(181 123 98 / 17%);
+      --cds-bg-highlight: hsl(18 62.5% 84.3%);
+      --cds-tooltip-bg: hsl(12 16.7% 11.8%);
+      --cds-tooltip-fg: hsl(23 62% 96%);
+      --cds-fill-ghost-hover: rgb(35 27 25 / 5%);
+      --cds-fill-ghost-selected: rgb(35 27 25 / 10%);
+      --cds-fill-control: rgb(35 27 25 / 10%);
+      --cds-fill-control-hover: rgb(35 27 25 / 20%);
+      --cds-fill-secondary: rgb(255 255 255 / 10%);
+      --cds-fill-secondary-hover: rgb(35 27 25 / 5%);
+    }
+
+    @media (prefers-color-scheme: light) {
+    /* Page, surfaces, messages, text, controls, code ground and state colours: light by system. */
+    html[data-mode=system] .cds-root:not([data-mode=light]):not([data-mode=dark]):not([data-mode=system]),
+    html[data-mode=system] .cds-root[data-mode=system],
+    html.cds-root[data-mode=system] {
+      --cds-neutral-0: hsl(25.7 100% 98.6%);
+      --cds-neutral-20: hsl(22.5 47.1% 93.3%);
+      --cds-neutral-30: hsl(22 45% 91.6%);
+      --cds-neutral-40: hsl(22 43% 90%);
+      --cds-neutral-50: hsl(21 41% 88.4%);
+      --cds-neutral-60: hsl(21 40% 86.6%);
+      --cds-neutral-70: hsl(21 38% 85%);
+      --cds-neutral-150: hsl(20 32% 75%);
+      --cds-neutral-400: hsl(16.1 20.2% 39.8%);
+      --cds-neutral-600: hsl(15 25.9% 33.3%);
+      --cds-neutral-700: hsl(14 22% 25%);
+      --cds-neutral-750: hsl(13 20% 19.6%);
+      --cds-neutral-900: hsl(12 16.7% 11.8%);
+      --cds-page-bg: hsl(23 62% 96%);
+      --cds-surface-0: hsl(22.5 47.1% 93.3%);
+      --cds-surface-1: hsl(23 62% 96%);
+      --cds-surface-2: hsl(25.7 100% 98.6%);
+      --cds-surface-3: hsl(25.7 100% 98.6%);
+      --cds-text-primary: hsl(12 16.7% 11.8%);
+      --cds-text-secondary: hsl(15 25.9% 33.3%);
+      --cds-text-muted: hsl(16.1 20.2% 39.8%);
+      --cds-text-accent: hsl(210 50% 36%);
+      --cds-fill-accent: hsl(210 50% 36%);
+      --cds-fill-accent-hover: hsl(210 50.6% 30.2%);
+      --cds-on-accent: hsl(25.7 100% 98.6%);
+      --cds-border-accent: hsl(210 50% 36%);
+      --cds-bg-accent: hsl(212 38% 92%);
+      --cds-text-danger: hsl(3.6 69.5% 37.3%);
+      --cds-fill-danger: hsl(3.6 69.5% 37.3%);
+      --cds-fill-danger-hover: hsl(3.6 70% 31.8%);
+      --cds-on-danger: hsl(25.7 100% 98.6%);
+      --cds-border-danger: hsl(5 52% 70%);
+      --cds-bg-danger: hsl(7 62% 92%);
+      --cds-text-success: hsl(105.4 46.1% 29.8%);
+      --cds-fill-success: hsl(105.4 46.1% 29.8%);
+      --cds-fill-success-hover: hsl(105.4 46% 25%);
+      --cds-on-success: hsl(25.7 100% 98.6%);
+      --cds-border-success: hsl(102 28% 64%);
+      --cds-bg-success: hsl(100 33% 90%);
+      --cds-fill-primary: hsl(12 16.7% 11.8%);
+      --cds-fill-primary-hover: hsl(13 20% 19.6%);
+      --cds-on-primary: hsl(25.7 100% 98.6%);
+      --cds-border: hsl(16.5 42.6% 81.6%);
+      --cds-border-strong: hsl(17 38% 74%);
+      --cds-border-stronger: hsl(17.5 19.5% 51.8%);
+      --cds-ring-color: hsl(17 38% 74%);
+      --cds-fill-field-ring: hsl(17.5 19.5% 51.8%);
+      --cds-fill-secondary-ring: hsl(17.5 19.5% 51.8%);
+      --cds-fill-secondary-pressed-ring: hsl(17.5 19.5% 51.8%);
+      --cds-bg-user-message: hsl(20.7 50.9% 88.8%);
+      --cds-bg-neutral: rgb(181 123 98 / 10%);
+      --cds-bg-neutral-hover: rgb(181 123 98 / 17%);
+      --cds-bg-highlight: hsl(18 62.5% 84.3%);
+      --cds-tooltip-bg: hsl(12 16.7% 11.8%);
+      --cds-tooltip-fg: hsl(23 62% 96%);
+      --cds-fill-ghost-hover: rgb(35 27 25 / 5%);
+      --cds-fill-ghost-selected: rgb(35 27 25 / 10%);
+      --cds-fill-control: rgb(35 27 25 / 10%);
+      --cds-fill-control-hover: rgb(35 27 25 / 20%);
+      --cds-fill-secondary: rgb(255 255 255 / 10%);
+      --cds-fill-secondary-hover: rgb(35 27 25 / 5%);
+    }
+    }
+
+    /* Page, surfaces, messages, text, controls, code ground and state colours: dark. */
+    html[data-mode=dark] .cds-root:not([data-mode=light]):not([data-mode=dark]):not([data-mode=system]),
+    html[data-mode=dark] .cds-root[data-mode=dark],
+    html.cds-root[data-mode=dark] {
+      --cds-neutral-0: hsl(17 23% 6%);
+      --cds-neutral-20: hsl(17 22% 7%);
+      --cds-neutral-30: hsl(16 21% 7.6%);
+      --cds-neutral-40: hsl(16 20% 8.1%);
+      --cds-neutral-50: hsl(15 18.2% 8.6%);
+      --cds-neutral-60: hsl(16 18% 9.8%);
+      --cds-neutral-70: hsl(17 18% 11%);
+      --cds-neutral-150: hsl(19 17% 18%);
+      --cds-neutral-400: hsl(18 13% 44%);
+      --cds-neutral-600: hsl(18.9 18.8% 60.4%);
+      --cds-neutral-700: hsl(20 28.1% 72.7%);
+      --cds-neutral-750: hsl(22 32% 79%);
+      --cds-neutral-900: hsl(28.6 46.7% 91.2%);
+      --cds-page-bg: hsl(15 18.2% 8.6%);
+      --cds-surface-0: hsl(17 23% 6%);
+      --cds-surface-1: hsl(15 18.2% 8.6%);
+      --cds-surface-2: hsl(17 18% 11.2%);
+      --cds-surface-3: hsl(18 18% 14%);
+      --cds-text-primary: hsl(28.6 46.7% 91.2%);
+      --cds-text-secondary: hsl(20 28.1% 72.7%);
+      --cds-text-muted: hsl(18.9 18.8% 60.4%);
+      --cds-text-accent: hsl(211.1 55.1% 71.2%);
+      --cds-fill-accent: hsl(211.1 55.1% 71.2%);
+      --cds-fill-accent-hover: hsl(210.9 56.1% 77.6%);
+      --cds-on-accent: hsl(217.9 34.5% 10.8%);
+      --cds-border-accent: hsl(211.1 55.1% 71.2%);
+      --cds-bg-accent: hsl(214 32% 17.5%);
+      --cds-text-danger: hsl(4.8 81.2% 72.9%);
+      --cds-fill-danger: hsl(4.8 81.2% 72.9%);
+      --cds-fill-danger-hover: hsl(5 82% 78%);
+      --cds-on-danger: hsl(15 18.2% 8.6%);
+      --cds-border-danger: hsl(5 36% 41%);
+      --cds-bg-danger: hsl(7 36% 16.5%);
+      --cds-text-success: hsl(102 40.4% 61.2%);
+      --cds-fill-success: hsl(102 40.4% 61.2%);
+      --cds-fill-success-hover: hsl(102 42% 68%);
+      --cds-on-success: hsl(15 18.2% 8.6%);
+      --cds-border-success: hsl(104 26% 35%);
+      --cds-bg-success: hsl(100 28% 13.5%);
+      --cds-fill-primary: hsl(28.6 46.7% 91.2%);
+      --cds-fill-primary-hover: hsl(24 38% 83%);
+      --cds-on-primary: hsl(15 18.2% 8.6%);
+      --cds-border: hsl(19.1 19% 22.7%);
+      --cds-border-strong: hsl(19 18% 28%);
+      --cds-border-stronger: hsl(19.4 14% 47.5%);
+      --cds-ring-color: hsl(19 18% 28%);
+      --cds-fill-field-ring: hsl(19.4 14% 47.5%);
+      --cds-fill-secondary-ring: hsl(19.4 14% 47.5%);
+      --cds-fill-secondary-pressed-ring: hsl(19.4 14% 47.5%);
+      --cds-bg-user-message: hsl(22.9 24.7% 16.7%);
+      --cds-bg-neutral: rgb(136 110 98 / 10%);
+      --cds-bg-neutral-hover: rgb(136 110 98 / 12%);
+      --cds-bg-highlight: hsl(16.5 38.9% 25.7%);
+      --cds-tooltip-bg: hsl(18 18% 14%);
+      --cds-tooltip-fg: hsl(28.6 46.7% 91.2%);
+      --cds-fill-ghost-hover: rgb(243 232 222 / 5%);
+      --cds-fill-ghost-selected: rgb(243 232 222 / 5%);
+      --cds-fill-control: rgb(243 232 222 / 5%);
+      --cds-fill-control-hover: rgb(243 232 222 / 8%);
+      --cds-fill-secondary: rgb(243 232 222 / 5%);
+      --cds-fill-secondary-hover: rgb(243 232 222 / 10%);
+    }
+
+    @media (prefers-color-scheme: dark) {
+    /* Page, surfaces, messages, text, controls, code ground and state colours: dark by system. */
+    html[data-mode=system] .cds-root:not([data-mode=light]):not([data-mode=dark]):not([data-mode=system]),
+    html[data-mode=system] .cds-root[data-mode=system],
+    html.cds-root[data-mode=system] {
+      --cds-neutral-0: hsl(17 23% 6%);
+      --cds-neutral-20: hsl(17 22% 7%);
+      --cds-neutral-30: hsl(16 21% 7.6%);
+      --cds-neutral-40: hsl(16 20% 8.1%);
+      --cds-neutral-50: hsl(15 18.2% 8.6%);
+      --cds-neutral-60: hsl(16 18% 9.8%);
+      --cds-neutral-70: hsl(17 18% 11%);
+      --cds-neutral-150: hsl(19 17% 18%);
+      --cds-neutral-400: hsl(18 13% 44%);
+      --cds-neutral-600: hsl(18.9 18.8% 60.4%);
+      --cds-neutral-700: hsl(20 28.1% 72.7%);
+      --cds-neutral-750: hsl(22 32% 79%);
+      --cds-neutral-900: hsl(28.6 46.7% 91.2%);
+      --cds-page-bg: hsl(15 18.2% 8.6%);
+      --cds-surface-0: hsl(17 23% 6%);
+      --cds-surface-1: hsl(15 18.2% 8.6%);
+      --cds-surface-2: hsl(17 18% 11.2%);
+      --cds-surface-3: hsl(18 18% 14%);
+      --cds-text-primary: hsl(28.6 46.7% 91.2%);
+      --cds-text-secondary: hsl(20 28.1% 72.7%);
+      --cds-text-muted: hsl(18.9 18.8% 60.4%);
+      --cds-text-accent: hsl(211.1 55.1% 71.2%);
+      --cds-fill-accent: hsl(211.1 55.1% 71.2%);
+      --cds-fill-accent-hover: hsl(210.9 56.1% 77.6%);
+      --cds-on-accent: hsl(217.9 34.5% 10.8%);
+      --cds-border-accent: hsl(211.1 55.1% 71.2%);
+      --cds-bg-accent: hsl(214 32% 17.5%);
+      --cds-text-danger: hsl(4.8 81.2% 72.9%);
+      --cds-fill-danger: hsl(4.8 81.2% 72.9%);
+      --cds-fill-danger-hover: hsl(5 82% 78%);
+      --cds-on-danger: hsl(15 18.2% 8.6%);
+      --cds-border-danger: hsl(5 36% 41%);
+      --cds-bg-danger: hsl(7 36% 16.5%);
+      --cds-text-success: hsl(102 40.4% 61.2%);
+      --cds-fill-success: hsl(102 40.4% 61.2%);
+      --cds-fill-success-hover: hsl(102 42% 68%);
+      --cds-on-success: hsl(15 18.2% 8.6%);
+      --cds-border-success: hsl(104 26% 35%);
+      --cds-bg-success: hsl(100 28% 13.5%);
+      --cds-fill-primary: hsl(28.6 46.7% 91.2%);
+      --cds-fill-primary-hover: hsl(24 38% 83%);
+      --cds-on-primary: hsl(15 18.2% 8.6%);
+      --cds-border: hsl(19.1 19% 22.7%);
+      --cds-border-strong: hsl(19 18% 28%);
+      --cds-border-stronger: hsl(19.4 14% 47.5%);
+      --cds-ring-color: hsl(19 18% 28%);
+      --cds-fill-field-ring: hsl(19.4 14% 47.5%);
+      --cds-fill-secondary-ring: hsl(19.4 14% 47.5%);
+      --cds-fill-secondary-pressed-ring: hsl(19.4 14% 47.5%);
+      --cds-bg-user-message: hsl(22.9 24.7% 16.7%);
+      --cds-bg-neutral: rgb(136 110 98 / 10%);
+      --cds-bg-neutral-hover: rgb(136 110 98 / 12%);
+      --cds-bg-highlight: hsl(16.5 38.9% 25.7%);
+      --cds-tooltip-bg: hsl(18 18% 14%);
+      --cds-tooltip-fg: hsl(28.6 46.7% 91.2%);
+      --cds-fill-ghost-hover: rgb(243 232 222 / 5%);
+      --cds-fill-ghost-selected: rgb(243 232 222 / 5%);
+      --cds-fill-control: rgb(243 232 222 / 5%);
+      --cds-fill-control-hover: rgb(243 232 222 / 8%);
+      --cds-fill-secondary: rgb(243 232 222 / 5%);
+      --cds-fill-secondary-hover: rgb(243 232 222 / 10%);
+    }
+    }
+
+    /* Page and surfaces: light. */
+    html[data-mode=light] .dframe-root {
+      --df-sidebar-bg: hsl(23 62% 96%);
+      --df-surface-primary: 25.7 100% 98.6%;
+    }
+
+    @media (prefers-color-scheme: light) {
+    /* Page and surfaces: light by system. */
+    html[data-mode=system] .dframe-root {
+      --df-sidebar-bg: hsl(23 62% 96%);
+      --df-surface-primary: 25.7 100% 98.6%;
+    }
+    }
+
+    /* Page and surfaces: dark. */
+    html[data-mode=dark] .dframe-root {
+      --df-sidebar-bg: hsl(15 18.2% 8.6%);
+      --df-surface-primary: 18 18% 14%;
+    }
+
+    @media (prefers-color-scheme: dark) {
+    /* Page and surfaces: dark by system. */
+    html[data-mode=system] .dframe-root {
+      --df-sidebar-bg: hsl(15 18.2% 8.6%);
+      --df-surface-primary: 18 18% 14%;
+    }
+    }
+
+    /* Indigo sidebar, chosen conversation, sidebar text and control edges: light. */
+    html[data-mode=light] .dframe-root[data-variant=web] .dframe-sidebar,
+    html[data-mode=light] .dframe-root[data-variant=web][data-collapsed] .dframe-sidebar-body {
+      --df-web-sidebar-bg: hsl(212.3 35.1% 92.7%);
+      --df-sidebar-bg: hsl(212.3 35.1% 92.7%);
+      --cds-page-bg: hsl(212.3 35.1% 92.7%);
+      --cds-surface-0: hsl(212.3 35.1% 92.7%);
+      --cds-surface-1: hsl(212.3 35.1% 92.7%);
+      --df-hover: hsl(213 36% 95%);
+      --df-selected: hsl(216 45.5% 97.8%);
+      --cds-text-primary: var(--cds-gray-900);
+      --cds-text-secondary: hsl(211.2 15.2% 32.4%);
+      --cds-text-muted: hsl(213.1 14.9% 38.2%);
+      --cds-border: hsl(from var(--cds-gray-900) h s l / 10%);
+      --cds-border-strong: hsl(212.3 21% 75.7%);
+      --cds-border-stronger: hsl(214 17% 48%);
+      --cds-ring-color: hsl(214 17% 48%);
+      --cds-fill-field-ring: hsl(214 17% 48%);
+      --cds-fill-secondary-ring: hsl(214 17% 48%);
+      --cds-fill-secondary-pressed-ring: hsl(214 17% 48%);
+      --cds-alpha-1: hsl(from var(--cds-gray-900) h s l / 5%);
+      --cds-alpha-2: hsl(from var(--cds-gray-900) h s l / 10%);
+      --cds-alpha-3: hsl(from var(--cds-gray-900) h s l / 20%);
+      --cds-fill-ghost-hover: rgb(36 54 78 / 5%);
+      --cds-fill-ghost-selected: rgb(36 54 78 / 10%);
+      --cds-fill-control: rgb(36 54 78 / 10%);
+      --cds-fill-control-hover: rgb(36 54 78 / 20%);
+      --cds-fill-secondary: rgb(255 255 255 / 30%);
+      --cds-fill-secondary-hover: rgb(36 54 78 / 5%);
+      --cds-bg-neutral: rgb(36 54 78 / 5%);
+      --cds-bg-neutral-hover: rgb(36 54 78 / 10%);
+      --cds-segmented-control-track: rgb(36 54 78 / 6%);
+      --cds-segmented-control-thumb: hsl(216 45.5% 97.8%);
+      --cds-neutral-20: hsl(216 45.5% 97.8%);
+      --cds-neutral-30: hsl(212 33.3% 91.2%);
+      --cds-neutral-40: hsl(213.8 30.8% 89.8%);
+      --cds-neutral-50: hsl(211.8 28.8% 88.4%);
+      --cds-neutral-60: hsl(213 27% 87%);
+      --cds-neutral-70: hsl(211 27% 85%);
+      --cds-neutral-150: hsl(211 24% 81%);
+    }
+
+    @media (prefers-color-scheme: light) {
+    /* Indigo sidebar, chosen conversation, sidebar text and control edges: light by system. */
+    html[data-mode=system] .dframe-root[data-variant=web] .dframe-sidebar,
+    html[data-mode=system] .dframe-root[data-variant=web][data-collapsed] .dframe-sidebar-body {
+      --df-web-sidebar-bg: hsl(212.3 35.1% 92.7%);
+      --df-sidebar-bg: hsl(212.3 35.1% 92.7%);
+      --cds-page-bg: hsl(212.3 35.1% 92.7%);
+      --cds-surface-0: hsl(212.3 35.1% 92.7%);
+      --cds-surface-1: hsl(212.3 35.1% 92.7%);
+      --df-hover: hsl(213 36% 95%);
+      --df-selected: hsl(216 45.5% 97.8%);
+      --cds-text-primary: var(--cds-gray-900);
+      --cds-text-secondary: hsl(211.2 15.2% 32.4%);
+      --cds-text-muted: hsl(213.1 14.9% 38.2%);
+      --cds-border: hsl(from var(--cds-gray-900) h s l / 10%);
+      --cds-border-strong: hsl(212.3 21% 75.7%);
+      --cds-border-stronger: hsl(214 17% 48%);
+      --cds-ring-color: hsl(214 17% 48%);
+      --cds-fill-field-ring: hsl(214 17% 48%);
+      --cds-fill-secondary-ring: hsl(214 17% 48%);
+      --cds-fill-secondary-pressed-ring: hsl(214 17% 48%);
+      --cds-alpha-1: hsl(from var(--cds-gray-900) h s l / 5%);
+      --cds-alpha-2: hsl(from var(--cds-gray-900) h s l / 10%);
+      --cds-alpha-3: hsl(from var(--cds-gray-900) h s l / 20%);
+      --cds-fill-ghost-hover: rgb(36 54 78 / 5%);
+      --cds-fill-ghost-selected: rgb(36 54 78 / 10%);
+      --cds-fill-control: rgb(36 54 78 / 10%);
+      --cds-fill-control-hover: rgb(36 54 78 / 20%);
+      --cds-fill-secondary: rgb(255 255 255 / 30%);
+      --cds-fill-secondary-hover: rgb(36 54 78 / 5%);
+      --cds-bg-neutral: rgb(36 54 78 / 5%);
+      --cds-bg-neutral-hover: rgb(36 54 78 / 10%);
+      --cds-segmented-control-track: rgb(36 54 78 / 6%);
+      --cds-segmented-control-thumb: hsl(216 45.5% 97.8%);
+      --cds-neutral-20: hsl(216 45.5% 97.8%);
+      --cds-neutral-30: hsl(212 33.3% 91.2%);
+      --cds-neutral-40: hsl(213.8 30.8% 89.8%);
+      --cds-neutral-50: hsl(211.8 28.8% 88.4%);
+      --cds-neutral-60: hsl(213 27% 87%);
+      --cds-neutral-70: hsl(211 27% 85%);
+      --cds-neutral-150: hsl(211 24% 81%);
+    }
+    }
+
+    /* Indigo sidebar, chosen conversation, sidebar text and control edges: dark. */
+    html[data-mode=dark] .dframe-root[data-variant=web] .dframe-sidebar,
+    html[data-mode=dark] .dframe-root[data-variant=web][data-collapsed] .dframe-sidebar-body {
+      --df-web-sidebar-bg: hsl(217.9 34.5% 10.8%);
+      --df-sidebar-bg: hsl(217.9 34.5% 10.8%);
+      --cds-page-bg: hsl(217.9 34.5% 10.8%);
+      --cds-surface-0: hsl(217.9 34.5% 10.8%);
+      --cds-surface-1: hsl(217.9 34.5% 10.8%);
+      --df-hover: hsl(215.5 31.4% 13.7%);
+      --df-selected: hsl(215 30% 17%);
+      --cds-text-primary: var(--cds-gray-50);
+      --cds-text-secondary: hsl(213.1 26.1% 78.2%);
+      --cds-text-muted: hsl(213.5 16.5% 59.6%);
+      --cds-border: hsl(from var(--cds-gray-0) h s l / 10%);
+      --cds-border-strong: hsl(216 26% 25%);
+      --cds-border-stronger: hsl(213.8 15.5% 49.2%);
+      --cds-ring-color: hsl(213.8 15.5% 49.2%);
+      --cds-fill-field-ring: hsl(213.8 15.5% 49.2%);
+      --cds-fill-secondary-ring: hsl(213.8 15.5% 49.2%);
+      --cds-fill-secondary-pressed-ring: hsl(213.8 15.5% 49.2%);
+      --cds-alpha-1: hsl(from var(--cds-gray-0) h s l / 5%);
+      --cds-alpha-2: hsl(from var(--cds-gray-0) h s l / 10%);
+      --cds-alpha-3: hsl(from var(--cds-gray-0) h s l / 20%);
+      --cds-fill-ghost-hover: rgb(185 198 214 / 6%);
+      --cds-fill-ghost-selected: rgb(185 198 214 / 11%);
+      --cds-fill-control: rgb(185 198 214 / 11%);
+      --cds-fill-control-hover: rgb(185 198 214 / 20%);
+      --cds-fill-secondary: rgb(185 198 214 / 6%);
+      --cds-fill-secondary-hover: rgb(185 198 214 / 11%);
+      --cds-bg-neutral: rgb(185 198 214 / 6%);
+      --cds-bg-neutral-hover: rgb(185 198 214 / 11%);
+      --cds-segmented-control-track: rgb(185 198 214 / 6%);
+      --cds-segmented-control-thumb: hsl(215 30% 17%);
+      --cds-neutral-20: hsl(215 30% 17%);
+      --cds-neutral-30: hsl(218.8 36.2% 9.2%);
+      --cds-neutral-40: hsl(216.7 36% 9.8%);
+      --cds-neutral-50: hsl(217.9 34.5% 10.8%);
+      --cds-neutral-60: hsl(217 22% 16%);
+      --cds-neutral-70: hsl(215.6 27.6% 22.7%);
+      --cds-neutral-150: hsl(215.6 27.6% 22.7%);
+    }
+
+    @media (prefers-color-scheme: dark) {
+    /* Indigo sidebar, chosen conversation, sidebar text and control edges: dark by system. */
+    html[data-mode=system] .dframe-root[data-variant=web] .dframe-sidebar,
+    html[data-mode=system] .dframe-root[data-variant=web][data-collapsed] .dframe-sidebar-body {
+      --df-web-sidebar-bg: hsl(217.9 34.5% 10.8%);
+      --df-sidebar-bg: hsl(217.9 34.5% 10.8%);
+      --cds-page-bg: hsl(217.9 34.5% 10.8%);
+      --cds-surface-0: hsl(217.9 34.5% 10.8%);
+      --cds-surface-1: hsl(217.9 34.5% 10.8%);
+      --df-hover: hsl(215.5 31.4% 13.7%);
+      --df-selected: hsl(215 30% 17%);
+      --cds-text-primary: var(--cds-gray-50);
+      --cds-text-secondary: hsl(213.1 26.1% 78.2%);
+      --cds-text-muted: hsl(213.5 16.5% 59.6%);
+      --cds-border: hsl(from var(--cds-gray-0) h s l / 10%);
+      --cds-border-strong: hsl(216 26% 25%);
+      --cds-border-stronger: hsl(213.8 15.5% 49.2%);
+      --cds-ring-color: hsl(213.8 15.5% 49.2%);
+      --cds-fill-field-ring: hsl(213.8 15.5% 49.2%);
+      --cds-fill-secondary-ring: hsl(213.8 15.5% 49.2%);
+      --cds-fill-secondary-pressed-ring: hsl(213.8 15.5% 49.2%);
+      --cds-alpha-1: hsl(from var(--cds-gray-0) h s l / 5%);
+      --cds-alpha-2: hsl(from var(--cds-gray-0) h s l / 10%);
+      --cds-alpha-3: hsl(from var(--cds-gray-0) h s l / 20%);
+      --cds-fill-ghost-hover: rgb(185 198 214 / 6%);
+      --cds-fill-ghost-selected: rgb(185 198 214 / 11%);
+      --cds-fill-control: rgb(185 198 214 / 11%);
+      --cds-fill-control-hover: rgb(185 198 214 / 20%);
+      --cds-fill-secondary: rgb(185 198 214 / 6%);
+      --cds-fill-secondary-hover: rgb(185 198 214 / 11%);
+      --cds-bg-neutral: rgb(185 198 214 / 6%);
+      --cds-bg-neutral-hover: rgb(185 198 214 / 11%);
+      --cds-segmented-control-track: rgb(185 198 214 / 6%);
+      --cds-segmented-control-thumb: hsl(215 30% 17%);
+      --cds-neutral-20: hsl(215 30% 17%);
+      --cds-neutral-30: hsl(218.8 36.2% 9.2%);
+      --cds-neutral-40: hsl(216.7 36% 9.8%);
+      --cds-neutral-50: hsl(217.9 34.5% 10.8%);
+      --cds-neutral-60: hsl(217 22% 16%);
+      --cds-neutral-70: hsl(215.6 27.6% 22.7%);
+      --cds-neutral-150: hsl(215.6 27.6% 22.7%);
+    }
+    }
+
+    /* Indigo Send and Stop: light. */
+    html[data-mode=light] .cds-root [data-cds=ChatComposerActions],
+    html.cds-root[data-mode=light] [data-cds=ChatComposerActions] {
+      --cds-fill-brand: hsl(210 50% 36%);
+      --cds-clay: hsl(210 50% 36%);
+      --cds-fill-primary: hsl(210 50% 36%);
+      --cds-fill-brand-hover: hsl(210 50.6% 30.2%);
+      --cds-clay-emphasized: hsl(210 50.6% 30.2%);
+      --cds-fill-primary-hover: hsl(210 50.6% 30.2%);
+      --cds-on-brand: hsl(25.7 100% 98.6%);
+      --cds-on-primary: hsl(25.7 100% 98.6%);
+      --brand-100: 210 50% 36%;
+      --brand-200: 210 50% 36%;
+      --accent-brand: 210 50% 36%;
+      --brand-000: 210 50.6% 30.2%;
+      --oncolor-100: 25.7 100% 98.6%;
+    }
+
+    @media (prefers-color-scheme: light) {
+    /* Indigo Send and Stop: light by system. */
+    html[data-mode=system] .cds-root [data-cds=ChatComposerActions],
+    html.cds-root[data-mode=system] [data-cds=ChatComposerActions] {
+      --cds-fill-brand: hsl(210 50% 36%);
+      --cds-clay: hsl(210 50% 36%);
+      --cds-fill-primary: hsl(210 50% 36%);
+      --cds-fill-brand-hover: hsl(210 50.6% 30.2%);
+      --cds-clay-emphasized: hsl(210 50.6% 30.2%);
+      --cds-fill-primary-hover: hsl(210 50.6% 30.2%);
+      --cds-on-brand: hsl(25.7 100% 98.6%);
+      --cds-on-primary: hsl(25.7 100% 98.6%);
+      --brand-100: 210 50% 36%;
+      --brand-200: 210 50% 36%;
+      --accent-brand: 210 50% 36%;
+      --brand-000: 210 50.6% 30.2%;
+      --oncolor-100: 25.7 100% 98.6%;
+    }
+    }
+
+    /* Indigo Send and Stop: dark. */
+    html[data-mode=dark] .cds-root [data-cds=ChatComposerActions],
+    html.cds-root[data-mode=dark] [data-cds=ChatComposerActions] {
+      --cds-fill-brand: hsl(211.1 55.1% 71.2%);
+      --cds-clay: hsl(211.1 55.1% 71.2%);
+      --cds-fill-primary: hsl(211.1 55.1% 71.2%);
+      --cds-fill-brand-hover: hsl(210.9 56.1% 77.6%);
+      --cds-clay-emphasized: hsl(210.9 56.1% 77.6%);
+      --cds-fill-primary-hover: hsl(210.9 56.1% 77.6%);
+      --cds-on-brand: hsl(217.9 34.5% 10.8%);
+      --cds-on-primary: hsl(217.9 34.5% 10.8%);
+      --brand-100: 211.1 55.1% 71.2%;
+      --brand-200: 211.1 55.1% 71.2%;
+      --accent-brand: 211.1 55.1% 71.2%;
+      --brand-000: 210.9 56.1% 77.6%;
+      --oncolor-100: 217.9 34.5% 10.8%;
+    }
+
+    @media (prefers-color-scheme: dark) {
+    /* Indigo Send and Stop: dark by system. */
+    html[data-mode=system] .cds-root [data-cds=ChatComposerActions],
+    html.cds-root[data-mode=system] [data-cds=ChatComposerActions] {
+      --cds-fill-brand: hsl(211.1 55.1% 71.2%);
+      --cds-clay: hsl(211.1 55.1% 71.2%);
+      --cds-fill-primary: hsl(211.1 55.1% 71.2%);
+      --cds-fill-brand-hover: hsl(210.9 56.1% 77.6%);
+      --cds-clay-emphasized: hsl(210.9 56.1% 77.6%);
+      --cds-fill-primary-hover: hsl(210.9 56.1% 77.6%);
+      --cds-on-brand: hsl(217.9 34.5% 10.8%);
+      --cds-on-primary: hsl(217.9 34.5% 10.8%);
+      --brand-100: 211.1 55.1% 71.2%;
+      --brand-200: 211.1 55.1% 71.2%;
+      --accent-brand: 211.1 55.1% 71.2%;
+      --brand-000: 210.9 56.1% 77.6%;
+      --oncolor-100: 217.9 34.5% 10.8%;
+    }
+    }
+
+    /* Vermilion selection: light. */
+    html[data-mode=light] ::selection {
+      background-color: hsl(18 62.5% 84.3%);
+    }
+
+    @media (prefers-color-scheme: light) {
+    /* Vermilion selection: light by system. */
+    html[data-mode=system] ::selection {
+      background-color: hsl(18 62.5% 84.3%);
+    }
+    }
+
+    /* Vermilion selection: dark. */
+    html[data-mode=dark] ::selection {
+      background-color: hsl(16.5 38.9% 25.7%);
+    }
+
+    @media (prefers-color-scheme: dark) {
+    /* Vermilion selection: dark by system. */
+    html[data-mode=system] ::selection {
+      background-color: hsl(16.5 38.9% 25.7%);
+    }
+    }
+
+    /* Chosen conversation in the sidebar recents list: light. */
+    html[data-mode=light] .dframe-root[data-variant=web] .df-session-list:not([data-list-section]) {
+      --df-selected: hsl(216 45.5% 97.8%);
+    }
+
+    @media (prefers-color-scheme: light) {
+    /* Chosen conversation in the sidebar recents list: light by system. */
+    html[data-mode=system] .dframe-root[data-variant=web] .df-session-list:not([data-list-section]) {
+      --df-selected: hsl(216 45.5% 97.8%);
+    }
+    }
+
+    /* Chosen conversation in the sidebar recents list: dark. */
+    html[data-mode=dark] .dframe-root[data-variant=web] .df-session-list:not([data-list-section]) {
+      --df-selected: hsl(215 30% 17%);
+    }
+
+    @media (prefers-color-scheme: dark) {
+    /* Chosen conversation in the sidebar recents list: dark by system. */
+    html[data-mode=system] .dframe-root[data-variant=web] .df-session-list:not([data-list-section]) {
+      --df-selected: hsl(215 30% 17%);
+    }
+    }
+
+    /* Indigo focus ring on the composer. */
+    html .cds-root .shadow-composer-focus,
+    html.cds-root .shadow-composer-focus {
+      --cds-border-strong: var(--cds-fill-accent);
+    }
+
+    /* Control edge on the composer. */
+    html .cds-root .shadow-composer,
+    html.cds-root .shadow-composer {
+      --cds-ring-color: var(--cds-border-stronger);
+    }
+
+
+    /* Indigo links in the conversation. */
+    html .cds-root :is(.font-claude-response, .standard-markdown, .progressive-markdown, .font-user-message) a:not([data-cds]),
+    html.cds-root :is(.font-claude-response, .standard-markdown, .progressive-markdown, .font-user-message) a:not([data-cds]) {
+      color: var(--cds-text-accent);
+    }
+
+    /* Indigo links on hover in the conversation. */
+    html .cds-root :is(.font-claude-response, .standard-markdown, .progressive-markdown, .font-user-message) a:not([data-cds]):hover,
+    html.cds-root :is(.font-claude-response, .standard-markdown, .progressive-markdown, .font-user-message) a:not([data-cds]):hover {
+      color: var(--cds-fill-accent-hover);
+    }
+
+    /* High contrast: the person asked for more contrast. Text 7:1, control edges 4.5:1, panel edges and dividers 3:1. */
+    @media (prefers-contrast: more) {
+      /* Page, text, links, focus rings and hairlines, high contrast: light. */
+      html:root[data-theme=claude][data-mode=light] {
+        --accent-000: 210.4 54.5% 24.1%;
+        --accent-100: 210 57% 18%;
+        --accent-200: 210 57% 18%;
+        --text-200: 15 28.6% 27.5%;
+        --text-300: 15 28.6% 27.5%;
+        --text-400: 15 28.6% 27.5%;
+        --text-500: 15 28.6% 27.5%;
+        --danger-000: 3.8 71.4% 30.2%;
+      }
+      @media (prefers-color-scheme: light) {
+        /* Page, text, links, focus rings and hairlines, high contrast: light by system. */
+        html:root[data-theme=claude][data-mode=system] {
+          --accent-000: 210.4 54.5% 24.1%;
+          --accent-100: 210 57% 18%;
+          --accent-200: 210 57% 18%;
+          --text-200: 15 28.6% 27.5%;
+          --text-300: 15 28.6% 27.5%;
+          --text-400: 15 28.6% 27.5%;
+          --text-500: 15 28.6% 27.5%;
+          --danger-000: 3.8 71.4% 30.2%;
+        }
+      }
+      /* Page, text, links, focus rings and hairlines, high contrast: dark. */
+      html:root[data-theme=claude][data-mode=dark] {
+        --accent-000: 210 62.9% 86.3%;
+        --accent-100: 210 66.7% 91.8%;
+        --accent-200: 210 66.7% 91.8%;
+        --text-200: 21 31% 80%;
+        --text-300: 21 31% 80%;
+        --text-400: 21 31% 80%;
+        --text-500: 21 31% 80%;
+        --danger-000: 5.8 85.7% 83.5%;
+      }
+      @media (prefers-color-scheme: dark) {
+        /* Page, text, links, focus rings and hairlines, high contrast: dark by system. */
+        html:root[data-theme=claude][data-mode=system] {
+          --accent-000: 210 62.9% 86.3%;
+          --accent-100: 210 66.7% 91.8%;
+          --accent-200: 210 66.7% 91.8%;
+          --text-200: 21 31% 80%;
+          --text-300: 21 31% 80%;
+          --text-400: 21 31% 80%;
+          --text-500: 21 31% 80%;
+          --danger-000: 5.8 85.7% 83.5%;
+        }
+      }
+      /* Design-system tokens, high contrast: light. */
+      html[data-mode=light] .cds-root:not([data-mode=light]):not([data-mode=dark]):not([data-mode=system]),
+      html[data-mode=light] .cds-root[data-mode=light],
+      html.cds-root[data-mode=light] {
+        --cds-text-secondary: hsl(15 28.6% 27.5%);
+        --cds-text-muted: hsl(15 28.6% 27.5%);
+        --cds-neutral-600: hsl(15 28.6% 27.5%);
+        --cds-neutral-400: hsl(15 28.6% 27.5%);
+        --cds-text-accent: hsl(210.4 54.5% 24.1%);
+        --cds-fill-accent: hsl(210.4 54.5% 24.1%);
+        --cds-border-accent: hsl(210.4 54.5% 24.1%);
+        --cds-fill-accent-hover: hsl(210 57% 18%);
+        --cds-text-danger: hsl(3.8 71.4% 30.2%);
+        --cds-fill-danger: hsl(3.8 71.4% 30.2%);
+        --cds-fill-danger-hover: hsl(3.4 71.2% 24.5%);
+        --cds-border-danger: hsl(3.6 69.5% 37.3%);
+        --cds-text-success: hsl(107.8 48.5% 19.8%);
+        --cds-fill-success: hsl(107.8 48.5% 19.8%);
+        --cds-fill-success-hover: hsl(107.7 49.4% 15.5%);
+        --cds-border-success: hsl(105.4 46.1% 29.8%);
+        --cds-border: hsl(17.5 19.5% 51.8%);
+        --cds-border-strong: hsl(17.5 19.5% 51.8%);
+        --cds-ring-color: hsl(17.5 19.5% 51.8%);
+        --cds-border-stronger: hsl(15 25.9% 33.3%);
+        --cds-fill-field-ring: hsl(15 25.9% 33.3%);
+        --cds-fill-secondary-ring: hsl(15 25.9% 33.3%);
+        --cds-fill-secondary-pressed-ring: hsl(15 25.9% 33.3%);
+      }
+      @media (prefers-color-scheme: light) {
+        /* Design-system tokens, high contrast: light by system. */
+        html[data-mode=system] .cds-root:not([data-mode=light]):not([data-mode=dark]):not([data-mode=system]),
+        html[data-mode=system] .cds-root[data-mode=system],
+        html.cds-root[data-mode=system] {
+          --cds-text-secondary: hsl(15 28.6% 27.5%);
+          --cds-text-muted: hsl(15 28.6% 27.5%);
+          --cds-neutral-600: hsl(15 28.6% 27.5%);
+          --cds-neutral-400: hsl(15 28.6% 27.5%);
+          --cds-text-accent: hsl(210.4 54.5% 24.1%);
+          --cds-fill-accent: hsl(210.4 54.5% 24.1%);
+          --cds-border-accent: hsl(210.4 54.5% 24.1%);
+          --cds-fill-accent-hover: hsl(210 57% 18%);
+          --cds-text-danger: hsl(3.8 71.4% 30.2%);
+          --cds-fill-danger: hsl(3.8 71.4% 30.2%);
+          --cds-fill-danger-hover: hsl(3.4 71.2% 24.5%);
+          --cds-border-danger: hsl(3.6 69.5% 37.3%);
+          --cds-text-success: hsl(107.8 48.5% 19.8%);
+          --cds-fill-success: hsl(107.8 48.5% 19.8%);
+          --cds-fill-success-hover: hsl(107.7 49.4% 15.5%);
+          --cds-border-success: hsl(105.4 46.1% 29.8%);
+          --cds-border: hsl(17.5 19.5% 51.8%);
+          --cds-border-strong: hsl(17.5 19.5% 51.8%);
+          --cds-ring-color: hsl(17.5 19.5% 51.8%);
+          --cds-border-stronger: hsl(15 25.9% 33.3%);
+          --cds-fill-field-ring: hsl(15 25.9% 33.3%);
+          --cds-fill-secondary-ring: hsl(15 25.9% 33.3%);
+          --cds-fill-secondary-pressed-ring: hsl(15 25.9% 33.3%);
+        }
+      }
+      /* Design-system tokens, high contrast: dark. */
+      html[data-mode=dark] .cds-root:not([data-mode=light]):not([data-mode=dark]):not([data-mode=system]),
+      html[data-mode=dark] .cds-root[data-mode=dark],
+      html.cds-root[data-mode=dark] {
+        --cds-text-secondary: hsl(21 31% 80%);
+        --cds-text-muted: hsl(21 31% 80%);
+        --cds-neutral-700: hsl(21 31% 80%);
+        --cds-neutral-600: hsl(21 31% 80%);
+        --cds-text-accent: hsl(210 62.9% 86.3%);
+        --cds-fill-accent: hsl(210 62.9% 86.3%);
+        --cds-border-accent: hsl(210 62.9% 86.3%);
+        --cds-fill-accent-hover: hsl(210 66.7% 91.8%);
+        --cds-text-danger: hsl(5.8 85.7% 83.5%);
+        --cds-fill-danger: hsl(5.8 85.7% 83.5%);
+        --cds-fill-danger-hover: hsl(6 87% 88%);
+        --cds-border-danger: hsl(4.8 81.2% 72.9%);
+        --cds-text-success: hsl(102 44% 71%);
+        --cds-fill-success: hsl(102 44% 71%);
+        --cds-fill-success-hover: hsl(101.5 45.6% 77.6%);
+        --cds-border-success: hsl(102 40.4% 61.2%);
+        --cds-border: hsl(19.4 14% 47.5%);
+        --cds-border-strong: hsl(19.4 14% 47.5%);
+        --cds-ring-color: hsl(19.4 14% 47.5%);
+        --cds-border-stronger: hsl(20 19% 63%);
+        --cds-fill-field-ring: hsl(20 19% 63%);
+        --cds-fill-secondary-ring: hsl(20 19% 63%);
+        --cds-fill-secondary-pressed-ring: hsl(20 19% 63%);
+      }
+      @media (prefers-color-scheme: dark) {
+        /* Design-system tokens, high contrast: dark by system. */
+        html[data-mode=system] .cds-root:not([data-mode=light]):not([data-mode=dark]):not([data-mode=system]),
+        html[data-mode=system] .cds-root[data-mode=system],
+        html.cds-root[data-mode=system] {
+          --cds-text-secondary: hsl(21 31% 80%);
+          --cds-text-muted: hsl(21 31% 80%);
+          --cds-neutral-700: hsl(21 31% 80%);
+          --cds-neutral-600: hsl(21 31% 80%);
+          --cds-text-accent: hsl(210 62.9% 86.3%);
+          --cds-fill-accent: hsl(210 62.9% 86.3%);
+          --cds-border-accent: hsl(210 62.9% 86.3%);
+          --cds-fill-accent-hover: hsl(210 66.7% 91.8%);
+          --cds-text-danger: hsl(5.8 85.7% 83.5%);
+          --cds-fill-danger: hsl(5.8 85.7% 83.5%);
+          --cds-fill-danger-hover: hsl(6 87% 88%);
+          --cds-border-danger: hsl(4.8 81.2% 72.9%);
+          --cds-text-success: hsl(102 44% 71%);
+          --cds-fill-success: hsl(102 44% 71%);
+          --cds-fill-success-hover: hsl(101.5 45.6% 77.6%);
+          --cds-border-success: hsl(102 40.4% 61.2%);
+          --cds-border: hsl(19.4 14% 47.5%);
+          --cds-border-strong: hsl(19.4 14% 47.5%);
+          --cds-ring-color: hsl(19.4 14% 47.5%);
+          --cds-border-stronger: hsl(20 19% 63%);
+          --cds-fill-field-ring: hsl(20 19% 63%);
+          --cds-fill-secondary-ring: hsl(20 19% 63%);
+          --cds-fill-secondary-pressed-ring: hsl(20 19% 63%);
+        }
+      }
+      /* Sidebar, high contrast: light. */
+      html[data-mode=light] .dframe-root[data-variant=web] .dframe-sidebar,
+      html[data-mode=light] .dframe-root[data-variant=web][data-collapsed] .dframe-sidebar-body {
+        --cds-text-secondary: hsl(211.4 16.3% 25.3%);
+        --cds-text-muted: hsl(211.4 16.3% 25.3%);
+        --cds-border-strong: hsl(214 17% 48%);
+        --cds-border-stronger: hsl(211.2 15.2% 32.4%);
+        --cds-ring-color: hsl(211.2 15.2% 32.4%);
+        --cds-fill-field-ring: hsl(211.2 15.2% 32.4%);
+        --cds-fill-secondary-ring: hsl(211.2 15.2% 32.4%);
+        --cds-fill-secondary-pressed-ring: hsl(211.2 15.2% 32.4%);
+      }
+      @media (prefers-color-scheme: light) {
+        /* Sidebar, high contrast: light by system. */
+        html[data-mode=system] .dframe-root[data-variant=web] .dframe-sidebar,
+        html[data-mode=system] .dframe-root[data-variant=web][data-collapsed] .dframe-sidebar-body {
+          --cds-text-secondary: hsl(211.4 16.3% 25.3%);
+          --cds-text-muted: hsl(211.4 16.3% 25.3%);
+          --cds-border-strong: hsl(214 17% 48%);
+          --cds-border-stronger: hsl(211.2 15.2% 32.4%);
+          --cds-ring-color: hsl(211.2 15.2% 32.4%);
+          --cds-fill-field-ring: hsl(211.2 15.2% 32.4%);
+          --cds-fill-secondary-ring: hsl(211.2 15.2% 32.4%);
+          --cds-fill-secondary-pressed-ring: hsl(211.2 15.2% 32.4%);
+        }
+      }
+      /* Sidebar, high contrast: dark. */
+      html[data-mode=dark] .dframe-root[data-variant=web] .dframe-sidebar,
+      html[data-mode=dark] .dframe-root[data-variant=web][data-collapsed] .dframe-sidebar-body {
+        --cds-text-secondary: hsl(212.5 28.6% 83.5%);
+        --cds-text-muted: hsl(212.5 28.6% 83.5%);
+        --cds-border-strong: hsl(213.8 15.5% 49.2%);
+        --cds-border-stronger: hsl(213.5 16.5% 59.6%);
+        --cds-ring-color: hsl(213.5 16.5% 59.6%);
+        --cds-fill-field-ring: hsl(213.5 16.5% 59.6%);
+        --cds-fill-secondary-ring: hsl(213.5 16.5% 59.6%);
+        --cds-fill-secondary-pressed-ring: hsl(213.5 16.5% 59.6%);
+      }
+      @media (prefers-color-scheme: dark) {
+        /* Sidebar, high contrast: dark by system. */
+        html[data-mode=system] .dframe-root[data-variant=web] .dframe-sidebar,
+        html[data-mode=system] .dframe-root[data-variant=web][data-collapsed] .dframe-sidebar-body {
+          --cds-text-secondary: hsl(212.5 28.6% 83.5%);
+          --cds-text-muted: hsl(212.5 28.6% 83.5%);
+          --cds-border-strong: hsl(213.8 15.5% 49.2%);
+          --cds-border-stronger: hsl(213.5 16.5% 59.6%);
+          --cds-ring-color: hsl(213.5 16.5% 59.6%);
+          --cds-fill-field-ring: hsl(213.5 16.5% 59.6%);
+          --cds-fill-secondary-ring: hsl(213.5 16.5% 59.6%);
+          --cds-fill-secondary-pressed-ring: hsl(213.5 16.5% 59.6%);
+        }
+      }
+      /* Send and Stop, high contrast: light. */
+      html[data-mode=light] .cds-root [data-cds=ChatComposerActions],
+      html.cds-root[data-mode=light] [data-cds=ChatComposerActions] {
+        --cds-fill-brand: hsl(210.4 54.5% 24.1%);
+        --cds-clay: hsl(210.4 54.5% 24.1%);
+        --cds-fill-primary: hsl(210.4 54.5% 24.1%);
+        --cds-fill-brand-hover: hsl(210 57% 18%);
+        --cds-clay-emphasized: hsl(210 57% 18%);
+        --cds-fill-primary-hover: hsl(210 57% 18%);
+        --brand-100: 210.4 54.5% 24.1%;
+        --brand-200: 210.4 54.5% 24.1%;
+        --accent-brand: 210.4 54.5% 24.1%;
+        --brand-000: 210 57% 18%;
+      }
+      @media (prefers-color-scheme: light) {
+        /* Send and Stop, high contrast: light by system. */
+        html[data-mode=system] .cds-root [data-cds=ChatComposerActions],
+        html.cds-root[data-mode=system] [data-cds=ChatComposerActions] {
+          --cds-fill-brand: hsl(210.4 54.5% 24.1%);
+          --cds-clay: hsl(210.4 54.5% 24.1%);
+          --cds-fill-primary: hsl(210.4 54.5% 24.1%);
+          --cds-fill-brand-hover: hsl(210 57% 18%);
+          --cds-clay-emphasized: hsl(210 57% 18%);
+          --cds-fill-primary-hover: hsl(210 57% 18%);
+          --brand-100: 210.4 54.5% 24.1%;
+          --brand-200: 210.4 54.5% 24.1%;
+          --accent-brand: 210.4 54.5% 24.1%;
+          --brand-000: 210 57% 18%;
+        }
+      }
+      /* Send and Stop, high contrast: dark. */
+      html[data-mode=dark] .cds-root [data-cds=ChatComposerActions],
+      html.cds-root[data-mode=dark] [data-cds=ChatComposerActions] {
+        --cds-fill-brand: hsl(210 62.9% 86.3%);
+        --cds-clay: hsl(210 62.9% 86.3%);
+        --cds-fill-primary: hsl(210 62.9% 86.3%);
+        --cds-fill-brand-hover: hsl(210 66.7% 91.8%);
+        --cds-clay-emphasized: hsl(210 66.7% 91.8%);
+        --cds-fill-primary-hover: hsl(210 66.7% 91.8%);
+        --brand-100: 210 62.9% 86.3%;
+        --brand-200: 210 62.9% 86.3%;
+        --accent-brand: 210 62.9% 86.3%;
+        --brand-000: 210 66.7% 91.8%;
+      }
+      @media (prefers-color-scheme: dark) {
+        /* Send and Stop, high contrast: dark by system. */
+        html[data-mode=system] .cds-root [data-cds=ChatComposerActions],
+        html.cds-root[data-mode=system] [data-cds=ChatComposerActions] {
+          --cds-fill-brand: hsl(210 62.9% 86.3%);
+          --cds-clay: hsl(210 62.9% 86.3%);
+          --cds-fill-primary: hsl(210 62.9% 86.3%);
+          --cds-fill-brand-hover: hsl(210 66.7% 91.8%);
+          --cds-clay-emphasized: hsl(210 66.7% 91.8%);
+          --cds-fill-primary-hover: hsl(210 66.7% 91.8%);
+          --brand-100: 210 62.9% 86.3%;
+          --brand-200: 210 62.9% 86.3%;
+          --accent-brand: 210 62.9% 86.3%;
+          --brand-000: 210 66.7% 91.8%;
+        }
+      }
+    }
+
+    /* coco-sprite:start: written by tools/art/coco-skin-pixel.py from ChatGPT-1.png; do not edit by hand. */
+    /* Coco in the corner (DECISIONS 1004): drawn by CSS alone, nothing read, nothing loaded. She sits where
+       the page has room to spare, never takes a click, blinks when idle, types while you write and watches
+       while a reply comes in. Which part of the real page has that room, and the selectors here, are checked
+       on the real site before release (reply in progress: [data-is-streaming="true"]). */
+    html {
+      --coco-sprite: url("data:image/png;base64,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");
+    }
+    @media (min-width: 1360px) and (min-height: 640px) {
+      html::after {
+        content: "";
+        position: fixed;
+        right: 24px;
+        bottom: 16px;
+        width: 124px;
+        height: 124px;
+        pointer-events: none;
+        background: var(--coco-sprite) 0px 0 / 620px 124px no-repeat;
+        image-rendering: pixelated;
+        animation: coco-idle 6s step-end infinite;
+      }
+      html:has([contenteditable="true"]:focus, textarea:focus):not(:has([data-is-streaming="true"]))::after {
+        animation: coco-type 0.5s step-end infinite;
+      }
+      html:has([data-is-streaming="true"])::after {
+        animation: none;
+        background-position: -496px 0;
+      }
+      @keyframes coco-idle {
+        0% { background-position: 0px 0; }
+        95% { background-position: -124px 0; }
+        98% { background-position: 0px 0; }
+      }
+      @keyframes coco-type {
+        0% { background-position: -248px 0; }
+        50% { background-position: -372px 0; }
+      }
+    }
+    @media (min-width: 1360px) and (min-height: 640px) and (prefers-reduced-motion: reduce) {
+      html::after,
+      html:has([contenteditable="true"]:focus, textarea:focus):not(:has([data-is-streaming="true"]))::after {
+        animation: none;
+      }
+    }
+    /* Narrower windows and phones (DECISIONS 1006): half her size, sitting on the top edge of the message box
+       at its right end, so she moves with it. This needs the box (.shadow-composer) to be a positioned
+       element, checked on a phone before release. */
+    @media (max-width: 1359.98px) {
+      .shadow-composer::before {
+        content: "";
+        position: absolute;
+        right: 12px;
+        bottom: calc(100% - 2px);
+        width: 62px;
+        height: 62px;
+        pointer-events: none;
+        background: var(--coco-sprite) 0px 0 / 310px 62px no-repeat;
+        image-rendering: pixelated;
+        animation: coco-idle-small 6s step-end infinite;
+      }
+      .shadow-composer:focus-within::before {
+        animation: coco-type-small 0.5s step-end infinite;
+      }
+      html:has([data-is-streaming="true"]) .shadow-composer::before {
+        animation: none;
+        background-position: -248px 0;
+      }
+      @keyframes coco-idle-small {
+        0% { background-position: 0px 0; }
+        95% { background-position: -62px 0; }
+        98% { background-position: 0px 0; }
+      }
+      @keyframes coco-type-small {
+        0% { background-position: -124px 0; }
+        50% { background-position: -186px 0; }
+      }
+    }
+    @media (max-width: 1359.98px) and (prefers-reduced-motion: reduce) {
+      .shadow-composer::before,
+      .shadow-composer:focus-within::before {
+        animation: none;
+      }
+    }
+    /* coco-sprite:end */
+  }
+
+  /* Conversation type with Simplified Chinese first; respect the dyslexia font. */
+  html:not([data-dyslexic-font]) {
+    --font-claude-response: var(--skin-serif);
+    --font-user-message: var(--skin-serif);
+    --skin-serif: 'Iowan Old Style', 'Palatino Linotype', 'Book Antiqua', Palatino, 'TeX Gyre Pagella', Georgia, var(--skin-cjk), 'Kohinoor Devanagari', 'Nirmala UI', 'Noto Serif Devanagari', serif;
+    --skin-cjk: 'Songti SC', 'STSong', 'Noto Serif CJK SC', 'SimSun', 'Songti TC', 'Noto Serif CJK TC', 'Hiragino Mincho ProN', 'Yu Mincho', 'Noto Serif CJK JP', 'AppleMyungjo', 'Batang', 'Noto Serif KR';
+  }
+
+  /* Conversation type with Traditional Chinese first. */
+  html:not([data-dyslexic-font]):is([data-cjk-order=zh-hant], :lang(zh-Hant)) {
+    --skin-cjk: 'Songti TC', 'Noto Serif CJK TC', 'Songti SC', 'STSong', 'Noto Serif CJK SC', 'SimSun', 'Hiragino Mincho ProN', 'Yu Mincho', 'Noto Serif CJK JP', 'AppleMyungjo', 'Batang', 'Noto Serif KR';
+  }
+
+  /* Conversation type with Japanese first. */
+  html:not([data-dyslexic-font]):is([data-cjk-order=ja], :lang(ja)) {
+    --skin-cjk: 'Hiragino Mincho ProN', 'Yu Mincho', 'Noto Serif CJK JP', 'Songti SC', 'STSong', 'Noto Serif CJK SC', 'SimSun', 'Songti TC', 'Noto Serif CJK TC', 'AppleMyungjo', 'Batang', 'Noto Serif KR';
+  }
+
+  /* Conversation type with Korean first. */
+  html:not([data-dyslexic-font]):is([data-cjk-order=ko], :lang(ko)) {
+    --skin-cjk: 'AppleMyungjo', 'Batang', 'Noto Serif KR', 'Songti SC', 'STSong', 'Noto Serif CJK SC', 'SimSun', 'Songti TC', 'Noto Serif CJK TC', 'Hiragino Mincho ProN', 'Yu Mincho', 'Noto Serif CJK JP';
+  }
+
+  /* Conversation type in replies, your messages and their headings. */
+  html:not([data-dyslexic-font]) .cds-root :is([data-cds=AssistantMessage], [data-cds=UserMessage]) .prose,
+  html.cds-root:not([data-dyslexic-font]) :is([data-cds=AssistantMessage], [data-cds=UserMessage]) .prose {
+    --_prose-font-body: var(--skin-serif);
+    --_prose-font-heading: var(--skin-serif);
+    --_prose-font-heading-display: var(--skin-serif);
+  }
+}

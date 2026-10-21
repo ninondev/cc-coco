@@ -1,0 +1,6 @@
+#!/bin/sh
+case "$(/usr/bin/uname -m)" in
+  arm64) exec "${0%/*}/coco-state-macos-aarch64" "$@" ;;
+  x86_64) exec "${0%/*}/coco-state-macos-x86_64" "$@" ;;
+  *) printf '%s\n' '{"ok":false,"code":69}'; exit 69 ;;
+esac

@@ -1,7 +1,8 @@
 name: CI
 
-# Validates the marketplace and the plugin, then runs the mod tests. Needs no secrets and no
-# sign-in: `claude plugin validate` and `claude plugin test` work offline.
+# Validates the marketplace and the plugin, then runs the mod tests (the kit). Needs no secrets and no
+# sign-in: `claude plugin validate` and the kit work offline. The tree has no generator and none of the
+# private checks; tools/public-tree.json lists what it leaves out, and the test runner reports those as skipped.
 on:
   push:
   pull_request:
@@ -17,21 +18,27 @@ concurrency:
 
 env:
   # Claude Code is installed with Anthropic's native installer pinned to this exact version
-  # (https://code.claude.com/docs/en/setup#install-a-specific-version). Raise it on purpose.
-  CLAUDE_CODE_VERSION: "2.1.287"
+  # (https://code.claude.com/docs/en/setup#install-a-specific-version). 1.0 needs 2.1.299 or later; the
+  # full kit was run on this one. Raise it on purpose.
+  CLAUDE_CODE_VERSION: "2.1.302"
   # The pinned version stays put for the whole run.
   DISABLE_AUTOUPDATER: "1"
+  # The kit rebuilds two runtime files in its scratch copy with Bun and TypeScript.
+  BUN_VERSION: "1.4.2"
+  TYPESCRIPT_VERSION: "5.9.3"
+  # Hosted runners are slower than the machine the CPU budgets were measured on. In the 10-17 rehearsal the
+  # startup batches went 0.5 % over their budget at 4 on a slow cloud machine; the budgets themselves are
+  # measured on the maintainer's Mac.
+  COCO_CPU_SCALE: "6"
 
 jobs:
   check:
     name: check (${{ matrix.os }})
     runs-on: ${{ matrix.os }}
-    timeout-minutes: 15
+    timeout-minutes: 150
     strategy:
       fail-fast: false
       matrix:
-        # The icon and companion scripts are macOS-first, so macOS gets the same run. Hosted
-        # runners are free for public repositories and the job takes about a minute.
         os: [ubuntu-latest, macos-latest]
     defaults:
       run:
@@ -46,10 +53,21 @@ jobs:
           curl -fsSL https://claude.ai/install.sh | bash -s "$CLAUDE_CODE_VERSION"
           echo "$HOME/.local/bin" >> "$GITHUB_PATH"
 
-      - name: Check the installed version
+      - name: Install Bun and TypeScript
+        run: |
+          curl -fsSL https://bun.sh/install | bash -s "bun-v$BUN_VERSION"
+          echo "$HOME/.bun/bin" >> "$GITHUB_PATH"
+          mkdir -p "$RUNNER_TEMP/typescript"
+          cd "$RUNNER_TEMP/typescript"
+          "$HOME/.bun/bin/bun" add "typescript@$TYPESCRIPT_VERSION"
+          echo "COCO_TYPESCRIPT=$RUNNER_TEMP/typescript/node_modules/typescript/lib/typescript.js" >> "$GITHUB_ENV"
+
+      - name: Check the installed versions
         run: |
           claude --version
           test "$(claude --version | cut -d' ' -f1)" = "$CLAUDE_CODE_VERSION"
+          test "$(bun --version)" = "$BUN_VERSION"
+          test -f "$COCO_TYPESCRIPT"
 
       - name: Validate the marketplace
         run: claude plugin validate .
@@ -64,16 +82,14 @@ jobs:
           done
 
       - name: Run the mod tests
-        run: |
-          python3 tools/run-tests.py
-          python3 tools/run-tests.py --windows-roots
+        run: python3 tools/run-tests.py --stage kit
 
   windows:
     name: check (Windows, experimental)
     runs-on: windows-latest
-    # Windows is untested so far; failures are reported without blocking the release.
+    # Not tried on a real Windows machine yet; failures are reported without blocking the release.
     continue-on-error: true
-    timeout-minutes: 15
+    timeout-minutes: 150
     defaults:
       run:
         shell: pwsh
@@ -90,6 +106,19 @@ jobs:
           & $installer $env:CLAUDE_CODE_VERSION
           if ($LASTEXITCODE -ne 0) { exit $LASTEXITCODE }
           "$env:USERPROFILE\.local\bin" | Out-File -FilePath $env:GITHUB_PATH -Encoding utf8 -Append
+
+      - name: Install Bun and TypeScript
+        run: |
+          iex "& {$(irm https://bun.sh/install.ps1)} -Version $env:BUN_VERSION"
+          $bun = Join-Path $env:USERPROFILE ".bun\bin"
+          $bun | Out-File -FilePath $env:GITHUB_PATH -Encoding utf8 -Append
+          $ts = Join-Path $env:RUNNER_TEMP "typescript"
+          New-Item -ItemType Directory -Force -Path $ts | Out-Null
+          Push-Location $ts
+          & (Join-Path $bun "bun.exe") add "typescript@$env:TYPESCRIPT_VERSION"
+          if ($LASTEXITCODE -ne 0) { exit $LASTEXITCODE }
+          Pop-Location
+          "COCO_TYPESCRIPT=$ts\node_modules\typescript\lib\typescript.js" | Out-File -FilePath $env:GITHUB_ENV -Encoding utf8 -Append
 
       - name: Check the installed version
         run: |
@@ -115,6 +144,6 @@ jobs:
 
       - name: Run the mod tests
         run: |
-          python tools/run-tests.py
+          python tools/run-tests.py --stage kit
           if ($LASTEXITCODE -ne 0) { exit $LASTEXITCODE }
-          python tools/run-tests.py --windows-roots
+          python tools/run-tests.py --stage kit --windows-roots

@@ -10,21 +10,32 @@ import { MORNING, P, PERSON, RECENT, world } from './world'
 import { PROCESS_OK } from './shared-world'
 import { samePath } from './file-paths'
 
-const HOME = '/tmp/cold-companion', FOLDER = `${HOME}/Library/Application Support/Claude-sama`
+const HOME = '/tmp/cold-companion', FOLDER = `${HOME}/Library/Application Support/Coco`
 const MAC = '/System/Library/CoreServices/SystemVersion.plist'
-const PANE = { plugin: 'claudesama', component: 'Pane' as const, requestId: 'claudesama-book', props: { title: 'Claude-sama', isFocused: false, bodyColumns: 64, placement: 'dock' as const, scroll: { offset: 0, bodyRows: 40 }, view: {} } }
+const PANE = { plugin: 'coco', component: 'Pane' as const, requestId: 'coco-book', props: { title: 'Coco', isFocused: false, bodyColumns: 64, placement: 'dock' as const, scroll: { offset: 0, bodyRows: 40 }, view: {} } }
 function gate() {
   let release: (() => void) | undefined, begin: (() => void) | undefined
   const waiting = new Promise<void>(resolve => { release = resolve })
   const began = new Promise<void>(resolve => { begin = resolve })
   return { waiting, began, begin: () => begin?.(), release: () => release?.() }
 }
-function cold(on: On, block: 'probe' | 'record') {
+function cold(on: On, block: 'probe' | 'record', surface: 'desktop' | 'terminal') {
   const held = gate()
+  on('session.surfaces', () => ({ value: [surface] }))
   let requested = false
   on('ui.invalidate', ($, e, next) => { requested = true; return next(e) })
+  // BOOK publication redraws the pane's native subscribers; fallback invalidation is optional.
+  on('state.set', { plugin: 'coco', key: 'book' }, async ($, e, next) => {
+    const result = await next(e) // pass through World and the engine's real get/set subscriptions
+    if (result.value?.isSet) requested = true
+    return result
+  })
   on('fs.exists', async ($, e) => {
-    expect(requested, 'optional filesystem work starts after the open event redraw').toBe(true)
+    // Activation detects the host before opening any book. The separate optional
+    // companion probe still starts only after BOOK publication and is held below.
+    if (samePath(e.path, MAC) && !requested) return { value: true }
+    if (samePath(e.path, MAC) || samePath(e.path, FOLDER) || samePath(e.path, `${HOME}/${COMPANION_APP}`))
+      expect(requested, 'optional filesystem work starts after BOOK publication or its fallback redraw').toBe(true)
     if (samePath(e.path, MAC)) { if (block === 'probe') { held.begin(); await held.waiting }; return { value: true } }
     return { value: samePath(e.path, FOLDER) || samePath(e.path, `${HOME}/${COMPANION_APP}`) }
   })
@@ -40,16 +51,18 @@ function cold(on: On, block: 'probe' | 'record') {
 describe('cold companion status is separate from the first Settings frame', () => {
   for (const surface of ['desktop', 'terminal'] as const) for (const block of ['probe', 'record'] as const) {
     test(`${surface}: first Settings frame draws with a held ${block}, then status redraws from completion`, async ($, on) => {
-      const held = cold(on, block)
+      const held = cold(on, block, surface)
       // Open directly, without a startup which could have prewarmed optional status.
-      await $.command.run({ command: 'claudesama', args: 'settings', origin: PERSON, presentation: P })
+      const opening = $.command.run({ command: 'coco', args: 'settings', origin: PERSON, presentation: P })
       const ui = await $.ui.mount({ surface, ...PANE })
+      await opening
       await held.began
       try {
-        expect(await ui.find({ type: 'Text', text: 'Band above the prompt' })).toBeDefined()
-        expect(await ui.find({ type: 'Button', text: surface === 'desktop' ? 'Painted' : 'Full' })).toBeDefined()
-        expect(await ui.find({ type: 'Text', text: 'Desktop companion' })).toBeUndefined()
-        expect(await ui.find({ type: 'Button', text: 'Install the companion' })).toBeUndefined()
+        // the band row is the terminal's alone since 10-19 (owner): the desktop band is always the painted one
+        expect(await ui.find({ type: 'Text', text: surface === 'desktop' ? "Coco's voice in replies" : 'Band above the prompt' })).toBeDefined()
+        expect(await ui.find({ type: 'Button', key: surface === 'desktop' ? 'coco:set:voice:full' : 'coco:set:band:on' })).toBeDefined()
+        expect(await ui.find({ type: 'Text', text: 'Coco Pet' })).toBeUndefined()
+        expect(await ui.find({ type: 'Button', text: 'Install Coco Pet' })).toBeUndefined()
       } finally { held.release() }
       // find consumes the redraw requested by background completion; no forced redraw/clock.
       expect(await ui.find({ type: 'Text', text: 'Not running' })).toBeDefined()
@@ -64,8 +77,9 @@ describe('cold companion status is separate from the first Settings frame', () =
     const held = gate(), c = new CompanionBook()
     let redraws = 0, reads = 0, finished = false, packet: string | undefined, wake: (() => void) | undefined, accepted: (() => void) | undefined
     const engine = {
+      plugin: { root: '/tmp/cold-companion-plugin' },
       env: { get: async (key: string) => key === 'HOME' ? HOME : undefined },
-      fs: { exists: async () => true, read: async () => { reads++; held.begin(); await held.waiting; finished = true; return JSON.stringify({ running: false, accessibility: false, version: 'old' }) } },
+      fs: { exists: async () => true, read: async (path: string) => { reads++; held.begin(); await held.waiting; finished = true; return JSON.stringify({ running: false, accessibility: false, version: 'old' }) } },
     } as unknown as EngineInterface
     warmCompanion(engine, c, () => { redraws++ })
     const pending = c.warming
@@ -110,9 +124,10 @@ describe('cold companion status is separate from the first Settings frame', () =
     const held = gate(), c = new CompanionBook()
     let redraws = 0, reads = 0
     const engine = {
+      plugin: { root: '/tmp/cold-companion-plugin' },
       env: { get: async (key: string) => key === 'HOME' ? HOME : undefined },
       fs: { exists: async (path: string) => { if (path === MAC && block === 'probe') { held.begin(); await held.waiting }; return path === MAC || path === FOLDER || path === `${HOME}/${COMPANION_APP}` },
-        read: async () => { reads++; if (block === 'record') { held.begin(); await held.waiting }; return JSON.stringify({ running: false }) } },
+        read: async (path: string) => { reads++; if (block === 'record') { held.begin(); await held.waiting }; return JSON.stringify({ running: false }) } },
     } as unknown as EngineInterface
     warmCompanion(engine, c, () => { redraws++ })
     const pending = c.warming
@@ -121,13 +136,18 @@ describe('cold companion status is separate from the first Settings frame', () =
     else companionChanged({ running: true, accessibility: true, size: 'large', version: PLUGIN_VERSION })
     held.release(); await pending
     expect(redraws).toBe(0)
-    expect(c.snapshot).toBeUndefined()
+    if (stale === 'generation') expect(c.snapshot).toBeUndefined()
+    else {
+      expect(c.snapshot?.info.running).toBe(true)
+      expect(c.snapshot?.info.accessibility).toBe(true)
+      expect(c.snapshot?.info.size).toBe('large')
+    }
     if (stale === 'event') {
-      // The native event itself proves macOS; no further probe or read is needed.
+      // The native event proves macOS; capability still comes from the one file read.
       warmCompanion(engine, c, () => { redraws++ })
       expect(c.macReady).toBe(true)
       expect((await companionData(engine, c, false, 0)).state).toBe('following')
-      expect(reads).toBe(block === 'record' ? 1 : 0)
+      expect(reads).toBe(1)
     }
   })
 })

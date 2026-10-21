@@ -1,0 +1,14 @@
+Run options: --seed 42831
+
+# Running:
+
+..F
+
+# Running tests with 1 process:
+
+  1) Failure:
+BillingTest#test_totals_invoice [/home/user/src/blog/test/billing_test.rb:12]:
+Expected: 4200
+  Actual: 4199
+
+3 runs, 9 assertions, 1 failures, 0 errors, 0 skips

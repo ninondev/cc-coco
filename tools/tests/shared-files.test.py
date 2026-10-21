@@ -1,8 +1,10 @@
 #!/usr/bin/env python3
 """Exercise the actual fixed host scripts against throwaway shared folders only."""
 import base64
+import os
 import concurrent.futures
 import json
+import os
 import pathlib
 import re
 import subprocess
@@ -10,9 +12,15 @@ import tempfile
 import threading
 import time
 import unittest
+from pathlib import Path
+import sys
+sys.path.insert(0, str(Path(__file__).resolve().parents[1]))
+from hooks_source import hook_source
+from scratch import TemporaryDirectory
 
 ROOT = pathlib.Path(__file__).resolve().parents[2]
-SOURCE = (ROOT / 'plugin/hooks/shared-files.ts').read_text()
+SOURCE = Path(os.environ.get('S2_SHARED_SOURCE', hook_source(ROOT / 'plugin/hooks/shared-files.ts'))).read_text()
+HELPER = ROOT / 'plugin/bin/companion-control'
 
 
 def script(name):
@@ -26,38 +34,20 @@ DIAGNOSTIC = script('DIAGNOSTIC_APPEND')
 CAP = 200 * 1024
 
 
-def run(code, folder, text, name=None):
-    argv = ['/bin/sh', '-c', code, 'claudesama', str(folder)]
+def run(code, folder, text, name=None, env=None):
+    argv = ['/bin/sh', '-c', code, 'coco', str(folder)]
     if name is not None:
         argv.append(name)
-    return subprocess.run(argv, input=text, text=True, capture_output=True, timeout=3)
+    argv.extend([str(HELPER), str(ROOT / "plugin/bin/presence.sh")])
+    return subprocess.run(argv, input=text, text=True, capture_output=True, timeout=3, env=env)
 
 
 class SharedFiles(unittest.TestCase):
     def setUp(self):
-        self.tmp = tempfile.TemporaryDirectory(prefix='claudesama-shared-files-')
+        self.tmp = TemporaryDirectory(prefix='coco-shared-files-')
         self.addCleanup(self.tmp.cleanup)
-        self.folder = pathlib.Path(self.tmp.name) / 'Library/Application Support/Claude-sama'
+        self.folder = pathlib.Path(self.tmp.name).resolve() / 'Library/Application Support/Coco'
         self.folder.mkdir(parents=True)
-
-    def test_bundled_first_render_heads_are_byte_exact_in_both_styles(self):
-        for family, module in [('pixel', 'rest-frames.ts'), ('desktop', 'painted-frames.ts')]:
-            text = (ROOT / 'plugin/hooks' / module).read_text()
-            bundled = json.loads(text.split(' = ', 1)[1])
-            assets = sorted((ROOT / 'plugin/assets' / family).glob('*.png'))
-            self.assertEqual(len(bundled), 16)
-            self.assertEqual(len(assets), 16)
-            for asset in assets:
-                frame = re.match(r'\d+-(.*)\.png', asset.name).group(1)
-                self.assertEqual(base64.b64decode(bundled[frame]), asset.read_bytes())
-
-    def test_independent_startup_fixture_bytes_match_assets(self):
-        text = (ROOT / 'tools/tests/band-png-bytes.ts').read_text()
-        fixture = json.loads(text.split(' = ', 1)[1].removesuffix(' as const\n'))
-        for family, frames in fixture.items():
-            for frame, encoded in frames.items():
-                asset = next((ROOT / 'plugin/assets' / family).glob('??-' + frame + '.png'))
-                self.assertEqual(base64.b64decode(encoded), asset.read_bytes())
 
     def test_direct_writer_reproduces_partial_json(self):
         """The previous direct-write protocol exposes an incomplete document to readers."""
@@ -154,7 +144,7 @@ class SharedFiles(unittest.TestCase):
         self.assertEqual(len(ids), len(set(ids)))
         self.assertFalse((self.folder / '.diagnostics.lock').exists())
 
-    def test_diagnostics_recovers_dead_lock_owner(self):
+    def test_diagnostics_ignores_legacy_lock_directory(self):
         (self.folder / 'diagnostics').touch()
         lock = self.folder / '.diagnostics.lock'
         lock.mkdir()
@@ -163,7 +153,119 @@ class SharedFiles(unittest.TestCase):
         result = run(DIAGNOSTIC, self.folder, record)
         self.assertEqual(result.returncode, 0, result.stderr)
         self.assertEqual((self.folder / 'diagnostics.log').read_text(), record)
-        self.assertFalse(lock.exists())
+        self.assertEqual((lock/'owner.99999999').read_text(), '99999999\n')
+
+    def test_writes_refuse_parent_and_leaf_links(self):
+        outside = self.folder.parent / 'outside'
+        outside.mkdir()
+        target = outside / 'view.json'; target.write_text('untouched')
+        alias = self.folder / 'alias'; alias.symlink_to(outside, target_is_directory=True)
+        self.assertNotEqual(run(ATOMIC, alias, 'bad', 'view.json').returncode, 0)
+        self.assertEqual(target.read_text(), 'untouched')
+        (self.folder/'view.json').symlink_to(target)
+        self.assertNotEqual(run(ATOMIC, self.folder, 'bad', 'view.json').returncode, 0)
+        self.assertEqual(target.read_text(), 'untouched')
+        (self.folder/'diagnostics').touch()
+        log = self.folder/'diagnostics.log'; log.symlink_to(target)
+        self.assertNotEqual(run(DIAGNOSTIC, self.folder, 'bad\n').returncode, 0)
+        self.assertEqual(target.read_text(), 'untouched')
+
+    def test_rotation_and_lock_refuse_links_and_multilinks(self):
+        (self.folder/'diagnostics').touch()
+        target = self.folder.parent/'outside'; target.write_text('untouched')
+        log = self.folder/'diagnostics.log'; log.write_text('x'*CAP)
+        backup = self.folder/'diagnostics.log.1'; backup.symlink_to(target)
+        self.assertNotEqual(run(DIAGNOSTIC, self.folder, '{}\n').returncode, 0)
+        self.assertEqual(target.read_text(), 'untouched'); self.assertEqual(log.stat().st_size, CAP)
+        backup.unlink(); os.link(target, backup)
+        self.assertNotEqual(run(DIAGNOSTIC, self.folder, '{}\n').returncode, 0)
+        self.assertEqual(target.read_text(), 'untouched')
+        lock = self.folder/'.shared-diagnostics-lock'; lock.unlink(missing_ok=True); lock.symlink_to(target)
+        self.assertNotEqual(run(DIAGNOSTIC, self.folder, '{}\n').returncode, 0)
+        self.assertEqual(target.read_text(), 'untouched')
+
+    def test_permanent_lock_leaves_refuse_links_and_multilinks(self):
+        (self.folder/'diagnostics').touch()
+        outside=self.folder.parent/'outside';outside.write_text('untouched')
+        for name,script,target in [('.shared-view-lock',ATOMIC,'view.json'),('.shared-diagnostics-lock',DIAGNOSTIC,None)]:
+            lock=self.folder/name
+            for hard in [False,True]:
+                if hard:os.link(outside,lock)
+                else:lock.symlink_to(outside)
+                self.assertNotEqual(run(script,self.folder,'{}\n',target).returncode,0)
+                self.assertEqual(outside.read_text(),'untouched');lock.unlink()
+
+    def test_view_multilink_and_fifo_refused_without_blocking(self):
+        outside = self.folder.parent/'outside'; outside.write_text('untouched')
+        view = self.folder/'view.json'; os.link(outside, view)
+        self.assertNotEqual(run(ATOMIC, self.folder, 'bad', 'view.json').returncode, 0)
+        self.assertEqual(outside.read_text(), 'untouched')
+        view.unlink(); os.mkfifo(view)
+        self.assertNotEqual(run(ATOMIC, self.folder, 'bad', 'view.json').returncode, 0)
+
+    def test_four_diagnostic_writers_validate_slow_record_metadata_without_holding_the_lock(self):
+        # Since a474436 the record's metadata (one line, at most 4096 bytes, no NUL) is checked by the native helper
+        # behind DIAGNOSTIC_APPEND. Four writers whose records are still arriving must all be admitted: none may hold
+        # the diagnostics lock while it waits for its own input (lead, 10-10).
+        (self.folder / 'diagnostics').touch()
+        argv = ['/bin/sh', '-c', DIAGNOSTIC, 'coco', str(self.folder), str(HELPER), str(ROOT / 'plugin/bin/presence.sh')]
+        writers = []
+        try:
+            for number in range(4):
+                writer = subprocess.Popen(argv, stdin=subprocess.PIPE, stdout=subprocess.PIPE, stderr=subprocess.PIPE)
+                writer.stdin.write(('{"step": "metadata", "id": %d' % number).encode())
+                writer.stdin.flush()
+                writers.append(writer)
+            # As long as M1's metadata barrier waited (1.5 s): longer than a writer's bounded wait for the lock.
+            time.sleep(1.5)
+            for writer in writers:
+                try:
+                    writer.stdin.write(b'}\n')
+                    writer.stdin.close()
+                except BrokenPipeError:
+                    pass  # this writer already gave up; its exit code below says so
+            results = [(writer.wait(timeout=10), writer.stderr.read().decode()) for writer in writers]
+        finally:
+            for writer in writers:
+                if writer.poll() is None:
+                    writer.kill()
+                    writer.wait()
+                for stream in (writer.stdout, writer.stderr):
+                    stream.close()
+        self.assertEqual([code for code, _ in results], [0, 0, 0, 0], [error for _, error in results])
+        rows = [json.loads(line) for line in (self.folder / 'diagnostics.log').read_text().splitlines()]
+        self.assertEqual(sorted(row['id'] for row in rows), list(range(4)))
+        self.assertFalse(list(self.folder.glob('.diagnostic.*')))
+
+    def test_four_view_writers_still_sending_do_not_hold_the_lock(self):
+        # U9: write-shared reads the view before it takes the view lock, as DIAGNOSTIC_APPEND does, so four writers
+        # whose views are still arriving are all admitted and view.json is one writer's whole document.
+        argv = ['/bin/sh', '-c', ATOMIC, 'coco', str(self.folder), 'view.json', str(HELPER),
+                str(ROOT / 'plugin/bin/presence.sh')]
+        writers = []
+        try:
+            for number in range(4):
+                writer = subprocess.Popen(argv, stdin=subprocess.PIPE, stdout=subprocess.PIPE, stderr=subprocess.PIPE)
+                writer.stdin.write(('{"id": %d' % number).encode())
+                writer.stdin.flush()
+                writers.append(writer)
+            time.sleep(1.5)  # longer than a writer's bounded wait for the lock
+            for writer in writers:
+                try:
+                    writer.stdin.write(b'}\n')
+                    writer.stdin.close()
+                except BrokenPipeError:
+                    pass
+            results = [(writer.wait(timeout=10), writer.stderr.read().decode()) for writer in writers]
+        finally:
+            for writer in writers:
+                if writer.poll() is None:
+                    writer.kill()
+                    writer.wait()
+                for stream in (writer.stdout, writer.stderr):
+                    stream.close()
+        self.assertEqual([code for code, _ in results], [0, 0, 0, 0], [error for _, error in results])
+        self.assertIn(json.loads((self.folder / 'view.json').read_text())['id'], range(4))
 
 
 if __name__ == '__main__':

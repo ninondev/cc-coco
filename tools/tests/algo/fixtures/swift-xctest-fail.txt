@@ -1,0 +1,8 @@
+Test Suite 'All tests' started at 2026-10-05 06:07:08.000.
+Test Suite 'BillingTests.xctest' started at 2026-10-05 06:07:08.001.
+Test Case '-[ShopTests.BillingTests testComputeTotals]' started.
+/Users/user/src/shop/Tests/BillingTests.swift:12: error: -[ShopTests.BillingTests testComputeTotals] : XCTAssertEqual failed: ("4200") is not equal to ("4201")
+Test Case '-[ShopTests.BillingTests testComputeTotals]' failed (0.012 seconds).
+Test Case '-[ShopTests.BillingTests testRoundsToCents]' passed (0.008 seconds).
+Test Suite 'BillingTests.xctest' failed at 2026-10-05 06:07:08.500 (0.5 seconds).
+Executed 2 tests, with 1 failure (0 expectations) in 0.5 (0.5) seconds

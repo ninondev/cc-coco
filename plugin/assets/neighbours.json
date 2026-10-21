@@ -1,0 +1,12 @@
+{
+  "version": 1,
+  "prefixBytes": 160,
+  "eventLatencySeconds": 0.25,
+  "agents": [
+    {"id":"codex","label":"Codex","folder":{"default":"~/.codex/sessions","environment":"CODEX_HOME","suffix":"sessions"},"filePattern":"rollout-*.jsonl","mode":"typed","typePaths":[["type"],["payload","type"]],"busy":["task_started","turn_started"],"done":["task_complete","turn_complete","turn_aborted"],"waiting":[],"quotaLimitID":"codex"},
+    {"id":"open-interpreter","label":"Open Interpreter","folder":{"default":"~/.openinterpreter/sessions","environment":"INTERPRETER_HOME","suffix":"sessions"},"filePattern":"rollout-*.jsonl","mode":"typed","typePaths":[["type"],["payload","type"]],"busy":["task_started","turn_started"],"done":["task_complete","turn_complete","turn_aborted"],"waiting":[],"quotaLimitID":"codex"},
+    {"id":"copilot-cli","label":"Copilot CLI","folder":{"default":"~/.copilot/session-state","environment":"COPILOT_HOME","suffix":"session-state"},"filePattern":"events.jsonl","mode":"typed","typePaths":[["type"]],"busy":["assistant.turn_start","tool.execution_start","tool.execution_complete","permission.completed"],"done":["assistant.turn_end","abort","session.shutdown","session.error"],"waiting":["permission.requested"]},
+    {"id":"pi","label":"Pi","folder":{"default":"~/.pi/agent/sessions","environment":"PI_CODING_AGENT_SESSION_DIR"},"filePattern":"*.jsonl","mode":"activity","typePaths":[["type"]],"busy":[],"done":[],"waiting":[]},
+    {"id":"oh-my-pi","label":"oh-my-pi","folder":{"default":"~/.omp/agent/sessions"},"filePattern":"*.jsonl","mode":"activity","typePaths":[["type"]],"busy":[],"done":[],"waiting":[]}
+  ]
+}

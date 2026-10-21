@@ -1,19 +1,22 @@
 // Every language he reads: complete, found from the settings and the locale, switchable by hand,
-// in its own culture's luck, safe to show anyone, and narrow enough for the band.
+// safe to show anyone, and narrow enough for the band.
 
 import { describe, expect, test } from 'claude-code/testing'
 import { cells } from '../hooks/band'
-import { LINES, OMIKUJI_WEIGHTS } from '../hooks/lines'
-import { HEARING, detectLanguage, langOf, languageOf, slipLabel } from '../hooks/mood'
+import { LINES } from '../hooks/lines'
+import { HEARING, detectLanguage as hearLanguage, langOf, languageOf } from '../hooks/mood'
 import { LANGS, WORDS } from '../hooks/words'
 import type { Lang } from '../hooks/words'
-import { P, PERSON, RECENT, world } from './world'
+import { TRADITIONAL_ONLY, SIMPLIFIED_ONLY } from './chinese-script-data'
+import { LANGUAGE_CODES } from './language-inventory'
+import { settleLegacyStart, P, PERSON, RECENT, world } from './world'
+
+const chineseData = JSON.stringify({ TRADITIONAL_ONLY, SIMPLIFIED_ONLY })
+const detectLanguage = (text: string, ...candidates: unknown[]) => hearLanguage(text, candidates, async () => chineseData)
 
 const START = { cwd: '/tmp/project', surface: 'terminal' as const, isInteractive: true }
 const CODES: readonly Lang[] = LANGS.map(l => l.code)
-const RANKS = Object.keys(OMIKUJI_WEIGHTS)
 const OWN = LINES as unknown as Record<string, unknown>
-const FORTUNES = LINES.omikuji as unknown as Record<string, Record<string, readonly string[]>>
 
 function strings(tree: unknown): string[] {
   if (typeof tree === 'string') return [tree]
@@ -30,7 +33,7 @@ function keys(tree: unknown, path = ''): string[] {
 }
 
 function everything(lang: Lang): string[] {
-  return [...strings(OWN[lang]), ...strings(FORTUNES[lang]), ...strings(WORDS[lang])]
+  return [...strings(OWN[lang]), ...strings(WORDS[lang])]
 }
 
 // What he is never called. "kami" stays the loanword; Chinese and Japanese keep the owner's 「神」.
@@ -47,15 +50,17 @@ const NOT_GOD: Record<Lang, RegExp> = {
   'es-419': /\bdios(es)?\b|deidad|\bdivin/i,
   'es-ES': /\bdios(es)?\b|deidad|\bdivin/i,
   zh: /上帝|神明/,
+  'zh-Hant': /上帝|神明/,
 }
 
 describe('every language is complete', () => {
-  test('the client languages plus Chinese (Singapore), in the band, the words and the fortunes', { timeoutMs: 60_000 }, () => {
-    expect(CODES).toEqual(['en', 'fr', 'de', 'hi', 'id', 'it', 'ja', 'ko', 'pt-BR', 'es-419', 'es-ES', 'zh'])
-    expect(LANGS.find(lang => lang.code === 'zh')).toEqual({ code: 'zh', locale: 'zh-SG', native: '华文(新加坡)', english: 'Chinese (Singapore)' })
+  test('the client languages and both Chinese scripts, in the band and the words', { timeoutMs: 60_000 }, () => {
+    expect(CODES).toEqual([...LANGUAGE_CODES])
+    expect(new Set(CODES).size).toBe(CODES.length)
+    expect(LANGS.find(lang => lang.code === 'zh')).toEqual({ code: 'zh', locale: 'zh-SG', native: '华文', english: 'Chinese (Simplified)' })
+    expect(LANGS.find(lang => lang.code === 'zh-Hant')).toEqual({ code: 'zh-Hant', locale: 'zh-TW', native: '國語', english: 'Chinese (Traditional)' })
     for (const lang of CODES) {
       expect(OWN[lang] === undefined).toBe(false)
-      expect(FORTUNES[lang] === undefined).toBe(false)
       expect(WORDS[lang] === undefined).toBe(false)
     }
   })
@@ -63,22 +68,9 @@ describe('every language is complete', () => {
   test('every language has every line key and every category has speech', { timeoutMs: 60_000 }, () => {
     const want = keys(LINES.en)
     expect(want.every(k => k.endsWith(':some'))).toBe(true)
+    expect(want).toContain('.greeting.noon:some')
+    expect(want).toContain('.greeting.afternoon:some')
     for (const lang of CODES) expect(keys(OWN[lang])).toEqual(want)
-  })
-
-  test('every language has every rank, two slips each, and one rank word per rank', { timeoutMs: 60_000 }, () => {
-    for (const lang of CODES) {
-      expect(Object.keys(FORTUNES[lang] ?? {}).sort()).toEqual([...RANKS].sort())
-      const words = new Set<string>()
-      for (const rank of RANKS) {
-        const slips = FORTUNES[lang]?.[rank] ?? []
-        expect(slips.length).toBe(2)
-        const heads = new Set(slips.map(line => line.split(/[。.।]/, 1)[0]))
-        expect(heads.size).toBe(1)
-        words.add([...heads][0] ?? '')
-      }
-      expect(words.size).toBe(RANKS.length)
-    }
   })
 
   test('words: a name, every stage direction, at least ten spinner verbs, every reply', { timeoutMs: 60_000 }, () => {
@@ -92,22 +84,21 @@ describe('every language is complete', () => {
       expect(w.reply.usage).toContain('lang <code>|auto')
       expect(w.reply.unknown).toContain('{codes}')
     }
-    expect(WORDS.ja.name).toBe('Claudeさま')
+    expect(WORDS.zh.name).toBe('小克')
+    expect(WORDS['zh-Hant'].name).toBe('小克')
+    expect(WORDS.ja.name).toBe('Coco')
+    expect(WORDS.ko.name).toBe('코코')
   })
 })
 
 describe('his culture, his manners', () => {
-  test('no romaji ranks outside Japanese', { timeoutMs: 60_000 }, () => {
-    for (const lang of CODES.filter(l => l !== 'ja')) {
-      for (const line of strings(FORTUNES[lang])) {
-        expect(/\b(dai)?(kichi|kyo)\b|chukichi|shokichi|suekichi|omikuji/i.test(line)).toBe(false)
-      }
-    }
-  })
-
-  test('"kami" is the loanword, glossed in every about line set; never god, in any language', { timeoutMs: 60_000 }, () => {
+  // Owner 10-06 20:2x: the tagline is his own (10-09: "Your cutest coworker."); no language explains the name by godhood.
+  test('approved introductions; no language explains his name by godhood; never god', { timeoutMs: 60_000 }, () => {
+    expect(WORDS.zh.about[0]).toBe('小克坐在你的屏幕里,小小一只')
+    expect(WORDS.ko.about[0]).toBe('화면 안에 코코. 조그맣게 앉아 있어.')
+    expect(WORDS.en.about[0]).toBe('your cutest coworker.')
     for (const lang of CODES) {
-      expect(/kami|카미|神/i.test(WORDS[lang].about.join(' '))).toBe(true)
+      expect(/kami|神/i.test(WORDS[lang].about.join(' '))).toBe(false)
       for (const line of everything(lang)) {
         expect(/\bgods?\b/i.test(line)).toBe(false)
         expect(NOT_GOD[lang].test(line)).toBe(false)
@@ -126,27 +117,16 @@ describe('his culture, his manners', () => {
     for (const lang of CODES) for (const line of strings(OWN[lang])) expect(LEAVE.test(line)).toBe(false)
   })
 
-  test('fortunes never tell anyone to bet: a lucky number, never a number to play', { timeoutMs: 60_000 }, () => {
-    for (const lang of CODES) {
-      for (const line of strings(FORTUNES[lang])) {
-        expect(/da giocare|apuesta|apost[ae]|wette|parie[rz]|베팅|बाजी|taruhan/i.test(line)).toBe(false)
-      }
-    }
-  })
-
-  test('French keeps its no-break spaces except the exact owner-approved poke question', { timeoutMs: 60_000 }, () => {
-    expect(LINES.fr.poke[0]).toBe('*sursaute* hm ?')
-    for (const line of [...strings(OWN.fr), ...strings(FORTUNES.fr), ...strings(WORDS.fr)]) {
-      if (line === '*sursaute* hm ?') continue
+  test('French keeps its no-break spaces', { timeoutMs: 60_000 }, () => {
+    for (const line of [...strings(OWN.fr), ...strings(WORDS.fr)]) {
       expect(/[^  ][?!:;»]|«[^  ]/.test(line.replace(/https?:\S+|\/\S+/g, ''))).toBe(false)
     }
   })
 
-  test('band lines fit 60 cells, fortunes 110, stage directions 32, spinner verbs 30', { timeoutMs: 60_000 }, () => {
+  test('band lines fit 60 cells, stage directions 32, spinner verbs 30', { timeoutMs: 60_000 }, () => {
     const over: string[] = []
     for (const lang of CODES) {
       for (const line of strings(OWN[lang])) if (cells(line.replace('{pages}', '10000')) > 60) over.push(`${lang}: ${line}`)
-      for (const line of strings(FORTUNES[lang])) if (cells(line) > 110) over.push(`${lang}: ${line}`)
       for (const line of Object.values(WORDS[lang].aside)) if (cells(line) > 32) over.push(`${lang}: ${line}`)
       for (const line of WORDS[lang].spinner) if (cells(line) > 30) over.push(`${lang}: ${line}`)
       for (const line of [WORDS[lang].again, WORDS[lang].reply.lang, WORDS[lang].reply.auto]) if (cells(line) > 60) over.push(`${lang}: ${line}`)
@@ -160,17 +140,7 @@ describe('his culture, his manners', () => {
     expect(cells('ㅎ')).toBe(2)
     expect(cells('कि')).toBe(1) // a consonant and its vowel sign
     expect(cells('é')).toBe(1)
-    expect(cells('Claude-sama')).toBe(11)
-  })
-
-  test('the slip writes its rank top to bottom in Japanese, Chinese and Korean only', { timeoutMs: 60_000 }, () => {
-    for (const lang of CODES) {
-      for (const line of strings(FORTUNES[lang])) {
-        const label = slipLabel(line)
-        if (lang === 'ja' || lang === 'zh' || lang === 'ko') expect(label.length >= 1 && label.length <= 3).toBe(true)
-        else expect(label).toBe('')
-      }
-    }
+    expect(cells('Coco')).toBe(4)
   })
 })
 
@@ -186,9 +156,11 @@ describe('which language', () => {
     [['Portuguese'], 'pt-BR'], [['português'], 'pt-BR'], [['pt_PT.UTF-8'], 'pt-BR'], [['Brazilian Portuguese'], 'pt-BR'],
     [['Spanish'], 'es-419'], [['español'], 'es-419'], [['es-MX'], 'es-419'], [['es-419'], 'es-419'], [['es_AR.UTF-8'], 'es-419'],
     [['Spanish (Spain)'], 'es-ES'], [['castellano'], 'es-ES'], [['es-ES'], 'es-ES'], [['es_ES.UTF-8'], 'es-ES'],
-    [['Chinese'], 'zh'], [['中文'], 'zh'], [['zh_TW.UTF-8'], 'zh'], [['Simplified Chinese'], 'zh'],
+    [['Chinese'], 'zh'], [['中文'], 'zh'], [['zh_TW.UTF-8'], 'zh-Hant'], [['Simplified Chinese'], 'zh'],
     [['华文'], 'zh'], [['華文'], 'zh'], [['华语'], 'zh'], [['華語'], 'zh'],
-    [['华文（新加坡）'], 'zh'], [['华文(新加坡)'], 'zh'], [['Chinese (Singapore)'], 'zh'], [['zh_SG.UTF-8'], 'zh'],
+    [['华文（新加坡）'], 'zh'], [['华文(新加坡)'], 'zh'], [['简体中文'], 'zh'], [['繁體中文'], 'zh-Hant'], [['zh-Hant-TW'], 'zh-Hant'], [['zh-Hans'], 'zh'], [['Chinese (Singapore)'], 'zh'], [['zh_SG.UTF-8'], 'zh'],
+    ...['zh-TW', 'zh-HK', 'zh-MO', 'zh-Hant', 'zh-Hant-HK', 'zh-Hant-TW-u-nu-hanidec', 'zh_HK.UTF-8', '繁體', '繁体', '正體', '國語', '国语', '粵語', '粤语', '廣東話', '广东话', 'Cantonese', 'Traditional Chinese', 'Chinese (Traditional)'].map(value => [[value], 'zh-Hant'] as [unknown[], Lang]),
+    ...['zh', 'zh-CN', 'zh-SG', 'zh-Hans', 'zh-Hans-CN', 'Chinese (Simplified)'].map(value => [[value], 'zh'] as [unknown[], Lang]),
     [['English'], 'en'], [['en_GB.UTF-8'], 'en'],
     [[undefined, 'fr_FR.UTF-8'], 'fr'],
     [[undefined, undefined, 'es_ES.UTF-8'], 'es-ES'],
@@ -207,48 +179,36 @@ describe('which language', () => {
 
   test('the locale alone decides when the setting is empty', async ($, on) => {
     const w = world(on, { store: RECENT, env: { LANG: 'ko_KR.UTF-8' } })
-    await $.session.start(START)
+    await $.session.start(START); await settleLegacyStart($,w);
     expect(w.view().lang).toBe('ko')
     expect(w.view().verb).toBe(WORDS.ko.spinner[0])
   })
 
-  test('/claudesama lang switches, answers in the new language and persists; auto goes back', async ($, on) => {
+  test('/coco lang switches, answers in the new language and persists; auto goes back', async ($, on) => {
     const w = world(on, { store: RECENT, settings: { language: 'japanese' } })
-    await $.session.start(START)
+    await $.session.start(START); await settleLegacyStart($,w);
     expect(w.view().lang).toBe('ja')
-    await $.command.run({ command: 'claudesama', args: 'lang fr', origin: PERSON, presentation: P })
+    await $.command.run({ command: 'coco', args: 'lang fr', origin: PERSON, presentation: P })
     expect(w.view().lang).toBe('fr')
     expect(w.toasts[w.toasts.length - 1]).toBe(WORDS.fr.reply.lang)
-    await $.session.start(START) // a new session reads the choice back, over the setting
+    await $.session.start(START); await settleLegacyStart($,w); // a new session reads the choice back, over the setting
     expect(w.view().lang).toBe('fr')
-    await $.command.run({ command: 'claudesama', args: 'lang es-ES', origin: PERSON, presentation: P })
+    await $.command.run({ command: 'coco', args: 'lang es-ES', origin: PERSON, presentation: P })
     expect(w.view().lang).toBe('es-ES')
-    await $.command.run({ command: 'claudesama', args: 'lang klingon', origin: PERSON, presentation: P })
+    await $.command.run({ command: 'coco', args: 'lang klingon', origin: PERSON, presentation: P })
     expect(w.view().lang).toBe('es-ES')
     expect(w.toasts[w.toasts.length - 1]).toContain('klingon')
-    await $.command.run({ command: 'claudesama', args: 'lang auto', origin: PERSON, presentation: P })
+    await $.command.run({ command: 'coco', args: 'lang auto', origin: PERSON, presentation: P })
     expect(w.view().lang).toBe('ja')
     expect(w.toasts[w.toasts.length - 1]).toBe(WORDS.ja.reply.auto)
-    await $.session.start(START)
+    await $.session.start(START); await settleLegacyStart($,w);
     expect(w.view().lang).toBe('ja')
-  })
-
-  test('a Korean slip writes its rank top to bottom; a Hindi slip stays ruled', async ($, on) => {
-    const omen = { day: '2026-10-02', rank: 'daikichi', index: 0 }
-    const w = world(on, { env: { LANG: 'ko_KR.UTF-8' }, store: { ...RECENT, omen } })
-    await $.session.start(START)
-    await $.command.run({ command: 'omen', args: '', origin: PERSON, presentation: P })
-    expect(w.view().slip?.label).toBe('대박')
-    await $.command.run({ command: 'claudesama', args: 'lang hi', origin: PERSON, presentation: P })
-    await $.command.run({ command: 'omen', args: '', origin: PERSON, presentation: P })
-    expect(w.view().slip?.label).toBe('')
-    expect(w.view().slip?.text.startsWith(FORTUNES.hi?.daikichi?.[0] ?? '?')).toBe(true)
   })
 
   test('the sleeve-biting phrase is caught in his other languages too', async ($, on) => {
     const w = world(on, { store: RECENT })
-    await $.session.start(START)
-    await $.command.run({ command: 'claudesama', args: 'lang de', origin: PERSON, presentation: P })
+    await $.session.start(START); await settleLegacyStart($,w);
+    await $.command.run({ command: 'coco', args: 'lang de', origin: PERSON, presentation: P })
     await $.turn.start({ text: '', turnId: 't1' })
     await $.turn.complete({ answer: 'Sie haben völlig recht.', durationMs: 3000, isAborted: false, turnId: 't1', reason: 'answer' as const })
     expect(w.view().mood).toBe('flustered')
@@ -283,17 +243,54 @@ describe('hearing the person', () => {
     ['la casa', undefined],
   ]
 
-  test('a table of prompts in every language, with code and paths cut out first', { timeoutMs: 60_000 }, () => {
-    const wrong = SAMPLES.filter(([text, want]) => detectLanguage(text)?.lang !== want).map(([text, want]) => `${want}: ${text} -> ${detectLanguage(text)?.lang}`)
+  // A short everyday line switches at once in every language (owner 10-18: 「打其它语言也要自动切到其它语言」); words
+  // several languages share, like "para" or "was", are split among them.
+  const SHORT: Array<[string, string]> = [
+    ['帮我看看这个错误', 'zh'], ['幫我看看這個錯誤', 'zh-Hant'], ['can you check the tests again', 'en'],
+    ['テストをもう一度実行して', 'ja'], ['테스트 다시 돌려줘', 'ko'], ['यह बटन क्या करता है', 'hi'],
+    ['was macht dieser Knopf hier', 'de'], ['danke, das sieht gut aus', 'de'], ['à quoi sert ce bouton ici', 'fr'],
+    ['merci, ça marche maintenant', 'fr'], ['para qué sirve este botón', 'es-419'], ['vale, ¿para qué sirve este botón, tío?', 'es-ES'],
+    ['a cosa serve questo pulsante qui', 'it'], ['puoi controllare di nuovo i test', 'it'], ['para que serve esse botão aqui', 'pt-BR'],
+    ['valeu, agora funciona', 'pt-BR'], ['tombol ini untuk apa ya', 'id'], ['kenapa build-nya lambat sekali', 'id'],
+  ]
+  test('a short everyday line in each language is heard surely', async () => {
+    const wrong: string[] = []
+    for (const [text, want] of SHORT) {
+      const heard = await detectLanguage(text)
+      if (heard?.lang !== want || heard.confidence < HEARING.sure) wrong.push(`${want}: ${text} -> ${heard?.lang} ${heard?.confidence}`)
+    }
     expect(wrong).toEqual([])
+  })
+
+  test('a table of prompts in every language, with code and paths cut out first', { timeoutMs: 60_000 }, async () => {
+    const wrong: string[] = []
+    for (const [text, want] of SAMPLES) {
+      const heard = await detectLanguage(text)
+      if (heard?.lang !== want) wrong.push(`${want}: ${text} -> ${heard?.lang}`)
+    }
+    expect(wrong).toEqual([])
+  })
+
+  test('Chinese script evidence wins; shared characters and ties use Chinese settings then zh', async () => {
+    const traditional = WORDS['zh-Hant'].spinner.join('')
+    const simplified = WORDS.zh.spinner.join('')
+    expect((await detectLanguage(traditional, 'zh'))?.lang).toBe('zh-Hant')
+    expect((await detectLanguage(simplified, 'zh-Hant'))?.lang).toBe('zh')
+    expect((await detectLanguage(`${traditional} getUserName src/app.ts \`fooBar\``, 'zh'))?.lang).toBe('zh-Hant')
+    expect((await detectLanguage('小克你好', 'en', 'zh-TW'))?.lang).toBe('zh-Hant')
+    expect((await detectLanguage('小克你好', 'zh', 'zh-TW'))?.lang).toBe('zh')
+    expect((await detectLanguage('小克你好', 'ja'))?.lang).toBe('zh')
+    expect((await detectLanguage('查一查', 'zh-Hant'))?.lang).toBe('zh-Hant')
+    expect((await detectLanguage('书書', 'zh-Hant'))?.lang).toBe('zh-Hant')
+    expect((await detectLanguage('书書'))?.lang).toBe('zh')
   })
 
   const long = 'kannst du bitte den Fehler in der Funktion beheben und danach auch noch einen Test dafür schreiben, der das prüft?'
   const desk = { store: RECENT, env: {} } // the desktop: no setting, no locale
 
-  test('one short prompt is not enough; two in a row that agree are, and code in between changes nothing', async ($, on) => {
+  test('an unclear prompt is not enough; two in a row that agree are, and code in between changes nothing', async ($, on) => {
     const w = world(on, desk)
-    await $.session.start(START)
+    await $.session.start(START); await settleLegacyStart($,w);
     expect(w.view().lang).toBe('en')
     await $.prompt.submit({ text: 'tu peux corriger le test ?', wait: false, origin: PERSON })
     expect(w.view().lang).toBe('en')
@@ -304,24 +301,63 @@ describe('hearing the person', () => {
     expect(w.toasts).toEqual([]) // no toast, no announcement
   })
 
-  test('one long, clear prompt is enough, and the next session starts in it', async ($, on) => {
-    const sure = detectLanguage(long)
+  test('one clear prompt is enough, and the next session starts in it', async ($, on) => {
+    const sure = await detectLanguage(long)
     expect(sure?.lang).toBe('de')
-    expect((sure?.confidence ?? 0) >= HEARING.sure && (sure?.words ?? 0) >= HEARING.long).toBe(true)
+    expect(sure?.confidence ?? 0).toBeGreaterThanOrEqual(HEARING.sure)
     const w = world(on, desk)
-    await $.session.start(START)
+    await $.session.start(START); await settleLegacyStart($,w);
     await $.prompt.submit({ text: long, wait: false, origin: PERSON })
     expect(w.view().lang).toBe('de')
     expect(w.view().verb).toBe(WORDS.de.spinner[0])
-    await $.session.start(START)
+    await $.session.start(START); await settleLegacyStart($,w);
     expect(w.view().lang).toBe('de')
   })
 
   test('task notifications and plugin prompts are not the person', async ($, on) => {
     const w = world(on, desk)
-    await $.session.start(START)
+    await $.session.start(START); await settleLegacyStart($,w);
     await $.prompt.submit({ text: long, wait: false, origin: { kind: 'task-notification' } as never })
     await $.prompt.submit({ text: long, wait: false, origin: { kind: 'plugin' } as never })
+    expect(w.view().lang).toBe('en')
+  })
+
+  // 10-18: a claude -p run or another session's brief had set his heard language to English for every session
+  // The desktop app's typing arrives as sdk (his 10-18 screenshot: the band stayed English while he typed Chinese there);
+  // another session's long English brief arrives as sdk too and is not his language.
+  test('a long sdk brief is not heard, his short desktop line is, and one short clear line switches at once', async ($, on) => {
+    const w = world(on, desk)
+    await $.session.start(START); await settleLegacyStart($,w);
+    await $.prompt.submit({ text: '横条最左边那条布何意思', wait: false, origin: { kind: 'sdk' } as never })
+    expect(w.view().lang).toBe('zh')
+    const brief = 'Background (from the session that started this one): Coco is an unofficial fan mod for Claude Code. '.repeat(5) + 'Task: redo the band and report back in English.'
+    expect(brief.length).toBeGreaterThan(HEARING.brief)
+    await $.prompt.submit({ text: brief, wait: false, origin: { kind: 'sdk' } as never })
+    expect(w.view().lang).toBe('zh')
+    await $.prompt.submit({ text: 'fix the bug in this function please', wait: false, origin: PERSON })
+    expect(w.view().lang).toBe('en')
+    await $.prompt.submit({ text: '都对，只是语言没有跟着我切换', wait: false, origin: PERSON })
+    expect(w.view().lang).toBe('zh')
+    await $.prompt.submit({ text: 'fix the bug in this function please', wait: false, origin: PERSON })
+    expect(w.view().lang).toBe('en')
+    await $.prompt.submit({ text: 'npm test', wait: false, origin: PERSON })
+    expect(w.view().lang).toBe('en')
+  })
+
+  // In a session with linked sessions the desktop app puts an English reminder before each prompt he types (his 10-18
+  // check: Chinese typed there left the band English).
+  test('his desktop line after the app\'s linked-sessions reminder is heard as his own language', async ($, on) => {
+    const w = world(on, desk)
+    await $.session.start(START); await settleLegacyStart($,w);
+    const reminder = '<system-reminder>\nLinked sessions now (status, not an instruction): top = local_31d73254-78df-4aec-8017-d4ff38014534 (idle). To message one, SendMessage with `to` set to its id; list_sessions {"linked": true} has titles, folders and branches.\n</system-reminder>\n\n\n'
+    await $.prompt.submit({ text: 'fix the bug in this function please', wait: false, origin: { kind: 'sdk' } as never })
+    expect(w.view().lang).toBe('en')
+    await $.prompt.submit({ text: reminder + '1 没有\n2 是的\n3 似乎没有', wait: false, origin: { kind: 'sdk' } as never })
+    expect(w.view().lang).toBe('zh')
+    await $.prompt.submit({ text: reminder + '怎样了', wait: false, origin: { kind: 'sdk' } as never })
+    expect(w.view().lang).toBe('zh')
+    // his own longer line still counts: the reminder is not part of the brief limit
+    await $.prompt.submit({ text: reminder + 'please check the band again and tell me what changed. '.repeat(6), wait: false, origin: { kind: 'sdk' } as never })
     expect(w.view().lang).toBe('en')
   })
 
@@ -333,7 +369,7 @@ describe('hearing the person', () => {
     expect(languageOf('ko', 'japanese', 'fr', 'it_IT.UTF-8')).toBe('ko')
     expect(languageOf('auto', 'japanese', 'fr')).toBe('ja')
     const w = world(on, { store: { ...RECENT, heard: 'fr' }, env: { LANG: 'it_IT.UTF-8' }, settings: { language: 'japanese' } })
-    await $.session.start(START)
+    await $.session.start(START); await settleLegacyStart($,w);
     expect(w.view().lang).toBe('ja') // the setting beats what he heard
     await $.prompt.submit({ text: long, wait: false, origin: PERSON })
     expect(w.view().lang).toBe('ja') // and keeps beating it
@@ -341,7 +377,7 @@ describe('hearing the person', () => {
 
   test('what he heard beats the locale', async ($, on) => {
     const w = world(on, { store: { ...RECENT, heard: 'pt-BR' }, env: { LANG: 'de_DE.UTF-8' } })
-    await $.session.start(START)
+    await $.session.start(START); await settleLegacyStart($,w);
     expect(w.view().lang).toBe('pt-BR')
   })
 })

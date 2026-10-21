@@ -1,0 +1,19 @@
+PHPUnit 10.5.20 by Sebastian Bergmann and contributors.
+
+Runtime:	PHP 8.3.11 with Xdebug 3.3.2
+Configuration:	/home/user/src/api/phpunit.xml.dist
+
+....F...                                                           8 / 8 (100%)
+
+Time: 00:00.312, Memory: 22.00 MB
+
+There was 1 failure:
+
+1) Tests\Unit\BillingTest::test_totals_invoice
+Failed asserting that 4199 is identical to 4200.
+
+/home/user/src/api/tests/Unit/BillingTest.php:24
+
+FAILURES!
+Tests: 8, Assertions: 31, Failures: 1.
+Process exited with code 1.

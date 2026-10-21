@@ -1,0 +1,6 @@
+• (0.003ms) wren > parses headers
+• (0.001ms) wren > writes output
+Σ Total: (2/2)
+Passed:     2
+Failed:     0
+Skipped:    0

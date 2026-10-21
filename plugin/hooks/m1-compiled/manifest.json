@@ -1,0 +1,4680 @@
+{
+  "version": 1,
+  "policy": "Static four-group graph with live public reexports; canonical authored sources remain strict checked; touch-client remains standalone; existing first-use data boundary unchanged.",
+  "groups": {
+    "motion_stills": [
+      "hooks/motion-stills.ts",
+      "hooks/motion-svg.ts",
+      "hooks/mood.ts",
+      "hooks/line-library.ts",
+      "hooks/head-art.ts",
+      "hooks/window-notes.tsx",
+      "hooks/tasks.ts",
+      "hooks/book-words.ts",
+      "hooks/book-text.ts",
+      "hooks/line-slot.ts",
+      "hooks/turn-ledger.ts",
+      "hooks/more-scripts.tsx",
+      "hooks/script-argv.ts",
+      "hooks/quota.ts",
+      "hooks/quota-trail.ts",
+      "hooks/more-words.ts",
+      "hooks/paths.ts",
+      "hooks/numbers-text.ts",
+      "hooks/sleep.ts",
+      "hooks/plugin-version.ts",
+      "hooks/high-contrast.ts",
+      "hooks/openings.ts",
+      "hooks/week-days.ts",
+      "hooks/coco-motion.ts",
+      "hooks/coco-stills.ts",
+      "hooks/claudie.ts"
+    ],
+    "pages": [
+      "hooks/pages.tsx",
+      "hooks/words.ts",
+      "hooks/book.tsx",
+      "hooks/book-portrait.ts",
+      "hooks/bag.ts",
+      "hooks/bag-mv.ts",
+      "hooks/bag-mv-glyphs.ts",
+      "hooks/transcript.tsx",
+      "hooks/card-runtime.ts",
+      "hooks/mod-gaps.ts",
+      "hooks/numbers.ts",
+      "hooks/book-art.ts",
+      "hooks/c3-words.ts",
+      "hooks/config-words.ts",
+      "hooks/tool-poses.ts",
+      "hooks/icon-book.tsx",
+      "hooks/native-state.ts",
+      "hooks/pet-program.ts",
+      "hooks/book-session.ts",
+      "hooks/voice.ts",
+      "hooks/say-it-plain-runtime.ts",
+      "hooks/more-checks.ts",
+      "hooks/door-words.ts",
+      "hooks/chinese-number-data.ts",
+      "hooks/week-book.tsx",
+      "hooks/week-card.ts",
+      "hooks/vibe-card.ts",
+      "hooks/week-words.ts",
+      "hooks/cards/card.ts",
+      "hooks/cards/cards.tsx",
+      "hooks/cards/catalog.ts",
+      "hooks/cards/coco.ts",
+      "hooks/cards/i18n.ts",
+      "hooks/cards/model.ts",
+      "hooks/cards/picks.ts",
+      "hooks/cards/usage.ts",
+      "hooks/cards/state.ts"
+    ],
+    "companion": [
+      "hooks/companion.ts",
+      "hooks/band.tsx",
+      "hooks/more-runtime.ts",
+      "hooks/talk-parts.ts",
+      "hooks/talk-openers.ts",
+      "hooks/dm.ts",
+      "hooks/talk-key.ts",
+      "hooks/c3-runtime.ts",
+      "hooks/c3-motion.ts",
+      "hooks/pictures-lazy.ts",
+      "hooks/coco-pixel.ts",
+      "hooks/coco-pixel-play.ts",
+      "hooks/m1-always.ts",
+      "hooks/typeset.ts",
+      "hooks/motion-metadata.ts",
+      "hooks/companion-art.ts",
+      "hooks/card-metrics-lazy.ts",
+      "hooks/mod-gaps-words.ts",
+      "hooks/settings-migration.ts",
+      "hooks/cache-rate.ts",
+      "hooks/reminder-settings.ts",
+      "hooks/display-slots.ts",
+      "hooks/display-slot-text.ts",
+      "hooks/d1-shed-asides.ts",
+      "hooks/play.ts",
+      "hooks/play-commits.ts",
+      "hooks/play-focus.ts",
+      "hooks/play-light.ts",
+      "hooks/play-thermos.ts",
+      "hooks/play-planes.ts",
+      "hooks/cost/runtime.js",
+      "hooks/cost/units.js",
+      "hooks/cost/state.ts",
+      "hooks/cost/surfaces.ts",
+      "hooks/cost/cup.ts",
+      "hooks/cost/words.ts",
+      "hooks/cost/prices-page.tsx"
+    ],
+    "presence": [
+      "hooks/presence.ts",
+      "hooks/lines.ts",
+      "hooks/motion.ts",
+      "hooks/desktop-safe.ts",
+      "hooks/channel.ts",
+      "hooks/companion-book.tsx",
+      "hooks/checkup.ts",
+      "hooks/book-band-words.ts",
+      "hooks/more-book.tsx",
+      "hooks/mod-gaps-art.ts",
+      "hooks/blink-scheduler.ts",
+      "hooks/shared-files.ts",
+      "hooks/mod-gaps-render.tsx",
+      "hooks/more-state.ts",
+      "hooks/more-models.ts",
+      "hooks/more-secrets.ts",
+      "hooks/band-motion-state.ts",
+      "hooks/latest.ts",
+      "hooks/c3-secrets.ts",
+      "hooks/book-format.ts",
+      "hooks/script-command.ts",
+      "hooks/d1-state.js",
+      "hooks/d1-paths.js",
+      "hooks/band.js",
+      "hooks/book.js",
+      "hooks/visitors.ts",
+      "hooks/visitors-art.ts",
+      "hooks/notice.ts",
+      "hooks/notice-art.ts",
+      "hooks/notice-rows.tsx"
+    ]
+  },
+  "sourceInputs": {
+    "hooks-source/motion-stills.ts": {
+      "bytes": 2507,
+      "sha256": "7df83d6fb58432806065cd5fdc3100a0f0394ba84748be09001eb75b1bcdd191"
+    },
+    "hooks-source/motion-svg.ts": {
+      "bytes": 125,
+      "sha256": "466266f42a3d0e02d748c8e9f72889ceb172c9ce0fba75d693a5453252cceee4"
+    },
+    "hooks-source/mood.ts": {
+      "bytes": 24639,
+      "sha256": "adab55f7f719acc6edc7b1239b358d04cc62ffc9769e1cc3aa556a786d9abeae"
+    },
+    "hooks-source/line-library.ts": {
+      "bytes": 6975,
+      "sha256": "e8ac82c34f142f453f5ea7af49a59d3dde2672b1c08d0d6da9e6a5698215c5ea"
+    },
+    "hooks-source/head-art.ts": {
+      "bytes": 12339,
+      "sha256": "52d9e4f55e70a8c11ad5e376cecf31a66af9706ef7ae5e3936d4894193dc80f2"
+    },
+    "hooks-source/window-notes.tsx": {
+      "bytes": 3184,
+      "sha256": "92223f837ccc2eca2b78cdd55bb9d498d16bda8d3d66624107879f690d6b9668"
+    },
+    "hooks-source/tasks.ts": {
+      "bytes": 7436,
+      "sha256": "b0b4e137683a125aca4184204034f694ad8690dd52fd6bd4edc896b6e997ec99"
+    },
+    "hooks-source/book-words.ts": {
+      "bytes": 2384,
+      "sha256": "4da72c6767af6ec42f4479649db429da6545b6dfd4d779c6cf8c9da7af13e715"
+    },
+    "hooks-source/book-text.ts": {
+      "bytes": 223665,
+      "sha256": "e032a8b246deb6aeea8135c5cec8504cdd0da016107a3d69c0e6179f1a132846"
+    },
+    "hooks-source/line-slot.ts": {
+      "bytes": 5835,
+      "sha256": "44a75e852fea4fe99904c1f4eb462b1800188620ee7454c64c40c0bc389ca3bd"
+    },
+    "hooks-source/turn-ledger.ts": {
+      "bytes": 5013,
+      "sha256": "2f37213f3450bf5a3437b1defa25450efeb72cd77aa7887a00234a69d552b8a9"
+    },
+    "hooks-source/more-scripts.tsx": {
+      "bytes": 2254,
+      "sha256": "83bc0f3c08316d992b58fa754efa14526c6b9460d3a70c2bb28ae6ecbb766ac2"
+    },
+    "hooks-source/script-argv.ts": {
+      "bytes": 780,
+      "sha256": "a003049843a79d2d0685177adda07d99251f0e717a87f69d12c93fa5898d4f99"
+    },
+    "hooks-source/quota.ts": {
+      "bytes": 23187,
+      "sha256": "aef9be8d7f1ac61c515df172e6e3aa7babb13697a4f84227be2d5fe3cdfb90c0"
+    },
+    "hooks-source/quota-trail.ts": {
+      "bytes": 4672,
+      "sha256": "53de20f3f711d2b33d963e7e9a21d89289470c592aa23b7f9421a55817bbb8fc"
+    },
+    "hooks-source/more-words.ts": {
+      "bytes": 2275,
+      "sha256": "da59c36e84404050659be1dd635753da037648373a09888d1df9b58772cc8448"
+    },
+    "hooks-source/paths.ts": {
+      "bytes": 170,
+      "sha256": "8fca9ae260904632925761104b5c7dad0692585a87e012c27e7673446e902b5a"
+    },
+    "hooks-source/numbers-text.ts": {
+      "bytes": 1346,
+      "sha256": "d5beefccf4f19263442898b6582d3b62295e9686661ab08efd0fa263b79fcf36"
+    },
+    "hooks-source/sleep.ts": {
+      "bytes": 415,
+      "sha256": "68f8227505ccb2706c860e733647cb901cc39a62e2b74eaae61bccf9dd00277f"
+    },
+    "hooks-source/plugin-version.ts": {
+      "bytes": 105,
+      "sha256": "59f2fe608e71be5328070e8aee43f5e5e1d9619f47da83b3a5f0e404c006fbea"
+    },
+    "hooks-source/high-contrast.ts": {
+      "bytes": 1024,
+      "sha256": "2a209d2d77f857b46ce39077ca662dba7e140597620caf5ce349737c93ec05e5"
+    },
+    "hooks-source/openings.ts": {
+      "bytes": 2733,
+      "sha256": "b1b9619453d36be4a28f975d2074d7edba9137e3d89c0ff0e1f3fd849534267f"
+    },
+    "hooks-source/week-days.ts": {
+      "bytes": 13086,
+      "sha256": "c59fca977bb01f83e4cdeecde3ae048100502efe833375ecf4b8992779d22247"
+    },
+    "hooks-source/coco-motion.ts": {
+      "bytes": 23028,
+      "sha256": "908b925f50e8d0d80fe9933b323dbd23b049192860f5e1c3c725683d33ebccc9"
+    },
+    "hooks-source/coco-stills.ts": {
+      "bytes": 64418,
+      "sha256": "cb7a089cdb4cfd7e3e5084b5bdecf672b775a3017b9dc6d3f2c65625073385b1"
+    },
+    "hooks-source/claudie.ts": {
+      "bytes": 3296,
+      "sha256": "b7f26a14914751025151e5be54348861420d08c710c63a26ab36fef6cd7925e0"
+    },
+    "hooks-source/pages.tsx": {
+      "bytes": 118938,
+      "sha256": "f565c3626bdba8d1617b8ff72ec316cba61244223fd5dfb43dc54fed36382ca1"
+    },
+    "hooks-source/words.ts": {
+      "bytes": 57381,
+      "sha256": "b90b25868e8427e4d7a2c5742834ff5ae0871f51d2170a504d54102fbe110732"
+    },
+    "hooks-source/book.tsx": {
+      "bytes": 91412,
+      "sha256": "4e92b02ce04a363d92ab3f125c760f152f953349ebbb6baabc1ad184d9647c54"
+    },
+    "hooks-source/book-portrait.ts": {
+      "bytes": 821,
+      "sha256": "825e505901b0ad1cc0f4386327e0dc5e105dd037fb47600d778a26d8d75c3b0a"
+    },
+    "hooks-source/bag.ts": {
+      "bytes": 29310,
+      "sha256": "2d96c2add63f6a548f11cb207902861383a3dca3115ef553370798ef9efa19ca"
+    },
+    "hooks-source/bag-mv.ts": {
+      "bytes": 20376,
+      "sha256": "e44aa86d036e607cb80b8547c7a2124010b849cee3670be0f2054a6697b51515"
+    },
+    "hooks-source/bag-mv-glyphs.ts": {
+      "bytes": 6126,
+      "sha256": "3a040625ef198ed61e76e15e2fe6262a0db0be6e00a243c6721481993bbb6887"
+    },
+    "hooks-source/transcript.tsx": {
+      "bytes": 46946,
+      "sha256": "2b9f958b97c09b60d9d80cab9d450ee2c0013bd6bfb4f307e083935ddf7b3735"
+    },
+    "hooks-source/card-runtime.ts": {
+      "bytes": 12303,
+      "sha256": "ac830e00b4e2f1906b70f1810ab637045267599cee4c019d72d841a2d45592a6"
+    },
+    "hooks-source/mod-gaps.ts": {
+      "bytes": 14014,
+      "sha256": "bbe515f073f902fc5059436c64582f3b8fbd3e8215b8d860bbf06bb12b631c82"
+    },
+    "hooks-source/numbers.ts": {
+      "bytes": 8852,
+      "sha256": "9985d7533869dfb1a85f0db47e224c2982e4fe29e0e2db880aab576d00845863"
+    },
+    "hooks-source/book-art.ts": {
+      "bytes": 3058,
+      "sha256": "264785393d00822a1526f0c764705ca692488a4454c66afe0a6800a9e3679ee0"
+    },
+    "hooks-source/c3-words.ts": {
+      "bytes": 9675,
+      "sha256": "c1690f6ec54b4e5f5fe8bc465248c807e6714ee5e5638501e831cd5d5adce831"
+    },
+    "hooks-source/config-words.ts": {
+      "bytes": 5452,
+      "sha256": "109e00fbea9dc61c0bf5e19540b66ab178d61cd5907f81da3ee5977b45b51e70"
+    },
+    "hooks-source/tool-poses.ts": {
+      "bytes": 3740,
+      "sha256": "bbe3dec71bdb8505696905ce8b775201011b3a3cc1e3fe5711feb98cb7b163e4"
+    },
+    "hooks-source/icon-book.tsx": {
+      "bytes": 6020,
+      "sha256": "eccb7a3afe1b7a69c3cc7cc3710db17460006e625d32646a7bec1271cdf94d99"
+    },
+    "hooks-source/native-state.ts": {
+      "bytes": 2599,
+      "sha256": "56141d9167153aaf4b9513a5c7fe3cbf0a6c0db8a458b6198eb84d0742080b37"
+    },
+    "hooks-source/pet-program.ts": {
+      "bytes": 5366,
+      "sha256": "7571d2f837953b6997969a04854e7d0b4d81cb8ac289e17e15067534724bd906"
+    },
+    "hooks-source/book-session.ts": {
+      "bytes": 531,
+      "sha256": "017f4ad1f5d6f4384152fe41416ea2450ee0a246e0c18f215cd18a7fb1b6e115"
+    },
+    "hooks-source/voice.ts": {
+      "bytes": 1793,
+      "sha256": "2ef4b25e5b42afbbf37a451c6196c82c120956df03963ad75b8df8b2adc35583"
+    },
+    "hooks-source/say-it-plain-runtime.ts": {
+      "bytes": 1808,
+      "sha256": "06d4726ae84e2c172f0abd197824a07f928c77551b37a03339bad87b8671e5a5"
+    },
+    "hooks-source/more-checks.ts": {
+      "bytes": 1639,
+      "sha256": "d82295d9c252d7e07b45f7f5d3c7bb251109011b912457ee16f927785b2f996f"
+    },
+    "hooks-source/door-words.ts": {
+      "bytes": 1053,
+      "sha256": "0eca89c5895786b13707cc022b486d5fc519ac6de1cea3f7efcc6b4738706267"
+    },
+    "hooks-source/chinese-number-data.ts": {
+      "bytes": 95,
+      "sha256": "138ab9df4390d0f5f47b3516bdb8ca42d3d7c83b2f145c9e541d9140989f3f58"
+    },
+    "hooks-source/week-book.tsx": {
+      "bytes": 6982,
+      "sha256": "06cf52d3f13e11629cc86c8b1af8a40fa4bc5e3b4b8bda847ea22973ec33d47a"
+    },
+    "hooks-source/week-card.ts": {
+      "bytes": 4147,
+      "sha256": "1cc0bf61d1a915fd2df455dc668af6b6d0946c46702663444a3b7a03c6de88d3"
+    },
+    "hooks-source/vibe-card.ts": {
+      "bytes": 13696,
+      "sha256": "e219a2231a5ca82af24ea43b634b6af0b14cd31afdffa17da2cbb0e540602b56"
+    },
+    "hooks-source/week-words.ts": {
+      "bytes": 1213,
+      "sha256": "249e53c23b967adc860380be3c4cf51c264d5dae2d245c71b9d6945b0f41e69e"
+    },
+    "hooks-source/cards/card.ts": {
+      "bytes": 7363,
+      "sha256": "c7e55b4d1261a2dd45c851eb4defa9eeef74c370004c80cc10565b63536805af"
+    },
+    "hooks-source/cards/cards.tsx": {
+      "bytes": 89406,
+      "sha256": "aa118d0b1df30c55b41460c19b24d55d3886e389f557643e44435854732e7964"
+    },
+    "hooks-source/cards/catalog.ts": {
+      "bytes": 7045,
+      "sha256": "7fd62ef9edb57a7a12984f43391a586ee4d96e341d7297396da1acafe39c4a99"
+    },
+    "hooks-source/cards/coco.ts": {
+      "bytes": 7947,
+      "sha256": "4681eb8102d57bae66abcc118f06b8b75522eecd8e6b21bc705a7450a89a467d"
+    },
+    "hooks-source/cards/i18n.ts": {
+      "bytes": 42397,
+      "sha256": "3a82bcaf4f5dec0a9c54f9e80957526a91094d1f881a14fe2b49a6d6dcce162a"
+    },
+    "hooks-source/cards/model.ts": {
+      "bytes": 1006,
+      "sha256": "71b0934fa1756e0f0320556241638e211c0de4aa720316e2c5e9599eef3ad5a0"
+    },
+    "hooks-source/cards/picks.ts": {
+      "bytes": 1542,
+      "sha256": "68e9b5e68f1786f4692d09f8149f081cfda1fa38cac3301de2e22598a4a25455"
+    },
+    "hooks-source/cards/usage.ts": {
+      "bytes": 2904,
+      "sha256": "b69ef2b05c99f1efef582ee7c32e49c7be76b321d60bbb88b5b9f425f9d651c6"
+    },
+    "hooks-source/cards/state.ts": {
+      "bytes": 3316,
+      "sha256": "ffcf45082e7e97c0e8eacfebebb28bcd449f61a04a6b7e4a10f40f8d7aea92ab"
+    },
+    "hooks-source/companion.ts": {
+      "bytes": 74559,
+      "sha256": "d7c21cd00a5122d610d467db1dd8ca8123fa1611fb4894818321345f9d787096"
+    },
+    "hooks-source/band.tsx": {
+      "bytes": 139503,
+      "sha256": "21092f50b3c04c3f0aed7725bf8f3123db94c5fad1b3e31ab8915759918995b3"
+    },
+    "hooks-source/more-runtime.ts": {
+      "bytes": 87370,
+      "sha256": "113280a676d8b06028877a14f6ce043d615907750c64abc961ff5b4080098715"
+    },
+    "hooks-source/talk-parts.ts": {
+      "bytes": 7255,
+      "sha256": "1985beed4a284d1fe66e7b30397909a7a7109a9088b306ca50a68a88116c41f3"
+    },
+    "hooks-source/talk-openers.ts": {
+      "bytes": 3719,
+      "sha256": "e6329f32e1bdc62dbb1fc5b9a0ef81acf9588df17070b22d8be68ede64843b39"
+    },
+    "hooks-source/dm.ts": {
+      "bytes": 7532,
+      "sha256": "7d63419988858e6c1c9d53f6bdd15f1b1c4346cb2d10e521e4edcbde25febb91"
+    },
+    "hooks-source/talk-key.ts": {
+      "bytes": 11844,
+      "sha256": "e4c8f2fa392fee8a6da5ea77a9a5fbe5834042da922db35943c46e0b1bf93e83"
+    },
+    "hooks-source/c3-runtime.ts": {
+      "bytes": 31420,
+      "sha256": "9a37efd0f03a1704510a7aea824fccd2b98363dbd5e08b4317116230a0cf6afa"
+    },
+    "hooks-source/c3-motion.ts": {
+      "bytes": 6204,
+      "sha256": "357d2c9254418ebc9b8d9449d50fe4ca276954f53253406b5606ff33b2274b2a"
+    },
+    "hooks-source/pictures-lazy.ts": {
+      "bytes": 5459,
+      "sha256": "4b3aabede4fb207d738e38147456460706f84e6b8ff4c2ff6acde5d5ed8a287e"
+    },
+    "hooks-source/coco-pixel.ts": {
+      "bytes": 30229,
+      "sha256": "694661f905b7ce48a2480b920f8625e316bf996ccaa31cdac2f67cc8d47f2de3"
+    },
+    "hooks-source/coco-pixel-play.ts": {
+      "bytes": 16208,
+      "sha256": "0e8a90a98225c6a3129cf92590c40e85a5bf5fb0acb4f0738607c209d1ed3e06"
+    },
+    "hooks-source/m1-always.ts": {
+      "bytes": 6003,
+      "sha256": "b306f85f842428b6b269746f7875d0d09bc43d32350eeaf8d8753fc2e0ec04be"
+    },
+    "hooks-source/typeset.ts": {
+      "bytes": 4958,
+      "sha256": "80fbeca0732c81c0686a0d1195e4e9bd10ecb10bcab86286f43e4fd8f1262b89"
+    },
+    "hooks-source/motion-metadata.ts": {
+      "bytes": 4702,
+      "sha256": "90f583a0ce08feb89fa8090ca87b7b8590f6f0a0861d97393c742a564e7c603c"
+    },
+    "hooks-source/companion-art.ts": {
+      "bytes": 3680,
+      "sha256": "2323c74874a0951697a11a9f1c53f769034b2cbc61cbecb9dbdeaf6ba7e99f6a"
+    },
+    "hooks-source/card-metrics-lazy.ts": {
+      "bytes": 2639,
+      "sha256": "109033e060edf025542e7633e3a90f5a8739873bec97a88f4acc9c50250db37e"
+    },
+    "hooks-source/mod-gaps-words.ts": {
+      "bytes": 2313,
+      "sha256": "51f5d1dfb9364fa5f1ad39b3fec17410c48201264af7bd503071245e085b50ce"
+    },
+    "hooks-source/settings-migration.ts": {
+      "bytes": 106,
+      "sha256": "20fb43780076383b954b6c336d389c4a3d2515e075bdab3549a2d0e99e3fd9d3"
+    },
+    "hooks-source/cache-rate.ts": {
+      "bytes": 1273,
+      "sha256": "39a151b8ab2578e2b0b95fe2b3ad8da44ab8b0d81c5b56ec2332a4dafe4e9b78"
+    },
+    "hooks-source/reminder-settings.ts": {
+      "bytes": 3407,
+      "sha256": "4c002a5d75bff0a07ad78814f9d2594ea5bbd1bb11f405e7eed6617a15dded93"
+    },
+    "hooks-source/display-slots.ts": {
+      "bytes": 1095,
+      "sha256": "4b64e231f0c216529fc072a44a08f62c285b19c46146c31562fec660a38b3184"
+    },
+    "hooks-source/display-slot-text.ts": {
+      "bytes": 1346,
+      "sha256": "a4fcad5094c5d2b7ebc3e5368355d9d01590a98e9e47351cd5bddd9b7264243e"
+    },
+    "hooks-source/d1-shed-asides.ts": {
+      "bytes": 553,
+      "sha256": "864575c19f5aa0d7df2a5d3e3a023a57e8e148aad4bcd1cda3980f8f409f293d"
+    },
+    "hooks-source/play.ts": {
+      "bytes": 7026,
+      "sha256": "8300821c009c85cba11db860d75b94bbe372f0b3e8bce457e1d7663be74c9a06"
+    },
+    "hooks-source/play-commits.ts": {
+      "bytes": 5794,
+      "sha256": "c59d17d937a16126921671f7be8e01617987596015e196e3d70a707af05ee3c3"
+    },
+    "hooks-source/play-focus.ts": {
+      "bytes": 2981,
+      "sha256": "736ce88b81669bf455231a82d2f9b2e4b3e250331bf89f7551ac8b5ed8c60f74"
+    },
+    "hooks-source/play-light.ts": {
+      "bytes": 3424,
+      "sha256": "9a4ceec63bdb3b5ac9963c33099b1a476cbfa2c9ee66984d9850194b36943efa"
+    },
+    "hooks-source/play-thermos.ts": {
+      "bytes": 1395,
+      "sha256": "2df18c93ea44567d899692a6f26e8d156ba4b056ddd599751bf8b3a744293a80"
+    },
+    "hooks-source/play-planes.ts": {
+      "bytes": 3170,
+      "sha256": "19489eb2822953ecc1cb431b3491ccac23fa60c50721835c35d25cd5b7d5c45a"
+    },
+    "hooks-source/cost/runtime.js": {
+      "bytes": 13184,
+      "sha256": "47bc59f18089234890ca1975601ea9a0e4d63c2cb3bee8592f088858fbdea9d1"
+    },
+    "hooks-source/cost/units.js": {
+      "bytes": 30906,
+      "sha256": "5cea0371301401ee5b62862fe639a421e9d36408bf72d6deeea9069df7334671"
+    },
+    "hooks-source/cost/state.ts": {
+      "bytes": 285,
+      "sha256": "1e59150bba0879d69f9c62872e7cf293e5cea820894ebdde00ce7306256e7116"
+    },
+    "hooks-source/cost/surfaces.ts": {
+      "bytes": 12998,
+      "sha256": "15e1387b606a815087a7d062b73edd80510f04f2c783e2dce416da7022509c6a"
+    },
+    "hooks-source/cost/cup.ts": {
+      "bytes": 2448,
+      "sha256": "e495ac43614a75f7724f420725db160df58d524060fb5b96e249b9ae51d34ee8"
+    },
+    "hooks-source/cost/words.ts": {
+      "bytes": 485,
+      "sha256": "8fe4f581b9eb1a6fae5c4a9e87cd0be4fd33f34618e16d985be87b398346575b"
+    },
+    "hooks-source/cost/prices-page.tsx": {
+      "bytes": 6857,
+      "sha256": "7f5f80e645a74b71e7e01d13d7591398e10cb55144d6749443e015af8606e989"
+    },
+    "hooks-source/presence.ts": {
+      "bytes": 51046,
+      "sha256": "1d070a5dd501199dd1756ca689eea7afc025b80694bc2ad084fd0da79ffd49d3"
+    },
+    "hooks-source/lines.ts": {
+      "bytes": 145156,
+      "sha256": "5f694476be1dd4a3eceeedd9a5341defa425156f2340d08bfbe563cdb868854b"
+    },
+    "hooks-source/motion.ts": {
+      "bytes": 352,
+      "sha256": "03000215fcfa0cd7e493baa5f348aa7f4f156ca36306f1d634c408b8c5086e7e"
+    },
+    "hooks-source/desktop-safe.ts": {
+      "bytes": 216,
+      "sha256": "a1811edf07ac8cb5fcefbc50457306d11deb8ba723442ca491ae49bc2af02df2"
+    },
+    "hooks-source/channel.ts": {
+      "bytes": 19277,
+      "sha256": "a51c9d29e867295af794fdab5ba351db60233beb0425e02686fc4b62cbfd6e63"
+    },
+    "hooks-source/companion-book.tsx": {
+      "bytes": 11836,
+      "sha256": "5d8d3d9e3673a0c96f026aa8692e529949eec5021451e5abd194194c723f2a62"
+    },
+    "hooks-source/checkup.ts": {
+      "bytes": 6623,
+      "sha256": "f85df922562e26200a5e9d63642cf77d7902aace942b75444c7679bc50c3f3bd"
+    },
+    "hooks-source/book-band-words.ts": {
+      "bytes": 2861,
+      "sha256": "d66348c63206983ae22ea814b72179e2d421a78d9271c4c4c15cb8042a7f0933"
+    },
+    "hooks-source/more-book.tsx": {
+      "bytes": 25456,
+      "sha256": "d602f3179eae5b3d55485341616fc48187072f78bd62f2f4a1541e0776c09cf8"
+    },
+    "hooks-source/mod-gaps-art.ts": {
+      "bytes": 4918,
+      "sha256": "58131c34f757a20bb430eda7a593728b8a9adad44c50fd6d95d2936446c3b416"
+    },
+    "hooks-source/blink-scheduler.ts": {
+      "bytes": 3692,
+      "sha256": "be04a7c70d48d8f781b4a697bd15743cfa360a10a322b890e84314f2dce9eabe"
+    },
+    "hooks-source/shared-files.ts": {
+      "bytes": 2056,
+      "sha256": "42bc1ad28a7187754ac8490e236116f671fd2f1573557301f590bcd6aa2960c9"
+    },
+    "hooks-source/mod-gaps-render.tsx": {
+      "bytes": 2849,
+      "sha256": "1983406631c87173c303a9d783f8bd4455c7d325b461c51f71fe359bdf52f0fe"
+    },
+    "hooks-source/more-state.ts": {
+      "bytes": 6492,
+      "sha256": "6079c26064811b4b2ac21e13132aa012b5b1cf845c176c7451319e111397636f"
+    },
+    "hooks-source/more-models.ts": {
+      "bytes": 4673,
+      "sha256": "f95074f6f4edc393ddae0e6022960fcc12e13473b256cdb158dfd8f9672f4bf6"
+    },
+    "hooks-source/more-secrets.ts": {
+      "bytes": 1757,
+      "sha256": "d67456c4bde362d1e46b2a3ea25057ae3bc7a4b269a33fb32eeafed832a486c9"
+    },
+    "hooks-source/band-motion-state.ts": {
+      "bytes": 98,
+      "sha256": "70d4d01f06979e514bce10e70b409910def59c1cd7e543d692d89ac904b1ac4f"
+    },
+    "hooks-source/latest.ts": {
+      "bytes": 2055,
+      "sha256": "dc718237e556cad2c16ad002501245d4324f227b62c677a8f98bde28686a572d"
+    },
+    "hooks-source/c3-secrets.ts": {
+      "bytes": 7836,
+      "sha256": "66435a1f847bde3bcdb81e00908ee82817ae0855f004dffdf90f0827f8fde77d"
+    },
+    "hooks-source/book-format.ts": {
+      "bytes": 92,
+      "sha256": "8436327a08ff7351c0575ad65023574285c2180ab1dec4a7761d86dee6fbd86c"
+    },
+    "hooks-source/script-command.ts": {
+      "bytes": 292,
+      "sha256": "5d9502e48e5a876a2b542071df53c6a2dd27da441376c8b3a77aa2c196ed06d0"
+    },
+    "hooks-source/d1-state.js": {
+      "bytes": 67601,
+      "sha256": "7ff7cfd70494eda6adbae2c1a46e243d181474002294613881e3b3457a0f9525"
+    },
+    "hooks-source/d1-paths.js": {
+      "bytes": 1902,
+      "sha256": "fdfe64c6801156ad205a117b13193b797449178e20af7da80e52c3a27dcb5865"
+    },
+    "hooks-source/band.js": {
+      "bytes": 64504,
+      "sha256": "588b4f8e89493a98a462b06b5c6c35d200debf519491fe47c8c05df8e838ba61"
+    },
+    "hooks-source/book.js": {
+      "bytes": 45533,
+      "sha256": "1879877c9c3e3189d1b365c9b701a6c23cbfad097d09acbbe4aada39803b9b4e"
+    },
+    "hooks-source/visitors.ts": {
+      "bytes": 18458,
+      "sha256": "65c24133dea64464f2a86b318bce155f3466cb5640f4c299aa9e5aae3a00c9ac"
+    },
+    "hooks-source/visitors-art.ts": {
+      "bytes": 20751,
+      "sha256": "aece5ce7d5db351ee50fc8880a65343d684fba10f64055bf8e1041f4d27c310e"
+    },
+    "hooks-source/notice.ts": {
+      "bytes": 30964,
+      "sha256": "d9e0507c6dbd8c6da3e66090b7a6d582f91815a38fe848032d3362109543512d"
+    },
+    "hooks-source/notice-art.ts": {
+      "bytes": 10284,
+      "sha256": "b93263232a07704477330ae3d914908afa89e22259c5acd883b89a9b775b1fe0"
+    },
+    "hooks-source/notice-rows.tsx": {
+      "bytes": 7254,
+      "sha256": "7a7c54b98091c26c776cdf126583846e28e46f3c675d28cc22fe0fb556d8f1aa"
+    },
+    "hooks-source/register.tsx": {
+      "bytes": 312119,
+      "sha256": "ed63a497ae0bae35a5352a71d32da44045b6da9eb1cb156200e6908662c86c6e"
+    },
+    "hooks-source/touch-client.ts": {
+      "bytes": 1190,
+      "sha256": "235b02cda3167fc1cc28d6ac11743b369528f77ff3df46ab407327a725b8f7f4"
+    },
+    "hooks-source/algo/guard.ts": {
+      "bytes": 64223,
+      "sha256": "ce7566d670aedf9f4fa49c37f858247cc4c912c3e98fa14d55180f9035cbbe31"
+    },
+    "hooks-source/algo/lexer.ts": {
+      "bytes": 20486,
+      "sha256": "0eecd2b36f19b38c9d52f1488f38054c6ae274718f33398b5e6cdc56b09dd093"
+    },
+    "hooks-source/algo/pace.ts": {
+      "bytes": 51103,
+      "sha256": "7f945babf605ef5bfe405fec0aac16189023a7dbab11230f60a106e4e059b1a6"
+    },
+    "hooks-source/algo/runs.ts": {
+      "bytes": 70034,
+      "sha256": "31bdc6c44235881cb1862d5113973da54f0a5b2e9e689002b281b9d3b8d38024"
+    },
+    "hooks-source/art.ts": {
+      "bytes": 1233,
+      "sha256": "4da284293649803f32af88baf77363bf230a1bf531d1d91983a5a95ead87975e"
+    },
+    "hooks-source/band-motion-state.source.ts": {
+      "bytes": 2144,
+      "sha256": "84ee46afe24de3e631336878546f7f75a4e771e5b7831d31899eb5e37eeae274"
+    },
+    "hooks-source/band.d.ts": {
+      "bytes": 146,
+      "sha256": "11b4f64605184e33834a3e29486bfbe0c12f369d11cf9f467e809c7ed1569d94"
+    },
+    "hooks-source/book-format.source.ts": {
+      "bytes": 357,
+      "sha256": "35f4cf9a23e0a5c68945b8ce6000262a1c7ba923b0c7d3d3f96d1ad6fe1f34fa"
+    },
+    "hooks-source/book-word-types.ts": {
+      "bytes": 3932,
+      "sha256": "969c2dd85bc09b504235d472dd3565b27a26c69c0157785a19ff100ef0316f2b"
+    },
+    "hooks-source/book.d.ts": {
+      "bytes": 146,
+      "sha256": "dd70820c2f8a4ead989d3f0f462592707e5965b05fe1be336b3aa961c5885873"
+    },
+    "hooks-source/card-metrics-hi-bold.ts": {
+      "bytes": 10812,
+      "sha256": "06c0d22cf7e6ab5c90c4f69abdac2d43b171f6ff629becd0b8c390dcd166ca8d"
+    },
+    "hooks-source/card-metrics-hi.ts": {
+      "bytes": 46597,
+      "sha256": "c1122be8e4d0d9564bfaec9bc50ed044d394f18799174d033dee06192ec53ef7"
+    },
+    "hooks-source/card-metrics-ja-bold.ts": {
+      "bytes": 6324,
+      "sha256": "958732039268eb942c0024458ce5c05cbf86422b69daae957fbc4bfc1d8def37"
+    },
+    "hooks-source/card-metrics-ja.ts": {
+      "bytes": 21753,
+      "sha256": "70ed614c6e0c389a90eeab0652ee15603bf6643e90b4d2341a73d41212cbb341"
+    },
+    "hooks-source/card-metrics-ko-bold.ts": {
+      "bytes": 7532,
+      "sha256": "e0d552f5f27e08645725c8f2b7c28185579ae17b0c4da0a355a66b77c2d97226"
+    },
+    "hooks-source/card-metrics-ko.ts": {
+      "bytes": 27370,
+      "sha256": "5865d2dd93d487437dc3a8bc310c330c3c26283b115b742e1fedc931a5df6c49"
+    },
+    "hooks-source/card-metrics-latin-bold.ts": {
+      "bytes": 66586,
+      "sha256": "298bf00e4b3d08a9c91dfe6aa9873ab9a3345b81f74587708b22c9a42f6cd494"
+    },
+    "hooks-source/card-metrics-latin.ts": {
+      "bytes": 175024,
+      "sha256": "21f3f2560d8860fcac237b2ef2259e924c95fc459826d69dd761910f53de6bdd"
+    },
+    "hooks-source/card-metrics-zh-bold.ts": {
+      "bytes": 10811,
+      "sha256": "1bc55e63c51d6daa0bbaec5d531dc8d8d92bf8656d35385cb8ce496a68b311cf"
+    },
+    "hooks-source/card-metrics-zh.ts": {
+      "bytes": 36158,
+      "sha256": "197ec23fcb919587228b4ed231a8a8c2df034638bbf71be55167b7c6220c4620"
+    },
+    "hooks-source/card-metrics.ts": {
+      "bytes": 2098,
+      "sha256": "1e8ba32e3e15941e5fbb683796d5ab5de54ef57f29775099bac77ec20a847b23"
+    },
+    "hooks-source/card.ts": {
+      "bytes": 12161,
+      "sha256": "05c5b04361f84e000944020029da822fa1afb305e0e3a489ed002595b4811397"
+    },
+    "hooks-source/checkup-types.ts": {
+      "bytes": 1470,
+      "sha256": "63c4cd357fda6cb4118dd41c2faf5c96d8fd257eccba7a7f91575afa6328fed9"
+    },
+    "hooks-source/cost/core/index.ts": {
+      "bytes": 15832,
+      "sha256": "aa235d6dce2971dfc4848aecf3f90f730ef1aa4466398dee271e726a9fcfc870"
+    },
+    "hooks-source/cost/prices/changes.ts": {
+      "bytes": 3495,
+      "sha256": "0a7b3c2da406c81316b360f54fa75ba0cbf5b7fcda8c1e75d3bc437da1546948"
+    },
+    "hooks-source/cost/prices/ids.ts": {
+      "bytes": 2193,
+      "sha256": "dcf76a269d3f737d1329b777640092067ef2c0d449f5787a4ffd57d2401c0778"
+    },
+    "hooks-source/cost/prices/index.ts": {
+      "bytes": 841,
+      "sha256": "da87f0952844ab2a15b7f3ae5d7227b5a68785861e7a5faef0b30437ccbd5c03"
+    },
+    "hooks-source/cost/prices/load.ts": {
+      "bytes": 9081,
+      "sha256": "6200bde1b8f79e3720a0a2e7f9e26adecdcfc4a906c584c1de96297733e9b86f"
+    },
+    "hooks-source/cost/prices/others.ts": {
+      "bytes": 5984,
+      "sha256": "94975e0adf409dd163b9a53b583208df79ae573ce2bc809bd980f7dc47b6d93c"
+    },
+    "hooks-source/cost/prices/page.ts": {
+      "bytes": 6395,
+      "sha256": "778a118c49ff8487b6f20f2f22be664d4b16dcec59aeaf0960600508c397f3e3"
+    },
+    "hooks-source/cost/prices/runtime.ts": {
+      "bytes": 7542,
+      "sha256": "03cd5142bce4d48082028479aa5d7ea95f7684e04f459652a78fc70a868f58d1"
+    },
+    "hooks-source/cost/runtime.d.ts": {
+      "bytes": 249,
+      "sha256": "3a53f4222044ccdbb8932949e60bd8f114a8c5e623258b8915cef1a2b7bb1671"
+    },
+    "hooks-source/cost/runtime.ts": {
+      "bytes": 22972,
+      "sha256": "c2bd14c328aa6944c9f07abcf4f56f52be0931aa8e5437158650b7ac713366a6"
+    },
+    "hooks-source/cost/units.d.ts": {
+      "bytes": 532,
+      "sha256": "de211e68a319bed61731c9995caf7cd1dec865369d3cf6c0f86f95cbcbad389f"
+    },
+    "hooks-source/cost/warm-runtime.ts": {
+      "bytes": 11721,
+      "sha256": "ecb7ec6b3020b153b83dc9348845736c94fbc7189c5644603205599e75337260"
+    },
+    "hooks-source/cost/warm/constants.ts": {
+      "bytes": 3297,
+      "sha256": "0b37279fdea5fea35501abacfe724fa969ddbaa1ab868d1c80d901920f573d62"
+    },
+    "hooks-source/cost/warm/index.ts": {
+      "bytes": 189,
+      "sha256": "f9237702479200a660a0ecf7f5e13cb7f15c319762e8736bf15acd4b07045484"
+    },
+    "hooks-source/cost/warm/keeper.ts": {
+      "bytes": 10276,
+      "sha256": "c9de2f5c415f991fb985e4b6e3328343d4a61ad7528efdfeba92c5f3c9aedf27"
+    },
+    "hooks-source/cost/warm/lock.ts": {
+      "bytes": 1076,
+      "sha256": "e3e97853749dfecc6f77ac79a2c208ead00ddc9d8e95cf6966ffdbabcac94085"
+    },
+    "hooks-source/cost/warm/pyrandom.ts": {
+      "bytes": 3160,
+      "sha256": "de2d34376ae548613b5dc0019583b38bc448b8cfd0f8fc36c4dcf482c4969cee"
+    },
+    "hooks-source/cost/warm/sim.ts": {
+      "bytes": 3951,
+      "sha256": "d10d46900994fb0890e8d40f080a6f823f29e06c4966b51736f1874be2ace4b3"
+    },
+    "hooks-source/d1-art-data.source.ts": {
+      "bytes": 905,
+      "sha256": "09a9b9c46ce5c0004f5270463e7759ff4d75237f337c57822d14329a9088928c"
+    },
+    "hooks-source/d1-art-data.ts": {
+      "bytes": 49,
+      "sha256": "9e345209b8278e16cb8d3cb60bacf1e2390b8630b2e0e5d75903d20163f104fe"
+    },
+    "hooks-source/d1-paths.d.ts": {
+      "bytes": 154,
+      "sha256": "c9cadf91bf519d26fb03717ba6b0a08c4162ef4c86d91a8820af51eb15b6f880"
+    },
+    "hooks-source/d1-picture-age.source.ts": {
+      "bytes": 813,
+      "sha256": "4399a0952a57dacd6c44113871ef2b02af47ce40091dcf5d0914df0424d70d97"
+    },
+    "hooks-source/d1-picture-age.ts": {
+      "bytes": 48,
+      "sha256": "1c2e93f36d5fa56930ef857f63c263cb379fce6dc290764e3a03c1f1c7e85b8f"
+    },
+    "hooks-source/d1-pictures.source.ts": {
+      "bytes": 8602,
+      "sha256": "45a4fa891d8abb61e5d654395d601120723f239ad49a53eee7ef2f8d7d8bcd8e"
+    },
+    "hooks-source/d1-pictures.ts": {
+      "bytes": 219,
+      "sha256": "5c56ed7301b9aa945e869b8ea2bfb5d7a3d65e7d2b37d18d73cdd192907a2d0e"
+    },
+    "hooks-source/d1-pieces.source.ts": {
+      "bytes": 2207,
+      "sha256": "3b7e6f7291764ae2dcb35e28ab5783ba6586326574a8702da3e6b935a737809d"
+    },
+    "hooks-source/d1-pieces.ts": {
+      "bytes": 123,
+      "sha256": "3296a738a83299bd19931ebbc845bab3ef2c13d026e6838acb3861380094c876"
+    },
+    "hooks-source/d1-ribbon-core.source.ts": {
+      "bytes": 2277,
+      "sha256": "a209f82011c078a2eb65fe24970f31e75942ed610b1657b0c76e7bd7825d52a7"
+    },
+    "hooks-source/d1-ribbon-core.ts": {
+      "bytes": 194,
+      "sha256": "bdfdc7071d8805e6b605271d750fe5d455ee300539050c641a3d5ca75eacdf1d"
+    },
+    "hooks-source/d1-ribbon.source.ts": {
+      "bytes": 3360,
+      "sha256": "59ffcbf0e8d19ca787fbd205c8e1992ed8dcb43f71a4ecee9f868ecff7067192"
+    },
+    "hooks-source/d1-ribbon.ts": {
+      "bytes": 297,
+      "sha256": "6c727e2270b83ef5547f77a6d9984b312b7a5424f0f2ac665fea1386ef2f8e41"
+    },
+    "hooks-source/d1-room.source.ts": {
+      "bytes": 7309,
+      "sha256": "33b5c1b7c20edef881d32258fe8639a1c665aab170bce194561007cdeeb2ab7f"
+    },
+    "hooks-source/d1-room.ts": {
+      "bytes": 168,
+      "sha256": "840fe905af01572946e4b05ea6a1c33b7e4a0be5d5d64a3d1f157255662bebda"
+    },
+    "hooks-source/d1-runtime.source.ts": {
+      "bytes": 7063,
+      "sha256": "503aec391797435bd94a5acd05e6e968ed0131272b6728d720f099b28ccfae59"
+    },
+    "hooks-source/d1-runtime.ts": {
+      "bytes": 96,
+      "sha256": "bf7f5cb6433530b291987532fdc693b9cb69e8eebb31e0510ad50a811973a275"
+    },
+    "hooks-source/d1-state.d.ts": {
+      "bytes": 4477,
+      "sha256": "cfbc1ea7120c24dca379a7bc45d0c9a3623dc133d1eec3bf13179b048039fe8c"
+    },
+    "hooks-source/d1-transcript-pieces.source.ts": {
+      "bytes": 712,
+      "sha256": "98a6b0b12dd68c97bb0af9daa0606ff74da6e6ed479dfe4acd446d525c431025"
+    },
+    "hooks-source/d1-transcript-pieces.ts": {
+      "bytes": 94,
+      "sha256": "b287b8d7c59594a303aca0aa7bcf04c3f3e9b26e0accbd01b11c35a3b5d01c24"
+    },
+    "hooks-source/d1-trim-core.source.ts": {
+      "bytes": 2711,
+      "sha256": "0f80f2fb1ca3d9c5d12e55741a4c5535d1df50b0efbca65deb0131a874046c03"
+    },
+    "hooks-source/d1-trim-core.ts": {
+      "bytes": 127,
+      "sha256": "97baf2dfda02e6edabb1e9d26865158d8c3eb46942bf01ffd635504edb08bb59"
+    },
+    "hooks-source/d1-trim-path.source.ts": {
+      "bytes": 553,
+      "sha256": "b9484c5227405faee4d72475a23a4c2fccc2d10c029d03bcd842af724f4520e0"
+    },
+    "hooks-source/d1-trim-path.ts": {
+      "bytes": 86,
+      "sha256": "8be58dbc8af3d65a4c1af7e0a596d1ce79d239b24ad9076291df30d62fd24348"
+    },
+    "hooks-source/d1-trim-row.source.tsx": {
+      "bytes": 1808,
+      "sha256": "ab12d7ba2cb1e3ea2540d2a73ce0322a454e49921d185e4e6316c05ea2304b01"
+    },
+    "hooks-source/d1-trim-row.tsx": {
+      "bytes": 110,
+      "sha256": "d054353d9bd1300da4daa905dbe01d913b0048c633f107694e406aa72b9bd3c1"
+    },
+    "hooks-source/d1-trim.source.tsx": {
+      "bytes": 6905,
+      "sha256": "efd930d06362cc4e77c7248db3d83d567b78f52ba73f9a36355c26efec1a08b2"
+    },
+    "hooks-source/d1-trim.tsx": {
+      "bytes": 181,
+      "sha256": "69994a58dc81033f6061e76ce5e605885408f0acc9b7db2a068659768ed57202"
+    },
+    "hooks-source/d1-words.source.ts": {
+      "bytes": 2188,
+      "sha256": "ba00c0c0584d981fb6ec9143c93288a3867f47c5e2bd164711d6de23d51015a3"
+    },
+    "hooks-source/d1-words.ts": {
+      "bytes": 139,
+      "sha256": "cb63ec1a00d4864ff08469d4c0c6a4ca6cc827de3749374a6be5bf2cc1a80004"
+    },
+    "hooks-source/desktop-safe.source.ts": {
+      "bytes": 31354,
+      "sha256": "ab7547aedfa9a19338ef032164533475346371bcb2481654e2f677dcca9b42db"
+    },
+    "hooks-source/history-key.ts": {
+      "bytes": 38,
+      "sha256": "656d286e4b848f3726bd4fd82811c1d14baff229dd86b5218acf47282ee1761f"
+    },
+    "hooks-source/line-types.ts": {
+      "bytes": 23422,
+      "sha256": "78e94d9e3d058706a2c74a9758990de8610932828cc1706c3b67b6d0a888c718"
+    },
+    "hooks-source/motion-svg.source.ts": {
+      "bytes": 1631,
+      "sha256": "fe38154498fe44bfe2f4ebfaeabffb770b8cb14556b419cfd38245ac6e99f023"
+    },
+    "hooks-source/motion.source.ts": {
+      "bytes": 33967,
+      "sha256": "e80215bc5e7ffdb1a99e10ea71738cea1acaa733bf9402e8f971092131e1e69e"
+    },
+    "hooks-source/paths.source.ts": {
+      "bytes": 3966,
+      "sha256": "defa2894e292ad74cfaf9a0dc5706b38fd3448ac81e4221f0d443d31a2c3bec1"
+    },
+    "hooks-source/play-client.ts": {
+      "bytes": 5776,
+      "sha256": "c793439849946b165ea98c6f300c38ab30f5d63acc4558de78c880e2158c0a73"
+    },
+    "hooks-source/presence-types.ts": {
+      "bytes": 3374,
+      "sha256": "fa10a6e12bd9c0974ff693627f49c43a51b48f1c7b5ffacd2114832216d9e633"
+    },
+    "hooks-source/repository-branch.ts": {
+      "bytes": 93,
+      "sha256": "69caa1862fe0ff269cff7f08b81bfce27826e9ed61c6efebe0558d76f07b9879"
+    },
+    "hooks-source/say-it-plain-prompt.ts": {
+      "bytes": 3103,
+      "sha256": "2586929c1223ea4cf8660bbd4beb2bb1a085d7831af98dd280ec81408ee45646"
+    }
+  },
+  "publicMap": {
+    "hooks-source/motion-stills.ts": {
+      "publicPath": "hooks/motion-stills.ts",
+      "group": "hooks/m1-compiled/motion_stills.js",
+      "aliases": {
+        "FRAME_OVERLAY_OFFSET_X": "motion_stills__FRAME_OVERLAY_OFFSET_X",
+        "PREBUILT_FRAME_NAMES": "motion_stills__PREBUILT_FRAME_NAMES",
+        "STILL_ANIMATION_MODE": "motion_stills__STILL_ANIMATION_MODE",
+        "STILL_FRAME_METADATA": "motion_stills__STILL_FRAME_METADATA",
+        "STILL_FRAME_NAMES": "motion_stills__STILL_FRAME_NAMES",
+        "STILL_SIZES": "motion_stills__STILL_SIZES",
+        "STILL_TERMINAL_SIZE": "motion_stills__STILL_TERMINAL_SIZE"
+      },
+      "exportLines": {
+        "STILL_ANIMATION_MODE": 4,
+        "STILL_SIZES": 5,
+        "FRAME_OVERLAY_OFFSET_X": 6,
+        "STILL_FRAME_METADATA": 7,
+        "PREBUILT_FRAME_NAMES": 8,
+        "STILL_FRAME_NAMES": 9,
+        "STILL_TERMINAL_SIZE": 10
+      }
+    },
+    "hooks-source/motion-svg.ts": {
+      "publicPath": "hooks/motion-svg.ts",
+      "group": "hooks/m1-compiled/motion_stills.js",
+      "aliases": {
+        "ANIMATION_MODE": "motion_svg__ANIMATION_MODE",
+        "getMotionWidth": "motion_svg__getMotionWidth",
+        "terminalMotionFrame": "motion_svg__terminalMotionFrame"
+      },
+      "exportLines": {
+        "ANIMATION_MODE": 2,
+        "getMotionWidth": 2,
+        "terminalMotionFrame": 2,
+        "AnimationMode": 3,
+        "MotionPictureOptions": 3
+      }
+    },
+    "hooks-source/mood.ts": {
+      "publicPath": "hooks/mood.ts",
+      "group": "hooks/m1-compiled/motion_stills.js",
+      "aliases": {
+        "ABSOLUTELY_RIGHT": "mood__ABSOLUTELY_RIGHT",
+        "FORCE_PUSH": "mood__FORCE_PUSH",
+        "HEARING": "mood__HEARING",
+        "LOOPS": "mood__LOOPS",
+        "NOT_FOUND": "mood__NOT_FOUND",
+        "PERSON": "mood__PERSON",
+        "PLAN_TOOL": "mood__PLAN_TOOL",
+        "PRAISE": "mood__PRAISE",
+        "PRESENCE_LINES": "mood__PRESENCE_LINES",
+        "STILL": "mood__STILL",
+        "TEST_RUN": "mood__TEST_RUN",
+        "TIMING": "mood__TIMING",
+        "colorsOf": "mood__colorsOf",
+        "cueFor": "mood__cueFor",
+        "detectLanguage": "mood__detectLanguage",
+        "fill": "mood__fill",
+        "greetingFor": "mood__greetingFor",
+        "initialView": "mood__initialView",
+        "langOf": "mood__langOf",
+        "languageOf": "mood__languageOf",
+        "linesFor": "mood__linesFor",
+        "localDay": "mood__localDay",
+        "localHour": "mood__localHour",
+        "macSystemLanguage": "mood__macSystemLanguage",
+        "pick": "mood__pick",
+        "runMoment": "mood__runMoment",
+        "sharedLineFor": "mood__sharedLineFor",
+        "typed": "mood__typed"
+      },
+      "exportLines": {
+        "cueFor": 38,
+        "colorsOf": 45,
+        "runMoment": 68,
+        "initialView": 79,
+        "linesFor": 90,
+        "sharedLineFor": 96,
+        "greetingFor": 122,
+        "pick": 129,
+        "fill": 138,
+        "langOf": 168,
+        "languageOf": 186,
+        "macSystemLanguage": 205,
+        "typed": 246,
+        "detectLanguage": 290,
+        "localHour": 331,
+        "localDay": 340,
+        "TIMING": 13,
+        "LOOPS": 25,
+        "STILL": 31,
+        "PERSON": 54,
+        "TEST_RUN": 57,
+        "FORCE_PUSH": 59,
+        "PLAN_TOOL": 61,
+        "NOT_FOUND": 63,
+        "PRAISE": 73,
+        "ABSOLUTELY_RIGHT": 76,
+        "PRESENCE_LINES": 117,
+        "Heard": 220,
+        "HEARING": 223
+      }
+    },
+    "hooks-source/line-library.ts": {
+      "publicPath": "hooks/line-library.ts",
+      "group": "hooks/m1-compiled/motion_stills.js",
+      "aliases": {
+        "LINES_PER_GROUP": "line_library__LINES_PER_GROUP",
+        "LINE_CELLS": "line_library__LINE_CELLS",
+        "LINE_GROUPS": "line_library__LINE_GROUPS",
+        "claudieUnsaid": "line_library__claudieUnsaid",
+        "installEdited": "line_library__installEdited",
+        "installWritten": "line_library__installWritten",
+        "libraryLines": "line_library__libraryLines",
+        "lineCells": "line_library__lineCells",
+        "linesFromText": "line_library__linesFromText",
+        "linesText": "line_library__linesText",
+        "shippedLines": "line_library__shippedLines",
+        "useWritten": "line_library__useWritten",
+        "writtenLinesFrom": "line_library__writtenLinesFrom"
+      },
+      "exportLines": {
+        "shippedLines": 25,
+        "installWritten": 43,
+        "installEdited": 44,
+        "useWritten": 45,
+        "libraryLines": 48,
+        "claudieUnsaid": 59,
+        "lineCells": 65,
+        "writtenLinesFrom": 75,
+        "linesText": 94,
+        "linesFromText": 101,
+        "LineCharacter": 10,
+        "LineSet": 11,
+        "LineMix": 12,
+        "LINE_GROUPS": 14,
+        "LINES_PER_GROUP": 19,
+        "LINE_CELLS": 21
+      }
+    },
+    "hooks-source/head-art.ts": {
+      "publicPath": "hooks/head-art.ts",
+      "group": "hooks/m1-compiled/motion_stills.js",
+      "aliases": {
+        "EXTRA_HEAD_SVG": "head_art__EXTRA_HEAD_SVG",
+        "HEAD_ALIAS": "head_art__HEAD_ALIAS",
+        "HEAD_SVG": "head_art__HEAD_SVG"
+      },
+      "exportLines": {
+        "HEAD_SVG": 5,
+        "EXTRA_HEAD_SVG": 23,
+        "HEAD_ALIAS": 31
+      }
+    },
+    "hooks-source/window-notes.tsx": {
+      "publicPath": "hooks/window-notes.tsx",
+      "group": "hooks/m1-compiled/motion_stills.js",
+      "aliases": {
+        "RECEIVED_DISCLOSURE_SLOT": "window_notes__RECEIVED_DISCLOSURE_SLOT",
+        "RECEIVED_MARKER_SLOT": "window_notes__RECEIVED_MARKER_SLOT",
+        "ReceivedNotes": "window_notes__ReceivedNotes",
+        "ReceivedNotesBook": "window_notes__ReceivedNotesBook",
+        "receivedInbox": "window_notes__receivedInbox",
+        "receivedNoteId": "window_notes__receivedNoteId",
+        "receivedNoteKey": "window_notes__receivedNoteKey",
+        "resetReceivedInbox": "window_notes__resetReceivedInbox"
+      },
+      "exportLines": {
+        "receivedInbox": 34,
+        "resetReceivedInbox": 35,
+        "receivedNoteKey": 36,
+        "receivedNoteId": 37,
+        "ReceivedNotesBook": 42,
+        "RECEIVED_MARKER_SLOT": 5,
+        "RECEIVED_DISCLOSURE_SLOT": 7,
+        "ReceivedNote": 8,
+        "ReceivedNotes": 11
+      }
+    },
+    "hooks-source/tasks.ts": {
+      "publicPath": "hooks/tasks.ts",
+      "group": "hooks/m1-compiled/motion_stills.js",
+      "aliases": {
+        "basename": "tasks__basename",
+        "bashProgram": "tasks__bashProgram",
+        "middleCut": "tasks__middleCut",
+        "replyExcerpt": "tasks__replyExcerpt",
+        "taskForTool": "tasks__taskForTool"
+      },
+      "exportLines": {
+        "basename": 5,
+        "middleCut": 9,
+        "bashProgram": 26,
+        "taskForTool": 60,
+        "replyExcerpt": 154,
+        "TaskKey": 2,
+        "TaskDescription": 3
+      }
+    },
+    "hooks-source/book-words.ts": {
+      "publicPath": "hooks/book-words.ts",
+      "group": "hooks/m1-compiled/motion_stills.js",
+      "aliases": {
+        "PAGES": "book_words__PAGES",
+        "fill": "book_words__fill",
+        "overEnglish": "book_words__overEnglish"
+      },
+      "exportLines": {
+        "overEnglish": 26,
+        "fill": 42,
+        "Page": 2,
+        "CompanionBookWords": 2,
+        "BookWords": 2,
+        "PAGES": 15
+      }
+    },
+    "hooks-source/book-text.ts": {
+      "publicPath": "hooks/book-text.ts",
+      "group": "hooks/m1-compiled/motion_stills.js",
+      "aliases": {
+        "BOOK_TEXT": "book_text__BOOK_TEXT",
+        "PLUGIN_VERSION": "book_text__PLUGIN_VERSION"
+      },
+      "exportLines": {
+        "PLUGIN_VERSION": 3,
+        "BOOK_TEXT": 7
+      }
+    },
+    "hooks-source/line-slot.ts": {
+      "publicPath": "hooks/line-slot.ts",
+      "group": "hooks/m1-compiled/motion_stills.js",
+      "aliases": {
+        "LineSlot": "line_slot__LineSlot",
+        "lineParts": "line_slot__lineParts"
+      },
+      "exportLines": {
+        "lineParts": 100,
+        "LinePart": 2,
+        "LineValue": 3,
+        "LineButton": 4,
+        "LineRequest": 5,
+        "VisibleLine": 11,
+        "LineSlot": 13
+      }
+    },
+    "hooks-source/turn-ledger.ts": {
+      "publicPath": "hooks/turn-ledger.ts",
+      "group": "hooks/m1-compiled/motion_stills.js",
+      "aliases": {
+        "HEAD_CAP": "turn_ledger__HEAD_CAP",
+        "HEAD_PREFIX": "turn_ledger__HEAD_PREFIX",
+        "TurnLedger": "turn_ledger__TurnLedger",
+        "headAddress": "turn_ledger__headAddress",
+        "headAdornment": "turn_ledger__headAdornment",
+        "headEntry": "turn_ledger__headEntry",
+        "headKey": "turn_ledger__headKey",
+        "headTuple": "turn_ledger__headTuple"
+      },
+      "exportLines": {
+        "headAdornment": 10,
+        "headTuple": 11,
+        "headKey": 16,
+        "headAddress": 19,
+        "headEntry": 24,
+        "HeadAdornment": 7,
+        "HeadEntry": 8,
+        "HEAD_CAP": 12,
+        "HEAD_PREFIX": 15,
+        "TurnLedger": 30
+      }
+    },
+    "hooks-source/more-scripts.tsx": {
+      "publicPath": "hooks/more-scripts.tsx",
+      "group": "hooks/m1-compiled/motion_stills.js",
+      "aliases": {
+        "foldScripts": "more_scripts__foldScripts",
+        "inspectScripts": "more_scripts__inspectScripts",
+        "scriptArgv": "more_scripts__scriptArgv",
+        "scriptButtons": "more_scripts__scriptButtons"
+      },
+      "exportLines": {
+        "scriptButtons": 7,
+        "inspectScripts": 12,
+        "foldScripts": 22,
+        "ScriptPreview": 4,
+        "scriptArgv": 5
+      }
+    },
+    "hooks-source/script-argv.ts": {
+      "publicPath": "hooks/script-argv.ts",
+      "group": "hooks/m1-compiled/motion_stills.js",
+      "aliases": {
+        "scriptArgv": "script_argv__scriptArgv"
+      },
+      "exportLines": {
+        "scriptArgv": 2
+      }
+    },
+    "hooks-source/quota.ts": {
+      "publicPath": "hooks/quota.ts",
+      "group": "hooks/m1-compiled/motion_stills.js",
+      "aliases": {
+        "PIXEL_EDGE_STYLE": "quota__PIXEL_EDGE_STYLE",
+        "QUOTA_PICTURE_PX": "quota__QUOTA_PICTURE_PX",
+        "QUOTA_WINDOW_MS": "quota__QUOTA_WINDOW_MS",
+        "incenseAlt": "quota__incenseAlt",
+        "pixelRuns": "quota__pixelRuns",
+        "quotaBandItems": "quota__quotaBandItems",
+        "quotaBankRows": "quota__quotaBankRows",
+        "quotaBatteryRows": "quota__quotaBatteryRows",
+        "quotaCellsLeft": "quota__quotaCellsLeft",
+        "quotaForecast": "quota__quotaForecast",
+        "quotaForecastText": "quota__quotaForecastText",
+        "quotaMeterText": "quota__quotaMeterText",
+        "quotaPictures": "quota__quotaPictures",
+        "quotaPixelSvg": "quota__quotaPixelSvg",
+        "quotaTrendFor": "quota__quotaTrendFor",
+        "quotaTrendSvg": "quota__quotaTrendSvg"
+      },
+      "exportLines": {
+        "incenseAlt": 13,
+        "quotaBatteryRows": 52,
+        "quotaBankRows": 76,
+        "pixelRuns": 99,
+        "quotaPixelSvg": 119,
+        "quotaPictures": 127,
+        "quotaMeterText": 138,
+        "quotaCellsLeft": 142,
+        "quotaForecast": 169,
+        "quotaBandItems": 229,
+        "quotaForecastText": 246,
+        "quotaTrendFor": 280,
+        "quotaTrendSvg": 302,
+        "IncenseAltOptions": 12,
+        "PIXEL_EDGE_STYLE": 118,
+        "QUOTA_PICTURE_PX": 125,
+        "QUOTA_WINDOW_MS": 153,
+        "QuotaForecast": 155,
+        "QuotaBandItem": 198,
+        "QuotaBandOptions": 212,
+        "QuotaTrend": 264
+      }
+    },
+    "hooks-source/quota-trail.ts": {
+      "publicPath": "hooks/quota-trail.ts",
+      "group": "hooks/m1-compiled/motion_stills.js",
+      "aliases": {
+        "QUOTA_TRAIL_POINTS": "quota_trail__QUOTA_TRAIL_POINTS",
+        "QUOTA_TRAIL_SAME_RESET_MS": "quota_trail__QUOTA_TRAIL_SAME_RESET_MS",
+        "quotaTrailFrom": "quota_trail__quotaTrailFrom",
+        "quotaTrailMerged": "quota_trail__quotaTrailMerged",
+        "quotaTrailWith": "quota_trail__quotaTrailWith"
+      },
+      "exportLines": {
+        "quotaTrailFrom": 20,
+        "quotaTrailWith": 33,
+        "quotaTrailMerged": 54,
+        "QuotaTrailPoint": 6,
+        "QuotaTrail": 9,
+        "QUOTA_TRAIL_POINTS": 10,
+        "QUOTA_TRAIL_SAME_RESET_MS": 11
+      }
+    },
+    "hooks-source/more-words.ts": {
+      "publicPath": "hooks/more-words.ts",
+      "group": "hooks/m1-compiled/motion_stills.js",
+      "aliases": {
+        "MORE_SLOTS": "more_words__MORE_SLOTS",
+        "installMoreWords": "more_words__installMoreWords",
+        "loadMoreWords": "more_words__loadMoreWords",
+        "moreFill": "more_words__moreFill",
+        "moreMissing": "more_words__moreMissing",
+        "moreModelWords": "more_words__moreModelWords",
+        "moreName": "more_words__moreName",
+        "moreWord": "more_words__moreWord",
+        "resetMoreWords": "more_words__resetMoreWords"
+      },
+      "exportLines": {
+        "installMoreWords": 6,
+        "loadMoreWords": 15,
+        "resetMoreWords": 22,
+        "moreModelWords": 23,
+        "moreName": 28,
+        "moreWord": 32,
+        "moreMissing": 37,
+        "moreFill": 38,
+        "MORE_SLOTS": 2
+      }
+    },
+    "hooks-source/paths.ts": {
+      "publicPath": "hooks/paths.ts",
+      "group": "hooks/m1-compiled/motion_stills.js",
+      "aliases": {
+        "homePath": "paths__homePath",
+        "isWindows": "paths__isWindows",
+        "joinPath": "paths__joinPath",
+        "presenceFolder": "paths__presenceFolder",
+        "readRepositoryBranch": "paths__readRepositoryBranch",
+        "samePath": "paths__samePath",
+        "tildePath": "paths__tildePath",
+        "windowsPath": "paths__windowsPath"
+      },
+      "exportLines": {
+        "windowsPath": 2,
+        "joinPath": 2,
+        "samePath": 2,
+        "homePath": 2,
+        "isWindows": 2,
+        "presenceFolder": 2,
+        "readRepositoryBranch": 2,
+        "tildePath": 2,
+        "BranchIO": 3
+      }
+    },
+    "hooks-source/numbers-text.ts": {
+      "publicPath": "hooks/numbers-text.ts",
+      "group": "hooks/m1-compiled/motion_stills.js",
+      "aliases": {
+        "ESTIMATE_WORDS": "numbers_text__ESTIMATE_WORDS"
+      },
+      "exportLines": {
+        "ESTIMATE_WORDS": 2
+      }
+    },
+    "hooks-source/sleep.ts": {
+      "publicPath": "hooks/sleep.ts",
+      "group": "hooks/m1-compiled/motion_stills.js",
+      "aliases": {
+        "sleepAfter": "sleep__sleepAfter"
+      },
+      "exportLines": {
+        "sleepAfter": 2
+      }
+    },
+    "hooks-source/plugin-version.ts": {
+      "publicPath": "hooks/plugin-version.ts",
+      "group": "hooks/m1-compiled/motion_stills.js",
+      "aliases": {
+        "PLUGIN_VERSION": "plugin_version__PLUGIN_VERSION"
+      },
+      "exportLines": {
+        "PLUGIN_VERSION": 2
+      }
+    },
+    "hooks-source/high-contrast.ts": {
+      "publicPath": "hooks/high-contrast.ts",
+      "group": "hooks/m1-compiled/motion_stills.js",
+      "aliases": {
+        "contrastMedia": "high_contrast__contrastMedia",
+        "contrastSvg": "high_contrast__contrastSvg",
+        "pictureColors": "high_contrast__pictureColors"
+      },
+      "exportLines": {
+        "contrastMedia": 1,
+        "pictureColors": 4,
+        "contrastSvg": 15
+      }
+    },
+    "hooks-source/openings.ts": {
+      "publicPath": "hooks/openings.ts",
+      "group": "hooks/m1-compiled/motion_stills.js",
+      "aliases": {
+        "chooseOpening": "openings__chooseOpening",
+        "markOpening": "openings__markOpening",
+        "openingsFrom": "openings__openingsFrom",
+        "sourceFrom": "openings__sourceFrom",
+        "weekReadyDue": "openings__weekReadyDue"
+      },
+      "exportLines": {
+        "chooseOpening": 34,
+        "markOpening": 48,
+        "OpeningKind": 6,
+        "SessionSource": 7,
+        "OpeningMark": 8,
+        "OpeningInput": 9,
+        "openingsFrom": 28,
+        "sourceFrom": 30,
+        "weekReadyDue": 55
+      }
+    },
+    "hooks-source/week-days.ts": {
+      "publicPath": "hooks/week-days.ts",
+      "group": "hooks/m1-compiled/motion_stills.js",
+      "aliases": {
+        "WEEK_KINDS": "week_days__WEEK_KINDS",
+        "WEEK_STORE": "week_days__WEEK_STORE",
+        "WeekTally": "week_days__WeekTally",
+        "ZINE_COVERS": "week_days__ZINE_COVERS",
+        "addDays": "week_days__addDays",
+        "foldTurn": "week_days__foldTurn",
+        "issueNumber": "week_days__issueNumber",
+        "issueRows": "week_days__issueRows",
+        "lastWeekReady": "week_days__lastWeekReady",
+        "recordWeek": "week_days__recordWeek",
+        "viewTotals": "week_days__viewTotals",
+        "weekFirstDay": "week_days__weekFirstDay",
+        "weekIssues": "week_days__weekIssues",
+        "weekKind": "week_days__weekKind",
+        "weekRange": "week_days__weekRange",
+        "weekRecordFrom": "week_days__weekRecordFrom",
+        "weekStart": "week_days__weekStart",
+        "weekTotals": "week_days__weekTotals",
+        "weekView": "week_days__weekView",
+        "zineCover": "week_days__zineCover"
+      },
+      "exportLines": {
+        "weekKind": 28,
+        "weekRecordFrom": 50,
+        "addDays": 83,
+        "weekFirstDay": 89,
+        "weekStart": 98,
+        "issueNumber": 106,
+        "weekIssues": 110,
+        "foldTurn": 135,
+        "recordWeek": 149,
+        "weekView": 161,
+        "issueRows": 185,
+        "lastWeekReady": 203,
+        "weekRange": 212,
+        "WEEK_STORE": 6,
+        "WEEK_KINDS": 8,
+        "WeekKind": 9,
+        "WeekDay": 13,
+        "WeekIssues": 17,
+        "WeekBack": 20,
+        "WeekRecord": 21,
+        "WeekTally": 41,
+        "WeekView": 157,
+        "viewTotals": 181,
+        "IssueRow": 184,
+        "ZINE_COVERS": 199,
+        "zineCover": 200,
+        "weekTotals": 208
+      }
+    },
+    "hooks-source/coco-motion.ts": {
+      "publicPath": "hooks/coco-motion.ts",
+      "group": "hooks/m1-compiled/motion_stills.js",
+      "aliases": {
+        "COCO_ACTIONS": "coco_motion__COCO_ACTIONS",
+        "COCO_BASES": "coco_motion__COCO_BASES",
+        "cocoAction": "coco_motion__cocoAction",
+        "cocoBase": "coco_motion__cocoBase",
+        "cocoBlinkTimes": "coco_motion__cocoBlinkTimes",
+        "cocoBodySeconds": "coco_motion__cocoBodySeconds",
+        "cocoCanvas": "coco_motion__cocoCanvas",
+        "cocoDrawn": "coco_motion__cocoDrawn",
+        "cocoHas": "coco_motion__cocoHas",
+        "cocoNext": "coco_motion__cocoNext",
+        "cocoPicture": "coco_motion__cocoPicture",
+        "cocoReady": "coco_motion__cocoReady",
+        "cocoSocksWorn": "coco_motion__cocoSocksWorn",
+        "cocoStill": "coco_motion__cocoStill",
+        "cocoSvg": "coco_motion__cocoSvg",
+        "cocoWidth": "coco_motion__cocoWidth",
+        "installCocoData": "coco_motion__installCocoData",
+        "installCocoSocks": "coco_motion__installCocoSocks"
+      },
+      "exportLines": {
+        "installCocoData": 41,
+        "installCocoSocks": 57,
+        "cocoSocksWorn": 62,
+        "cocoReady": 63,
+        "cocoHas": 64,
+        "cocoCanvas": 65,
+        "cocoWidth": 66,
+        "cocoAction": 86,
+        "cocoBase": 99,
+        "cocoDrawn": 170,
+        "cocoBodySeconds": 175,
+        "cocoNext": 183,
+        "cocoBlinkTimes": 245,
+        "cocoPicture": 357,
+        "cocoStill": 370,
+        "cocoSvg": 374,
+        "CocoOutfit": 6,
+        "CocoActionKey": 7,
+        "COCO_ACTIONS": 11,
+        "CocoData": 25,
+        "CocoSocks": 55,
+        "CocoInput": 70,
+        "CocoPlay": 111,
+        "COCO_BASES": 112
+      }
+    },
+    "hooks-source/coco-stills.ts": {
+      "publicPath": "hooks/coco-stills.ts",
+      "group": "hooks/m1-compiled/motion_stills.js",
+      "aliases": {
+        "COCO_RESTING": "coco_stills__COCO_RESTING"
+      },
+      "exportLines": {
+        "COCO_RESTING": 3
+      }
+    },
+    "hooks-source/claudie.ts": {
+      "publicPath": "hooks/claudie.ts",
+      "group": "hooks/m1-compiled/motion_stills.js",
+      "aliases": {
+        "CLAUDIE_CELLS": "claudie__CLAUDIE_CELLS",
+        "CLAUDIE_FORMS": "claudie__CLAUDIE_FORMS",
+        "claudieForm": "claudie__claudieForm",
+        "claudieReady": "claudie__claudieReady",
+        "claudieSvg": "claudie__claudieSvg",
+        "installClaudie": "claudie__installClaudie",
+        "pngSize": "claudie__pngSize"
+      },
+      "exportLines": {
+        "claudieForm": 8,
+        "installClaudie": 27,
+        "claudieReady": 31,
+        "claudieSvg": 34,
+        "pngSize": 44,
+        "CLAUDIE_FORMS": 6,
+        "ClaudieForm": 7,
+        "CLAUDIE_CELLS": 20
+      }
+    },
+    "hooks-source/pages.tsx": {
+      "publicPath": "hooks/pages.tsx",
+      "group": "hooks/m1-compiled/pages.js",
+      "aliases": {
+        "BOOK_PANE": "pages__BOOK_PANE",
+        "bagOpenInTerminal": "pages__bagOpenInTerminal",
+        "bookMeasured": "pages__bookMeasured",
+        "bookPlayChanged": "pages__bookPlayChanged",
+        "bookSettingsChanged": "pages__bookSettingsChanged",
+        "companionChanged": "pages__companionChanged",
+        "companionData": "pages__companionData",
+        "companionDataFromSnapshot": "pages__companionDataFromSnapshot",
+        "companionIsMac": "pages__companionIsMac",
+        "companionRun": "pages__companionRun",
+        "companionSnapshot": "pages__companionSnapshot",
+        "completeBookClose": "pages__completeBookClose",
+        "configureM1Book": "pages__configureM1Book",
+        "iconAutomatic": "pages__iconAutomatic",
+        "iconCommand": "pages__iconCommand",
+        "iconFirstDraw": "pages__iconFirstDraw",
+        "iconSettingsHydrated": "pages__iconSettingsHydrated",
+        "iconWord": "pages__iconWord",
+        "m1VoiceCard": "pages__m1VoiceCard",
+        "openIconSettings": "pages__openIconSettings",
+        "openM1Book": "pages__openM1Book",
+        "openQuotaPage": "pages__openQuotaPage",
+        "openVibeCheck": "pages__openVibeCheck",
+        "ownCall": "pages__ownCall",
+        "pressCompanion": "pages__pressCompanion",
+        "pricePolicyRefuses": "pages__pricePolicyRefuses",
+        "registerBook": "pages__registerBook",
+        "resetIconSession": "pages__resetIconSession",
+        "restoreM1Book": "pages__restoreM1Book",
+        "runIcon": "pages__runIcon",
+        "setC3BookSnapshot": "pages__setC3BookSnapshot",
+        "setCheckSessionsReader": "pages__setCheckSessionsReader",
+        "setCostBookReader": "pages__setCostBookReader",
+        "setD1BookNotificationDenied": "pages__setD1BookNotificationDenied",
+        "setD1BookSnapshot": "pages__setD1BookSnapshot",
+        "setIconSettingsWriter": "pages__setIconSettingsWriter",
+        "setPetProgramReader": "pages__setPetProgramReader",
+        "setPriceTimer": "pages__setPriceTimer",
+        "setVisitBookSnapshot": "pages__setVisitBookSnapshot",
+        "takeBookDrawReport": "pages__takeBookDrawReport",
+        "takeBookPressReport": "pages__takeBookPressReport",
+        "warmCompanion": "pages__warmCompanion",
+        "writeCompanionRequest": "pages__writeCompanionRequest"
+      },
+      "exportLines": {
+        "configureM1Book": 175,
+        "restoreM1Book": 206,
+        "openM1Book": 230,
+        "m1VoiceCard": 250,
+        "setCostBookReader": 291,
+        "takeBookPressReport": 296,
+        "takeBookDrawReport": 297,
+        "setPriceTimer": 301,
+        "pricePolicyRefuses": 317,
+        "setIconSettingsWriter": 386,
+        "resetIconSession": 387,
+        "iconFirstDraw": 394,
+        "iconSettingsHydrated": 401,
+        "iconWord": 413,
+        "iconCommand": 417,
+        "iconAutomatic": 444,
+        "setCheckSessionsReader": 541,
+        "setPetProgramReader": 544,
+        "bookMeasured": 546,
+        "bookSettingsChanged": 555,
+        "bookPlayChanged": 561,
+        "companionChanged": 676,
+        "bagOpenInTerminal": 737,
+        "openQuotaPage": 739,
+        "openVibeCheck": 768,
+        "setC3BookSnapshot": 800,
+        "setD1BookSnapshot": 803,
+        "setVisitBookSnapshot": 811,
+        "setD1BookNotificationDenied": 816,
+        "openIconSettings": 904,
+        "runIcon": 921,
+        "companionIsMac": 1049,
+        "companionSnapshot": 1056,
+        "warmCompanion": 1100,
+        "companionData": 1118,
+        "companionDataFromSnapshot": 1123,
+        "ownCall": 1159,
+        "companionRun": 1171,
+        "writeCompanionRequest": 1181,
+        "pressCompanion": 1197,
+        "completeBookClose": 1439,
+        "registerBook": 1453,
+        "BOOK_PANE": 121,
+        "C3BookSnapshot": 798
+      }
+    },
+    "hooks-source/words.ts": {
+      "publicPath": "hooks/words.ts",
+      "group": "hooks/m1-compiled/pages.js",
+      "aliases": {
+        "LANGS": "words__LANGS",
+        "WORDS": "words__WORDS",
+        "quotaDetailGroups": "words__quotaDetailGroups",
+        "quotaDuration": "words__quotaDuration",
+        "quotaIncenseAlt": "words__quotaIncenseAlt",
+        "quotaMoney": "words__quotaMoney",
+        "quotaTokens": "words__quotaTokens"
+      },
+      "exportLines": {
+        "quotaDuration": 100,
+        "quotaTokens": 103,
+        "quotaMoney": 104,
+        "quotaDetailGroups": 109,
+        "quotaIncenseAlt": 131,
+        "Lang": 12,
+        "Mood": 13,
+        "LANGS": 19,
+        "DrawnKey": 41,
+        "WORDS": 79,
+        "QuotaWindow": 96
+      }
+    },
+    "hooks-source/book.tsx": {
+      "publicPath": "hooks/book.tsx",
+      "group": "hooks/m1-compiled/pages.js",
+      "aliases": {
+        "NO_ITALIC": "book__NO_ITALIC",
+        "answeredVoiceRow": "book__answeredVoiceRow",
+        "bookNumberWords": "book__bookNumberWords",
+        "desktopBook": "book__desktopBook",
+        "helperBoard": "book__helperBoard",
+        "moment": "book__moment",
+        "pageBlocks": "book__pageBlocks",
+        "terminalBook": "book__terminalBook"
+      },
+      "exportLines": {
+        "bookNumberWords": 194,
+        "moment": 199,
+        "answeredVoiceRow": 207,
+        "pageBlocks": 232,
+        "helperBoard": 705,
+        "desktopBook": 882,
+        "terminalBook": 1090,
+        "NO_ITALIC": 72,
+        "BookData": 79,
+        "GuestBook": 134,
+        "Press": 142,
+        "BookWindow": 215
+      }
+    },
+    "hooks-source/book-portrait.ts": {
+      "publicPath": "hooks/book-portrait.ts",
+      "group": "hooks/m1-compiled/pages.js",
+      "aliases": {
+        "PORTRAIT_POSES": "book_portrait__PORTRAIT_POSES",
+        "bookPortrait": "book_portrait__bookPortrait"
+      },
+      "exportLines": {
+        "bookPortrait": 10,
+        "PORTRAIT_POSES": 7
+      }
+    },
+    "hooks-source/bag.ts": {
+      "publicPath": "hooks/bag.ts",
+      "group": "hooks/m1-compiled/pages.js",
+      "aliases": {
+        "BAG_ART_HEIGHT": "bag__BAG_ART_HEIGHT",
+        "BAG_PAGES": "bag__BAG_PAGES",
+        "SOCK_FACES": "bag__SOCK_FACES",
+        "SOCK_PAIRS": "bag__SOCK_PAIRS",
+        "VIBE_SITUATIONS": "bag__VIBE_SITUATIONS",
+        "bagArtHeight": "bag__bagArtHeight",
+        "bagArtSvg": "bag__bagArtSvg",
+        "bagBadgeSvg": "bag__bagBadgeSvg",
+        "bagFill": "bag__bagFill",
+        "bagPageName": "bag__bagPageName",
+        "bagTerminalHead": "bag__bagTerminalHead",
+        "bagWords": "bag__bagWords",
+        "issueBadges": "bag__issueBadges",
+        "loadBagWords": "bag__loadBagWords",
+        "noteBadges": "bag__noteBadges",
+        "petBadges": "bag__petBadges",
+        "sockBadges": "bag__sockBadges",
+        "sockMode": "bag__sockMode",
+        "sockPair": "bag__sockPair",
+        "socksEarned": "bag__socksEarned",
+        "socksOpen": "bag__socksOpen",
+        "vibeBadges": "bag__vibeBadges",
+        "vibePick": "bag__vibePick",
+        "vibeRarity": "bag__vibeRarity",
+        "vibeSet": "bag__vibeSet",
+        "vibeSituation": "bag__vibeSituation"
+      },
+      "exportLines": {
+        "sockPair": 13,
+        "sockMode": 20,
+        "socksEarned": 23,
+        "socksOpen": 27,
+        "loadBagWords": 57,
+        "bagWords": 67,
+        "bagPageName": 70,
+        "vibeRarity": 83,
+        "vibeSituation": 87,
+        "vibePick": 92,
+        "vibeSet": 98,
+        "bagFill": 101,
+        "bagBadgeSvg": 181,
+        "vibeBadges": 192,
+        "sockBadges": 196,
+        "petBadges": 200,
+        "issueBadges": 204,
+        "noteBadges": 208,
+        "bagArtHeight": 280,
+        "bagArtSvg": 289,
+        "bagTerminalHead": 339,
+        "BAG_PAGES": 9,
+        "SOCK_PAIRS": 11,
+        "SockPair": 12,
+        "SockMode": 19,
+        "BagGroup": 33,
+        "BagTag": 34,
+        "BagWords": 35,
+        "VibeRow": 55,
+        "VIBE_SITUATIONS": 76,
+        "VibeSituation": 77,
+        "VibeSet": 78,
+        "VibeFacts": 79,
+        "VibeRarity": 80,
+        "BagBadge": 155,
+        "SOCK_FACES": 191,
+        "BagQuota": 278,
+        "BAG_ART_HEIGHT": 279,
+        "BagPeek": 287,
+        "BagRun": 338
+      }
+    },
+    "hooks-source/bag-mv.ts": {
+      "publicPath": "hooks/bag-mv.ts",
+      "group": "hooks/m1-compiled/pages.js",
+      "aliases": {
+        "bagMvHeight": "bag_mv__bagMvHeight",
+        "bagMvSvg": "bag_mv__bagMvSvg"
+      },
+      "exportLines": {
+        "bagMvSvg": 268,
+        "MvReading": 16,
+        "bagMvHeight": 30
+      }
+    },
+    "hooks-source/bag-mv-glyphs.ts": {
+      "publicPath": "hooks/bag-mv-glyphs.ts",
+      "group": "hooks/m1-compiled/pages.js",
+      "aliases": {
+        "MV_GLYPHS": "bag_mv_glyphs__MV_GLYPHS"
+      },
+      "exportLines": {
+        "MvGlyphs": 3,
+        "MV_GLYPHS": 4
+      }
+    },
+    "hooks-source/transcript.tsx": {
+      "publicPath": "hooks/transcript.tsx",
+      "group": "hooks/m1-compiled/pages.js",
+      "aliases": {
+        "OLDER_HEAD_DIRECTION": "transcript__OLDER_HEAD_DIRECTION",
+        "configureC3Transcript": "transcript__configureC3Transcript",
+        "configureD1Transcript": "transcript__configureD1Transcript",
+        "configureM1Transcript": "transcript__configureM1Transcript",
+        "configureVisitTranscript": "transcript__configureVisitTranscript",
+        "cutDirection": "transcript__cutDirection",
+        "headPicture": "transcript__headPicture",
+        "planHead": "transcript__planHead",
+        "planLine": "transcript__planLine",
+        "registerTranscript": "transcript__registerTranscript",
+        "turnNote": "transcript__turnNote"
+      },
+      "exportLines": {
+        "configureM1Transcript": 46,
+        "configureD1Transcript": 59,
+        "configureVisitTranscript": 97,
+        "configureC3Transcript": 100,
+        "headPicture": 104,
+        "cutDirection": 274,
+        "turnNote": 291,
+        "planLine": 302,
+        "planHead": 307,
+        "registerTranscript": 328,
+        "C3TranscriptHooks": 39,
+        "M1TranscriptHooks": 44,
+        "D1TranscriptHooks": 57,
+        "VisitTranscriptHooks": 95,
+        "OlderHeadDirection": 268,
+        "OLDER_HEAD_DIRECTION": 269
+      }
+    },
+    "hooks-source/card-runtime.ts": {
+      "publicPath": "hooks/card-runtime.ts",
+      "group": "hooks/m1-compiled/pages.js",
+      "aliases": {
+        "CARD_FONTS": "card_runtime__CARD_FONTS",
+        "cardCrest": "card_runtime__cardCrest",
+        "cardDestination": "card_runtime__cardDestination",
+        "cardName": "card_runtime__cardName",
+        "cardPng": "card_runtime__cardPng",
+        "cardSaveWords": "card_runtime__cardSaveWords",
+        "cardWrap": "card_runtime__cardWrap",
+        "revealCard": "card_runtime__revealCard",
+        "saveCard": "card_runtime__saveCard",
+        "saveWeekCard": "card_runtime__saveWeekCard"
+      },
+      "exportLines": {
+        "cardName": 15,
+        "cardCrest": 19,
+        "cardWrap": 27,
+        "cardDestination": 43,
+        "cardPng": 72,
+        "saveWeekCard": 140,
+        "saveCard": 145,
+        "revealCard": 174,
+        "cardSaveWords": 182,
+        "CARD_FONTS": 6,
+        "CardPlatform": 40,
+        "CardDestination": 41,
+        "CardSaveResult": 42
+      }
+    },
+    "hooks-source/mod-gaps.ts": {
+      "publicPath": "hooks/mod-gaps.ts",
+      "group": "hooks/m1-compiled/pages.js",
+      "aliases": {
+        "GapLimits": "mod_gaps__GapLimits",
+        "ModGapsRuntime": "mod_gaps__ModGapsRuntime",
+        "WaitSound": "mod_gaps__WaitSound",
+        "closeAllowed": "mod_gaps__closeAllowed",
+        "closeCounter": "mod_gaps__closeCounter",
+        "compactChapter": "mod_gaps__compactChapter",
+        "detectScreenReader": "mod_gaps__detectScreenReader",
+        "focusBook": "mod_gaps__focusBook",
+        "hintTail": "mod_gaps__hintTail",
+        "nextCloseCounter": "mod_gaps__nextCloseCounter",
+        "personBandFocus": "mod_gaps__personBandFocus",
+        "screenReaderLine": "mod_gaps__screenReaderLine",
+        "textBandMode": "mod_gaps__textBandMode",
+        "voiceDecision": "mod_gaps__voiceDecision"
+      },
+      "exportLines": {
+        "closeCounter": 13,
+        "closeAllowed": 14,
+        "nextCloseCounter": 15,
+        "voiceDecision": 16,
+        "detectScreenReader": 22,
+        "textBandMode": 23,
+        "screenReaderLine": 24,
+        "hintTail": 153,
+        "personBandFocus": 154,
+        "focusBook": 155,
+        "compactChapter": 156,
+        "GapStore": 6,
+        "GapClosing": 7,
+        "CloseChoice": 8,
+        "CloseCounter": 9,
+        "ModGapsRuntime": 26,
+        "GapWindow": 95,
+        "GapLimit": 96,
+        "GapLimits": 97,
+        "WaitSoundConfig": 127,
+        "WaitSoundPort": 128,
+        "WaitSound": 130
+      }
+    },
+    "hooks-source/numbers.ts": {
+      "publicPath": "hooks/numbers.ts",
+      "group": "hooks/m1-compiled/pages.js",
+      "aliases": {
+        "UNKNOWN_NUMBER": "numbers__UNKNOWN_NUMBER",
+        "cacheText": "numbers__cacheText",
+        "calendarText": "numbers__calendarText",
+        "clockText": "numbers__clockText",
+        "compactTokenText": "numbers__compactTokenText",
+        "contextAlt": "numbers__contextAlt",
+        "contextText": "numbers__contextText",
+        "contextTokens": "numbers__contextTokens",
+        "costText": "numbers__costText",
+        "durationText": "numbers__durationText",
+        "hasNumber": "numbers__hasNumber",
+        "momentText": "numbers__momentText",
+        "numberLocale": "numbers__numberLocale",
+        "numberPolicy": "numbers__numberPolicy",
+        "numberText": "numbers__numberText",
+        "percentText": "numbers__percentText",
+        "tokenText": "numbers__tokenText"
+      },
+      "exportLines": {
+        "numberLocale": 15,
+        "hasNumber": 16,
+        "numberText": 23,
+        "percentText": 27,
+        "tokenText": 30,
+        "compactTokenText": 33,
+        "costText": 40,
+        "durationText": 47,
+        "clockText": 69,
+        "calendarText": 74,
+        "momentText": 81,
+        "contextAlt": 92,
+        "contextText": 96,
+        "contextTokens": 105,
+        "cacheText": 113,
+        "numberPolicy": 121,
+        "UNKNOWN_NUMBER": 4,
+        "NumberReading": 5,
+        "NumberWords": 6,
+        "NumberPlace": 117,
+        "NumberPolicy": 118
+      }
+    },
+    "hooks-source/book-art.ts": {
+      "publicPath": "hooks/book-art.ts",
+      "group": "hooks/m1-compiled/pages.js",
+      "aliases": {
+        "bookCompanionStageSvg": "book_art__bookCompanionStageSvg",
+        "bookIncenseSvg": "book_art__bookIncenseSvg",
+        "forgetBookArt": "book_art__forgetBookArt",
+        "meterSvg": "book_art__meterSvg"
+      },
+      "exportLines": {
+        "forgetBookArt": 10,
+        "meterSvg": 26,
+        "bookCompanionStageSvg": 40,
+        "bookIncenseSvg": 48
+      }
+    },
+    "hooks-source/c3-words.ts": {
+      "publicPath": "hooks/c3-words.ts",
+      "group": "hooks/m1-compiled/pages.js",
+      "aliases": {
+        "c3Durations": "c3_words__c3Durations",
+        "c3Word": "c3_words__c3Word",
+        "loadC3Words": "c3_words__loadC3Words",
+        "resetC3Words": "c3_words__resetC3Words"
+      },
+      "exportLines": {
+        "loadC3Words": 11,
+        "c3Word": 22,
+        "c3Durations": 31,
+        "resetC3Words": 35
+      }
+    },
+    "hooks-source/config-words.ts": {
+      "publicPath": "hooks/config-words.ts",
+      "group": "hooks/m1-compiled/pages.js",
+      "aliases": {
+        "CONFIG_WORDS": "config_words__CONFIG_WORDS",
+        "describeCocoConfig": "config_words__describeCocoConfig"
+      },
+      "exportLines": {
+        "describeCocoConfig": 25,
+        "CONFIG_WORDS": 6
+      }
+    },
+    "hooks-source/tool-poses.ts": {
+      "publicPath": "hooks/tool-poses.ts",
+      "group": "hooks/m1-compiled/pages.js",
+      "aliases": {
+        "POSE_HOLD": "tool_poses__POSE_HOLD",
+        "ToolPoses": "tool_poses__ToolPoses",
+        "poseForTool": "tool_poses__poseForTool"
+      },
+      "exportLines": {
+        "poseForTool": 6,
+        "ToolPose": 3,
+        "POSE_HOLD": 5,
+        "ToolPoses": 16
+      }
+    },
+    "hooks-source/icon-book.tsx": {
+      "publicPath": "hooks/icon-book.tsx",
+      "group": "hooks/m1-compiled/pages.js",
+      "aliases": {
+        "ICON_CHOICES": "icon_book__ICON_CHOICES",
+        "IconBook": "icon_book__IconBook",
+        "IconSession": "icon_book__IconSession",
+        "iconChoice": "icon_book__iconChoice",
+        "iconReport": "icon_book__iconReport",
+        "iconRestoreKey": "icon_book__iconRestoreKey",
+        "iconSection": "icon_book__iconSection",
+        "isIconPick": "icon_book__isIconPick",
+        "validIconRestoreKey": "icon_book__validIconRestoreKey"
+      },
+      "exportLines": {
+        "iconChoice": 10,
+        "isIconPick": 12,
+        "iconReport": 50,
+        "validIconRestoreKey": 56,
+        "iconRestoreKey": 57,
+        "iconSection": 59,
+        "IconState": 6,
+        "ICON_CHOICES": 8,
+        "IconChoice": 9,
+        "IconAction": 11,
+        "IconBookData": 13,
+        "IconBook": 14,
+        "IconSession": 36
+      }
+    },
+    "hooks-source/native-state.ts": {
+      "publicPath": "hooks/native-state.ts",
+      "group": "hooks/m1-compiled/pages.js",
+      "aliases": {
+        "stateProgram": "native_state__stateProgram",
+        "stateProgramName": "native_state__stateProgramName"
+      },
+      "exportLines": {
+        "stateProgramName": 7,
+        "stateProgram": 36
+      }
+    },
+    "hooks-source/pet-program.ts": {
+      "publicPath": "hooks/pet-program.ts",
+      "group": "hooks/m1-compiled/pages.js",
+      "aliases": {
+        "petAppFolder": "pet_program__petAppFolder",
+        "petDataFolder": "pet_program__petDataFolder",
+        "petProgram": "pet_program__petProgram",
+        "petProgramName": "pet_program__petProgramName",
+        "petProgramShipped": "pet_program__petProgramShipped",
+        "petWriteArgv": "pet_program__petWriteArgv"
+      },
+      "exportLines": {
+        "petProgramName": 10,
+        "petProgram": 35,
+        "petProgramShipped": 52,
+        "petAppFolder": 62,
+        "petDataFolder": 75,
+        "petWriteArgv": 85
+      }
+    },
+    "hooks-source/book-session.ts": {
+      "publicPath": "hooks/book-session.ts",
+      "group": "hooks/m1-compiled/pages.js",
+      "aliases": {
+        "bookCachePercent": "book_session__bookCachePercent",
+        "countBookCache": "book_session__countBookCache",
+        "resetBookSession": "book_session__resetBookSession"
+      },
+      "exportLines": {
+        "resetBookSession": 7,
+        "countBookCache": 10,
+        "bookCachePercent": 13
+      }
+    },
+    "hooks-source/voice.ts": {
+      "publicPath": "hooks/voice.ts",
+      "group": "hooks/m1-compiled/pages.js",
+      "aliases": {
+        "VOICE": "voice__VOICE"
+      },
+      "exportLines": {
+        "VOICE": 4
+      }
+    },
+    "hooks-source/say-it-plain-runtime.ts": {
+      "publicPath": "hooks/say-it-plain-runtime.ts",
+      "group": "hooks/m1-compiled/pages.js",
+      "aliases": {
+        "sayItPlainRewritePrompt": "say_it_plain_runtime__sayItPlainRewritePrompt"
+      },
+      "exportLines": {
+        "sayItPlainRewritePrompt": 3
+      }
+    },
+    "hooks-source/more-checks.ts": {
+      "publicPath": "hooks/more-checks.ts",
+      "group": "hooks/m1-compiled/pages.js",
+      "aliases": {
+        "boundedHealth": "more_checks__boundedHealth",
+        "commandClashes": "more_checks__commandClashes",
+        "composedVoiceSize": "more_checks__composedVoiceSize",
+        "fixHealthDeadline": "more_checks__fixHealthDeadline",
+        "voiceTokens": "more_checks__voiceTokens"
+      },
+      "exportLines": {
+        "composedVoiceSize": 2,
+        "voiceTokens": 5,
+        "commandClashes": 6,
+        "boundedHealth": 10,
+        "fixHealthDeadline": 17
+      }
+    },
+    "hooks-source/door-words.ts": {
+      "publicPath": "hooks/door-words.ts",
+      "group": "hooks/m1-compiled/pages.js",
+      "aliases": {
+        "DOOR_WORDS": "door_words__DOOR_WORDS"
+      },
+      "exportLines": {
+        "DOOR_WORDS": 4
+      }
+    },
+    "hooks-source/chinese-number-data.ts": {
+      "publicPath": "hooks/chinese-number-data.ts",
+      "group": "hooks/m1-compiled/pages.js",
+      "aliases": {
+        "TEN_THOUSAND": "chinese_number_data__TEN_THOUSAND"
+      },
+      "exportLines": {
+        "TEN_THOUSAND": 2
+      }
+    },
+    "hooks-source/week-book.tsx": {
+      "publicPath": "hooks/week-book.tsx",
+      "group": "hooks/m1-compiled/pages.js",
+      "aliases": {
+        "issueLine": "week_book__issueLine",
+        "weekBookData": "week_book__weekBookData",
+        "weekSection": "week_book__weekSection",
+        "zineCoverSvg": "week_book__zineCoverSvg"
+      },
+      "exportLines": {
+        "weekBookData": 41,
+        "zineCoverSvg": 74,
+        "weekSection": 80,
+        "issueLine": 106,
+        "WeekWord": 11,
+        "WeekBookData": 12,
+        "IssueLine": 24,
+        "WeekBookInput": 25
+      }
+    },
+    "hooks-source/week-card.ts": {
+      "publicPath": "hooks/week-card.ts",
+      "group": "hooks/m1-compiled/pages.js",
+      "aliases": {
+        "WEEK_CARD": "week_card__WEEK_CARD",
+        "weekCardSvg": "week_card__weekCardSvg"
+      },
+      "exportLines": {
+        "weekCardSvg": 21,
+        "WeekCardInput": 6,
+        "WEEK_CARD": 17
+      }
+    },
+    "hooks-source/vibe-card.ts": {
+      "publicPath": "hooks/vibe-card.ts",
+      "group": "hooks/m1-compiled/pages.js",
+      "aliases": {
+        "vibeBalance": "vibe_card__vibeBalance",
+        "vibeCardSvg": "vibe_card__vibeCardSvg",
+        "vibePngSize": "vibe_card__vibePngSize",
+        "vibeRarity": "vibe_card__vibeRarity",
+        "vibeWrap": "vibe_card__vibeWrap"
+      },
+      "exportLines": {
+        "vibePngSize": 11,
+        "vibeBalance": 62,
+        "vibeWrap": 71,
+        "vibeCardSvg": 104,
+        "vibeRarity": 8,
+        "VibeRarity": 8,
+        "VibeCardRow": 26,
+        "VibeCardInput": 27
+      }
+    },
+    "hooks-source/week-words.ts": {
+      "publicPath": "hooks/week-words.ts",
+      "group": "hooks/m1-compiled/pages.js",
+      "aliases": {
+        "forgetWeekWords": "week_words__forgetWeekWords",
+        "loadWeekWords": "week_words__loadWeekWords",
+        "weekWord": "week_words__weekWord"
+      },
+      "exportLines": {
+        "loadWeekWords": 10,
+        "forgetWeekWords": 16,
+        "weekWord": 17
+      }
+    },
+    "hooks-source/cards/card.ts": {
+      "publicPath": "hooks/cards/card.ts",
+      "group": "hooks/m1-compiled/pages.js",
+      "aliases": {
+        "FLAG": "card__FLAG",
+        "cocoCard": "card__cocoCard",
+        "flagAt": "card__flagAt",
+        "stamp": "card__stamp",
+        "textPx": "card__textPx",
+        "wrap": "card__wrap"
+      },
+      "exportLines": {
+        "textPx": 34,
+        "wrap": 48,
+        "cocoCard": 73,
+        "stamp": 113,
+        "flagAt": 145,
+        "CocoCard": 20,
+        "Picture": 106,
+        "FLAG": 134
+      }
+    },
+    "hooks-source/cards/cards.tsx": {
+      "publicPath": "hooks/cards/cards.tsx",
+      "group": "hooks/m1-compiled/pages.js",
+      "aliases": {
+        "cardsSpawned": "cards__cardsSpawned",
+        "cardsStarted": "cards__cardsStarted",
+        "fits": "cards__fits",
+        "registerCards": "cards__registerCards",
+        "stirred": "cards__stirred"
+      },
+      "exportLines": {
+        "fits": 209,
+        "stirred": 238,
+        "cardsStarted": 626,
+        "cardsSpawned": 647,
+        "registerCards": 654
+      }
+    },
+    "hooks-source/cards/catalog.ts": {
+      "publicPath": "hooks/cards/catalog.ts",
+      "group": "hooks/m1-compiled/pages.js",
+      "aliases": {
+        "agentFromFile": "catalog__agentFromFile",
+        "boxOrder": "catalog__boxOrder",
+        "buildCatalog": "catalog__buildCatalog",
+        "firstLine": "catalog__firstLine",
+        "groupOf": "catalog__groupOf",
+        "isPlumbing": "catalog__isPlumbing",
+        "matches": "catalog__matches",
+        "withAgent": "catalog__withAgent"
+      },
+      "exportLines": {
+        "isPlumbing": 14,
+        "groupOf": 26,
+        "firstLine": 35,
+        "buildCatalog": 50,
+        "agentFromFile": 76,
+        "withAgent": 109,
+        "boxOrder": 121,
+        "matches": 127,
+        "CommandEntry": 10,
+        "AgentEntry": 11,
+        "CatalogInput": 41
+      }
+    },
+    "hooks-source/cards/coco.ts": {
+      "publicPath": "hooks/cards/coco.ts",
+      "group": "hooks/m1-compiled/pages.js",
+      "aliases": {
+        "LINGER_MS": "coco__LINGER_MS",
+        "QUEUE_MAX": "coco__QUEUE_MAX",
+        "apply": "coco__apply",
+        "asImage": "coco__asImage",
+        "ask": "coco__ask",
+        "fill": "coco__fill",
+        "finish": "coco__finish",
+        "layerKey": "coco__layerKey",
+        "layerOf": "coco__layerOf",
+        "parseArt": "coco__parseArt",
+        "playEnd": "coco__playEnd",
+        "rested": "coco__rested",
+        "steps": "coco__steps"
+      },
+      "exportLines": {
+        "parseArt": 39,
+        "asImage": 66,
+        "fill": 77,
+        "layerOf": 89,
+        "steps": 98,
+        "ask": 114,
+        "apply": 125,
+        "finish": 133,
+        "rested": 140,
+        "LINGER_MS": 10,
+        "QUEUE_MAX": 12,
+        "Part": 14,
+        "MoveArt": 15,
+        "Loops": 16,
+        "MoveName": 19,
+        "StateName": 20,
+        "Art": 28,
+        "layerKey": 86,
+        "Step": 95,
+        "playEnd": 108
+      }
+    },
+    "hooks-source/cards/i18n.ts": {
+      "publicPath": "hooks/cards/i18n.ts",
+      "group": "hooks/m1-compiled/pages.js",
+      "aliases": {
+        "LANGS": "i18n__LANGS",
+        "STRINGS": "i18n__STRINGS",
+        "langOf": "i18n__langOf",
+        "listOf": "i18n__listOf",
+        "tableOf": "i18n__tableOf"
+      },
+      "exportLines": {
+        "tableOf": 692,
+        "listOf": 719,
+        "langOf": 724,
+        "LANGS": 10,
+        "Lang": 11,
+        "Said": 13,
+        "STRINGS": 671
+      }
+    },
+    "hooks-source/cards/model.ts": {
+      "publicPath": "hooks/cards/model.ts",
+      "group": "hooks/m1-compiled/pages.js",
+      "aliases": {
+        "COCO_DEFAULT": "model__COCO_DEFAULT",
+        "PANE_DEFAULT": "model__PANE_DEFAULT",
+        "STORE_PREFS": "model__STORE_PREFS",
+        "STORE_USAGE": "model__STORE_USAGE"
+      },
+      "exportLines": {
+        "Kind": 7,
+        "Source": 7,
+        "Card": 7,
+        "Use": 7,
+        "Usage": 7,
+        "View": 7,
+        "KindFilter": 8,
+        "BookSort": 8,
+        "PaneState": 8,
+        "Catalog": 8,
+        "Layer": 9,
+        "CocoState": 9,
+        "STORE_USAGE": 12,
+        "STORE_PREFS": 13,
+        "PANE_DEFAULT": 15,
+        "COCO_DEFAULT": 16
+      }
+    },
+    "hooks-source/cards/picks.ts": {
+      "publicPath": "hooks/cards/picks.ts",
+      "group": "hooks/m1-compiled/pages.js",
+      "aliases": {
+        "pickBlock": "picks__pickBlock",
+        "toggle": "picks__toggle"
+      },
+      "exportLines": {
+        "pickBlock": 7,
+        "toggle": 19
+      }
+    },
+    "hooks-source/cards/usage.ts": {
+      "publicPath": "hooks/cards/usage.ts",
+      "group": "hooks/m1-compiled/pages.js",
+      "aliases": {
+        "DECAY_MS": "usage__DECAY_MS",
+        "R_AT": "usage__R_AT",
+        "SR_AT": "usage__SR_AT",
+        "addUse": "usage__addUse",
+        "earned": "usage__earned",
+        "markFresh": "usage__markFresh",
+        "parseUsage": "usage__parseUsage",
+        "rarity": "usage__rarity",
+        "seen": "usage__seen",
+        "toNext": "usage__toNext"
+      },
+      "exportLines": {
+        "earned": 15,
+        "rarity": 19,
+        "toNext": 27,
+        "markFresh": 37,
+        "seen": 43,
+        "addUse": 48,
+        "parseUsage": 56,
+        "Rarity": 6,
+        "R_AT": 8,
+        "SR_AT": 9,
+        "DECAY_MS": 10
+      }
+    },
+    "hooks-source/cards/state.ts": {
+      "publicPath": "hooks/cards/state.ts",
+      "group": "hooks/m1-compiled/pages.js",
+      "aliases": {
+        "atom": "state__atom",
+        "dealtCards": "state__dealtCards",
+        "read": "state__read",
+        "update": "state__update"
+      },
+      "exportLines": {
+        "atom": 13,
+        "read": 46,
+        "update": 51,
+        "dealtCards": 60,
+        "Atom": 11
+      }
+    },
+    "hooks-source/companion.ts": {
+      "publicPath": "hooks/companion.ts",
+      "group": "hooks/m1-compiled/companion.js",
+      "aliases": {
+        "COMPANION_DIR": "companion__COMPANION_DIR",
+        "COMPANION_DM_CHARS": "companion__COMPANION_DM_CHARS",
+        "COMPANION_DM_LINES": "companion__COMPANION_DM_LINES",
+        "COMPANION_FEED": "companion__COMPANION_FEED",
+        "TASK_WORDS": "companion__TASK_WORDS",
+        "clearCompanionLongTaskAuthorization": "companion__clearCompanionLongTaskAuthorization",
+        "companionActivity": "companion__companionActivity",
+        "companionDm": "companion__companionDm",
+        "companionDock": "companion__companionDock",
+        "companionEnded": "companion__companionEnded",
+        "companionFeedContext": "companion__companionFeedContext",
+        "companionKey": "companion__companionKey",
+        "companionPatLabel": "companion__companionPatLabel",
+        "companionRecord": "companion__companionRecord",
+        "companionRequestText": "companion__companionRequestText",
+        "companionSeen": "companion__companionSeen",
+        "companionSession": "companion__companionSession",
+        "companionSummonText": "companion__companionSummonText",
+        "companionTask": "companion__companionTask",
+        "companionText": "companion__companionText",
+        "companionWakeLines": "companion__companionWakeLines"
+      },
+      "exportLines": {
+        "clearCompanionLongTaskAuthorization": 60,
+        "companionSession": 74,
+        "companionActivity": 81,
+        "companionTask": 85,
+        "companionDm": 100,
+        "companionDock": 110,
+        "companionSeen": 114,
+        "companionFeedContext": 124,
+        "companionPatLabel": 1151,
+        "companionWakeLines": 1176,
+        "companionRecord": 1182,
+        "companionKey": 1282,
+        "companionText": 1299,
+        "companionEnded": 1306,
+        "companionSummonText": 1313,
+        "companionRequestText": 1319,
+        "COMPANION_DIR": 39,
+        "COMPANION_FEED": 41,
+        "CompanionRequest": 47,
+        "CompanionDmLine": 92,
+        "CompanionDmWords": 93,
+        "COMPANION_DM_LINES": 94,
+        "COMPANION_DM_CHARS": 95,
+        "CompanionTarget": 120,
+        "CompanionSurface": 121,
+        "CompanionWords": 128,
+        "ReactionKey": 169,
+        "TaskKey": 457,
+        "TASK_WORDS": 461,
+        "CompanionRecord": 1093
+      }
+    },
+    "hooks-source/band.tsx": {
+      "publicPath": "hooks/band.tsx",
+      "group": "hooks/m1-compiled/companion.js",
+      "aliases": {
+        "BAND_INPUT_LIMIT": "band__BAND_INPUT_LIMIT",
+        "HAIRLINE": "band__HAIRLINE",
+        "HOVER": "band__HOVER",
+        "LAMP": "band__LAMP",
+        "LANTERN": "band__LANTERN",
+        "POKE_ROUTE": "band__POKE_ROUTE",
+        "bandSlotFitLengths": "band__bandSlotFitLengths",
+        "cells": "band__cells",
+        "costumedView": "band__costumedView",
+        "cutDirection": "band__cutDirection",
+        "cutTerminalDirection": "band__cutTerminalDirection",
+        "desktopBand": "band__desktopBand",
+        "desktopDoor": "band__desktopDoor",
+        "desktopHeight": "band__desktopHeight",
+        "fitBandSlotLength": "band__fitBandSlotLength",
+        "floorThings": "band__floorThings",
+        "planDesktop": "band__planDesktop",
+        "planFloor": "band__planFloor",
+        "rowsOf": "band__rowsOf",
+        "safeBandSpeech": "band__safeBandSpeech",
+        "safeBandText": "band__safeBandText",
+        "shortenSlot": "band__shortenSlot",
+        "squashedView": "band__squashedView",
+        "terminalBand": "band__terminalBand",
+        "terminalDoor": "band__terminalDoor",
+        "terminalHasSprite": "band__terminalHasSprite",
+        "terminalWrapRows": "band__terminalWrapRows",
+        "wrappedRows": "band__wrappedRows"
+      },
+      "exportLines": {
+        "safeBandText": 60,
+        "safeBandSpeech": 64,
+        "bandSlotFitLengths": 90,
+        "fitBandSlotLength": 115,
+        "cells": 143,
+        "terminalHasSprite": 244,
+        "desktopHeight": 257,
+        "rowsOf": 267,
+        "squashedView": 310,
+        "costumedView": 322,
+        "terminalBand": 331,
+        "cutTerminalDirection": 467,
+        "terminalWrapRows": 479,
+        "floorThings": 865,
+        "planFloor": 908,
+        "wrappedRows": 1063,
+        "shortenSlot": 1342,
+        "planDesktop": 1549,
+        "cutDirection": 1565,
+        "desktopBand": 1656,
+        "desktopDoor": 1868,
+        "terminalDoor": 1880,
+        "BAND_INPUT_LIMIT": 48,
+        "POKE_ROUTE": 122,
+        "HOVER": 123,
+        "BandSize": 125,
+        "LANTERN": 616,
+        "HAIRLINE": 617,
+        "LAMP": 628,
+        "DesktopPlan": 656,
+        "FloorThing": 859,
+        "BandLineFit": 928,
+        "DesktopClients": 1652
+      }
+    },
+    "hooks-source/more-runtime.ts": {
+      "publicPath": "hooks/more-runtime.ts",
+      "group": "hooks/m1-compiled/companion.js",
+      "aliases": {
+        "DM_FIRST_TOKENS": "more_runtime__DM_FIRST_TOKENS",
+        "EXPLAIN_TEXT_LIMIT": "more_runtime__EXPLAIN_TEXT_LIMIT",
+        "LINES_WRITE_TOKENS": "more_runtime__LINES_WRITE_TOKENS",
+        "LOOK_DENY": "more_runtime__LOOK_DENY",
+        "MISSING_MORE_MODEL_SLOTS": "more_runtime__MISSING_MORE_MODEL_SLOTS",
+        "MoreRuntime": "more_runtime__MoreRuntime",
+        "TALK_CAP": "more_runtime__TALK_CAP",
+        "TALK_COMPACT_TOKENS": "more_runtime__TALK_COMPACT_TOKENS",
+        "TALK_COMPACT_TRIGGER": "more_runtime__TALK_COMPACT_TRIGGER",
+        "TALK_DEFAULT_REPLY_TOKENS": "more_runtime__TALK_DEFAULT_REPLY_TOKENS",
+        "TALK_HISTORY": "more_runtime__TALK_HISTORY",
+        "TALK_MEMORY": "more_runtime__TALK_MEMORY",
+        "TALK_MEMORY_ITEMS": "more_runtime__TALK_MEMORY_ITEMS",
+        "TALK_NOTES_HEAD": "more_runtime__TALK_NOTES_HEAD",
+        "TALK_PERSONA_LIMIT": "more_runtime__TALK_PERSONA_LIMIT",
+        "TALK_RECENT": "more_runtime__TALK_RECENT",
+        "rewriteKeepsExact": "more_runtime__rewriteKeepsExact",
+        "talkEstimate": "more_runtime__talkEstimate",
+        "talkLooksLikeWork": "more_runtime__talkLooksLikeWork"
+      },
+      "exportLines": {
+        "talkEstimate": 58,
+        "talkLooksLikeWork": 61,
+        "rewriteKeepsExact": 112,
+        "MorePayerChoice": 22,
+        "MoreKey": 22,
+        "MoreKeyToday": 22,
+        "MoreKeyView": 22,
+        "MISSING_MORE_MODEL_SLOTS": 23,
+        "TALK_COMPACT_TRIGGER": 28,
+        "TALK_RECENT": 29,
+        "TALK_HISTORY": 30,
+        "TALK_DEFAULT_REPLY_TOKENS": 34,
+        "TALK_COMPACT_TOKENS": 35,
+        "TALK_NOTES_HEAD": 36,
+        "TALK_MEMORY_ITEMS": 39,
+        "TALK_MEMORY": 40,
+        "TalkMemory": 41,
+        "MoreBubble": 43,
+        "MoreModelWords": 44,
+        "LINES_WRITE_TOKENS": 47,
+        "TALK_CAP": 49,
+        "TALK_PERSONA_LIMIT": 52,
+        "DM_FIRST_TOKENS": 54,
+        "EXPLAIN_TEXT_LIMIT": 56,
+        "MoreBindings": 71,
+        "LOOK_DENY": 105,
+        "MoreRuntime": 121
+      }
+    },
+    "hooks-source/talk-parts.ts": {
+      "publicPath": "hooks/talk-parts.ts",
+      "group": "hooks/m1-compiled/companion.js",
+      "aliases": {
+        "TALK_CONTEXT_LIMIT": "talk_parts__TALK_CONTEXT_LIMIT",
+        "TALK_GAP_MAX": "talk_parts__TALK_GAP_MAX",
+        "TALK_GAP_MIN": "talk_parts__TALK_GAP_MIN",
+        "TALK_MAX_PARTS": "talk_parts__TALK_MAX_PARTS",
+        "splitTalkReply": "talk_parts__splitTalkReply",
+        "talkContextLine": "talk_parts__talkContextLine",
+        "talkHistory": "talk_parts__talkHistory",
+        "talkPause": "talk_parts__talkPause",
+        "talkTurnText": "talk_parts__talkTurnText"
+      },
+      "exportLines": {
+        "splitTalkReply": 16,
+        "talkTurnText": 33,
+        "talkPause": 55,
+        "talkContextLine": 109,
+        "talkHistory": 128,
+        "TALK_MAX_PARTS": 5,
+        "TALK_GAP_MIN": 7,
+        "TALK_GAP_MAX": 8,
+        "TalkFacts": 67,
+        "TALK_CONTEXT_LIMIT": 80
+      }
+    },
+    "hooks-source/talk-openers.ts": {
+      "publicPath": "hooks/talk-openers.ts",
+      "group": "hooks/m1-compiled/companion.js",
+      "aliases": {
+        "OPENER_AWAY_MS": "talk_openers__OPENER_AWAY_MS",
+        "OPENER_EVENT_MS": "talk_openers__OPENER_EVENT_MS",
+        "OPENER_ORDER": "talk_openers__OPENER_ORDER",
+        "OPENER_QUIET_MS": "talk_openers__OPENER_QUIET_MS",
+        "openerClock": "talk_openers__openerClock",
+        "openerGroup": "talk_openers__openerGroup",
+        "openerGroups": "talk_openers__openerGroups",
+        "openerPick": "talk_openers__openerPick"
+      },
+      "exportLines": {
+        "openerClock": 20,
+        "openerGroups": 32,
+        "openerGroup": 49,
+        "openerPick": 55,
+        "OPENER_ORDER": 4,
+        "OpenerGroup": 5,
+        "OpenerEvent": 6,
+        "OpenerFacts": 7,
+        "OPENER_EVENT_MS": 15,
+        "OPENER_AWAY_MS": 16,
+        "OPENER_QUIET_MS": 17
+      }
+    },
+    "hooks-source/dm.ts": {
+      "publicPath": "hooks/dm.ts",
+      "group": "hooks/m1-compiled/companion.js",
+      "aliases": {
+        "DM_BACK_MS": "dm__DM_BACK_MS",
+        "DM_CLOCK_MS": "dm__DM_CLOCK_MS",
+        "DM_DAY_CAP": "dm__DM_DAY_CAP",
+        "DM_GAP_MS": "dm__DM_GAP_MS",
+        "DM_MOMENTS": "dm__DM_MOMENTS",
+        "DM_MOMENT_MS": "dm__DM_MOMENT_MS",
+        "DM_PREVIEW": "dm__DM_PREVIEW",
+        "DM_UNANSWERED_CAP": "dm__DM_UNANSWERED_CAP",
+        "dmAnswered": "dm__dmAnswered",
+        "dmArrived": "dm__dmArrived",
+        "dmInitial": "dm__dmInitial",
+        "dmMoment": "dm__dmMoment",
+        "dmMomentLine": "dm__dmMomentLine",
+        "dmPreview": "dm__dmPreview",
+        "dmSeen": "dm__dmSeen",
+        "dmSpoken": "dm__dmSpoken",
+        "dmState": "dm__dmState",
+        "dmWrote": "dm__dmWrote"
+      },
+      "exportLines": {
+        "dmMomentLine": 42,
+        "dmInitial": 64,
+        "dmState": 69,
+        "dmMoment": 97,
+        "dmWrote": 107,
+        "dmArrived": 117,
+        "dmAnswered": 122,
+        "dmSeen": 127,
+        "dmPreview": 132,
+        "dmSpoken": 144,
+        "DM_MOMENTS": 12,
+        "DM_BACK_MS": 15,
+        "DM_GAP_MS": 17,
+        "DM_MOMENT_MS": 19,
+        "DM_CLOCK_MS": 20,
+        "DM_DAY_CAP": 22,
+        "DM_UNANSWERED_CAP": 24,
+        "DM_PREVIEW": 26,
+        "DmFirst": 44,
+        "DmState": 45
+      }
+    },
+    "hooks-source/talk-key.ts": {
+      "publicPath": "hooks/talk-key.ts",
+      "group": "hooks/m1-compiled/companion.js",
+      "aliases": {
+        "ANTHROPIC_HOST": "talk_key__ANTHROPIC_HOST",
+        "DEFAULT_KEY_MODEL": "talk_key__DEFAULT_KEY_MODEL",
+        "KEY_DIALOG_TIMEOUT": "talk_key__KEY_DIALOG_TIMEOUT",
+        "KEY_ENDPOINT_SLOTS": "talk_key__KEY_ENDPOINT_SLOTS",
+        "KEY_FAILURE_BUTTONS": "talk_key__KEY_FAILURE_BUTTONS",
+        "KEY_NEAR_CAP": "talk_key__KEY_NEAR_CAP",
+        "KEY_PER_MINUTE": "talk_key__KEY_PER_MINUTE",
+        "KEY_SEND_TIMEOUT": "talk_key__KEY_SEND_TIMEOUT",
+        "keyArch": "talk_key__keyArch",
+        "keyCost": "talk_key__keyCost",
+        "keyEnvironment": "talk_key__keyEnvironment",
+        "keyFailure": "talk_key__keyFailure",
+        "keyFailureText": "talk_key__keyFailureText",
+        "keyMessages": "talk_key__keyMessages",
+        "keyNoDisplay": "talk_key__keyNoDisplay",
+        "keyPlatform": "talk_key__keyPlatform",
+        "keyPriced": "talk_key__keyPriced",
+        "keyTokens": "talk_key__keyTokens",
+        "keyUsd": "talk_key__keyUsd",
+        "parseKeyReply": "talk_key__parseKeyReply",
+        "runTalkKey": "talk_key__runTalkKey",
+        "talkKeyPath": "talk_key__talkKeyPath"
+      },
+      "exportLines": {
+        "keyArch": 43,
+        "talkKeyPath": 50,
+        "keyPlatform": 56,
+        "keyEnvironment": 62,
+        "keyNoDisplay": 75,
+        "parseKeyReply": 83,
+        "runTalkKey": 113,
+        "keyMessages": 126,
+        "keyFailure": 156,
+        "keyFailureText": 172,
+        "keyPriced": 181,
+        "keyCost": 191,
+        "keyUsd": 197,
+        "keyTokens": 201,
+        "KeyPlatform": 8,
+        "KeyStore": 9,
+        "KeyKind": 10,
+        "KeyReply": 12,
+        "KeyMessage": 26,
+        "KeyRequest": 29,
+        "KEY_DIALOG_TIMEOUT": 34,
+        "KEY_SEND_TIMEOUT": 35,
+        "KEY_NEAR_CAP": 37,
+        "KEY_PER_MINUTE": 38,
+        "KeyArch": 40,
+        "KeyHost": 107,
+        "KeyFailure": 140,
+        "KEY_FAILURE_BUTTONS": 141,
+        "ANTHROPIC_HOST": 163,
+        "DEFAULT_KEY_MODEL": 164,
+        "KEY_ENDPOINT_SLOTS": 186,
+        "KeyPrice": 188
+      }
+    },
+    "hooks-source/c3-runtime.ts": {
+      "publicPath": "hooks/c3-runtime.ts",
+      "group": "hooks/m1-compiled/companion.js",
+      "aliases": {
+        "createC3Runtime": "c3_runtime__createC3Runtime",
+        "isThanks": "c3_runtime__isThanks",
+        "scanStagedSecrets": "c3_runtime__scanStagedSecrets"
+      },
+      "exportLines": {
+        "isThanks": 100,
+        "createC3Runtime": 105,
+        "C3Settings": 8,
+        "C3LineRequest": 9,
+        "C3Reaction": 10,
+        "C3Capabilities": 11,
+        "C3Neighbour": 29,
+        "C3Neighbours": 30,
+        "scanStagedSecrets": 99,
+        "C3Runtime": 312
+      }
+    },
+    "hooks-source/c3-motion.ts": {
+      "publicPath": "hooks/c3-motion.ts",
+      "group": "hooks/m1-compiled/companion.js",
+      "aliases": {
+        "c3MotionFrame": "c3_motion__c3MotionFrame",
+        "c3NextMotion": "c3_motion__c3NextMotion",
+        "openingFrames": "c3_motion__openingFrames",
+        "openingLife": "c3_motion__openingLife",
+        "openingStart": "c3_motion__openingStart"
+      },
+      "exportLines": {
+        "c3MotionFrame": 48,
+        "c3NextMotion": 63,
+        "openingLife": 21,
+        "openingStart": 22,
+        "openingFrames": 23
+      }
+    },
+    "hooks-source/pictures-lazy.ts": {
+      "publicPath": "hooks/pictures-lazy.ts",
+      "group": "hooks/m1-compiled/companion.js",
+      "aliases": {
+        "ANIMATION_MODE": "pictures_lazy__ANIMATION_MODE",
+        "DESKTOP_COMPACT": "pictures_lazy__DESKTOP_COMPACT",
+        "DESKTOP_REST": "pictures_lazy__DESKTOP_REST",
+        "DOOR_COLUMNS": "pictures_lazy__DOOR_COLUMNS",
+        "TERMINAL_COLUMNS": "pictures_lazy__TERMINAL_COLUMNS",
+        "TERMINAL_ROWS": "pictures_lazy__TERMINAL_ROWS",
+        "desktopWidth": "pictures_lazy__desktopWidth",
+        "getMotionWidth": "pictures_lazy__getMotionWidth",
+        "imageColumns": "pictures_lazy__imageColumns",
+        "offeringSvg": "pictures_lazy__offeringSvg",
+        "setTerminalLook": "pictures_lazy__setTerminalLook",
+        "sleepingDoorCells": "pictures_lazy__sleepingDoorCells",
+        "spriteCells": "pictures_lazy__spriteCells",
+        "spritePng": "pictures_lazy__spritePng",
+        "terminalMotionFrame": "pictures_lazy__terminalMotionFrame"
+      },
+      "exportLines": {
+        "terminalMotionFrame": 12,
+        "desktopWidth": 36,
+        "offeringSvg": 44,
+        "setTerminalLook": 68,
+        "spriteCells": 74,
+        "spritePng": 85,
+        "sleepingDoorCells": 88,
+        "imageColumns": 94,
+        "getMotionWidth": 8,
+        "ANIMATION_MODE": 11,
+        "DESKTOP_REST": 32,
+        "DESKTOP_COMPACT": 33,
+        "TERMINAL_COLUMNS": 66,
+        "TERMINAL_ROWS": 67,
+        "CellOverlay": 73,
+        "DOOR_COLUMNS": 83
+      }
+    },
+    "hooks-source/coco-pixel.ts": {
+      "publicPath": "hooks/coco-pixel.ts",
+      "group": "hooks/m1-compiled/companion.js",
+      "aliases": {
+        "PIXEL_DARK_OUTLINE": "coco_pixel__PIXEL_DARK_OUTLINE",
+        "PIXEL_DOOR": "coco_pixel__PIXEL_DOOR",
+        "PIXEL_FRAMES": "coco_pixel__PIXEL_FRAMES",
+        "PIXEL_H": "coco_pixel__PIXEL_H",
+        "PIXEL_KEY": "coco_pixel__PIXEL_KEY",
+        "PIXEL_MOMENTS": "coco_pixel__PIXEL_MOMENTS",
+        "PIXEL_OUTFITS": "coco_pixel__PIXEL_OUTFITS",
+        "PIXEL_SOCKS": "coco_pixel__PIXEL_SOCKS",
+        "PIXEL_STILLS": "coco_pixel__PIXEL_STILLS",
+        "PIXEL_W": "coco_pixel__PIXEL_W"
+      },
+      "exportLines": {
+        "PIXEL_W": 5,
+        "PIXEL_H": 6,
+        "PIXEL_KEY": 7,
+        "PIXEL_OUTFITS": 8,
+        "PIXEL_SOCKS": 9,
+        "PIXEL_DARK_OUTLINE": 10,
+        "PIXEL_FRAMES": 11,
+        "PixelStep": 12,
+        "PIXEL_MOMENTS": 13,
+        "PIXEL_STILLS": 14,
+        "PIXEL_DOOR": 15
+      }
+    },
+    "hooks-source/coco-pixel-play.ts": {
+      "publicPath": "hooks/coco-pixel-play.ts",
+      "group": "hooks/m1-compiled/companion.js",
+      "aliases": {
+        "PIXEL_COLUMNS": "coco_pixel_play__PIXEL_COLUMNS",
+        "PIXEL_DOOR_COLUMNS": "coco_pixel_play__PIXEL_DOOR_COLUMNS",
+        "PIXEL_ROWS": "coco_pixel_play__PIXEL_ROWS",
+        "PIXEL_SHELL_MS": "coco_pixel_play__PIXEL_SHELL_MS",
+        "pixelCells": "coco_pixel_play__pixelCells",
+        "pixelDoorCells": "coco_pixel_play__pixelDoorCells",
+        "pixelHas": "coco_pixel_play__pixelHas",
+        "pixelHeld": "coco_pixel_play__pixelHeld",
+        "pixelNext": "coco_pixel_play__pixelNext",
+        "pixelPng": "coco_pixel_play__pixelPng",
+        "pixelRows": "coco_pixel_play__pixelRows",
+        "pixelStep": "coco_pixel_play__pixelStep",
+        "pixelStill": "coco_pixel_play__pixelStill",
+        "pixelWear": "coco_pixel_play__pixelWear",
+        "setPixelWear": "coco_pixel_play__setPixelWear"
+      },
+      "exportLines": {
+        "pixelRows": 18,
+        "pixelCells": 92,
+        "setPixelWear": 124,
+        "pixelWear": 125,
+        "pixelPng": 142,
+        "pixelStill": 192,
+        "pixelDoorCells": 196,
+        "pixelHas": 221,
+        "pixelNext": 224,
+        "pixelHeld": 242,
+        "pixelStep": 253,
+        "PIXEL_COLUMNS": 8,
+        "PIXEL_ROWS": 9,
+        "PixelOutfit": 11,
+        "PixelLook": 13,
+        "PixelOverlay": 15,
+        "PixelWear": 122,
+        "PIXEL_DOOR_COLUMNS": 195,
+        "PixelPlay": 220,
+        "PIXEL_SHELL_MS": 233
+      }
+    },
+    "hooks-source/m1-always.ts": {
+      "publicPath": "hooks/m1-always.ts",
+      "group": "hooks/m1-compiled/companion.js",
+      "aliases": {
+        "AlwaysState": "m1_always__AlwaysState",
+        "RunDurations": "m1_always__RunDurations",
+        "commandDigest": "m1_always__commandDigest",
+        "commandKey": "m1_always__commandKey",
+        "nextCron": "m1_always__nextCron",
+        "ownedLogPrune": "m1_always__ownedLogPrune",
+        "wordCount": "m1_always__wordCount"
+      },
+      "exportLines": {
+        "commandKey": 6,
+        "commandDigest": 8,
+        "nextCron": 19,
+        "ownedLogPrune": 45,
+        "wordCount": 50,
+        "HelperRow": 3,
+        "CronRow": 4,
+        "RunDurations": 10,
+        "AlwaysState": 32
+      }
+    },
+    "hooks-source/typeset.ts": {
+      "publicPath": "hooks/typeset.ts",
+      "group": "hooks/m1-compiled/companion.js",
+      "aliases": {
+        "COLUMN_PX": "typeset__COLUMN_PX",
+        "SAFE": "typeset__SAFE",
+        "cutToPx": "typeset__cutToPx",
+        "gapBefore": "typeset__gapBefore",
+        "minWrapPx": "typeset__minWrapPx",
+        "planPx": "typeset__planPx",
+        "textPx": "typeset__textPx"
+      },
+      "exportLines": {
+        "gapBefore": 9,
+        "textPx": 31,
+        "planPx": 48,
+        "minWrapPx": 56,
+        "cutToPx": 78,
+        "COLUMN_PX": 20,
+        "SAFE": 21
+      }
+    },
+    "hooks-source/motion-metadata.ts": {
+      "publicPath": "hooks/motion-metadata.ts",
+      "group": "hooks/m1-compiled/companion.js",
+      "aliases": {
+        "MOTION_PATCH_METADATA": "motion_metadata__MOTION_PATCH_METADATA",
+        "hasMotionFace": "motion_metadata__hasMotionFace"
+      },
+      "exportLines": {
+        "hasMotionFace": 4,
+        "MotionPatchMetadata": 2,
+        "MOTION_PATCH_METADATA": 3
+      }
+    },
+    "hooks-source/companion-art.ts": {
+      "publicPath": "hooks/companion-art.ts",
+      "group": "hooks/m1-compiled/companion.js",
+      "aliases": {
+        "COMPANION_SIZES": "companion_art__COMPANION_SIZES",
+        "MAC_SIZES": "companion_art__MAC_SIZES",
+        "STAGE_HEIGHT": "companion_art__STAGE_HEIGHT",
+        "STAGE_POSE": "companion_art__STAGE_POSE",
+        "companionSizeSvg": "companion_art__companionSizeSvg",
+        "companionStageSvg": "companion_art__companionStageSvg"
+      },
+      "exportLines": {
+        "companionStageSvg": 13,
+        "companionSizeSvg": 35,
+        "CompanionStage": 4,
+        "CompanionSize": 5,
+        "COMPANION_SIZES": 8,
+        "MAC_SIZES": 9,
+        "STAGE_POSE": 11,
+        "STAGE_HEIGHT": 12
+      }
+    },
+    "hooks-source/card-metrics-lazy.ts": {
+      "publicPath": "hooks/card-metrics-lazy.ts",
+      "group": "hooks/m1-compiled/companion.js",
+      "aliases": {
+        "cardScript": "card_metrics_lazy__cardScript",
+        "cardWidth": "card_metrics_lazy__cardWidth",
+        "loadCardMetrics": "card_metrics_lazy__loadCardMetrics",
+        "resetCardMetrics": "card_metrics_lazy__resetCardMetrics"
+      },
+      "exportLines": {
+        "loadCardMetrics": 6,
+        "resetCardMetrics": 20,
+        "cardScript": 21,
+        "cardWidth": 24,
+        "CardScript": 2,
+        "CardMetrics": 3
+      }
+    },
+    "hooks-source/mod-gaps-words.ts": {
+      "publicPath": "hooks/mod-gaps-words.ts",
+      "group": "hooks/m1-compiled/companion.js",
+      "aliases": {
+        "gapCharacterName": "mod_gaps_words__gapCharacterName",
+        "gapFill": "mod_gaps_words__gapFill",
+        "gapPool": "mod_gaps_words__gapPool",
+        "gapWord": "mod_gaps_words__gapWord",
+        "installGapWords": "mod_gaps_words__installGapWords",
+        "loadGapWords": "mod_gaps_words__loadGapWords",
+        "missingGapKeys": "mod_gaps_words__missingGapKeys",
+        "resetGapWords": "mod_gaps_words__resetGapWords"
+      },
+      "exportLines": {
+        "installGapWords": 6,
+        "loadGapWords": 15,
+        "resetGapWords": 22,
+        "gapCharacterName": 23,
+        "gapPool": 25,
+        "gapWord": 26,
+        "gapFill": 27,
+        "missingGapKeys": 28
+      }
+    },
+    "hooks-source/settings-migration.ts": {
+      "publicPath": "hooks/settings-migration.ts",
+      "group": "hooks/m1-compiled/companion.js",
+      "aliases": {
+        "LEGACY_SETTING_KEYS": "settings_migration__LEGACY_SETTING_KEYS",
+        "legacyMigrationNeeded": "settings_migration__legacyMigrationNeeded",
+        "normalizeLegacySettings": "settings_migration__normalizeLegacySettings"
+      },
+      "exportLines": {
+        "LEGACY_SETTING_KEYS": 1,
+        "legacyMigrationNeeded": 1,
+        "normalizeLegacySettings": 1
+      }
+    },
+    "hooks-source/cache-rate.ts": {
+      "publicPath": "hooks/cache-rate.ts",
+      "group": "hooks/m1-compiled/companion.js",
+      "aliases": {
+        "cachePercent": "cache_rate__cachePercent",
+        "countCacheTurn": "cache_rate__countCacheTurn",
+        "emptyCacheRate": "cache_rate__emptyCacheRate"
+      },
+      "exportLines": {
+        "countCacheTurn": 11,
+        "cachePercent": 17,
+        "CacheRate": 3,
+        "emptyCacheRate": 4
+      }
+    },
+    "hooks-source/reminder-settings.ts": {
+      "publicPath": "hooks/reminder-settings.ts",
+      "group": "hooks/m1-compiled/companion.js",
+      "aliases": {
+        "LEGACY_SETTING_KEYS": "reminder_settings__LEGACY_SETTING_KEYS",
+        "legacyMigrationNeeded": "reminder_settings__legacyMigrationNeeded",
+        "normalizeLegacySettings": "reminder_settings__normalizeLegacySettings",
+        "reminderSettings": "reminder_settings__reminderSettings"
+      },
+      "exportLines": {
+        "reminderSettings": 8,
+        "legacyMigrationNeeded": 29,
+        "normalizeLegacySettings": 33,
+        "ReminderSettings": 7,
+        "LEGACY_SETTING_KEYS": 26
+      }
+    },
+    "hooks-source/display-slots.ts": {
+      "publicPath": "hooks/display-slots.ts",
+      "group": "hooks/m1-compiled/companion.js",
+      "aliases": {
+        "DISPLAY_SLOT_COUNT": "display_slots__DISPLAY_SLOT_COUNT",
+        "DISPLAY_SLOT_LIMIT": "display_slots__DISPLAY_SLOT_LIMIT",
+        "capDisplaySlot": "display_slots__capDisplaySlot",
+        "displaySlots": "display_slots__displaySlots",
+        "untrustedDisplaySlot": "display_slots__untrustedDisplaySlot"
+      },
+      "exportLines": {
+        "displaySlots": 9,
+        "DISPLAY_SLOT_LIMIT": 5,
+        "capDisplaySlot": 5,
+        "untrustedDisplaySlot": 5,
+        "DISPLAY_SLOT_COUNT": 6
+      }
+    },
+    "hooks-source/display-slot-text.ts": {
+      "publicPath": "hooks/display-slot-text.ts",
+      "group": "hooks/m1-compiled/companion.js",
+      "aliases": {
+        "DISPLAY_SLOT_LIMIT": "display_slot_text__DISPLAY_SLOT_LIMIT",
+        "capDisplaySlot": "display_slot_text__capDisplaySlot",
+        "untrustedDisplaySlot": "display_slot_text__untrustedDisplaySlot"
+      },
+      "exportLines": {
+        "untrustedDisplaySlot": 4,
+        "capDisplaySlot": 22,
+        "DISPLAY_SLOT_LIMIT": 1
+      }
+    },
+    "hooks-source/d1-shed-asides.ts": {
+      "publicPath": "hooks/d1-shed-asides.ts",
+      "group": "hooks/m1-compiled/companion.js",
+      "aliases": {
+        "makeD1ShedAsides": "d1_shed_asides__makeD1ShedAsides"
+      },
+      "exportLines": {
+        "makeD1ShedAsides": 2
+      }
+    },
+    "hooks-source/play.ts": {
+      "publicPath": "hooks/play.ts",
+      "group": "hooks/m1-compiled/companion.js",
+      "aliases": {
+        "AUTO_RESUME": "play__AUTO_RESUME",
+        "BREATH_AFTER_MS": "play__BREATH_AFTER_MS",
+        "BREATH_CYCLE_MS": "play__BREATH_CYCLE_MS",
+        "BREATH_IN_MS": "play__BREATH_IN_MS",
+        "BREATH_STEP_MS": "play__BREATH_STEP_MS",
+        "STICK_DEFAULT_MINUTES": "play__STICK_DEFAULT_MINUTES",
+        "STICK_END_MS": "play__STICK_END_MS",
+        "STICK_MAX_MINUTES": "play__STICK_MAX_MINUTES",
+        "STICK_MIN_MINUTES": "play__STICK_MIN_MINUTES",
+        "STICK_ROWS": "play__STICK_ROWS",
+        "STICK_STEPS": "play__STICK_STEPS",
+        "autoResume": "play__autoResume",
+        "breathCell": "play__breathCell",
+        "breathLevel": "play__breathLevel",
+        "limitRecords": "play__limitRecords",
+        "nextBreathStep": "play__nextBreathStep",
+        "nextStickRowAt": "play__nextStickRowAt",
+        "parseFocus": "play__parseFocus",
+        "playWord": "play__playWord",
+        "stickBurning": "play__stickBurning",
+        "stickOf": "play__stickOf",
+        "stickRemaining": "play__stickRemaining",
+        "stickRow": "play__stickRow",
+        "stickStep": "play__stickStep",
+        "waitRow": "play__waitRow"
+      },
+      "exportLines": {
+        "playWord": 23,
+        "breathLevel": 31,
+        "breathCell": 38,
+        "nextBreathStep": 43,
+        "parseFocus": 50,
+        "stickBurning": 58,
+        "stickOf": 63,
+        "stickRemaining": 72,
+        "stickStep": 77,
+        "stickRow": 82,
+        "nextStickRowAt": 87,
+        "waitRow": 98,
+        "autoResume": 108,
+        "limitRecords": 114,
+        "Stick": 6,
+        "FocusCommand": 7,
+        "BREATH_AFTER_MS": 9,
+        "BREATH_CYCLE_MS": 10,
+        "BREATH_IN_MS": 11,
+        "BREATH_STEP_MS": 12,
+        "STICK_DEFAULT_MINUTES": 13,
+        "STICK_MIN_MINUTES": 14,
+        "STICK_MAX_MINUTES": 15,
+        "STICK_STEPS": 16,
+        "STICK_ROWS": 18,
+        "STICK_END_MS": 20,
+        "WaitRow": 97,
+        "AUTO_RESUME": 106,
+        "AutoResume": 107,
+        "LimitRecord": 113
+      }
+    },
+    "hooks-source/play-commits.ts": {
+      "publicPath": "hooks/play-commits.ts",
+      "group": "hooks/m1-compiled/companion.js",
+      "aliases": {
+        "COMMIT_LINE_PX": "play_commits__COMMIT_LINE_PX",
+        "COMMIT_SLOTS": "play_commits__COMMIT_SLOTS",
+        "REMOTE_EDGE_STYLE": "play_commits__REMOTE_EDGE_STYLE",
+        "commitCount": "play_commits__commitCount",
+        "commitFlatRows": "play_commits__commitFlatRows",
+        "commitLineHeight": "play_commits__commitLineHeight",
+        "commitLineRows": "play_commits__commitLineRows",
+        "commitLineSvg": "play_commits__commitLineSvg",
+        "commitLineText": "play_commits__commitLineText",
+        "commitLineWidth": "play_commits__commitLineWidth",
+        "commitPushedRows": "play_commits__commitPushedRows",
+        "commitRoundRows": "play_commits__commitRoundRows",
+        "contextTokensText": "play_commits__contextTokensText"
+      },
+      "exportLines": {
+        "commitLineWidth": 21,
+        "commitLineHeight": 24,
+        "commitCount": 32,
+        "commitLineRows": 40,
+        "commitPushedRows": 48,
+        "commitFlatRows": 53,
+        "commitRoundRows": 54,
+        "commitLineSvg": 65,
+        "commitLineText": 77,
+        "contextTokensText": 81,
+        "COMMIT_SLOTS": 10,
+        "COMMIT_LINE_PX": 12,
+        "REMOTE_EDGE_STYLE": 58
+      }
+    },
+    "hooks-source/play-focus.ts": {
+      "publicPath": "hooks/play-focus.ts",
+      "group": "hooks/m1-compiled/companion.js",
+      "aliases": {
+        "FOCUS_CELLS": "play_focus__FOCUS_CELLS",
+        "FOCUS_PX": "play_focus__FOCUS_PX",
+        "focusBarRows": "play_focus__focusBarRows",
+        "focusBarSvg": "play_focus__focusBarSvg",
+        "focusBarText": "play_focus__focusBarText",
+        "focusDone": "play_focus__focusDone"
+      },
+      "exportLines": {
+        "focusDone": 16,
+        "focusBarRows": 20,
+        "focusBarSvg": 29,
+        "focusBarText": 43,
+        "FOCUS_CELLS": 8,
+        "FOCUS_PX": 13
+      }
+    },
+    "hooks-source/play-light.ts": {
+      "publicPath": "hooks/play-light.ts",
+      "group": "hooks/m1-compiled/companion.js",
+      "aliases": {
+        "LED": "play_light__LED",
+        "LIGHT_PX": "play_light__LIGHT_PX",
+        "laptopLightSvg": "play_light__laptopLightSvg",
+        "lightLevel": "play_light__lightLevel"
+      },
+      "exportLines": {
+        "lightLevel": 26,
+        "laptopLightSvg": 30,
+        "LED": 19,
+        "LIGHT_PX": 22
+      }
+    },
+    "hooks-source/play-thermos.ts": {
+      "publicPath": "hooks/play-thermos.ts",
+      "group": "hooks/m1-compiled/companion.js",
+      "aliases": {
+        "THERMOS_PX": "play_thermos__THERMOS_PX",
+        "THERMOS_ROWS": "play_thermos__THERMOS_ROWS",
+        "thermosSvg": "play_thermos__thermosSvg"
+      },
+      "exportLines": {
+        "thermosSvg": 23,
+        "THERMOS_ROWS": 7,
+        "THERMOS_PX": 20
+      }
+    },
+    "hooks-source/play-planes.ts": {
+      "publicPath": "hooks/play-planes.ts",
+      "group": "hooks/m1-compiled/companion.js",
+      "aliases": {
+        "PLANES_PX": "play_planes__PLANES_PX",
+        "PLANE_PX": "play_planes__PLANE_PX",
+        "planeRows": "play_planes__planeRows",
+        "planeSvg": "play_planes__planeSvg"
+      },
+      "exportLines": {
+        "planeRows": 26,
+        "planeSvg": 34,
+        "PLANE_PX": 12,
+        "PLANES_PX": 13,
+        "PlaneMotion": 14
+      }
+    },
+    "hooks-source/cost/runtime.js": {
+      "publicPath": "hooks/cost/runtime.js",
+      "group": "hooks/m1-compiled/companion.js",
+      "aliases": {
+        "CostRuntime": "runtime__CostRuntime",
+        "fixedCronMs": "runtime__fixedCronMs",
+        "limitsReading": "runtime__limitsReading",
+        "usageTokens": "runtime__usageTokens"
+      },
+      "exportLines": {}
+    },
+    "hooks-source/cost/units.js": {
+      "publicPath": "hooks/cost/units.js",
+      "group": "hooks/m1-compiled/companion.js",
+      "aliases": {
+        "OTHERS_MAX_BYTES": "units__OTHERS_MAX_BYTES",
+        "OTHERS_URL": "units__OTHERS_URL",
+        "PRICE_PAGE_URL": "units__PRICE_PAGE_URL",
+        "arrangeRows": "units__arrangeRows",
+        "core": "units__core",
+        "createLockReader": "units__createLockReader",
+        "createPricesController": "units__createPricesController",
+        "createWarmRuntime": "units__createWarmRuntime",
+        "dayStart": "units__dayStart",
+        "estimateOtherModel": "units__estimateOtherModel",
+        "knownClaudePrices": "units__knownClaudePrices",
+        "knownOtherPrices": "units__knownOtherPrices",
+        "newestTable": "units__newestTable",
+        "normalizeModelId": "units__normalizeModelId",
+        "otherResponseWithinLimit": "units__otherResponseWithinLimit",
+        "priceAt": "units__priceAt",
+        "priceFor": "units__priceFor"
+      },
+      "exportLines": {}
+    },
+    "hooks-source/cost/state.ts": {
+      "publicPath": "hooks/cost/state.ts",
+      "group": "hooks/m1-compiled/companion.js",
+      "aliases": {
+        "costSnapshot": "state__costSnapshot",
+        "setCostSnapshot": "state__setCostSnapshot"
+      },
+      "exportLines": {
+        "costSnapshot": 4,
+        "setCostSnapshot": 5
+      }
+    },
+    "hooks-source/cost/surfaces.ts": {
+      "publicPath": "hooks/cost/surfaces.ts",
+      "group": "hooks/m1-compiled/companion.js",
+      "aliases": {
+        "CUP_MIN_USD": "surfaces__CUP_MIN_USD",
+        "cacheAlt": "surfaces__cacheAlt",
+        "cacheBookLines": "surfaces__cacheBookLines",
+        "cacheHover": "surfaces__cacheHover",
+        "cacheTerminal": "surfaces__cacheTerminal",
+        "costBookLines": "surfaces__costBookLines",
+        "costDollars": "surfaces__costDollars",
+        "costTime": "surfaces__costTime",
+        "costTokens": "surfaces__costTokens",
+        "cupShown": "surfaces__cupShown",
+        "loopColdLine": "surfaces__loopColdLine",
+        "makerSessionUSD": "surfaces__makerSessionUSD",
+        "rereadEarlyMs": "surfaces__rereadEarlyMs",
+        "resumeColdLine": "surfaces__resumeColdLine",
+        "turnCostLine": "surfaces__turnCostLine",
+        "voiceCacheCost": "surfaces__voiceCacheCost",
+        "warmAskLine": "surfaces__warmAskLine",
+        "warmHeldOffLine": "surfaces__warmHeldOffLine",
+        "warmReasonKey": "surfaces__warmReasonKey",
+        "warmReturnLine": "surfaces__warmReturnLine",
+        "warmTodayLine": "surfaces__warmTodayLine"
+      },
+      "exportLines": {
+        "cupShown": 10,
+        "makerSessionUSD": 13,
+        "costDollars": 16,
+        "costTokens": 22,
+        "costTime": 25,
+        "cacheAlt": 35,
+        "turnCostLine": 40,
+        "cacheHover": 56,
+        "cacheTerminal": 71,
+        "cacheBookLines": 76,
+        "costBookLines": 89,
+        "warmReasonKey": 110,
+        "warmAskLine": 118,
+        "warmTodayLine": 130,
+        "warmHeldOffLine": 136,
+        "warmReturnLine": 141,
+        "resumeColdLine": 150,
+        "loopColdLine": 156,
+        "voiceCacheCost": 161,
+        "CostSurfaceSnapshot": 7,
+        "CUP_MIN_USD": 9,
+        "CostTextBlock": 75,
+        "WarmReasonKey": 101,
+        "rereadEarlyMs": 127
+      }
+    },
+    "hooks-source/cost/cup.ts": {
+      "publicPath": "hooks/cost/cup.ts",
+      "group": "hooks/m1-compiled/companion.js",
+      "aliases": {
+        "CUP_COLORS": "cup__CUP_COLORS",
+        "cupSvg": "cup__cupSvg"
+      },
+      "exportLines": {
+        "cupSvg": 20,
+        "CupState": 3,
+        "CUP_COLORS": 4
+      }
+    },
+    "hooks-source/cost/words.ts": {
+      "publicPath": "hooks/cost/words.ts",
+      "group": "hooks/m1-compiled/companion.js",
+      "aliases": {
+        "costWord": "words__costWord",
+        "installCostWords": "words__installCostWords"
+      },
+      "exportLines": {
+        "installCostWords": 3,
+        "costWord": 7
+      }
+    },
+    "hooks-source/cost/prices-page.tsx": {
+      "publicPath": "hooks/cost/prices-page.tsx",
+      "group": "hooks/m1-compiled/companion.js",
+      "aliases": {
+        "pricesPage": "prices_page__pricesPage"
+      },
+      "exportLines": {
+        "pricesPage": 20,
+        "PricesPageOptions": 10
+      }
+    },
+    "hooks-source/presence.ts": {
+      "publicPath": "hooks/presence.ts",
+      "group": "hooks/m1-compiled/presence.js",
+      "aliases": {
+        "COCO_SETTING_KEYS": "presence__COCO_SETTING_KEYS",
+        "ENGINE_SETTING_KEYS": "presence__ENGINE_SETTING_KEYS",
+        "SharedPresence": "presence__SharedPresence",
+        "cocoSettings": "presence__cocoSettings",
+        "parseNeighbours": "presence__parseNeighbours",
+        "parsePresence": "presence__parsePresence",
+        "parsePresenceRecord": "presence__parsePresenceRecord",
+        "parseProcessInventory": "presence__parseProcessInventory",
+        "presenceSessions": "presence__presenceSessions",
+        "reducePresence": "presence__reducePresence"
+      },
+      "exportLines": {
+        "cocoSettings": 32,
+        "parseNeighbours": 65,
+        "parsePresence": 101,
+        "parsePresenceRecord": 129,
+        "parseProcessInventory": 157,
+        "presenceSessions": 182,
+        "reducePresence": 189,
+        "PresenceEvent": 2,
+        "PresenceTouch": 2,
+        "PresenceTouchEvent": 2,
+        "PresenceSetting": 2,
+        "PresenceSettings": 2,
+        "PresenceSettingsEvent": 2,
+        "PresenceMutation": 2,
+        "PresenceNeighbourWindow": 2,
+        "PresenceNeighbour": 2,
+        "PresenceNeighbours": 2,
+        "PresenceSnapshot": 2,
+        "PresenceIO": 2,
+        "PresenceMetadata": 2,
+        "PresenceSession": 2,
+        "PresenceClaim": 2,
+        "PresenceRecord": 2,
+        "ProcessIdentity": 2,
+        "COCO_SETTING_KEYS": 16,
+        "ENGINE_SETTING_KEYS": 24,
+        "SharedPresence": 292
+      }
+    },
+    "hooks-source/lines.ts": {
+      "publicPath": "hooks/lines.ts",
+      "group": "hooks/m1-compiled/presence.js",
+      "aliases": {
+        "LINES": "lines__LINES"
+      },
+      "exportLines": {
+        "LINES": 8
+      }
+    },
+    "hooks-source/motion.ts": {
+      "publicPath": "hooks/motion.ts",
+      "group": "hooks/m1-compiled/presence.js",
+      "aliases": {
+        "MOTION": "motion__MOTION",
+        "MOTION2": "motion__MOTION2",
+        "blinkDouble": "motion__blinkDouble",
+        "blinkGap": "motion__blinkGap",
+        "blinkInterval": "motion__blinkInterval",
+        "blinkShut": "motion__blinkShut",
+        "gazeBlinkDelay": "motion__gazeBlinkDelay",
+        "generateMotion": "motion__generateMotion",
+        "motionCycle": "motion__motionCycle",
+        "motionEase": "motion__motionEase",
+        "motionFrame": "motion__motionFrame",
+        "motionHasFace": "motion__motionHasFace",
+        "nextMotionChange": "motion__nextMotionChange",
+        "pickMotionVariant": "motion__pickMotionVariant",
+        "runtimeRandom": "motion__runtimeRandom",
+        "sampleHold": "motion__sampleHold",
+        "sampleMotion": "motion__sampleMotion",
+        "samplePoints": "motion__samplePoints",
+        "sampleSpring": "motion__sampleSpring",
+        "sampleTouch": "motion__sampleTouch",
+        "seededRandom": "motion__seededRandom"
+      },
+      "exportLines": {
+        "MOTION": 2,
+        "runtimeRandom": 2,
+        "seededRandom": 2,
+        "sampleHold": 2,
+        "blinkInterval": 2,
+        "blinkShut": 2,
+        "blinkGap": 2,
+        "blinkDouble": 2,
+        "gazeBlinkDelay": 2,
+        "motionCycle": 2,
+        "MOTION2": 2,
+        "motionFrame": 2,
+        "pickMotionVariant": 2,
+        "motionEase": 2,
+        "samplePoints": 2,
+        "sampleSpring": 2,
+        "sampleTouch": 2,
+        "motionHasFace": 2,
+        "generateMotion": 2,
+        "sampleMotion": 2,
+        "nextMotionChange": 2,
+        "Random": 3,
+        "Hold": 3,
+        "MotionKind": 3,
+        "MotionVariant": 3,
+        "TouchKind": 3,
+        "FaceKind": 3,
+        "MotionSnapshot": 3,
+        "Point": 3,
+        "LayerTrack": 3,
+        "MotionOptions": 3,
+        "MotionTimeline": 3
+      }
+    },
+    "hooks-source/desktop-safe.ts": {
+      "publicPath": "hooks/desktop-safe.ts",
+      "group": "hooks/m1-compiled/presence.js",
+      "aliases": {
+        "DESKTOP_LIMITS": "desktop_safe__DESKTOP_LIMITS",
+        "DesktopTreeError": "desktop_safe__DesktopTreeError",
+        "normalizeCostSurface": "desktop_safe__normalizeCostSurface",
+        "normalizeDesktopSettings": "desktop_safe__normalizeDesktopSettings",
+        "normalizeDesktopView": "desktop_safe__normalizeDesktopView",
+        "safeDesktopTree": "desktop_safe__safeDesktopTree",
+        "validateDesktopTree": "desktop_safe__validateDesktopTree"
+      },
+      "exportLines": {
+        "DESKTOP_LIMITS": 2,
+        "DesktopTreeError": 2,
+        "validateDesktopTree": 2,
+        "safeDesktopTree": 2,
+        "normalizeDesktopSettings": 2,
+        "normalizeCostSurface": 2,
+        "normalizeDesktopView": 2
+      }
+    },
+    "hooks-source/channel.ts": {
+      "publicPath": "hooks/channel.ts",
+      "group": "hooks/m1-compiled/presence.js",
+      "aliases": {
+        "CompanionChannel": "channel__CompanionChannel",
+        "notifyChannelEnded": "channel__notifyChannelEnded"
+      },
+      "exportLines": {
+        "notifyChannelEnded": 23,
+        "ChannelNote": 20,
+        "ChannelIO": 34,
+        "CompanionChannel": 57
+      }
+    },
+    "hooks-source/companion-book.tsx": {
+      "publicPath": "hooks/companion-book.tsx",
+      "group": "hooks/m1-compiled/presence.js",
+      "aliases": {
+        "COMPANION_APP": "companion_book__COMPANION_APP",
+        "COMPANION_OPEN": "companion_book__COMPANION_OPEN",
+        "COMPANION_PLIST": "companion_book__COMPANION_PLIST",
+        "CompanionBook": "companion_book__CompanionBook",
+        "companionCommand": "companion_book__companionCommand",
+        "companionSection": "companion_book__companionSection",
+        "companionState": "companion_book__companionState",
+        "nowFit": "companion_book__nowFit"
+      },
+      "exportLines": {
+        "nowFit": 11,
+        "companionState": 42,
+        "companionSection": 99,
+        "CompanionState": 16,
+        "CompanionInfo": 17,
+        "CompanionSnapshot": 24,
+        "CompanionBookData": 27,
+        "CompanionAction": 37,
+        "COMPANION_APP": 38,
+        "COMPANION_PLIST": 39,
+        "COMPANION_OPEN": 40,
+        "companionCommand": 53,
+        "CompanionRun": 54,
+        "CompanionBook": 55
+      }
+    },
+    "hooks-source/checkup.ts": {
+      "publicPath": "hooks/checkup.ts",
+      "group": "hooks/m1-compiled/presence.js",
+      "aliases": {
+        "checkFolder": "checkup__checkFolder",
+        "checkup": "checkup__checkup",
+        "olderVersion": "checkup__olderVersion",
+        "readCheckCompanion": "checkup__readCheckCompanion",
+        "readCheckSessions": "checkup__readCheckSessions"
+      },
+      "exportLines": {
+        "olderVersion": 20,
+        "checkFolder": 39,
+        "checkup": 51,
+        "readCheckCompanion": 87,
+        "readCheckSessions": 101,
+        "CheckWords": 2,
+        "CheckCompanion": 2,
+        "CheckHealth": 2,
+        "CheckSession": 2,
+        "CheckInput": 2,
+        "CheckId": 2,
+        "CheckFix": 2,
+        "CheckRow": 2,
+        "CheckResult": 2
+      }
+    },
+    "hooks-source/book-band-words.ts": {
+      "publicPath": "hooks/book-band-words.ts",
+      "group": "hooks/m1-compiled/presence.js",
+      "aliases": {
+        "BAND_BOOK_WORDS": "book_band_words__BAND_BOOK_WORDS"
+      },
+      "exportLines": {
+        "BAND_BOOK_WORDS": 6
+      }
+    },
+    "hooks-source/more-book.tsx": {
+      "publicPath": "hooks/more-book.tsx",
+      "group": "hooks/m1-compiled/presence.js",
+      "aliases": {
+        "MoreEntry": "more_book__MoreEntry",
+        "MoreExplanation": "more_book__MoreExplanation",
+        "MoreLook": "more_book__MoreLook",
+        "MorePage": "more_book__MorePage",
+        "MorePayerRows": "more_book__MorePayerRows",
+        "MoreRow": "more_book__MoreRow",
+        "MoreTalk": "more_book__MoreTalk",
+        "moreKeyToday": "more_book__moreKeyToday",
+        "moreRowDrawn": "more_book__moreRowDrawn",
+        "moreTalkPayer": "more_book__moreTalkPayer"
+      },
+      "exportLines": {
+        "moreKeyToday": 16,
+        "moreTalkPayer": 25,
+        "MorePayerRows": 42,
+        "MoreEntry": 100,
+        "MoreRow": 107,
+        "moreRowDrawn": 197,
+        "MorePage": 198,
+        "MoreTalk": 211,
+        "MoreExplanation": 225,
+        "MoreLook": 229,
+        "MoreKeyPlace": 12,
+        "MoreBookData": 13,
+        "MoreExchange": 210
+      }
+    },
+    "hooks-source/mod-gaps-art.ts": {
+      "publicPath": "hooks/mod-gaps-art.ts",
+      "group": "hooks/m1-compiled/presence.js",
+      "aliases": {
+        "BLANK_35": "mod_gaps_art__BLANK_35",
+        "RUN_MARK": "mod_gaps_art__RUN_MARK",
+        "modIncenseSvg": "mod_gaps_art__modIncenseSvg"
+      },
+      "exportLines": {
+        "modIncenseSvg": 5,
+        "BLANK_35": 2,
+        "RUN_MARK": 3
+      }
+    },
+    "hooks-source/blink-scheduler.ts": {
+      "publicPath": "hooks/blink-scheduler.ts",
+      "group": "hooks/m1-compiled/presence.js",
+      "aliases": {
+        "BLINK_CLEARANCE_MS": "blink_scheduler__BLINK_CLEARANCE_MS",
+        "placeBlink": "blink_scheduler__placeBlink"
+      },
+      "exportLines": {
+        "placeBlink": 18,
+        "BlinkObstacle": 3,
+        "ExistingClosure": 4,
+        "BlinkException": 5,
+        "BlinkPlacement": 6,
+        "BlinkRequest": 7,
+        "BLINK_CLEARANCE_MS": 15
+      }
+    },
+    "hooks-source/shared-files.ts": {
+      "publicPath": "hooks/shared-files.ts",
+      "group": "hooks/m1-compiled/presence.js",
+      "aliases": {
+        "ATOMIC_WRITE": "shared_files__ATOMIC_WRITE",
+        "DIAGNOSTIC_APPEND": "shared_files__DIAGNOSTIC_APPEND",
+        "safeDiagnosticError": "shared_files__safeDiagnosticError"
+      },
+      "exportLines": {
+        "safeDiagnosticError": 37,
+        "ATOMIC_WRITE": 2,
+        "DIAGNOSTIC_APPEND": 15
+      }
+    },
+    "hooks-source/mod-gaps-render.tsx": {
+      "publicPath": "hooks/mod-gaps-render.tsx",
+      "group": "hooks/m1-compiled/presence.js",
+      "aliases": {
+        "renderClose": "mod_gaps_render__renderClose",
+        "renderLimitNote": "mod_gaps_render__renderLimitNote",
+        "renderRunMark": "mod_gaps_render__renderRunMark",
+        "renderTextBand": "mod_gaps_render__renderTextBand"
+      },
+      "exportLines": {
+        "renderClose": 13,
+        "renderRunMark": 20,
+        "renderTextBand": 28,
+        "renderLimitNote": 36
+      }
+    },
+    "hooks-source/more-state.ts": {
+      "publicPath": "hooks/more-state.ts",
+      "group": "hooks/m1-compiled/presence.js",
+      "aliases": {
+        "CAP_DOLLARS": "more_state__CAP_DOLLARS",
+        "MORE_ASK": "more_state__MORE_ASK",
+        "MORE_GROUPS": "more_state__MORE_GROUPS",
+        "MORE_IDS": "more_state__MORE_IDS",
+        "MORE_LINE_PROMPTS": "more_state__MORE_LINE_PROMPTS",
+        "MORE_LOOK_PROMPT": "more_state__MORE_LOOK_PROMPT",
+        "MORE_SERVICE_ROWS": "more_state__MORE_SERVICE_ROWS",
+        "MORE_SERVICE_SLOT": "more_state__MORE_SERVICE_SLOT",
+        "MORE_TALK_PERSONA": "more_state__MORE_TALK_PERSONA",
+        "capChoices": "more_state__capChoices",
+        "moreCountText": "more_state__moreCountText",
+        "moreDay": "more_state__moreDay",
+        "moreOn": "more_state__moreOn",
+        "morePayer": "more_state__morePayer",
+        "moreRowAuthored": "more_state__moreRowAuthored",
+        "moreRowSupported": "more_state__moreRowSupported",
+        "moreRows": "more_state__moreRows",
+        "moreValues": "more_state__moreValues"
+      },
+      "exportLines": {
+        "morePayer": 36,
+        "moreRowAuthored": 45,
+        "moreValues": 49,
+        "moreDay": 58,
+        "moreRowSupported": 65,
+        "moreRows": 66,
+        "moreOn": 67,
+        "capChoices": 70,
+        "moreCountText": 74,
+        "MORE_IDS": 4,
+        "MoreId": 5,
+        "MoreValues": 6,
+        "MoreCount": 8,
+        "MoreToday": 9,
+        "MorePayerChoice": 11,
+        "MoreKey": 12,
+        "MoreKeyToday": 13,
+        "MoreKeyView": 14,
+        "MoreModelChoice": 17,
+        "MoreModelRow": 18,
+        "MoreModels": 19,
+        "MoreLines": 23,
+        "MoreDm": 26,
+        "MoreSnapshot": 27,
+        "MORE_GROUPS": 29,
+        "MorePayer": 35,
+        "MORE_ASK": 37,
+        "MORE_SERVICE_ROWS": 38,
+        "MORE_SERVICE_SLOT": 39,
+        "MORE_TALK_PERSONA": 40,
+        "MORE_LOOK_PROMPT": 41,
+        "MORE_LINE_PROMPTS": 42,
+        "CAP_DOLLARS": 69
+      }
+    },
+    "hooks-source/more-models.ts": {
+      "publicPath": "hooks/more-models.ts",
+      "group": "hooks/m1-compiled/presence.js",
+      "aliases": {
+        "MORE_MODEL_FAMILIES": "more_models__MORE_MODEL_FAMILIES",
+        "moreModelChoices": "more_models__moreModelChoices",
+        "moreModelFor": "more_models__moreModelFor",
+        "moreModels": "more_models__moreModels",
+        "moreModelsDirect": "more_models__moreModelsDirect"
+      },
+      "exportLines": {
+        "moreModelsDirect": 28,
+        "moreModelChoices": 45,
+        "moreModels": 71,
+        "moreModelFor": 77,
+        "MORE_MODEL_FAMILIES": 8,
+        "MoreModelFamily": 9,
+        "MoreModelEnv": 15
+      }
+    },
+    "hooks-source/more-secrets.ts": {
+      "publicPath": "hooks/more-secrets.ts",
+      "group": "hooks/m1-compiled/presence.js",
+      "aliases": {
+        "hideSecrets": "more_secrets__hideSecrets",
+        "secretHash": "more_secrets__secretHash",
+        "secretHits": "more_secrets__secretHits"
+      },
+      "exportLines": {
+        "secretHits": 14,
+        "hideSecrets": 19,
+        "secretHash": 24,
+        "SecretKind": 1,
+        "SecretHit": 2
+      }
+    },
+    "hooks-source/band-motion-state.ts": {
+      "publicPath": "hooks/band-motion-state.ts",
+      "group": "hooks/m1-compiled/presence.js",
+      "aliases": {
+        "bandMotionOptions": "band_motion_state__bandMotionOptions"
+      },
+      "exportLines": {
+        "bandMotionOptions": 2,
+        "BandTouch": 3,
+        "BandMotionState": 3
+      }
+    },
+    "hooks-source/latest.ts": {
+      "publicPath": "hooks/latest.ts",
+      "group": "hooks/m1-compiled/presence.js",
+      "aliases": {
+        "MARKS_DEFAULT": "latest__MARKS_DEFAULT",
+        "bandShownOn": "latest__bandShownOn",
+        "latest": "latest__latest",
+        "marksFrom": "latest__marksFrom"
+      },
+      "exportLines": {
+        "bandShownOn": 26,
+        "marksFrom": 31,
+        "Marks": 11,
+        "MARKS_DEFAULT": 12,
+        "latest": 14
+      }
+    },
+    "hooks-source/c3-secrets.ts": {
+      "publicPath": "hooks/c3-secrets.ts",
+      "group": "hooks/m1-compiled/presence.js",
+      "aliases": {
+        "bookmarkText": "c3_secrets__bookmarkText",
+        "displaySlot": "c3_secrets__displaySlot",
+        "redactBookmark": "c3_secrets__redactBookmark",
+        "redactSecrets": "c3_secrets__redactSecrets",
+        "scanStagedSecrets": "c3_secrets__scanStagedSecrets",
+        "sha256": "c3_secrets__sha256"
+      },
+      "exportLines": {
+        "redactSecrets": 20,
+        "bookmarkText": 30,
+        "scanStagedSecrets": 41,
+        "redactBookmark": 61,
+        "displaySlot": 80,
+        "sha256": 88
+      }
+    },
+    "hooks-source/book-format.ts": {
+      "publicPath": "hooks/book-format.ts",
+      "group": "hooks/m1-compiled/presence.js",
+      "aliases": {
+        "NO_ITALIC": "book_format__NO_ITALIC",
+        "moment": "book_format__moment"
+      },
+      "exportLines": {
+        "NO_ITALIC": 2,
+        "moment": 2
+      }
+    },
+    "hooks-source/script-command.ts": {
+      "publicPath": "hooks/script-command.ts",
+      "group": "hooks/m1-compiled/presence.js",
+      "aliases": {
+        "companionCommand": "script_command__companionCommand"
+      },
+      "exportLines": {
+        "companionCommand": 2
+      }
+    },
+    "hooks-source/d1-state.js": {
+      "publicPath": "hooks/d1-state.js",
+      "group": "hooks/m1-compiled/presence.js",
+      "aliases": {
+        "ANIMATION_MODE": "d1_state__ANIMATION_MODE",
+        "D1Runtime": "d1_state__D1Runtime",
+        "DESKTOP_LIMITS": "d1_state__DESKTOP_LIMITS",
+        "DesktopTreeError": "d1_state__DesktopTreeError",
+        "EMPTY_12x1": "d1_state__EMPTY_12x1",
+        "EMPTY_RIBBON": "d1_state__EMPTY_RIBBON",
+        "MOTION": "d1_state__MOTION",
+        "MOTION2": "d1_state__MOTION2",
+        "NO_ITALIC": "d1_state__NO_ITALIC",
+        "RIBBON_PALETTE": "d1_state__RIBBON_PALETTE",
+        "bandMotionOptions": "d1_state__bandMotionOptions",
+        "blinkDouble": "d1_state__blinkDouble",
+        "blinkGap": "d1_state__blinkGap",
+        "blinkInterval": "d1_state__blinkInterval",
+        "blinkShut": "d1_state__blinkShut",
+        "bundleSvg": "d1_state__bundleSvg",
+        "createD1TrimRuntime": "d1_state__createD1TrimRuntime",
+        "d1Art": "d1_state__d1Art",
+        "d1MissingWords": "d1_state__d1MissingWords",
+        "d1Pixel": "d1_state__d1Pixel",
+        "d1PixelFrame": "d1_state__d1PixelFrame",
+        "d1Text": "d1_state__d1Text",
+        "d1TrimOutputParts": "d1_state__d1TrimOutputParts",
+        "d1Word": "d1_state__d1Word",
+        "d1Words": "d1_state__d1Words",
+        "forgetD1Words": "d1_state__forgetD1Words",
+        "forgetRoom": "d1_state__forgetRoom",
+        "frameOverlayX": "d1_state__frameOverlayX",
+        "gazeBlinkDelay": "d1_state__gazeBlinkDelay",
+        "generateMotion": "d1_state__generateMotion",
+        "getMotionWidth": "d1_state__getMotionWidth",
+        "isD1PixelTimeline": "d1_state__isD1PixelTimeline",
+        "loadD1Art": "d1_state__loadD1Art",
+        "loadD1Shed": "d1_state__loadD1Shed",
+        "loadD1Words": "d1_state__loadD1Words",
+        "loadRoomLayers": "d1_state__loadRoomLayers",
+        "lyingScrollSvg": "d1_state__lyingScrollSvg",
+        "moment": "d1_state__moment",
+        "motionCycle": "d1_state__motionCycle",
+        "motionEase": "d1_state__motionEase",
+        "motionFrame": "d1_state__motionFrame",
+        "motionHasFace": "d1_state__motionHasFace",
+        "nextMotionChange": "d1_state__nextMotionChange",
+        "normalizeCostSurface": "d1_state__normalizeCostSurface",
+        "normalizeDesktopSettings": "d1_state__normalizeDesktopSettings",
+        "normalizeDesktopView": "d1_state__normalizeDesktopView",
+        "pickMotionVariant": "d1_state__pickMotionVariant",
+        "reconcileRibbon": "d1_state__reconcileRibbon",
+        "rememberRibbon": "d1_state__rememberRibbon",
+        "renderD1TrimOutput": "d1_state__renderD1TrimOutput",
+        "renderD1TrimRow": "d1_state__renderD1TrimRow",
+        "replaceD1TrimmedResult": "d1_state__replaceD1TrimmedResult",
+        "resumeD1Picture": "d1_state__resumeD1Picture",
+        "ribbonFolder": "d1_state__ribbonFolder",
+        "ribbonSvg": "d1_state__ribbonSvg",
+        "ribbonTerminal": "d1_state__ribbonTerminal",
+        "ribbonTerminalCells": "d1_state__ribbonTerminalCells",
+        "roomAlt": "d1_state__roomAlt",
+        "roomCacheSize": "d1_state__roomCacheSize",
+        "roomLayerNames": "d1_state__roomLayerNames",
+        "roomScale": "d1_state__roomScale",
+        "roomState": "d1_state__roomState",
+        "roomSvg": "d1_state__roomSvg",
+        "runtimeRandom": "d1_state__runtimeRandom",
+        "safeD1DataRoot": "d1_state__safeD1DataRoot",
+        "safeDesktopTree": "d1_state__safeDesktopTree",
+        "sampleHold": "d1_state__sampleHold",
+        "sampleMotion": "d1_state__sampleMotion",
+        "samplePoints": "d1_state__samplePoints",
+        "sampleSpring": "d1_state__sampleSpring",
+        "sampleTouch": "d1_state__sampleTouch",
+        "scrollSvg": "d1_state__scrollSvg",
+        "seededRandom": "d1_state__seededRandom",
+        "selectRibbon": "d1_state__selectRibbon",
+        "shedPicture": "d1_state__shedPicture",
+        "shedRowSvg": "d1_state__shedRowSvg",
+        "shedTransition": "d1_state__shedTransition",
+        "terminalMotionFrame": "d1_state__terminalMotionFrame",
+        "trimD1Output": "d1_state__trimD1Output",
+        "trimD1Path": "d1_state__trimD1Path",
+        "usageTokens": "d1_state__usageTokens",
+        "utf8Bytes": "d1_state__utf8Bytes",
+        "validRibbon": "d1_state__validRibbon",
+        "validateDesktopTree": "d1_state__validateDesktopTree"
+      },
+      "exportLines": {}
+    },
+    "hooks-source/d1-paths.js": {
+      "publicPath": "hooks/d1-paths.js",
+      "group": "hooks/m1-compiled/presence.js",
+      "aliases": {
+        "homePath": "d1_paths__homePath",
+        "isWindows": "d1_paths__isWindows",
+        "joinPath": "d1_paths__joinPath",
+        "presenceFolder": "d1_paths__presenceFolder",
+        "readRepositoryBranch": "d1_paths__readRepositoryBranch",
+        "samePath": "d1_paths__samePath",
+        "tildePath": "d1_paths__tildePath",
+        "windowsPath": "d1_paths__windowsPath"
+      },
+      "exportLines": {}
+    },
+    "hooks-source/band.js": {
+      "publicPath": "hooks/band.js",
+      "group": "hooks/m1-compiled/presence.js",
+      "aliases": {
+        "BAND_INPUT_LIMIT": "band__BAND_INPUT_LIMIT",
+        "HAIRLINE": "band__HAIRLINE",
+        "HOVER": "band__HOVER",
+        "LAMP": "band__LAMP",
+        "LANTERN": "band__LANTERN",
+        "POKE_ROUTE": "band__POKE_ROUTE",
+        "bandSlotFitLengths": "band__bandSlotFitLengths",
+        "cells": "band__cells",
+        "costumedView": "band__costumedView",
+        "cutDirection": "band__cutDirection",
+        "cutTerminalDirection": "band__cutTerminalDirection",
+        "desktopBand": "band__desktopBand",
+        "desktopDoor": "band__desktopDoor",
+        "desktopHeight": "band__desktopHeight",
+        "fitBandSlotLength": "band__fitBandSlotLength",
+        "floorThings": "band__floorThings",
+        "planDesktop": "band__planDesktop",
+        "planFloor": "band__planFloor",
+        "rowsOf": "band__rowsOf",
+        "safeBandSpeech": "band__safeBandSpeech",
+        "safeBandText": "band__safeBandText",
+        "shortenSlot": "band__shortenSlot",
+        "squashedView": "band__squashedView",
+        "terminalBand": "band__terminalBand",
+        "terminalDoor": "band__terminalDoor",
+        "terminalHasSprite": "band__terminalHasSprite",
+        "terminalWrapRows": "band__terminalWrapRows",
+        "wrappedRows": "band__wrappedRows"
+      },
+      "exportLines": {}
+    },
+    "hooks-source/book.js": {
+      "publicPath": "hooks/book.js",
+      "group": "hooks/m1-compiled/presence.js",
+      "aliases": {
+        "NO_ITALIC": "book__NO_ITALIC",
+        "answeredVoiceRow": "book__answeredVoiceRow",
+        "bookNumberWords": "book__bookNumberWords",
+        "desktopBook": "book__desktopBook",
+        "helperBoard": "book__helperBoard",
+        "moment": "book__moment",
+        "pageBlocks": "book__pageBlocks",
+        "terminalBook": "book__terminalBook"
+      },
+      "exportLines": {}
+    },
+    "hooks-source/visitors.ts": {
+      "publicPath": "hooks/visitors.ts",
+      "group": "hooks/m1-compiled/presence.js",
+      "aliases": {
+        "VISITOR_BARS": "visitors__VISITOR_BARS",
+        "VISITOR_KINDS": "visitors__VISITOR_KINDS",
+        "VISIT_DAY_SHARE": "visitors__VISIT_DAY_SHARE",
+        "VISIT_REST_DAYS": "visitors__VISIT_REST_DAYS",
+        "VISIT_SLOW_MS": "visitors__VISIT_SLOW_MS",
+        "VisitCounter": "visitors__VisitCounter",
+        "daysBetween": "visitors__daysBetween",
+        "decideDue": "visitors__decideDue",
+        "hash32": "visitors__hash32",
+        "inSeason": "visitors__inSeason",
+        "isVisitorKind": "visitors__isVisitorKind",
+        "lateMs": "visitors__lateMs",
+        "mergeVisitState": "visitors__mergeVisitState",
+        "newerDue": "visitors__newerDue",
+        "parseVisitState": "visitors__parseVisitState",
+        "qualifying": "visitors__qualifying",
+        "readVisits": "visitors__readVisits",
+        "rememberVisit": "visitors__rememberVisit",
+        "toolCountKey": "visitors__toolCountKey",
+        "totalCounts": "visitors__totalCounts",
+        "validDue": "visitors__validDue",
+        "visitAtSleep": "visitors__visitAtSleep",
+        "visitAtWake": "visitors__visitAtWake",
+        "visitDay": "visitors__visitDay",
+        "visitSitting": "visitors__visitSitting",
+        "visitingDay": "visitors__visitingDay",
+        "visitorFor": "visitors__visitorFor",
+        "visitorKey": "visitors__visitorKey",
+        "visitorsOn": "visitors__visitorsOn",
+        "withVisit": "visitors__withVisit"
+      },
+      "exportLines": {
+        "inSeason": 28,
+        "toolCountKey": 46,
+        "isVisitorKind": 59,
+        "visitDay": 75,
+        "daysBetween": 82,
+        "lateMs": 88,
+        "hash32": 101,
+        "visitingDay": 108,
+        "totalCounts": 112,
+        "qualifying": 118,
+        "visitorFor": 123,
+        "decideDue": 133,
+        "validDue": 146,
+        "parseVisitState": 153,
+        "newerDue": 173,
+        "visitAtSleep": 180,
+        "visitAtWake": 191,
+        "readVisits": 200,
+        "withVisit": 210,
+        "visitorsOn": 215,
+        "visitSitting": 218,
+        "mergeVisitState": 236,
+        "rememberVisit": 317,
+        "VISITOR_KINDS": 6,
+        "VisitorKind": 7,
+        "VisitCounts": 11,
+        "VisitCountKey": 12,
+        "VISITOR_BARS": 16,
+        "VISIT_SLOW_MS": 34,
+        "VISIT_REST_DAYS": 35,
+        "VISIT_DAY_SHARE": 36,
+        "Visit": 51,
+        "VisitDue": 52,
+        "VisitState": 54,
+        "visitorKey": 57,
+        "DueInput": 131,
+        "VisitCounter": 243
+      }
+    },
+    "hooks-source/visitors-art.ts": {
+      "publicPath": "hooks/visitors-art.ts",
+      "group": "hooks/m1-compiled/presence.js",
+      "aliases": {
+        "forgetVisitorData": "visitors_art__forgetVisitorData",
+        "guestBook": "visitors_art__guestBook",
+        "guestBookReading": "visitors_art__guestBookReading",
+        "loadVisitorData": "visitors_art__loadVisitorData",
+        "loadVisitorWords": "visitors_art__loadVisitorWords",
+        "visitPhase": "visitors_art__visitPhase",
+        "visitorArtReady": "visitors_art__visitorArtReady",
+        "visitorCellOverlay": "visitors_art__visitorCellOverlay",
+        "visitorHasWord": "visitors_art__visitorHasWord",
+        "visitorHeadPicture": "visitors_art__visitorHeadPicture",
+        "visitorNarrowDirection": "visitors_art__visitorNarrowDirection",
+        "visitorPicture": "visitors_art__visitorPicture",
+        "visitorPictureKey": "visitors_art__visitorPictureKey",
+        "visitorPortrait": "visitors_art__visitorPortrait",
+        "visitorWord": "visitors_art__visitorWord",
+        "visitorWordsReady": "visitors_art__visitorWordsReady"
+      },
+      "exportLines": {
+        "loadVisitorWords": 31,
+        "loadVisitorData": 39,
+        "forgetVisitorData": 45,
+        "visitorArtReady": 46,
+        "visitorWordsReady": 47,
+        "visitorWord": 50,
+        "visitorHasWord": 55,
+        "visitorNarrowDirection": 63,
+        "visitPhase": 174,
+        "visitorPictureKey": 179,
+        "visitorPicture": 187,
+        "visitorHeadPicture": 213,
+        "visitorCellOverlay": 225,
+        "visitorPortrait": 240,
+        "guestBookReading": 269,
+        "guestBook": 274
+      }
+    },
+    "hooks-source/notice.ts": {
+      "publicPath": "hooks/notice.ts",
+      "group": "hooks/m1-compiled/presence.js",
+      "aliases": {
+        "ZH_LONG_FORM": "notice__ZH_LONG_FORM",
+        "createNotice": "notice__createNotice",
+        "currentNotice": "notice__currentNotice",
+        "relativeTo": "notice__relativeTo",
+        "setNotice": "notice__setNotice",
+        "shelfNames": "notice__shelfNames"
+      },
+      "exportLines": {
+        "relativeTo": 93,
+        "shelfNames": 114,
+        "createNotice": 130,
+        "NoticeLine": 9,
+        "Place": 10,
+        "Costume": 11,
+        "NoticeCap": 13,
+        "ToolResultInput": 38,
+        "SparkRow": 48,
+        "CommitRow": 49,
+        "Cause": 50,
+        "NoteRow": 51,
+        "ShelfView": 52,
+        "ZH_LONG_FORM": 56,
+        "Notice": 572,
+        "setNotice": 576,
+        "currentNotice": 577
+      }
+    },
+    "hooks-source/notice-art.ts": {
+      "publicPath": "hooks/notice-art.ts",
+      "group": "hooks/m1-compiled/presence.js",
+      "aliases": {
+        "dressPicture": "notice_art__dressPicture",
+        "glassesLayer": "notice_art__glassesLayer",
+        "lampLayer": "notice_art__lampLayer",
+        "placeSvg": "notice_art__placeSvg",
+        "rainLayer": "notice_art__rainLayer",
+        "slipIconSvg": "notice_art__slipIconSvg"
+      },
+      "exportLines": {
+        "placeSvg": 25,
+        "slipIconSvg": 43,
+        "lampLayer": 73,
+        "rainLayer": 80,
+        "glassesLayer": 99,
+        "dressPicture": 120,
+        "Dress": 111,
+        "DressPlace": 113
+      }
+    },
+    "hooks-source/notice-rows.tsx": {
+      "publicPath": "hooks/notice-rows.tsx",
+      "group": "hooks/m1-compiled/presence.js",
+      "aliases": {
+        "accentOf": "notice_rows__accentOf",
+        "cells": "notice_rows__cells",
+        "commitNote": "notice_rows__commitNote",
+        "sparkMark": "notice_rows__sparkMark",
+        "sparkSvg": "notice_rows__sparkSvg",
+        "sparkTerminal": "notice_rows__sparkTerminal",
+        "stuckNote": "notice_rows__stuckNote"
+      },
+      "exportLines": {
+        "sparkSvg": 13,
+        "accentOf": 25,
+        "sparkMark": 63,
+        "sparkTerminal": 77,
+        "commitNote": 109,
+        "stuckNote": 136,
+        "SparkLook": 29,
+        "cells": 92,
+        "NoteLook": 94,
+        "StuckLook": 122
+      }
+    }
+  },
+  "register": {
+    "source": "hooks-source/register.tsx",
+    "publicPath": "hooks/register.tsx"
+  },
+  "standalone": [
+    "hooks/touch-client.ts"
+  ],
+  "canonicalMirrors": [
+    "hooks/algo/guard.ts",
+    "hooks/algo/lexer.ts",
+    "hooks/algo/pace.ts",
+    "hooks/algo/runs.ts",
+    "hooks/art.ts",
+    "hooks/band-motion-state.source.ts",
+    "hooks/band.d.ts",
+    "hooks/book-format.source.ts",
+    "hooks/book-word-types.ts",
+    "hooks/book.d.ts",
+    "hooks/card-metrics-hi-bold.ts",
+    "hooks/card-metrics-hi.ts",
+    "hooks/card-metrics-ja-bold.ts",
+    "hooks/card-metrics-ja.ts",
+    "hooks/card-metrics-ko-bold.ts",
+    "hooks/card-metrics-ko.ts",
+    "hooks/card-metrics-latin-bold.ts",
+    "hooks/card-metrics-latin.ts",
+    "hooks/card-metrics-zh-bold.ts",
+    "hooks/card-metrics-zh.ts",
+    "hooks/card-metrics.ts",
+    "hooks/card.ts",
+    "hooks/checkup-types.ts",
+    "hooks/cost/core/index.ts",
+    "hooks/cost/prices/changes.ts",
+    "hooks/cost/prices/ids.ts",
+    "hooks/cost/prices/index.ts",
+    "hooks/cost/prices/load.ts",
+    "hooks/cost/prices/others.ts",
+    "hooks/cost/prices/page.ts",
+    "hooks/cost/prices/runtime.ts",
+    "hooks/cost/runtime.d.ts",
+    "hooks/cost/runtime.ts",
+    "hooks/cost/units.d.ts",
+    "hooks/cost/warm-runtime.ts",
+    "hooks/cost/warm/constants.ts",
+    "hooks/cost/warm/index.ts",
+    "hooks/cost/warm/keeper.ts",
+    "hooks/cost/warm/lock.ts",
+    "hooks/cost/warm/pyrandom.ts",
+    "hooks/cost/warm/sim.ts",
+    "hooks/d1-art-data.source.ts",
+    "hooks/d1-art-data.ts",
+    "hooks/d1-paths.d.ts",
+    "hooks/d1-picture-age.source.ts",
+    "hooks/d1-picture-age.ts",
+    "hooks/d1-pictures.source.ts",
+    "hooks/d1-pictures.ts",
+    "hooks/d1-pieces.source.ts",
+    "hooks/d1-pieces.ts",
+    "hooks/d1-ribbon-core.source.ts",
+    "hooks/d1-ribbon-core.ts",
+    "hooks/d1-ribbon.source.ts",
+    "hooks/d1-ribbon.ts",
+    "hooks/d1-room.source.ts",
+    "hooks/d1-room.ts",
+    "hooks/d1-runtime.source.ts",
+    "hooks/d1-runtime.ts",
+    "hooks/d1-state.d.ts",
+    "hooks/d1-transcript-pieces.source.ts",
+    "hooks/d1-transcript-pieces.ts",
+    "hooks/d1-trim-core.source.ts",
+    "hooks/d1-trim-core.ts",
+    "hooks/d1-trim-path.source.ts",
+    "hooks/d1-trim-path.ts",
+    "hooks/d1-trim-row.source.tsx",
+    "hooks/d1-trim-row.tsx",
+    "hooks/d1-trim.source.tsx",
+    "hooks/d1-trim.tsx",
+    "hooks/d1-words.source.ts",
+    "hooks/d1-words.ts",
+    "hooks/desktop-safe.source.ts",
+    "hooks/history-key.ts",
+    "hooks/line-types.ts",
+    "hooks/motion-svg.source.ts",
+    "hooks/motion.source.ts",
+    "hooks/paths.source.ts",
+    "hooks/play-client.ts",
+    "hooks/presence-types.ts",
+    "hooks/repository-branch.ts",
+    "hooks/say-it-plain-prompt.ts"
+  ],
+  "ownedPaths": [
+    "hooks/algo/guard.ts",
+    "hooks/algo/lexer.ts",
+    "hooks/algo/pace.ts",
+    "hooks/algo/runs.ts",
+    "hooks/art.ts",
+    "hooks/bag-mv-glyphs.ts",
+    "hooks/bag-mv.ts",
+    "hooks/bag.ts",
+    "hooks/band-motion-state.source.ts",
+    "hooks/band-motion-state.ts",
+    "hooks/band.d.ts",
+    "hooks/band.js",
+    "hooks/band.tsx",
+    "hooks/blink-scheduler.ts",
+    "hooks/book-art.ts",
+    "hooks/book-band-words.ts",
+    "hooks/book-format.source.ts",
+    "hooks/book-format.ts",
+    "hooks/book-portrait.ts",
+    "hooks/book-session.ts",
+    "hooks/book-text.ts",
+    "hooks/book-word-types.ts",
+    "hooks/book-words.ts",
+    "hooks/book.d.ts",
+    "hooks/book.js",
+    "hooks/book.tsx",
+    "hooks/c3-motion.ts",
+    "hooks/c3-runtime.ts",
+    "hooks/c3-secrets.ts",
+    "hooks/c3-words.ts",
+    "hooks/cache-rate.ts",
+    "hooks/card-metrics-hi-bold.ts",
+    "hooks/card-metrics-hi.ts",
+    "hooks/card-metrics-ja-bold.ts",
+    "hooks/card-metrics-ja.ts",
+    "hooks/card-metrics-ko-bold.ts",
+    "hooks/card-metrics-ko.ts",
+    "hooks/card-metrics-latin-bold.ts",
+    "hooks/card-metrics-latin.ts",
+    "hooks/card-metrics-lazy.ts",
+    "hooks/card-metrics-zh-bold.ts",
+    "hooks/card-metrics-zh.ts",
+    "hooks/card-metrics.ts",
+    "hooks/card-runtime.ts",
+    "hooks/card.ts",
+    "hooks/cards/card.ts",
+    "hooks/cards/cards.tsx",
+    "hooks/cards/catalog.ts",
+    "hooks/cards/coco.ts",
+    "hooks/cards/i18n.ts",
+    "hooks/cards/model.ts",
+    "hooks/cards/picks.ts",
+    "hooks/cards/state.ts",
+    "hooks/cards/usage.ts",
+    "hooks/channel.ts",
+    "hooks/checkup-types.ts",
+    "hooks/checkup.ts",
+    "hooks/chinese-number-data.ts",
+    "hooks/claudie.ts",
+    "hooks/coco-motion.ts",
+    "hooks/coco-pixel-play.ts",
+    "hooks/coco-pixel.ts",
+    "hooks/coco-stills.ts",
+    "hooks/companion-art.ts",
+    "hooks/companion-book.tsx",
+    "hooks/companion.ts",
+    "hooks/config-words.ts",
+    "hooks/cost/core/index.ts",
+    "hooks/cost/cup.ts",
+    "hooks/cost/prices-page.tsx",
+    "hooks/cost/prices/changes.ts",
+    "hooks/cost/prices/ids.ts",
+    "hooks/cost/prices/index.ts",
+    "hooks/cost/prices/load.ts",
+    "hooks/cost/prices/others.ts",
+    "hooks/cost/prices/page.ts",
+    "hooks/cost/prices/runtime.ts",
+    "hooks/cost/runtime.d.ts",
+    "hooks/cost/runtime.js",
+    "hooks/cost/runtime.ts",
+    "hooks/cost/state.ts",
+    "hooks/cost/surfaces.ts",
+    "hooks/cost/units.d.ts",
+    "hooks/cost/units.js",
+    "hooks/cost/warm-runtime.ts",
+    "hooks/cost/warm/constants.ts",
+    "hooks/cost/warm/index.ts",
+    "hooks/cost/warm/keeper.ts",
+    "hooks/cost/warm/lock.ts",
+    "hooks/cost/warm/pyrandom.ts",
+    "hooks/cost/warm/sim.ts",
+    "hooks/cost/words.ts",
+    "hooks/d1-art-data.source.ts",
+    "hooks/d1-art-data.ts",
+    "hooks/d1-paths.d.ts",
+    "hooks/d1-paths.js",
+    "hooks/d1-picture-age.source.ts",
+    "hooks/d1-picture-age.ts",
+    "hooks/d1-pictures.source.ts",
+    "hooks/d1-pictures.ts",
+    "hooks/d1-pieces.source.ts",
+    "hooks/d1-pieces.ts",
+    "hooks/d1-ribbon-core.source.ts",
+    "hooks/d1-ribbon-core.ts",
+    "hooks/d1-ribbon.source.ts",
+    "hooks/d1-ribbon.ts",
+    "hooks/d1-room.source.ts",
+    "hooks/d1-room.ts",
+    "hooks/d1-runtime.source.ts",
+    "hooks/d1-runtime.ts",
+    "hooks/d1-shed-asides.ts",
+    "hooks/d1-state.d.ts",
+    "hooks/d1-state.js",
+    "hooks/d1-transcript-pieces.source.ts",
+    "hooks/d1-transcript-pieces.ts",
+    "hooks/d1-trim-core.source.ts",
+    "hooks/d1-trim-core.ts",
+    "hooks/d1-trim-path.source.ts",
+    "hooks/d1-trim-path.ts",
+    "hooks/d1-trim-row.source.tsx",
+    "hooks/d1-trim-row.tsx",
+    "hooks/d1-trim.source.tsx",
+    "hooks/d1-trim.tsx",
+    "hooks/d1-words.source.ts",
+    "hooks/d1-words.ts",
+    "hooks/desktop-safe.source.ts",
+    "hooks/desktop-safe.ts",
+    "hooks/display-slot-text.ts",
+    "hooks/display-slots.ts",
+    "hooks/dm.ts",
+    "hooks/door-words.ts",
+    "hooks/head-art.ts",
+    "hooks/high-contrast.ts",
+    "hooks/history-key.ts",
+    "hooks/icon-book.tsx",
+    "hooks/latest.ts",
+    "hooks/line-library.ts",
+    "hooks/line-slot.ts",
+    "hooks/line-types.ts",
+    "hooks/lines.ts",
+    "hooks/m1-always.ts",
+    "hooks/m1-compiled/chunk-1bk8h35w.js",
+    "hooks/m1-compiled/chunk-420118w3.js",
+    "hooks/m1-compiled/chunk-94287a9e.js",
+    "hooks/m1-compiled/chunk-crwyzjxe.js",
+    "hooks/m1-compiled/chunk-e380e1ry.js",
+    "hooks/m1-compiled/chunk-g121076t.js",
+    "hooks/m1-compiled/chunk-g9q5n1wt.js",
+    "hooks/m1-compiled/chunk-hw883g9m.js",
+    "hooks/m1-compiled/chunk-jahhamrc.js",
+    "hooks/m1-compiled/chunk-qgzmz5x2.js",
+    "hooks/m1-compiled/companion.d.ts",
+    "hooks/m1-compiled/companion.js",
+    "hooks/m1-compiled/manifest.json",
+    "hooks/m1-compiled/motion_stills.d.ts",
+    "hooks/m1-compiled/motion_stills.js",
+    "hooks/m1-compiled/pages.d.ts",
+    "hooks/m1-compiled/pages.js",
+    "hooks/m1-compiled/presence.d.ts",
+    "hooks/m1-compiled/presence.js",
+    "hooks/mod-gaps-art.ts",
+    "hooks/mod-gaps-render.tsx",
+    "hooks/mod-gaps-words.ts",
+    "hooks/mod-gaps.ts",
+    "hooks/mood.ts",
+    "hooks/more-book.tsx",
+    "hooks/more-checks.ts",
+    "hooks/more-models.ts",
+    "hooks/more-runtime.ts",
+    "hooks/more-scripts.tsx",
+    "hooks/more-secrets.ts",
+    "hooks/more-state.ts",
+    "hooks/more-words.ts",
+    "hooks/motion-metadata.ts",
+    "hooks/motion-stills.ts",
+    "hooks/motion-svg.source.ts",
+    "hooks/motion-svg.ts",
+    "hooks/motion.source.ts",
+    "hooks/motion.ts",
+    "hooks/native-state.ts",
+    "hooks/notice-art.ts",
+    "hooks/notice-rows.tsx",
+    "hooks/notice.ts",
+    "hooks/numbers-text.ts",
+    "hooks/numbers.ts",
+    "hooks/openings.ts",
+    "hooks/pages.tsx",
+    "hooks/paths.source.ts",
+    "hooks/paths.ts",
+    "hooks/pet-program.ts",
+    "hooks/pictures-lazy.ts",
+    "hooks/play-client.ts",
+    "hooks/play-commits.ts",
+    "hooks/play-focus.ts",
+    "hooks/play-light.ts",
+    "hooks/play-planes.ts",
+    "hooks/play-thermos.ts",
+    "hooks/play.ts",
+    "hooks/plugin-version.ts",
+    "hooks/presence-types.ts",
+    "hooks/presence.ts",
+    "hooks/quota-trail.ts",
+    "hooks/quota.ts",
+    "hooks/register.tsx",
+    "hooks/reminder-settings.ts",
+    "hooks/repository-branch.ts",
+    "hooks/say-it-plain-prompt.ts",
+    "hooks/say-it-plain-runtime.ts",
+    "hooks/script-argv.ts",
+    "hooks/script-command.ts",
+    "hooks/settings-migration.ts",
+    "hooks/shared-files.ts",
+    "hooks/sleep.ts",
+    "hooks/talk-key.ts",
+    "hooks/talk-openers.ts",
+    "hooks/talk-parts.ts",
+    "hooks/tasks.ts",
+    "hooks/tool-poses.ts",
+    "hooks/touch-client.ts",
+    "hooks/transcript.tsx",
+    "hooks/turn-ledger.ts",
+    "hooks/typeset.ts",
+    "hooks/vibe-card.ts",
+    "hooks/visitors-art.ts",
+    "hooks/visitors.ts",
+    "hooks/voice.ts",
+    "hooks/week-book.tsx",
+    "hooks/week-card.ts",
+    "hooks/week-days.ts",
+    "hooks/week-words.ts",
+    "hooks/window-notes.tsx",
+    "hooks/words.ts"
+  ],
+  "chunkBytes": {
+    "chunk-1bk8h35w.js": 91786,
+    "chunk-420118w3.js": 199471,
+    "chunk-94287a9e.js": 10209,
+    "chunk-crwyzjxe.js": 63535,
+    "chunk-e380e1ry.js": 224144,
+    "chunk-g121076t.js": 20980,
+    "chunk-g9q5n1wt.js": 46697,
+    "chunk-hw883g9m.js": 208186,
+    "chunk-jahhamrc.js": 63116,
+    "chunk-qgzmz5x2.js": 358778,
+    "companion.js": 110810,
+    "motion_stills.js": 219126,
+    "pages.js": 67905,
+    "presence.js": 13391,
+    "register.js": 223502
+  }
+}

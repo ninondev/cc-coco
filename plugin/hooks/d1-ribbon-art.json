@@ -1,0 +1,1 @@
+{"tie":"@keyframes knot{0%{opacity:0;transform:scale(.4)}60%{opacity:1;transform:scale(1.12)}100%{transform:scale(1)}}@keyframes drop{0%{transform:scaleY(0)}100%{transform:scaleY(1)}}@keyframes sway{0%{transform:skewX(0)}30%{transform:skewX(2.6deg)}62%{transform:skewX(-1.2deg)}84%{transform:skewX(.4deg)}100%{transform:skewX(0)}}"}

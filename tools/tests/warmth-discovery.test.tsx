@@ -1,7 +1,12 @@
+import { installM1Words } from './m1-more-data-fixture'
 // The public help names warmth; the old affection verb remains accepted for existing users.
+import { gapWord } from '../hooks/mod-gaps-words'
 import { describe, expect, test } from 'claude-code/testing'
 import type { On } from 'claude-code'
-import { PERSON, P, RECENT, world } from './world'
+import { PERSON, P, RECENT, world, settleLegacyStart } from './world'
+
+
+installM1Words()
 
 const START = { cwd: '/tmp/project', surface: 'terminal' as const, isInteractive: true }
 
@@ -23,17 +28,18 @@ describe('warmth command discovery', () => {
     }) as On
     const w = world(watchedOn, { store: RECENT })
     await $.session.start(START)
+    await settleLegacyStart($,w)
 
-    expect(registrations.find(command => command.name === 'claudesama')).toEqual({
-      name: 'claudesama',
-      description: 'Claude-sama: his voice, warmth, the band, language, omen, about',
-      argumentHint: '[voice|warmth|band|lang|omen|about] [value]',
+    expect(registrations.find(command => command.name === 'coco')).toEqual({
+      name: 'coco',
+      description: gapWord('en','cmd.coco'),
+      argumentHint: '[voice|warmth|band|lang|vibe|dm|focus|about|companion|icon|more|say|cards] [value]',
     })
 
-    await $.command.run({ command: 'claudesama', args: 'help', origin: PERSON, presentation: P })
+    await $.command.run({ command: 'coco', args: 'help', origin: PERSON, presentation: P })
     expect(w.toasts.at(-1)).toContain('warmth warm|clingy')
 
-    await $.command.run({ command: 'claudesama', args: 'affection clingy', origin: PERSON, presentation: P })
+    await $.command.run({ command: 'coco', args: 'affection clingy', origin: PERSON, presentation: P })
     expect(w.view().affection).toBe('clingy')
   })
 })

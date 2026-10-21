@@ -1,0 +1,19 @@
+PASS src/orders/calc.test.js
+PASS src/users/model.test.js
+FAIL src/orders/billing.test.js
+  ● Console
+    console.log
+      billing run starting
+      at src/orders/billing.test.js:12:9
+
+  ● Billing service › totals an invoice
+    expect(received).toBe(4200)
+    4199 |   expect(totals).toBe(4200)
+
+  ● Billing service › rounds to cents
+    expect(received).toBe(2)
+
+Test Suites: 1 failed, 2 passed, 3 total
+Tests:       2 failed, 4 passed, 6 total
+Snapshots:   0 total
+Time:        1.4 s

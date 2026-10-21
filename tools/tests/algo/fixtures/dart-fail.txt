@@ -1,0 +1,12 @@
+00:00 +0: loading tests/parser_test.dart
+00:00 +1: wren parser parses a header
+00:00 +2: wren parser rejects an empty body
+00:00 +3: wren parser writes nested output
+00:00 +3 -1: [E] wren parser writes nested output
+  Expected: <3>
+    Actual: <2>
+  package:test_api                  expect
+  test/parser_test.dart
+  main.<fn>
+00:00 +2 -1: wren parser writes nested output [E]
+00:00 +2 -1: Some tests failed.

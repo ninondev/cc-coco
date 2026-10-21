@@ -1,0 +1,2 @@
+// Generated live public facade. Authoritative implementation: hooks-source/mod-gaps-words.ts
+export {mod_gaps_words__gapCharacterName as gapCharacterName,mod_gaps_words__gapFill as gapFill,mod_gaps_words__gapPool as gapPool,mod_gaps_words__gapWord as gapWord,mod_gaps_words__installGapWords as installGapWords,mod_gaps_words__loadGapWords as loadGapWords,mod_gaps_words__missingGapKeys as missingGapKeys,mod_gaps_words__resetGapWords as resetGapWords} from './m1-compiled/companion.js'

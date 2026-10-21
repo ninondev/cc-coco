@@ -1,0 +1,24 @@
+// Exact MOD-GAPS reference flower and spacer markup.
+export const BLANK_35 = "<svg xmlns=\"http://www.w3.org/2000/svg\" viewBox=\"0 0 35 1\" width=\"35\" height=\"1\"></svg>"
+export const RUN_MARK = {"pass": "<svg xmlns=\"http://www.w3.org/2000/svg\" viewBox=\"0 0 14 14\" width=\"14\" height=\"14\" style=\"forced-color-adjust:none\"><style>.o{fill:none;stroke-width:1.1;stroke-linejoin:round}.p{fill:#C75730}.o{stroke:#C75730}@media(prefers-color-scheme:dark){.p{fill:#E58A69}.o{stroke:#E58A69}}@media(prefers-contrast:more),(forced-colors:active){.p{fill:#9E4123}.o{stroke:#9E4123}}@media(prefers-contrast:more) and (prefers-color-scheme:dark),(forced-colors:active) and (prefers-color-scheme:dark){.p{fill:#F4A988}.o{stroke:#F4A988}}</style><path class=\"p\" d=\"M4.676 3.801A2.55 2.55 0 0 1 9.324 3.801A2.55 2.55 0 0 1 10.761 8.222A2.55 2.55 0 0 1 7.000 10.954A2.55 2.55 0 0 1 3.239 8.222A2.55 2.55 0 0 1 4.676 3.801ZM8.050 7.000A1.05 1.05 0 1 0 5.950 7.000A1.05 1.05 0 1 0 8.050 7.000Z\"/></svg>", "fail": "<svg xmlns=\"http://www.w3.org/2000/svg\" viewBox=\"0 0 14 14\" width=\"14\" height=\"14\" style=\"forced-color-adjust:none\"><style>.o{fill:none;stroke-width:1.1;stroke-linejoin:round}.p{fill:#6B665F}.o{stroke:#6B665F}@media(prefers-color-scheme:dark){.p{fill:#A39E93}.o{stroke:#A39E93}}@media(prefers-contrast:more),(forced-colors:active){.p{fill:#4A4642}.o{stroke:#4A4642}}@media(prefers-contrast:more) and (prefers-color-scheme:dark),(forced-colors:active) and (prefers-color-scheme:dark){.p{fill:#C9C4BA}.o{stroke:#C9C4BA}}</style><path class=\"o\" d=\"M4.676 3.801A2.55 2.55 0 0 1 9.324 3.801A2.55 2.55 0 0 1 10.761 8.222A2.55 2.55 0 0 1 7.000 10.954A2.55 2.55 0 0 1 3.239 8.222A2.55 2.55 0 0 1 4.676 3.801Z\"/><circle class=\"o\" cx=\"7.0\" cy=\"7.0\" r=\"1.15\"/></svg>"}
+// A spent window is drawn as the stick at 100 %; the words say it is out (no all-ash drawing).
+export function modIncenseSvg(windows:readonly {kind:string;percentUsed:number}[],working=false,options:{hot?:readonly string[];budget?:'off'|number;neighbour?:boolean}={}):string {
+ const body=['five_hour','seven_day'].map((kind,index)=>{
+  const w=windows.find(w=>w.kind===kind);if(!w||!Number.isFinite(w.percentUsed)||w.percentUsed<0)return ''
+  const x=index?11:5,top=index?1:5,used=Math.max(0,Math.min(100,w.percentUsed))
+  const ember=top+(17-top)*used/100,hot=options.hot?.includes(kind)&&!options.neighbour
+  let b=`<path d="M${x} ${top}V18" class="g"/><path d="M${x} ${ember.toFixed(2)}V18" class="${hot?'hot':'stick'}"/>`
+  if(options.budget&&options.budget!=='off'&&used<options.budget&&!options.neighbour)b+=`<rect class="thread" x="${x-1.8}" y="${(top+(17-top)*options.budget/100-.5).toFixed(2)}" width="3.6" height="1" rx=".5"/>`
+  if(used<100){
+   if(hot){const h=Math.min(4.6,ember+.4),base=ember+.6,ft=base-h,ww=1.5;b+=`<path d="M${x} ${ft.toFixed(2)}C${(x+.35*ww).toFixed(2)} ${(ft+.35*h).toFixed(2)} ${x+ww} ${(base-.42*h).toFixed(2)} ${x+ww} ${(base-.22*h).toFixed(2)}A${ww} ${ww} 0 0 1 ${x-ww} ${(base-.22*h).toFixed(2)}C${x-ww} ${(base-.42*h).toFixed(2)} ${(x-.35*ww).toFixed(2)} ${(ft+.35*h).toFixed(2)} ${x} ${ft.toFixed(2)}Z" fill="#E5562E"/><ellipse cx="${x}" cy="${(base-.28*h).toFixed(2)}" rx=".75" ry="${(.26*h).toFixed(2)}" fill="#FFC65C"/>`}
+   else b+=`<path d="M${x} ${ember.toFixed(2)}v2" class="${used>=85?'t':'t cool'}"/>`
+   if(working&&!options.neighbour)b+=`<path d="M${x} ${(ember-1).toFixed(2)}q-1-2 0-3t0-3" fill="none" class="sm" stroke-width=".6"/>`
+  }
+  return b
+ }).join('')
+ const emberColor=windows.some(w=>Number.isFinite(w.percentUsed)&&w.percentUsed>=85)?'#B84936':options.neighbour?'#9C8F86':'#DC755D'
+ const light=`.stick,.g{stroke:${options.neighbour?'#827F79':'#846D57'};stroke-width:1.4}.g{opacity:.3}.hot{stroke:#D2552D;stroke-width:1.4}.thread{fill:#8E3B22}.t{stroke:${emberColor};stroke-width:2}.t.cool{stroke:${options.neighbour?'#9C8F86':'#DC755D'}}.sm{stroke:#6B665F;opacity:.45}.bowl{fill:${options.neighbour?'#827F79':'#846D57'}}`
+ const dark=`.stick,.g{stroke:${options.neighbour?'#8E8B85':'#C0A98E'}}.hot{stroke:#F0794C}.thread{fill:#EDE3D6}.sm{stroke:#C5BEB1}.bowl{fill:${options.neighbour?'#8E8B85':'#C0A98E'}}`
+ const hcLight=`.g{opacity:1;stroke-dasharray:1 1.2}.sm{display:none}.t{stroke:${options.neighbour?'#827F79':'#B84936'}}.t.cool{stroke:${options.neighbour?'#827F79':'#B84936'}}`,hcDark=`.g{opacity:1;stroke-dasharray:1 1.2}.sm{display:none}${options.neighbour?'.t{stroke:#8E8B85}.t.cool{stroke:#8E8B85}':''}`
+ return `<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 16 22" width="16" height="22" style="forced-color-adjust:none"><style>${light}@media(prefers-color-scheme:dark){${dark}}@media(prefers-contrast:more),(forced-colors:active){${hcLight}}@media(prefers-contrast:more) and (prefers-color-scheme:dark),(forced-colors:active) and (prefers-color-scheme:dark){${hcDark}}</style>${body}<path class="bowl" d="M2 18h12l-2 3H4z"/></svg>`
+}

@@ -6,16 +6,17 @@ import { companionRecord, companionSession, companionTask } from '../hooks/compa
 import { initialView } from '../hooks/mood'
 import { taskForTool } from '../hooks/tasks'
 import { IconBook } from '../hooks/icon-book'
+import { latest } from '../hooks/latest'
 import { runIcon } from '../hooks/pages'
 import { BOOK_FILES } from './book-files'
 import { WINDOWS_ROOTS } from './test-system'
-import { P, PERSON, RECENT, band, world } from './world'
+import { settleLegacyStart, P, PERSON, RECENT, band, world } from './world'
 
 const ROOT = 'C:\\Users\\windows\\project'
 const PROFILE = 'C:\\Users\\windows'
 const ENV = { USERPROFILE: PROFILE, LANG: 'en_US.UTF-8', TERM: 'xterm-256color' }
 const START = { cwd: ROOT, surface: 'terminal' as const, isInteractive: true }
-const PANE = { plugin: 'claudesama', component: 'Pane' as const, requestId: 'claudesama-book', props: { title: 'Claude-sama', isFocused: true, bodyColumns: 64, placement: 'dock' as const, scroll: { offset: 0, bodyRows: 40 }, view: {} } }
+const PANE = { plugin: 'coco', component: 'Pane' as const, requestId: 'coco-book', props: { title: 'Coco', isFocused: true, bodyColumns: 64, placement: 'dock' as const, scroll: { offset: 0, bodyRows: 40 }, view: {} } }
 const callbacks = { running: () => {}, seen: () => {}, ack: async () => {}, changed: async () => {} }
 
 describe('Windows roots and unsupported capabilities', () => {
@@ -30,7 +31,7 @@ describe('Windows roots and unsupported capabilities', () => {
   test('a Windows folder cannot spawn a POSIX request reader', async () => {
     let writes = 0, spawns = 0
     const child = async function* () { return { code: 0, signal: null } }
-    const channel = new CompanionChannel({ exists: async () => true, write: async () => { writes++ }, spawn: () => { spawns++; return child() as never }, now: async () => 0, submit: async () => {}, clear: async () => {} }, 's1', PROFILE + '\\Library\\Application Support\\Claude-sama', callbacks)
+    const channel = new CompanionChannel({ exists: async () => true, write: async () => { writes++ }, spawn: () => { spawns++; return child() as never }, now: async () => 0, submit: async () => {}, clear: async () => {} }, 's1', PROFILE + '\\Library\\Application Support\\Coco', callbacks)
     await channel.start()
     expect(writes).toBe(0)
     expect(spawns).toBe(0)
@@ -44,13 +45,20 @@ describe('Windows roots and unsupported capabilities', () => {
     expect(spawns).toBe(0)
   })
   test('USERPROFILE without HOME suppresses icon commands even with misleading POSIX probes', async () => {
-    let calls = 0
-    const engine = { plugin: { root: PROFILE + '\\Claude-sama' }, env: { get: async (name: string) => (ENV as Record<string, string>)[name] }, fs: { exists: async () => true }, process: { run: async () => { calls++; return { exitCode: 0, stdout: 'icon: own\n', stderr: '' } } } } as unknown as EngineInterface
-    const icon = new IconBook()
-    await runIcon(engine, icon, 'apply', () => {})
-    expect(calls).toBe(0)
-    expect(icon.unavailable).toBe(true)
+    const before = latest.settings
+    try {
+      for (const appIcon of ['on','off',undefined] as const) {
+        latest.settings = appIcon ? { appIcon } : {}
+        let calls = 0, probes = 0
+        const engine = { plugin: { root: PROFILE + '\\Coco' }, env: { get: async (name: string) => (ENV as Record<string, string>)[name] }, fs: { exists: async () => { probes++; return true } }, process: { run: async () => { calls++; return { exitCode: 0, stdout: 'icon: own\n', stderr: '' } } } } as unknown as EngineInterface
+        const icon = new IconBook()
+        await runIcon(engine, icon, 'status', () => {})
+        expect(calls).toBe(0); expect(probes).toBe(0)
+        expect(icon.unavailable).toBe(appIcon === 'on')
+      }
+    } finally { latest.settings = before }
   })
+  // SPEC 0.5 and C3 Build 0: book words load once on first open; unsupported native operations remain absent.
   for (const surface of ['desktop', 'terminal'] as const) test(`${surface}: book and band survive USERPROFILE-only Windows; unsupported sections are hidden`, async ($, on) => {
     let writes = 0, spawns = 0, runs = 0
     on('session.id', () => ({ value: 'windows-session' }))
@@ -60,22 +68,28 @@ describe('Windows roots and unsupported capabilities', () => {
     on('process.run', () => { runs++; throw new Error('native command must not run') })
     on('process.spawn', async function* () { spawns++; return { code: 0, signal: null } })
     const w = world(on, { store: RECENT, env: ENV, sessionRoot: ROOT })
-    await $.session.start(START)
+    await $.session.start(START); await settleLegacyStart($,w);
     const strip = await $.ui.mount({ surface, ...band(100) })
-    expect(await strip.find({ type: 'Text', text: /Claude-sama/ })).toBeDefined()
-    await $.command.run({ command: 'claudesama', args: 'settings', origin: PERSON, presentation: P })
+    expect(await strip.find({ type: 'Text', text: /Coco/ })).toBeDefined()
+    expect(w.fileReads.filter(path=>/[\\/]book[\\/]/.test(path))).toEqual([])
+    await $.command.run({ command: 'coco', args: 'settings', origin: PERSON, presentation: P })
     const book = await $.ui.mount({ surface, ...PANE })
     const words = JSON.parse(BOOK_FILES['en.json']).settings
-    expect((await book.findAll({ type: 'Button' })).filter(button => String(button.key).startsWith('claudesama:book:tab:')).length).toBe(6)
+    // her bag's seven pages (the sock drawer is the fourth, lane C 10-14); none of them is hidden on Windows
+    expect((await book.findAll({ type: 'Button' })).filter(button => String(button.key).startsWith('coco:book:tab:')).length).toBe(7)
     if (WINDOWS_ROOTS) {
       const windowsReads = w.fileReads.map(path => path.slice(path.indexOf('C:'))).filter(path => path.startsWith('C:'))
-      expect(windowsReads.filter(path => /\\(?:book|assets)\\/.test(path))).toEqual([])
+      expect(windowsReads.filter(path => /\\(?:book|assets)\\/.test(path))).toEqual(['C:\\Users\\windows\\Coco\\book\\en.json'])
       expect(windowsReads.every(path => /^C:\\/.test(path) && !path.includes('/'))).toBe(true)
 
     }
-    expect(await book.find({ type: 'Text', text: words.icon.label })).toBeUndefined()
+    expect(typeof words.icon.S1).toBe('string')
+    expect(words.icon.S1.length).toBeGreaterThan(0)
+    expect(await book.find({ type: 'Text', text: words.icon.S1 })).toBeUndefined()
     expect(await book.find({ type: 'Text', text: words.companion.label })).toBeUndefined()
-    expect((await book.findAll({ type: 'Button' })).filter(button => /^claudesama:(?:icon|companion):/.test(String(button.key)))).toEqual([])
+    expect((await book.findAll({ type: 'Button' })).filter(button => /^coco:(?:icon|companion):/.test(String(button.key)))).toEqual([])
+    await book.redraw();await $.command.run({command:'coco',args:'settings',origin:PERSON,presentation:P});await book.redraw()
+    expect(w.fileReads.filter(path=>/[\\/]book[\\/]en\.json$/.test(path)).length).toBe(1)
     expect(writes).toBe(0); expect(spawns).toBe(0); expect(runs).toBe(0)
 
   })

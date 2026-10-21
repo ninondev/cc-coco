@@ -1,0 +1,6 @@
+Started
+..
+
+3 specs, 0 failures
+Finished in 0.021 seconds
+Randomized with seed 82475 ( Jasmine --random=true )

@@ -1,0 +1,12 @@
+Test Suite 'All tests' started at 2026-10-05 01:02:03.456.
+Test Suite 'BillingTests.xctest' started at 2026-10-05 01:02:03.457.
+Test Case '-[ShopTests.BillingTests testComputeTotals]' started.
+Test Case '-[ShopTests.BillingTests testRoundsToCents]' passed (0.008 seconds).
+Test Case '-[ShopTests.BillingTests testComputeTotals]' failed (0.012 seconds).
+/home/user/src/shop/Tests/BillingTests.swift:12: error: -[ShopTests.BillingTests testComputeTotals] : XCTAssertEqual failed
+Test Case '-[ShopTests.BillingTests testRejectsEmpty]' failed (0.004 seconds).
+	Test Suite 'BillingTests.xctest' failed at 2026-10-05 01:02:04.001.
+		 Executed 3 tests, with 2 failures (0 expectations) in 0.5 (0.5) seconds
+		Test Suite 'All tests' failed at 2026-10-05 01:02:04.002.
+
+** TEST FAILED **

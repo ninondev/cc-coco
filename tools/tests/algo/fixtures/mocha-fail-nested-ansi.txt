@@ -1,0 +1,14 @@
+[0m
+[32m✓[39m [2mreads a flat list[22m
+  [32m1 passing[39m[2m (12ms)[22m
+  [31m1 failing[39m
+
+  [0m[31m1) Wren parser
+       nested output
+         writes nested output:[39m
+
+      [31mAssertionError[39m: expected [31m3[39m to equal [32m2[39m
+      [31m+ expected[39m [32m- actual[39m
+
+[2m      at Context.<anonymous> (test/wren/parser.spec.js:24:18)[22m
+

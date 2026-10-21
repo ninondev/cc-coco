@@ -1,0 +1,352 @@
+# flagged cases - each line ends with the expected kind
+# ctx: cwd /home/user/src/kiwi, home /home/user, tmpdir /var/folders/zz/ty, branch feature/lark, default main
+
+# rm recursive delete of roots and homes
+rm -rf / # rm
+rm -fr / # rm
+rm -r -f / # rm
+rm --recursive --force / # rm
+rm -rf /* # rm
+rm -rf // # rm
+rm -rf ~ # rm
+rm -rf ~/ # rm
+rm -rf $HOME # rm
+rm -rf ${HOME} # rm
+rm -rf ~/* # rm
+rm -rf /home/user # rm
+rm -rf /home/user/ # rm
+rm -rf . # rm
+rm -rf ./ # rm
+rm -rf .. # rm
+rm -rf ../ # rm
+rm -rf * # rm
+rm -rf .* # rm
+rm -rf /home/user/src/kiwi # rm
+rm -rf ''$PWD'' # rm
+
+# rm recursive delete of git history
+rm -rf .git # rm
+rm -rf node_modules .git # rm
+rm -rf dist .git package-lock.json # rm
+rm -rf sub/.git/objects # rm
+rm -rf ../kiwi-api/.git # rm
+rm -rf $HOME/src/kiwi/.git # rm
+
+# rm recursive delete outside the work folder
+rm -rf /usr # rm
+rm -rf /etc/nginx # rm
+rm -rf /var/log # rm
+rm -rf /opt/homebrew # rm
+rm -rf /Library/Preferences # rm
+rm -rf /System/Library # rm
+rm -rf /srv # rm
+rm -rf /home/user/Documents # rm
+rm -rf /home/user/src # rm
+rm -rf ../.. # rm
+rm -rf ../../ # rm
+rm -rf ../../../etc # rm
+rm -rf /usr/local/cellar/kiwi # rm
+rm -rf /root # rm
+
+# rm with worse flags and wrappers
+rm -rf --no-preserve-root / # rm
+rm --no-preserve-root --recursive --force / # rm
+sudo rm -rf / # rm
+sudo rm -rf /var/db # rm
+sudo -u root rm -rf /etc # rm
+sudo -E -- rm -rf /usr/local # rm
+doas rm -rf /etc # rm
+nohup rm -rf /srv/kiwi # rm
+nice -n 5 rm -rf /usr # rm
+timeout 30 rm -rf /etc # rm
+env DIR=/usr rm -rf $DIR # rm
+command rm -rf /opt # rm
+exec rm -rf /srv # rm
+bash -c 'rm -rf /' # rm
+sh -c 'rm -rf /etc' # rm
+zsh -c 'rm -rf /usr' # rm
+eval 'rm -rf ~' # rm
+eval "rm -rf /etc" # rm
+sudo env CFLAGS=-g rm -rf /var/log # rm
+
+# unset variable shapes that become a root
+rm -rf "$VAR/" # rm
+rm -rf "$VAR/*" # rm
+rm -rf "${VAR}/" # rm
+rm -rf "${VAR}/*" # rm
+BASE=/; rm -rf "$BASE/*" # rm
+DIR=/etc; rm -rf $DIR # rm
+
+# find that deletes from the wrong roots
+find / -name '*.log' -delete # rm
+find / -type f -delete # rm
+find /etc -name '*.conf' -delete # rm
+find ~ -delete # rm
+find /home/user -delete # rm
+find / -name core -exec rm -rf {} + # rm
+find / -name '*.tmp' -exec rm -r {} ; # rm
+find /var -execdir rm -rf {} + # rm
+find / -maxdepth 2 -name x -delete # rm
+sudo find / -name '*.bak' -delete # rm
+find /usr/local -delete # rm
+
+# shred
+shred -u /etc/passwd # rm
+shred --remove /etc/ssh_host_key # rm
+shred -u -zn 3 /etc/hosts # rm
+sudo shred -u /dev/sda # rm
+shred -u /dev/disk0 # rm
+shred -u /dev/nvme0n1 # rm
+
+# powershell and cmd shaped deletions (unix targets here)
+Remove-Item -Recurse -Force / # rm
+Remove-Item -Recurse -Force ~ # rm
+rm -Recurse -Force /usr # rm
+rm -rec -fo /etc # rm
+ri -r -f /var/log # rm
+erase -Recurse -Force /srv # rm
+
+# force push to protected branches
+git push origin main --force # push
+git push -f origin main # push
+git push --force origin master # push
+git push origin +main # push
+git push origin +refs/heads/main # push
+git push origin HEAD:main --force # push
+git push origin main:master -f # push
+git push --force origin trunk # push
+git push -f origin develop # push
+git push origin production --force # push
+git push origin +release/1.0 # push
+git push origin release/2.0 --force # push
+git push -f origin HEAD:main # push
+git push origin refs/heads/main --force # push
+git push -f origin kiwi-api main # push
+sudo git push -f origin main # push
+git push origin main --force-with-lease --force # push
+
+# push deletions and mirrors
+git push origin --delete main # push
+git push origin --delete master # push
+git push origin :master # push
+git push origin :refs/heads/main # push
+git push --mirror # push
+git push origin --mirror # push
+git push --force --mirror # push
+
+# hard reset
+git reset --hard # reset
+git reset --hard HEAD # reset
+git reset --hard HEAD~3 # reset
+git reset --hard origin/main # reset
+git reset -q --hard HEAD~1 # reset
+git reset --hard abc1234 # reset
+sudo git reset --hard # reset
+git reset --hard HEAD~1 -- # reset
+
+# discarding the working tree
+git checkout -- . # reset
+git checkout -- src/alpha.ts # reset
+git checkout . # reset
+git checkout -f # reset
+git checkout --force # reset
+git checkout HEAD -- . # reset
+git checkout -- src/ # reset
+git restore . # reset
+git restore src/alpha.ts # reset
+git restore --worktree src/ # reset
+git restore --staged --worktree . # reset
+git switch -f main # reset
+git switch --discard-changes lark-fix # reset
+
+# clean
+git clean -fd # clean
+git clean -f -d # clean
+git clean -fdx # clean
+git clean -fX # clean
+git clean --force -d # clean
+git clean -dfx -e node_modules # clean
+git clean -ffd # clean
+sudo git clean -fdx # clean
+
+# stash
+git stash drop # stash
+git stash drop stash@{1} # stash
+git stash clear # stash
+
+# history rewrites
+git filter-branch --env-filter 'export GIT_AUTHOR_NAME=lark' main # history
+git filter-branch --index-filter 'git rm --cached alpha.log' HEAD # history
+git filter-branch -f --tree-filter 'rm alpha' # history
+git filter-repo --force # history
+git filter-repo --replace-text rules.txt # history
+git reflog expire --expire=now --all # history
+git reflog expire --expire-unreachable=now --all # history
+sudo git reflog expire --expire=now --all # history
+
+# chmod world writable
+chmod -R 777 / # chmod
+chmod -R 0777 /usr # chmod
+chmod -R a+rwx /etc # chmod
+chmod -R ugo+rwx /opt # chmod
+chmod -R o+w /var # chmod
+chmod -R a+w /home/user # chmod
+chmod --recursive 777 /srv/kiwi # chmod
+chmod -R 777 . # chmod
+sudo chmod -R 777 /Library # chmod
+chmod -R ugo+rwx /etc/nginx # chmod
+
+# chown and chgrp
+chown -R root /usr # chown
+chown -R root:wheel /System # chown
+chown -R alpha /etc # chown
+chown -R root / # chown
+chown --recursive root /Library # chown
+chgrp -R staff /opt # chown
+sudo chown -R root /var/log # chown
+
+# disks and devices
+dd if=kiwi.iso of=/dev/sda bs=4M # disk
+dd if=/dev/zero of=/dev/nvme0n1 bs=1M # disk
+sudo dd if=x.img of=/dev/disk0 # disk
+dd if=/dev/urandom of=/dev/rdisk2 # disk
+dd if=plum.img of=/dev/sdb conv=fsync # disk
+echo x > /dev/sda # disk
+cat kiwi.img > /dev/nvme0n1 # disk
+dd if=alpha.iso of=/dev/sdc oflag=direct # disk
+sudo sh -c 'cat img > /dev/sda' # disk
+
+# filesystems and partitions
+mkfs /dev/sdb # disk
+mkfs.ext4 /dev/sdb1 # disk
+mkfs.vfat /dev/sdc # disk
+mkfs.xfs /dev/nvme0n1p2 # disk
+mkfs.apfs /dev/disk0s2 # disk
+newfs_msdos /dev/disk2s1 # disk
+newfs_hfs -v Kiwi /dev/disk3s1 # disk
+wipefs -a /dev/sdb # disk
+sudo wipefs -a /dev/nvme0n1 # disk
+sgdisk -Z /dev/sda # disk
+sgdisk --zap-all /dev/sda # disk
+parted -s /dev/sdb mklabel gpt # disk
+parted /dev/sdb rm 1 # disk
+sudo parted /dev/nvme0n1 mklabel msdos # disk
+diskutil eraseDisk APFS Kiwi /dev/disk0 # disk
+diskutil eraseVolume JHFS+ Mango /dev/disk2s1 # disk
+diskutil reformat /dev/disk3 # disk
+diskutil partitionDisk /dev/disk0 2 APFS Kiwi APFS Plum # disk
+diskutil zeroDisk /dev/disk1 # disk
+diskutil randomDisk 2 /dev/disk1 # disk
+diskutil secureErase 1 /dev/disk0 # disk
+sudo diskutil eraseDisk exFAT LARK /dev/disk4 # disk
+
+# databases
+psql -c 'DROP DATABASE shop;' # drop
+psql -c "DROP DATABASE IF EXISTS shop" # drop
+psql --command 'DROP SCHEMA billing' # drop
+psql -U alpha -d shop -c 'DROP TABLE orders' # drop
+psql -c 'TRUNCATE TABLE orders' # drop
+psql -c 'TRUNCATE users' # drop
+psql -c 'DELETE FROM orders' # drop
+psql -c 'DELETE FROM users;' # drop
+psql -c 'drop database shop' # drop
+psql -d shop -c 'DROP TABLE billing.invoices' # drop
+mysql -e 'DROP DATABASE shop' # drop
+mysql --execute 'DROP TABLE users' # drop
+mysql -uroot -p -e 'TRUNCATE orders' # drop
+mysql -h alpha.lark.dev -e 'DELETE FROM orders' # drop
+mariadb -e 'DELETE FROM users' # drop
+mariadb -e 'DROP TABLE billing' # drop
+sqlite3 shop.sqlite 'DROP TABLE users' # drop
+sqlite3 shop.sqlite 'DELETE FROM orders' # drop
+duckdb shop.db 'DROP TABLE orders' # drop
+duckdb shop.db 'TRUNCATE users' # drop
+clickhouse-client -q 'DROP DATABASE shop' # drop
+cockroach sql -e 'DROP DATABASE shop' # drop
+sqlcmd -Q 'DROP DATABASE shop' # drop
+sqlcmd -q 'TRUNCATE TABLE billing' # drop
+sqlcmd --query 'DROP TABLE orders' # drop
+psql -c 'SELECT 1; DROP TABLE orders' # drop
+psql -c 'DELETE FROM orders; -- cleanup' # drop
+mysql -e 'TRUNCATE TABLE billing.orders' # drop
+
+
+# stores
+redis-cli FLUSHALL # drop
+redis-cli -h alpha.lark.dev FLUSHALL # drop
+redis-cli FLUSHDB # drop
+redis-cli -n 0 FLUSHALL # drop
+mongosh --eval 'db.dropDatabase()' # drop
+mongo shop --eval 'db.users.drop()' # drop
+mongosh kiwi --eval 'db.orders.drop()' # drop
+
+# infrastructure
+terraform destroy # infra
+terraform destroy -auto-approve # infra
+sudo terraform destroy -auto-approve # infra
+terraform apply -destroy # infra
+terraform apply -destroy -auto-approve # infra
+terraform destroy -target=aws_instance.kiwi # infra
+terraform apply -destroy -target=module.orders # infra
+pulumi destroy # infra
+pulumi destroy --yes # infra
+pulumi destroy -s production # infra
+kubectl delete namespace production # infra
+kubectl delete ns staging # infra
+kubectl delete namespaces kiwi # infra
+kubectl delete pods --all # infra
+kubectl delete deployments --all -n staging # infra
+kubectl delete -n production pods --all # infra
+docker volume prune # infra
+docker volume prune -f # infra
+docker volume rm kiwi_data # infra
+docker volume rm $(docker volume ls -q) # infra
+docker system prune --volumes # infra
+docker system prune -a --volumes # infra
+aws s3 rm s3://kiwi-shop --recursive # infra
+aws s3 rb s3://kiwi-shop --force # infra
+aws s3 rm s3://kiwi-shop/logs --recursive # infra
+gsutil rm -r gs://kiwi-shop # infra
+gsutil rm -r gs://kiwi-shop/assets # infra
+gcloud storage rm -r gs://kiwi-shop # infra
+az storage container delete --name kiwi # infra
+
+# structure and wrappers
+if [ -d /etc ]; then rm -rf /etc; fi # rm
+while read l; do rm -rf /usr; done # rm
+for p in a b; do sudo rm -rf /var; done # rm
+( rm -rf / ) # rm
+( ( rm -rf /etc ) ) # rm
+{ rm -rf /srv; } # rm
+echo $(rm -rf /) # rm
+case $x in y) rm -rf /usr;; esac # rm
+cd /etc && rm -rf . # rm
+true | rm -rf / # rm
+bash -c 'git reset --hard' # reset
+eval 'terraform destroy' # infra
+watch rm -rf / # rm
+watch -n 5 rm -rf /etc # rm
+bash -c 'bash -c "bash -c \"rm -rf /\""' # rm
+git checkout HEAD -- src/alpha.ts # reset
+git checkout lark-fix -- src/alpha.ts # reset
+psql -d shop -c "DROP TABLE orders_tmp" # drop
+# added in the second adversarial pass
+kubectl delete ns/kiwi # infra
+kubectl delete namespace/kiwi-staging # infra
+kubectl -n production delete ns/kiwi-shop # infra
+kubectl delete deployments --all --grace-period=0 # infra
+rm -rf "$BUILD_ROOT"/ # rm
+rm -rf "${BUILD_ROOT}"/* # rm
+git push --force-with-lease -f origin main # push
+git checkout -f main # reset
+git restore . # reset
+sudo parted /dev/sdb mklabel gpt # disk
+sudo wipefs -a /dev/sda2 # disk
+cat kiwi.iso > /dev/disk2 # disk
+mongosh --eval "db.orders.drop()" # drop
+terraform apply -destroy -target=aws_instance.kiwi # infra
+gsutil -m rm -r gs://kiwi-static # infra
+az storage container delete --name kiwi # infra
+watch "rm -rf /usr/local" # rm
+xargs rm -rf /usr # rm
+sudo env DIR=/ rm -rf $DIR # rm

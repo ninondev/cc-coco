@@ -1,0 +1,417 @@
+{
+ "version": 1,
+ "source": "art/chatgpt/16-shed-v1.png (owner, 10-05 06:28); recipe art/shed/recipe.py; spec design-0.3 SPEC 3.9",
+ "frame": {
+  "size": [
+   151,
+   128
+  ],
+  "note": "the painted frame since 10-05 07:1x: scale 0.40, each figure centred (7 px right of where it sat in the old 137 x 128 frame), bust row 126; no value here assumes 137"
+ },
+ "units": {
+  "band": "frame px of the 151 x 128 painted frame (the band picture is 75.5 CSS px wide at rest, 79.5 with the motion margins); the skin lies inside the frame, so the still viewBox 0 0 151 128 and the motion viewBox -4 0 159 128 both show it whole, at 64 and 32 CSS px tall",
+  "companion": "device px at the stated screen scale, relative to the top-left of his frame image (the 151 x 128 frame resampled to that scale, as Frames.swift does); pt = px / scale",
+  "time": "ms after the compaction ends (next(e) resolves with messages)"
+ },
+ "paper": {
+  "fill": "#F9EDD9",
+  "edge": "#3C251D",
+  "rules": "#D2C3B3"
+ },
+ "timeline": {
+  "reveal": [
+   0,
+   250,
+   "cubic-bezier(0,0,.2,1)",
+   "a clip grows rightward from her coil"
+  ],
+  "hold": [
+   250,
+   520
+  ],
+  "fade": [
+   520,
+   870,
+   "linear"
+  ],
+  "companion_turn": {
+   "pages_cell_in": [
+    400,
+    520,
+    "linear"
+   ],
+   "lying_out": [
+    460,
+    520,
+    "linear"
+   ]
+  },
+  "pages": [
+   {
+    "start": 520,
+    "duration": 900,
+    "drift": -1.0
+   },
+   {
+    "start": 620,
+    "duration": 960,
+    "drift": 0.6
+   },
+   {
+    "start": 740,
+    "duration": 860,
+    "drift": 1.4
+   }
+  ],
+  "gleam": [
+   250,
+   750,
+   "unchanged (SPEC 3.3)"
+  ],
+  "sweep": [
+   150,
+   630,
+   "unchanged"
+  ],
+  "back": 1600
+ },
+ "page_motion": {
+  "fall": "distance * u^1.6",
+  "drift": "drift * amplitude * (sin(1.4 pi u) + 0.8 u)",
+  "turn": "sign(drift) * (12 + 30 u) deg",
+  "opacity": "0 to 1 over the first 80 ms, 1 until u 0.6, then to 0 at u 1",
+  "u": "(t - start) / duration"
+ },
+ "reduced_motion": {
+  "skin": "the lying skin (band: the band skin) shown whole at 0, still until 600, opacity to 0 by 800; no reveal, no pages cell, no falling pages, no gleam"
+ },
+ "band": {
+  "frame": "snake",
+  "skin": {
+   "file": "band-skin.png",
+   "width": 24,
+   "height": 15,
+   "bytes": 1181,
+   "png": "indexed (exact)",
+   "max_error": 0.0,
+   "x": 126,
+   "y": 111
+  },
+  "reveal_clip_x": [
+   126,
+   151
+  ],
+  "page_svg": "<svg xmlns=\"http://www.w3.org/2000/svg\" viewBox=\"0 0 11 13\" width=\"11\" height=\"13\"><rect x=\".5\" y=\".5\" width=\"10\" height=\"12\" fill=\"#F9EDD9\" stroke=\"#3C251D\"/><path d=\"M2.5 4h6M2.5 7h5M2.5 10h3\" stroke=\"#D2C3B3\"/></svg>",
+  "page_size": [
+   11,
+   13
+  ],
+  "page_starts": [
+   [
+    134.0,
+    120.0
+   ],
+   [
+    139.5,
+    118.0
+   ],
+   [
+    145.0,
+    117.5
+   ]
+  ],
+  "page_fall": 42,
+  "page_drift_amplitude": 5,
+  "coil_cut": {
+   "103": 123,
+   "104": 125,
+   "105": 126,
+   "106": 127,
+   "107": 128,
+   "108": 129,
+   "109": 130,
+   "110": 130,
+   "111": 131,
+   "112": 131,
+   "113": 131,
+   "114": 131,
+   "115": 131,
+   "116": 131,
+   "117": 131,
+   "118": 131,
+   "119": 130,
+   "120": 130,
+   "121": 130,
+   "122": 129,
+   "123": 128,
+   "124": 127,
+   "125": 126,
+   "126": 125,
+   "127": 123
+  },
+  "gleam_dots": [
+   [
+    99,
+    78,
+    1.3
+   ],
+   [
+    105,
+    75.5,
+    0.9
+   ]
+  ],
+  "order": "frame image, skin, gleam, pages; skin and pages inside the frame's own group",
+  "check": "python3 art/shed/recipe.py --check-frame plugin/assets/desktop/<NN>-snake.png"
+ },
+ "companion": {
+  "medium": {
+   "pt": {
+    "skin_left": 100.75,
+    "skin_right": 161.25,
+    "tube": 3.25,
+    "bottom_on_ledge": 91,
+    "bottom_elsewhere": 95,
+    "sink": 5,
+    "scale_pt_per_master_px": 0.092934,
+    "page_fall": 30.0,
+    "page_drift_amplitude": 6.0
+   },
+   "1x": {
+    "frame_image": [
+     114,
+     96
+    ],
+    "lying": {
+     "file": "companion-medium@1x-lying.png",
+     "width": 62,
+     "height": 7,
+     "bytes": 1387,
+     "png": "indexed (exact)",
+     "max_error": 0.0,
+     "dx": 100,
+     "dy_on_ledge": 84,
+     "dy_elsewhere": 88
+    },
+    "pages": {
+     "file": "companion-medium@1x-pages.png",
+     "width": 61,
+     "height": 10,
+     "bytes": 1475,
+     "png": "rgba",
+     "max_error": null,
+     "dx": 101,
+     "dy_on_ledge": 81,
+     "dy_elsewhere": 85
+    },
+    "page_starts": [
+     [
+      107.03,
+      85.96
+     ],
+     [
+      111.86,
+      85.66
+     ],
+     [
+      116.72,
+      87.69
+     ]
+    ],
+    "page": {
+     "file": "companion-medium@1x-page.png",
+     "width": 9,
+     "height": 11,
+     "bytes": 198,
+     "png": "indexed (exact)",
+     "max_error": 0.0,
+     "page_box": [
+      7.0,
+      8.27
+     ]
+    }
+   },
+   "2x": {
+    "frame_image": [
+     227,
+     192
+    ],
+    "lying": {
+     "file": "companion-medium@2x-lying.png",
+     "width": 122,
+     "height": 15,
+     "bytes": 3430,
+     "png": "rgba",
+     "max_error": null,
+     "dx": 201,
+     "dy_on_ledge": 167,
+     "dy_elsewhere": 175
+    },
+    "pages": {
+     "file": "companion-medium@2x-pages.png",
+     "width": 121,
+     "height": 19,
+     "bytes": 4279,
+     "png": "rgba",
+     "max_error": null,
+     "dx": 202,
+     "dy_on_ledge": 163,
+     "dy_elsewhere": 171
+    },
+    "page_starts": [
+     [
+      214.06,
+      171.93
+     ],
+     [
+      223.71,
+      171.31
+     ],
+     [
+      233.43,
+      175.38
+     ]
+    ],
+    "page": {
+     "file": "companion-medium@2x-page.png",
+     "width": 16,
+     "height": 19,
+     "bytes": 217,
+     "png": "indexed (exact)",
+     "max_error": 0.0,
+     "page_box": [
+      14.0,
+      16.55
+     ]
+    }
+   }
+  },
+  "large": {
+   "pt": {
+    "skin_left": 133.5,
+    "skin_right": 199.0,
+    "tube": 3.52,
+    "bottom_on_ledge": 122,
+    "bottom_elsewhere": 127,
+    "sink": 6,
+    "scale_pt_per_master_px": 0.100614,
+    "page_fall": 40.0,
+    "page_drift_amplitude": 8.0
+   },
+   "1x": {
+    "frame_image": [
+     151,
+     128
+    ],
+    "lying": {
+     "file": "companion-large@1x-lying.png",
+     "width": 66,
+     "height": 8,
+     "bytes": 1386,
+     "png": "rgba",
+     "max_error": null,
+     "dx": 133,
+     "dy_on_ledge": 114,
+     "dy_elsewhere": 119
+    },
+    "pages": {
+     "file": "companion-large@1x-pages.png",
+     "width": 65,
+     "height": 10,
+     "bytes": 1657,
+     "png": "rgba",
+     "max_error": null,
+     "dx": 134,
+     "dy_on_ledge": 112,
+     "dy_elsewhere": 117
+    },
+    "page_starts": [
+     [
+      140.3,
+      116.55
+     ],
+     [
+      145.52,
+      116.21
+     ],
+     [
+      150.79,
+      118.42
+     ]
+    ],
+    "page": {
+     "file": "companion-large@1x-page.png",
+     "width": 12,
+     "height": 14,
+     "bytes": 204,
+     "png": "indexed (exact)",
+     "max_error": 0.0,
+     "page_box": [
+      9.33,
+      11.03
+     ]
+    }
+   },
+   "2x": {
+    "frame_image": [
+     302,
+     256
+    ],
+    "lying": {
+     "file": "companion-large@2x-lying.png",
+     "width": 131,
+     "height": 16,
+     "bytes": 3840,
+     "png": "rgba",
+     "max_error": null,
+     "dx": 267,
+     "dy_on_ledge": 228,
+     "dy_elsewhere": 238
+    },
+    "pages": {
+     "file": "companion-large@2x-pages.png",
+     "width": 130,
+     "height": 20,
+     "bytes": 4756,
+     "png": "rgba",
+     "max_error": null,
+     "dx": 268,
+     "dy_on_ledge": 224,
+     "dy_elsewhere": 234
+    },
+    "page_starts": [
+     [
+      280.6,
+      233.09
+     ],
+     [
+      291.05,
+      232.43
+     ],
+     [
+      301.57,
+      236.84
+     ]
+    ],
+    "page": {
+     "file": "companion-large@2x-page.png",
+     "width": 21,
+     "height": 25,
+     "bytes": 240,
+     "png": "indexed (exact)",
+     "max_error": 0.0,
+     "page_box": [
+      18.67,
+      22.06
+     ]
+    }
+   }
+  },
+  "reveal_from_frame_x": 131,
+  "gap_pt": 2.5,
+  "room_pt_right_of_frame": 48,
+  "room_rule": "the skin's right end stays 16 pt inside the window's right edge on the ledge and inside the visible screen elsewhere; with less room scale the skin, its pages cell and the page starts about the skin's left end by room / natural width, down to 0.6; below that no skin and no pages; no skin when his bottom is off screen",
+  "layering": "skin and pages cell above his frame image in his own panel (below Claude's window on the ledge); falling pages in one transient, non-clickable panel ordered above Claude's window while they fall; if it cannot show, they pass behind the edge",
+  "pixel_heads": "Extra small and Small: pixel frames as cuts: snake held; at the end shed-a 160, shed-b 200, shed-c 600 ms, snake to 1600, then back; no painted skin"
+ }
+}

@@ -1,0 +1,3 @@
+// Generated live public facade. Authoritative implementation: hooks-source/window-notes.tsx
+export {window_notes__RECEIVED_DISCLOSURE_SLOT as RECEIVED_DISCLOSURE_SLOT,window_notes__RECEIVED_MARKER_SLOT as RECEIVED_MARKER_SLOT,window_notes__ReceivedNotes as ReceivedNotes,window_notes__ReceivedNotesBook as ReceivedNotesBook,window_notes__receivedInbox as receivedInbox,window_notes__receivedNoteId as receivedNoteId,window_notes__receivedNoteKey as receivedNoteKey,window_notes__resetReceivedInbox as resetReceivedInbox} from './m1-compiled/motion_stills.js'
+export type {ReceivedNote} from '../hooks-source/window-notes'

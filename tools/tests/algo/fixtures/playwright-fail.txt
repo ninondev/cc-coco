@@ -1,0 +1,20 @@
+
+Running 12 tests using 4 workers
+
+  ✓  1 [chromium] › shop.spec.ts:11:5 › cart › adds an item
+  ✓  2 [chromium] › shop.spec.ts:18:5 › cart › removes an item
+  ✘  3 [chromium] › shop.spec.ts:25:5 › checkout › totals the basket
+  ✓  4 [chromium] › shop.spec.ts:33:5 › checkout › applies a coupon
+  ✓  5 [firefox] › shop.spec.ts:11:5 › cart › adds an item
+
+  1) [chromium] › shop.spec.ts:25:5 › checkout › totals the basket
+
+    Error: expect(received).toBe(expected) // Object.is equality
+
+    Expected: "42.00"
+    Received: "40.00"
+
+      25 |   await expect(page.locator('.total')).toHaveText('42.00')
+
+  1 failed (chromium 1ms)
+  11 passed (1.2m)

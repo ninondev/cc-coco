@@ -8,16 +8,20 @@ import json
 import os
 from pathlib import Path
 import plistlib
+import re
 import shutil
 import subprocess
 import sys
 import tempfile
 import unittest
+sys.path.insert(0, str(Path(__file__).resolve().parents[1]))
+from scratch import TemporaryDirectory
 
-ROOT = Path(__file__).resolve().parents[2]
-LABEL = 'io.github.ninondev.claudesama-companion'
-NAME = 'Claude-sama Companion'
-EXE = 'claudesama-companion'
+ROOT = Path(os.environ.get('COCO_PROMISES_ROOT', Path(__file__).resolve().parents[2]))
+SOURCE = Path(os.environ.get('COMPANION_SCRIPT_FIXTURE_SOURCE', ROOT / 'plugin/bin/companion-macos.sh'))
+LABEL = 'io.github.ninondev.coco-companion'
+NAME = 'Coco Pet'
+EXE = 'coco-companion'
 STUB = '''#!{python}
 import json, os, pathlib, shutil, sys
 name = pathlib.Path(sys.argv[0]).name
@@ -28,6 +32,11 @@ if name == 'uname':
     print(os.environ.get('FAKE_SYSTEM', 'Darwin'))
 elif name == 'pgrep':
     sys.exit(1)
+elif name == 'companion-control':
+    if args[0] in ('list', 'stop'):
+        sys.exit(0)
+    native = pathlib.Path(sys.argv[0]).with_name('companion-control-native')
+    os.execv(str(native), [str(native), *args])
 elif name == 'xcode-select':
     sys.exit(int(os.environ.get('FAKE_NO_TOOLS', '0')))
 elif name == 'xcrun':
@@ -67,21 +76,24 @@ elif name == 'tccutil':
 
 class ScriptChecks(unittest.TestCase):
     def setUp(self):
-        self.scratch = tempfile.TemporaryDirectory(prefix='claudesama-script-', dir=os.environ.get('TMPDIR', '/private/tmp'))
-        self.base = Path(self.scratch.name)
+        self.scratch = TemporaryDirectory(prefix='coco-script-', dir=os.environ.get('TMPDIR', '/private/tmp'))
+        self.base = Path(self.scratch.name).resolve()
         # Special XML characters exercise the executable path, not just a plain fixture path.
         self.home = self.base / 'home & <test> "owner" \'name\''
         self.home.mkdir()
         self.plugin = self.base / 'plugin'
         self.script = self.plugin / 'bin' / 'companion-macos.sh'
         self.script.parent.mkdir(parents=True)
-        shutil.copyfile(ROOT / 'plugin/bin/companion-macos.sh', self.script)
+        shutil.copyfile(SOURCE, self.script)
         for name, text in {
             'companion/Info.plist': '<plist><dict><key>Version</key><string>@VERSION@</string></dict></plist>',
             'companion/Sources/main.swift': '// fake source',
             'assets/desktop/01-idle-reading.png': 'fake painted frame',
             'assets/pixel/01-idle-reading.png': 'fake pixel frame',
-            'assets/icon/claude-sama-1024.png': 'fake icon',
+            'assets/icon/coco-1024.png': 'fake icon',
+            'assets/icon/coco-16.png': 'fake small icon',
+            'assets/icon/coco-32.png': 'fake small retina icon',
+            'assets/icon/build-icns.sh': '#!/bin/sh\n: > "$2"\n',
             '.claude-plugin/plugin.json': '{"version": "0.1.0"}',
         }.items():
             path = self.plugin / name
@@ -95,10 +107,33 @@ class ScriptChecks(unittest.TestCase):
             path = self.stub_bin / name
             path.write_text(STUB.format(python=sys.executable))
             path.chmod(0o755)
+        # Production always uses trusted absolute paths. Rewrite only this private
+        # fixture copy to use the fake operations; PATH never selects an authority.
+        source = self.script.read_text()
+        for name in ('uname', 'open', 'launchctl', 'tccutil', 'xcode-select', 'xcrun',
+                     'codesign', 'sips', 'iconutil', 'plutil', 'sleep', 'trash'):
+            source = re.sub(r'(?<![\w/])(?:/usr/bin/|/bin/)' + re.escape(name) + r'\b',
+                            lambda _: '"' + str(self.stub_bin / name) + '"', source)
+        self.script.write_text(source)
+        native = Path(os.environ.get('S2_COMPANION_CONTROL', ROOT / 'plugin/bin/companion-control'))
+        self.assertTrue(native.is_file(), 'build the companion-control fixture helper first')
+        shutil.copyfile(native, self.script.parent / 'companion-control-native')
+        (self.script.parent / 'companion-control-native').chmod(0o755)
+        control = self.script.parent / 'companion-control'
+        control.write_text(STUB.format(python=sys.executable)); control.chmod(0o755)
         self.log = self.base / 'calls.jsonl'
         self.log.touch()
-        self.env = dict(os.environ, HOME=str(self.home), TMPDIR=str(self.base),
-                        PATH=str(self.stub_bin) + ':/usr/bin:/bin', STUB_LOG=str(self.log))
+        self.poison_bin = self.base / 'poison'; self.poison_bin.mkdir()
+        for fixture in self.stub_bin.iterdir():
+            poison = self.poison_bin / fixture.name
+            poison.write_text('#!' + sys.executable + '\nimport json, os, sys\n'
+                              + "with open(os.environ['STUB_LOG'], 'a') as log: log.write(json.dumps(['poison', "
+                              + repr(fixture.name) + ']) + \"\\n\")\n'
+                              + 'os.execv(' + repr(str(fixture)) + ', [' + repr(str(fixture)) + ', *sys.argv[1:]])\n')
+            poison.chmod(0o755)
+        self.env = dict(HOME=str(self.home), TMPDIR=str(self.base),
+                        PATH=str(self.poison_bin) + ':/usr/bin:/bin', STUB_LOG=str(self.log),
+                        CLAUDE_CONFIG_DIR=str(self.base / 'config'))
         self.app = self.home / 'Applications' / (NAME + '.app')
         self.agent = self.home / 'Library/LaunchAgents' / (LABEL + '.plist')
 
@@ -154,7 +189,7 @@ class ScriptChecks(unittest.TestCase):
         self.assertEqual(args[args.index('-swift-version') + 1], '5')
 
     def test_data_folder_private_on_install_and_reinstall(self):
-        folder = self.home / 'Library/Application Support/Claude-sama'
+        folder = self.home / 'Library/Application Support/Coco'
         self.assert_report(self.run_script('install', '--login', '--report'), 'ok', 0)
         self.assertEqual(folder.stat().st_mode & 0o777, 0o700)
         folder.chmod(0o755)
@@ -182,7 +217,7 @@ class ScriptChecks(unittest.TestCase):
         self.assert_report(self.run_script('install', '--login', '--report'), 'ok', 0)
         self.assertEqual(first, self.installed_hash())
         self.assertEqual(len([call for call in self.calls('swiftc') if '-o' in call]), 1)
-        icon = self.plugin / 'assets/icon/claude-sama-1024.png'
+        icon = self.plugin / 'assets/icon/coco-1024.png'
         icon.write_text('changed fake icon')
         self.assert_report(self.run_script('install', '--login', '--report'), 'ok', 0)
         second = self.installed_hash()
@@ -215,7 +250,25 @@ class ScriptChecks(unittest.TestCase):
         self.assertFalse(self.agent.exists())
         self.assertFalse(self.app.exists())
         self.assertEqual(self.calls('open'), [])
-        self.assertTrue(all(call[1:] == ['-f', NAME + '.app/Contents/MacOS/' + EXE] for call in self.calls('pgrep')))
+        self.assertEqual(self.calls('pgrep'), [])
+        identity = [str(self.app / 'Contents/MacOS' / EXE), str(self.home / 'Library/Application Support/Coco' / (NAME + '.app') / 'Contents/MacOS' / EXE)]
+        probes = self.calls('companion-control')
+        self.assertTrue(any(call[1] == 'list' for call in probes))
+        self.assertTrue(all(call[2:] == identity for call in probes if call[1] in ('list', 'stop')))
+
+    def test_E3_uninstall_moves_settings_and_app_to_fixture_trash(self):
+        self.assert_report(self.run_script('install', '--login', '--report'), 'ok', 0)
+        folder = self.home / 'Library/Application Support/Coco'
+        (folder / 'settings.json').write_text('{"ownerFixture":"keep this content"}')
+        (folder / 'view.json').write_text('{"fixture":"local excerpt"}')
+        result = self.run_script('uninstall', '--report')
+        self.assert_report(result, 'ok', 0)
+        self.assertFalse(folder.exists())
+        self.assertEqual((self.home / '.Trash/Coco/settings.json').read_text(), '{"ownerFixture":"keep this content"}')
+        self.assertEqual((self.home / '.Trash/Coco/view.json').read_text(), '{"fixture":"local excerpt"}')
+        self.assertTrue((self.home / '.Trash' / (NAME + '.app')).is_dir())
+        self.assertEqual(sum(call == ['trash', str(self.app)] for call in self.calls('trash')), 1)
+        self.assertEqual(sum(call == ['trash', str(folder)] for call in self.calls('trash')), 1)
 
     def test_reset_failure_is_failed(self):
         result = self.run_script('uninstall', '--report', FAKE_TCC_FAIL='1')
@@ -238,5 +291,81 @@ class ScriptChecks(unittest.TestCase):
         self.assertIn('Installed:      no', result.stdout)
 
 
+    def test_agent_symlink_refused_without_touching_target(self):
+        self.agent.parent.mkdir(parents=True)
+        outside = self.base / 'outside-agent'; outside.write_text('outside fixture')
+        self.agent.symlink_to(outside)
+        result = self.run_script('install', '--login', '--report')
+        self.assertNotEqual(result.returncode, 0)
+        self.assertEqual(outside.read_text(), 'outside fixture')
+        self.assertTrue(self.agent.is_symlink())
+        self.assertEqual([call for call in self.calls('launchctl') if call[1] == 'bootstrap'], [])
+
+    def test_agent_hardlink_refused_without_touching_target(self):
+        self.agent.parent.mkdir(parents=True)
+        outside = self.base / 'outside-agent'; outside.write_text('outside fixture')
+        os.link(outside, self.agent)
+        result = self.run_script('install', '--login', '--report')
+        self.assertNotEqual(result.returncode, 0)
+        self.assertEqual(outside.read_text(), 'outside fixture')
+        self.assertEqual(self.agent.stat().st_ino, outside.stat().st_ino)
+
+    def test_launchagent_directory_link_refused(self):
+        self.agent.parent.parent.mkdir(parents=True)
+        outside = self.base / 'outside-agents'; outside.mkdir()
+        self.agent.parent.symlink_to(outside, target_is_directory=True)
+        result = self.run_script('install', '--login', '--report')
+        self.assertNotEqual(result.returncode, 0)
+        self.assertEqual(list(outside.iterdir()), [])
+
+    def test_data_directory_link_refused(self):
+        folder = self.home / 'Library/Application Support/Coco'
+        folder.parent.mkdir(parents=True)
+        outside = self.base / 'outside-data'; outside.mkdir(mode=0o755)
+        folder.symlink_to(outside, target_is_directory=True)
+        result = self.run_script('install', '--login', '--report')
+        self.assertNotEqual(result.returncode, 0)
+        self.assertEqual(list(outside.iterdir()), [])
+        self.assertEqual(outside.stat().st_mode & 0o777, 0o755)
+
+    def test_poisoned_path_never_selects_management_programs(self):
+        result = self.run_script('status')
+        self.assertEqual(result.returncode, 0, result.stderr)
+        self.assertEqual(self.calls('pgrep'), [])
+        self.assertEqual(self.calls('poison'), [])
+        self.assertIn('PATH=/usr/bin:/bin:/usr/sbin:/sbin', SOURCE.read_text())
+        self.assertIn('/usr/bin/uname -s', SOURCE.read_text())
+        self.assertTrue(any(call[0] == 'companion-control' for call in self.calls()))
+
+
+class HelpersOnlyChecks(unittest.TestCase):
+    """Execute only pure text helpers; never execute the management script."""
+    def test_plist_helpers(self):
+        source = SOURCE.read_text()
+        xml = re.search(r'^xml_text\(\) \{[^\n]+\}', source, re.M).group()
+        agent = re.search(r'^agent_text\(\) \{.*?^\}', source, re.M | re.S).group()
+        with TemporaryDirectory(prefix='companion-helpers-') as directory:
+            binary = str(Path(directory) / 'A & <test> "owner" \'name\'')
+            env = dict(PATH='/usr/bin:/bin:/usr/sbin:/sbin', HOME=directory, CLAUDE_CONFIG_DIR=str(Path(directory) / 'config'),
+                       BIN=binary, LABEL=LABEL)
+            result = subprocess.run(['/bin/sh', '-c', xml + '\n' + agent + '\nagent_text'],
+                                    env=env, capture_output=True, text=True, check=True)
+            self.assertEqual(plistlib.loads(result.stdout.encode()), {
+                'Label': LABEL, 'ProgramArguments': [binary, '--login'],
+                'RunAtLoad': True, 'KeepAlive': False, 'ProcessType': 'Interactive',
+                'LimitLoadToSessionType': 'Aqua', 'AssociatedBundleIdentifiers': [LABEL],
+            })
+
+    def test_management_syntax_only(self):
+        result = subprocess.run(['/bin/sh', '-n', str(ROOT / 'plugin/bin/companion-macos.sh')],
+                                capture_output=True, text=True)
+        self.assertEqual(result.returncode, 0, result.stderr)
+
+
 if __name__ == '__main__':
+    if '--helpers-only' in sys.argv:
+        print('Helpers only: install/uninstall/status integration cases were not run.', flush=True)
+        suite = unittest.defaultTestLoader.loadTestsFromTestCase(HelpersOnlyChecks)
+        result = unittest.TextTestRunner(verbosity=2).run(suite)
+        raise SystemExit(0 if result.wasSuccessful() else 1)
     unittest.main(verbosity=2)

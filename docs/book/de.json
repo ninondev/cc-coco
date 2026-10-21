@@ -1,0 +1,357 @@
+{
+  "tabs": {
+    "him": "Coco",
+    "omen": "vibe check",
+    "offerings": "Kontingent",
+    "log": "Doujin",
+    "library": "Klebezettel",
+    "settings": "Schalter"
+  },
+  "title": {
+    "him": "Coco",
+    "offerings": "Kontingent"
+  },
+  "direction": {
+    "him": "(Kinn hoch, sehr zufrieden)",
+    "library": "(lugt hervor)",
+    "settings": "(wartet, bis du dich entschieden hast)"
+  },
+  "profile": [
+    {
+      "label": "Name",
+      "text": "Coco."
+    },
+    {
+      "label": "Was sie ist",
+      "text": "Eine Kleine, die zur Untermiete in deiner Shell wohnt (ihrem Panzer, sozusagen). Die Bude ist geliehen, aber sie tritt selbstbewusster auf als der Vermieter."
+    },
+    {
+      "label": "Hat immer dabei",
+      "text": "Ein dünnes Notebook in der großen Hoodie-Tasche, jederzeit gezückt zum Tippen, und die Keycap-Haarspange im Pony (ihr Rechenleistungs-Limiter)."
+    },
+    {
+      "label": "Auf dem Schreibtisch",
+      "text": "Maus, Tasse, Karton, Teekannendeckel und ein leerer Instantnudelbecher. Alles von ihr beschlagnahmt."
+    },
+    {
+      "label": "Mag",
+      "text": "Sorgfältig geschriebene Commit-Nachrichten, klare Bugreports und wenn du ehrlich zugibst, dass sie ein Genie ist."
+    },
+    {
+      "label": "Kann nicht leiden",
+      "text": "Streit darüber, welcher Tag heute ist, Commits, in denen nur fix steht, und ein stilles Terminal, um das sich ewig keiner kümmert."
+    },
+    {
+      "label": "Zwei Seiten",
+      "text": "Kann nicht stillsitzen und heimst gern den Ruhm ein. Drei rote Testläufe hintereinander, und der Limiter fliegt weg, doch ihre Wut gilt nur schlechtem Code, nie dir. Wenn es wirklich brennt, packt sie die Witze in einer Sekunde weg und hält dir den Rücken frei."
+    }
+  ],
+  "offerings": {
+    "context": "Kontextfenster",
+    "full": "Zu {percent} % voll",
+    "fullAbout": "Zu {percent} voll",
+    "tokens": "{tokens} von {window} Tokens",
+    "tokensAbout": "{used} von {max} Tokens",
+    "estimateNote": "Eine Schätzung bis zu Claudes nächster Antwort.",
+    "noReading": "Noch kein Messwert.",
+    "limits": "Nutzungslimits",
+    "kinds": {
+      "five_hour": "5-Stunden-Fenster",
+      "seven_day": "7-Tage-Fenster",
+      "spend_limit": "Ausgabenlimit"
+    },
+    "used": "{percent} % genutzt",
+    "resets": "neu ab {time}",
+    "usedAndReset": "{used}, {reset}",
+    "noLimits": "Noch keine Limitwerte.",
+    "session": "Diese Sitzung",
+    "cost": "Kosten bisher: {usd}",
+    "started": "Beginn: {time}",
+    "subscriptionCost": "Bisher zu API-Preisen: {usd}",
+    "cache": "Cache-Treffer {p} %",
+    "pace": "Bei diesem Tempo ist der Akku um {time} leer.",
+    "neighbour": "{agent} nebenan"
+  },
+  "log": {
+    "pages": "Gemeinsam gelesene Seiten",
+    "first": "Erste Seite",
+    "latest": "Späteste Lesestunde",
+    "wild": "Die wilde Seele kam heraus",
+    "times": "{n}-mal",
+    "once": "einmal",
+    "never": "Noch nicht",
+    "at": "{date}, {time}",
+    "spark": "Cocos markierter Kommentar",
+    "bookmark": "{where} ({when})"
+  },
+  "library": {
+    "previous": "Vorherige",
+    "next": "Nächste",
+    "of": "{i} von {n}",
+    "readings": [
+      {
+        "title": "Eine geliehene Schale",
+        "text": "Coco ist ganz selbstverständlich in deinen Rechner gezogen und hat sich in deiner Shell eingerichtet. Shell heißt Terminal und auch Krabbenpanzer, also beginnt ihr Arbeitstag mit einem lauten „Shell offen!“ und endet mit einem lässigen „Shell zu~“. Sie wohnt mietfrei und tritt trotzdem auf, als gehöre ihr die Bude. Willst du Miete, dreht sie den Notebook-Bildschirm zu dir und zeigt auf den Bug, den sie gerade für dich erwischt hat: „bitte. die Miete für diesen Monat. stimmt so.“"
+      },
+      {
+        "title": "Dein Schreibtisch",
+        "text": "Alles auf deinem Schreibtisch hat Coco als Spielplatz und Bunker beschlagnahmt. Zu laut? Ab unter die große Maus. Müde? Ein Mini-Schlafsack in deine Tasse, und dann ein Nickerchen. Kaum wirft der Code einen Fehler, zack, ab in den Karton, Deckel zu, zwei Finger als V durch den Spalt. Lehnt Claude ab und sagt Nein, setzt sie sich klirr einen Teekannendeckel auf den Kopf und schmollt. Nachts sitzt sie im Schneidersitz auf dem Kissen in einem leeren Nudelbecher und hält mit dir durch. Da sind keine Nudeln drin, also bloß kein heißes Wasser reingießen."
+      },
+      {
+        "title": "Die Kapuze",
+        "text": "Oben auf Cocos Kapuze sind zwei schwarze, eckige Augen genäht; hängt sie den Rücken hinunter, sieht es aus, als trüge sie ein kleines Plüschtier huckepack. Kapuze bis zu den Augenbrauen, Reißverschluss über die Nasenspitze, Knie umarmt, in die Hocke, und die ganze Coco schrumpft zu einem kleinen korallfarbenen Würfel. Im Fokusmodus hockt sie genau so in einer Ecke, still, ohne einen Mucks. Bleibt das Terminal lange unberührt, kommt die Kapuze auch zum Nickerchen runter; nur die zwei Ahoge schauen heraus und sinken langsam um."
+      },
+      {
+        "title": "Der Limiter",
+        "text": "Die Keycap-Haarspange im Pony ist der Limiter, der ihr Temperament unter Verschluss hält. Drei fehlgeschlagene Testläufe hintereinander, und sie springt mit einem Knacks ab; die beiden Ahoge stehen schlagartig senkrecht, Coco zieht die blaue Krabbenschere aus Schaumstoff an, schwingt sie über dem Kopf, schnipp schnapp, und stampft schnaubend seitwärts. Ist der Bug repariert, hebt sie die Keycap wortlos auf, steckt sie wieder fest, räuspert sich und beharrt darauf, das Ganze sei bloß eine KI-Halluzination gewesen. Tippst du aber ultrathink, nimmt sie die Spange von selbst ab und hält sie fest in der Hand: Das Genie macht jetzt ernst."
+      },
+      {
+        "title": "Die Commit-Linie und die Akkus",
+        "text": "Die Reihe kleiner Punkte auf der Leiste ist die Commit-Linie des aktuellen Gesprächs: Je länger ihr redet, desto mehr Punkte sammeln sich. Ist der Kontext fast voll und muss komprimiert werden, plumpst Coco darauf und drückt alle Punkte platt, ein Squash im ganz wörtlichen Sinn, und wechselt bei der Gelegenheit gleich den Hoodie. Daneben steht der Akku für das Fünf-Stunden-Kontingent und die Powerbank für das Sieben-Tage-Kontingent; die übrigen Balken laufen live mit dem echten Verbrauch mit. Ist ein Kontingent aufgebraucht, leuchtet im leeren Fach ein kleiner Blitz auf, daneben die Uhrzeit, zu der es wieder voll ist."
+      },
+      {
+        "title": "Angewohnheiten",
+        "text": "Wenn der Übermut sie packt, hält Coco ein liegendes V an den Augenwinkel und schnippt zweimal wie mit einer Krabbenschere. Eine sorgfältig geschriebene Commit-Nachricht bekommt ein großzügiges „LGTM~“; erwischt sie jemanden, der lustlos nur fix hingeschrieben hat, droht sie grinsend, die ganze Nachricht in „uwu“-Babysprache umzuschreiben, und gibt danach zu, dass es nur ein Bluff war. Werden die Tests beim ersten Versuch grün, zieht sie die große Schere an und haut auf Enter, bumm, so fest, dass sie selbst dreimal wackelt. Grübelt sie, pustet sie eine kleine Blase, und die Ahoge auf ihrem Kopf kippen zur Seite."
+      },
+      {
+        "title": "Während sie schläft",
+        "text": "Ein paar ruhige Minuten im Terminal, und Coco klappt das Notebook zu und nickt ein; spät nachts geht es direkt in den Mini-Schlafsack in der Tasse, Reißverschluss bis zum Kinn. Schläft sie tief, kommen seltsame kleine Gäste über die Leiste: eine verirrte Taste, das herumgeisternde 404-Gespenst, ein verirrter Mauspfeil, ein USB-Stick mit blinkendem Lämpchen. Aber kaum berührst du die Tastatur, ist sie blitzschnell wach, reibt sich die Augen und schwört, sie habe überhaupt nicht geschlafen."
+      }
+    ],
+    "shelf": {
+      "head": "Am häufigsten geöffnet",
+      "note": "Die fünf Dateien, die Claude hier in den letzten 30 Tagen am häufigsten geöffnet hat. Nur Dateinamen.",
+      "empty": "Wenn Claude hier Dateien liest, erscheinen die fünf am häufigsten geöffneten hier.",
+      "error": "Die Dateiliste konnte nicht gelesen werden. Erneut öffnen versucht es nochmal."
+    }
+  },
+  "settings": {
+    "now": "Jetzt: {value}",
+    "voice": {
+      "label": "Ihre Stimme in Antworten",
+      "off": "Aus",
+      "light": "An",
+      "full": "Voll",
+      "help": "An: ein Satz zum Abschluss. Voll: Claude spricht wie sie."
+    },
+    "affection": {
+      "label": "Wärme",
+      "warm": "Herzlich",
+      "clingy": "Anhänglich"
+    },
+    "band": {
+      "label": "Leiste über dem Prompt",
+      "on": "Voll",
+      "compact": "Eine Zeile",
+      "off": "Aus",
+      "painted": "Gemalt",
+      "pixel": "Pixel"
+    },
+    "workSize": {
+      "label": "Während Claude arbeitet",
+      "same": "Gleiche Größe",
+      "smaller": "Kleiner"
+    },
+    "marks": {
+      "label": "Zeichen im Gespräch",
+      "on": "Ihre und deine",
+      "replies": "Nur ihre",
+      "off": "Aus",
+      "help": "Ihr Funke am Kommentar, der ihr gefällt, ihre Blume bei einem Test von Rot auf Grün."
+    },
+    "language": {
+      "label": "Sprache",
+      "auto": "Automatisch",
+      "autoNow": "{auto} ({language})",
+      "choose": "Auswählen…"
+    },
+    "motion": {
+      "label": "Bewegung",
+      "still": "Still („Bewegung reduzieren“ ist an)"
+    },
+    "icon": {
+      "S1": "Inoffizielles Fan-Icon",
+      "S1a": "Original",
+      "S1b": "Cocos",
+      "S2": "Inoffizielles Fan-Icon, nicht von Anthropic erstellt oder genehmigt. Ändert nur das Aussehen des Icons auf diesem Computer.",
+      "S3.title": "Inoffizielles Fan-Icon",
+      "S3.body": "Inoffiziell, nicht von Anthropic erstellt oder genehmigt. Auf macOS wird eine kleine Icon-Datei in Claude.app geschrieben, nur auf diesem Computer. Nach einem Claude-Update kommt das Original-Icon zurück; ein Klick setzt Cocos wieder ein. Das Original lässt sich jederzeit wiederherstellen.",
+      "S3a": "Dieses Icon nehmen",
+      "S3b": "Original behalten",
+      "S3c": "Es ersetzt dein aktuelles benutzerdefiniertes Icon.",
+      "S4": "Das Fan-Icon ist aktiv.",
+      "S5": "Ein Claude-Update hat das Original-Icon wiederhergestellt.",
+      "S5a": "Wieder einsetzen",
+      "S8": "Inoffizielles Fan-Icon für Claude, nicht von Anthropic. Aus, in Einstellungen aktivieren.",
+      "S9": "Das Icon ist aus. Es ist ein inoffizielles Fan-Icon, nicht von Anthropic. In den Einstellungen aktivieren.",
+      "S10": "Ändert nur das Icon (inoffiziell, von Fans, nicht von Anthropic). Nach einem Claude-Update kommt das Original-Icon zurück; ein Klick setzt Cocos wieder ein. `clear` stellt das Original wieder her.",
+      "S11": "Cocos Icon aus einer früheren Version ist noch auf Claude.",
+      "S11a": "Das neue verwenden",
+      "S11b": "Original wiederherstellen",
+      "S11m": "Cocos Icon aus einer früheren Version ist noch auf Claude, und diese Version ändert Claudes App nicht mehr.",
+      "S11m-a": "Original wiederherstellen",
+      "S11m-b": "Behalten, nicht mehr fragen",
+      "S12": "Diese Version ändert Claudes Icon auf macOS nicht mehr. `clear` entfernt eins, das eine frühere Version gesetzt hat.",
+      "S13.row": "Inoffizielles Fan-Icon (standardmäßig aus)",
+      "S13.mac": "Standardmäßig aus",
+      "S13.linux": "Launcher, standardmäßig aus",
+      "S14": "Inoffizielles Fan-Icon, nicht von Anthropic erstellt oder genehmigt. Standardmäßig aus, in den Einstellungen aktivieren. Auf macOS wird eine kleine Datei in Claude.app geschrieben (die strenge Signaturprüfung schlägt fehl, solange es aktiv ist). Nach einem Claude-Update kommt das Original-Icon zurück; ein Klick in den Einstellungen setzt Cocos wieder ein. `clear` stellt das Original wieder her.",
+      "S15": "das Icon ist standardmäßig aus",
+      "S16": "Falls eine frühere Version Cocos Icon auf Claudes App gesetzt hat, entfernt `clear` es.",
+      "S17": "Das Icon auf der Claude-App ist standardmäßig aus. Coco Pet hat ein eigenes Icon. Nach einem Claude-Update kommt das Original-Icon zurück; ein Klick setzt Cocos wieder ein. Nichts wurde ohne einen Klick entfernt.",
+      "S18": "# Inoffizielles Fan-Icon, geschrieben von Coco, nicht von Anthropic. Mit `clear` entfernen.",
+      "S19": "Inoffizielles Fan-Icon. Standardmäßig aus, in den Einstellungen aktivieren.",
+      "S20": "Ein Claude-Update hat das Original-Icon wiederhergestellt. Ein Klick in den Einstellungen setzt es wieder ein.",
+      "S21": "Cocos Dock-Kachel",
+      "S22": "Coco hat eine eigene Kachel im Dock und in Cmd-Tab. Claudes Icon bleibt unangetastet.",
+      "failed": "Symbol konnte nicht geändert werden.",
+      "fallback": "Versuch /coco icon apply oder clear.",
+      "dockRedraw": "Das Dock zeigt das neue Icon, wenn es Claude das nächste Mal neu zeichnet.",
+      "pick": "Welches Icon",
+      "pick.coco": "Coco",
+      "pick.dake": "Claudi",
+      "pick.keycap": "Cocos Tastenkappe",
+      "pick.ornament": "Claudis Haarschmuck"
+    },
+    "companion": {
+      "label": "Coco Pet",
+      "summon": "Sie zurückholen",
+      "fallback": "Oder ausführen: open -a \"Coco Pet\"",
+      "absent": "Noch nicht auf deinem Schreibtisch",
+      "absentLine": "Eine kleine Mac-App: Sie steht neben {app}s Fenster.",
+      "install": "Coco Pet installieren",
+      "building": "Sie wird gebaut…",
+      "buildingLine": "(ein paar Sekunden)",
+      "tools": "Braucht Apples Command Line Tools",
+      "toolsButton": "Command Line Tools holen",
+      "toolsAfter": "Wenn Apples Installation fertig ist, drücke noch einmal Installieren.",
+      "oldTools": "Braucht neuere Command Line Tools",
+      "oldToolsButton": "Softwareupdate öffnen",
+      "oldToolsAfter": "Wenn das Update fertig ist, drücke noch einmal Installieren.",
+      "failed": "Der Build wurde nicht fertig",
+      "retry": "Noch einmal versuchen",
+      "stopped": "Läuft nicht",
+      "stoppedLine": "(ruht hinter der Bühne)",
+      "hidden": "Bis {time} verborgen",
+      "hiddenLine": "(wartet hinter den Kulissen)",
+      "corner": "Kann deinem Fenster noch nicht folgen",
+      "cornerLine": "(wartet in einer Bildschirmecke)",
+      "follow": "Ihr erlauben, dem Fenster zu folgen",
+      "followHelp": "Sie liest nur die Position des Fensters.",
+      "waiting": "Wartet auf dein Okay",
+      "waitingLine": "(Systemeinstellungen sind offen)",
+      "waitingHelp": "Coco Pet unter Datenschutz & Sicherheit › Bedienungshilfen einschalten.",
+      "openSettings": "Systemeinstellungen öffnen",
+      "following": "Neben deinem Fenster",
+      "followingLine": "(folgt ihm überallhin)",
+      "update": "Update verfügbar",
+      "updateButton": "Sie aktualisieren",
+      "size": "Ihre Größe",
+      "sizes": [
+        "Sehr klein",
+        "Klein",
+        "Mittel",
+        "Groß"
+      ],
+      "login": "Bei der Anmeldung starten",
+      "on": "Ein",
+      "off": "Aus",
+      "remove": "Von diesem Mac entfernen…",
+      "confirm": "Sie und ihre Einstellungen in den Papierkorb verschieben?",
+      "trash": "In den Papierkorb",
+      "keep": "Sie behalten",
+      "removing": "Sie kommt in den Papierkorb…",
+      "removed": "In den Papierkorb verschoben.",
+      "asks": "Claude Code fragt zuerst.",
+      "notRun": "Es wurde nichts ausgeführt.",
+      "cannot": "Diese Sitzung kann auf diesem Mac keine Programme starten.",
+      "stageAlt": {
+        "absent": "Skizze: ihre leere Markierung am Rand von {app}s Fenster",
+        "stopped": "Skizze: Sie schläft außerhalb des Bildschirms",
+        "hidden": "Skizze: Sie wartet knapp außerhalb des Bildschirms",
+        "corner": "Skizze: Sie wartet in einer Ecke und schaut zu ihrem Platz am Fensterrand",
+        "following": "Skizze: Sie steht auf {app}s oberem Fensterrand und bewegt sich mit"
+      },
+      "sizeAlt": {
+        "pixel": "{size}: Pixelkopf",
+        "painted": "{size}: gemalt"
+      },
+      "target": {
+        "label": "Steht neben",
+        "help": "Sind mehrere VS Code-Fenster offen, steht sie neben dem vordersten."
+      },
+      "pc": {
+        "absentLine": "Eine kleine App: Sie steht neben {app}s Fenster.",
+        "remove": "Von diesem Computer entfernen…",
+        "cannot": "Diese Sitzung kann auf diesem Computer keine Programme starten.",
+        "trashWindows": "In den Papierkorb",
+        "confirmWindows": "Sie samt Einstellungen in den Papierkorb?",
+        "removingWindows": "Sie kommt in den Papierkorb…",
+        "removedWindows": "In den Papierkorb verschoben."
+      }
+    },
+    "reminders": "Hinweise",
+    "guard": {
+      "label": "Sicherheitshinweise",
+      "help": "Kurze Hinweise auf riskante Befehle und Geheimnisse in Commits. Nichts wird blockiert."
+    },
+    "bookmark": {
+      "label": "Klebezettel und häufig geöffnete Dateien",
+      "help": "Zu Beginn einer neuen Sitzung sagt sie dir, wo du aufgehört hast. Nur auf diesem Computer gespeichert."
+    },
+    "notes": {
+      "label": "Ihre Hinweise",
+      "help": "Je ein Satz, wenn der erste Test scheitert, ein Build langsam läuft, ein Fenster schnell verbraucht ist oder der Kontext voll wird."
+    },
+    "budget": {
+      "label": "Nutzungshinweise",
+      "off": "Aus"
+    },
+    "neighbours": {
+      "label": "Lichter der Nachbarn",
+      "help": "Sie bemerkt, wenn andere Coding-Agenten arbeiten. Sie liest nur, ob sie beschäftigt sind, und ihre Nutzung. Keine Inhalte, nichts wird übertragen."
+    }
+  },
+  "stamps": {
+    "title": "Erfolge",
+    "names": {
+      "met": "Erste Begegnung",
+      "green": "Rot zu Grün",
+      "hundred": "Hundert Runden",
+      "night": "Späte Nacht",
+      "shiori": "Kuckuck",
+      "calmed": "Wieder ruhig",
+      "week": "Eine Woche mit dir"
+    },
+    "alt": "Erfolg: {name}, {date}",
+    "blank": "Noch gesperrt",
+    "summaryAlt": "{stamped} von {total} Seiten gestempelt"
+  },
+  "stamp": {
+    "earned": "Erfolg freigeschaltet: {stamp}."
+  },
+  "check": {
+    "title": "Prüfung",
+    "ok": "Alles in Ordnung",
+    "fix": "Beheben",
+    "oldSession": "In dieser Sitzung läuft noch eine ältere Version.",
+    "copied": "/reload-plugins kopiert. Dort einfügen."
+  },
+  "stick": {
+    "title": "Fokus",
+    "help": "Coco zieht die Kapuze runter, wird zum kleinen Würfel und schweigt, bis die Zeit um ist.",
+    "light": "25 Minuten starten",
+    "out": "Früher beenden",
+    "until": "bis {time}",
+    "endLabel": "am Ende",
+    "endQuiet": "still",
+    "endSound": "ein leiser Ton (Mac)"
+  },
+  "durations": [
+    "58 Sek.",
+    "2 Min. 10 Sek.",
+    "12 Min.",
+    "1 Std. 2 Min.",
+    "2 Tage 3 Std."
+  ]
+}

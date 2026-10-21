@@ -1,0 +1,12 @@
+{
+  "source": "pieces.py of the approved 0.2 design (not part of this repository)",
+  "source_sha256": "d63424ffb893d168a949317ada675306c86996c2c79abf796dd3b1864c0ace79",
+  "function": "lantern_svg",
+  "method": "SVG outputs of the approved original design function; no replacement artwork",
+  "outputs": {
+    "lantern-dark-lit.svg": "154c9937cefd55da7ba24ae9ba0a20dbe475b8ad7c10f6407348db024fe275b2",
+    "lantern-dark-unlit.svg": "9c929d3cbf8054fc565fcd6b278042fafc779fa4d99d460a38d683c82e11cc62",
+    "lantern-light-lit.svg": "42c7c1781aebd22b9409ec32574842ac3114f4dcaefe899cc13e10cb3d313977",
+    "lantern-light-unlit.svg": "d236fb4740fad20cc0c5a4b10a636178df191b39b2b9d0a4f0ece59466620346"
+  }
+}

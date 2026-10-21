@@ -1,0 +1,160 @@
+{
+  "version": 2,
+  "values": {
+    "band-motion-state.ts": [
+      "bandMotionOptions"
+    ],
+    "book-format.ts": [
+      "NO_ITALIC",
+      "moment"
+    ],
+    "d1-pictures.ts": [
+      "loadD1Shed",
+      "d1PixelFrame",
+      "d1Pixel",
+      "frameOverlayX",
+      "shedTransition",
+      "isD1PixelTimeline",
+      "shedPicture"
+    ],
+    "d1-pieces.ts": [
+      "scrollSvg",
+      "lyingScrollSvg",
+      "bundleSvg",
+      "EMPTY_RIBBON"
+    ],
+    "d1-ribbon.ts": [
+      "ribbonSvg",
+      "ribbonTerminalCells"
+    ],
+    "d1-room.ts": [
+      "roomState",
+      "roomLayerNames",
+      "loadRoomLayers",
+      "roomSvg",
+      "roomAlt",
+      "roomScale",
+      "forgetRoom",
+      "roomCacheSize"
+    ],
+    "d1-runtime.ts": [
+      "usageTokens",
+      "D1Runtime"
+    ],
+    "d1-transcript-pieces.ts": [
+      "shedRowSvg"
+    ],
+    "d1-trim-core.ts": [
+      "utf8Bytes",
+      "trimD1Output",
+      "safeD1DataRoot",
+      "trimD1Path"
+    ],
+    "d1-trim-path.ts": [
+      "trimD1Path"
+    ],
+    "d1-trim-row.tsx": [
+      "renderD1TrimRow",
+      "renderD1TrimOutput"
+    ],
+    "d1-trim.tsx": [
+      "createD1TrimRuntime",
+      "d1TrimOutputParts",
+      "replaceD1TrimmedResult"
+    ],
+    "d1-words.ts": [
+      "loadD1Words",
+      "d1Words",
+      "d1Text",
+      "d1Word",
+      "d1MissingWords",
+      "forgetD1Words"
+    ],
+    "desktop-safe.ts": [
+      "DESKTOP_LIMITS",
+      "DesktopTreeError",
+      "validateDesktopTree",
+      "safeDesktopTree",
+      "normalizeDesktopSettings",
+      "normalizeCostSurface",
+      "normalizeDesktopView"
+    ],
+    "motion-svg.ts": [
+      "ANIMATION_MODE",
+      "getMotionWidth",
+      "terminalMotionFrame"
+    ],
+    "motion.ts": [
+      "MOTION",
+      "runtimeRandom",
+      "seededRandom",
+      "sampleHold",
+      "blinkInterval",
+      "blinkShut",
+      "blinkGap",
+      "blinkDouble",
+      "gazeBlinkDelay",
+      "motionCycle",
+      "MOTION2",
+      "motionFrame",
+      "pickMotionVariant",
+      "motionEase",
+      "samplePoints",
+      "sampleSpring",
+      "sampleTouch",
+      "motionHasFace",
+      "generateMotion",
+      "sampleMotion",
+      "nextMotionChange"
+    ],
+    "paths.ts": [
+      "windowsPath",
+      "joinPath",
+      "samePath",
+      "homePath",
+      "isWindows",
+      "presenceFolder",
+      "readRepositoryBranch"
+    ],
+    "d1-ribbon-core.ts": [
+      "RIBBON_PALETTE",
+      "EMPTY_12x1",
+      "validRibbon",
+      "selectRibbon",
+      "rememberRibbon",
+      "reconcileRibbon",
+      "ribbonFolder",
+      "ribbonTerminal"
+    ],
+    "d1-picture-age.ts": [
+      "resumeD1Picture"
+    ],
+    "d1-art-data.ts": [
+      "d1Art",
+      "loadD1Art"
+    ]
+  },
+  "groups": {
+    "d1-state": [
+      "band-motion-state.ts",
+      "book-format.ts",
+      "d1-pictures.ts",
+      "d1-pieces.ts",
+      "d1-ribbon.ts",
+      "d1-room.ts",
+      "d1-runtime.ts",
+      "d1-transcript-pieces.ts",
+      "d1-trim-core.ts",
+      "d1-trim-path.ts",
+      "d1-trim-row.tsx",
+      "d1-trim.tsx",
+      "d1-words.ts",
+      "desktop-safe.ts",
+      "motion-svg.ts",
+      "motion.ts",
+      "d1-ribbon-core.ts",
+      "d1-picture-age.ts",
+      "d1-art-data.ts"
+    ]
+  }
+}

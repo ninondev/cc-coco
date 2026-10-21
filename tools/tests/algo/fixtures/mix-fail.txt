@@ -1,0 +1,25 @@
+==> finch
+Compiling 3 files (.ex)
+Generated finch app
+
+Excluding tags: [regression]
+
+Finch.ParserTest
+  * test parses a header (0.01ms)
+  * test writes nested output (0.02ms) [**FAILED**]
+  * test rejects an empty body (0.01ms)
+
+
+  1) test writes nested output (Finch.ParserTest)
+     test/finch/parser_test.exs:9
+     Assertion with == failed
+     code:  assert parse(input) == [2, 3]
+     left:  [1, 2]
+     right: [2, 3]
+     stacktrace:
+       test/finch/parser_test.exs:9: (test)
+
+
+
+Finished in 0.02 seconds
+1 doctest, 3 tests, 1 failure

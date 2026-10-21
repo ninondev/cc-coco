@@ -1,0 +1,13 @@
+bun test v1.1.29
+
+src/calc.test.ts:
+✓ Calculator > adds numbers [0.03ms]
+✓ Calculator > subtracts numbers [0.02ms]
+
+src/writer.test.ts:
+✓ writer > flushes the buffer [0.05ms]
+
+ 87 pass
+ 0 fail
+ 0 skip
+Ran 87 tests across 4 files. [0.16s]

@@ -1,19 +1,19 @@
 // The offering box keeps up with the engine within a beat, and costs nothing while nothing moves.
 
 import { describe, expect, test } from 'claude-code/testing'
-import { RECENT, SUMMARY, band, desktopPicture, world } from './world'
+import { settleLegacyStart, RECENT, SUMMARY, band, desktopPicture, themeConfig, world } from './world'
 
 const START = { cwd: '/tmp/project', surface: 'terminal' as const, isInteractive: true }
 const SPINNER = { word: 'Working', message: null, suffix: '…' }
 
 function spinner(mode: 'requesting' | 'responding' | 'thinking' | 'tool-input' | 'tool-use') {
-  return { plugin: 'claudesama', component: 'Spinner' as const, props: { ...SPINNER, mode } }
+  return { plugin: 'coco', component: 'Spinner' as const, props: { ...SPINNER, mode } }
 }
 
 describe('the offering box keeps up', () => {
   test('a compaction empties it at once, as the engine estimates, until the next response', async ($, on) => {
     const w = world(on, { percent: 69, store: RECENT, estimate: 24000 })
-    await $.session.start(START)
+    await $.session.start(START); await settleLegacyStart($,w);
     expect(w.view().context).toBe(69)
     w.percent = null // the engine has no figure until the next response
     await $.session.compact({ trigger: 'manual', messages: [SUMMARY] })
@@ -28,7 +28,7 @@ describe('the offering box keeps up', () => {
 
   test('a reading that still counts the old conversation does not bring the old number back', async ($, on) => {
     const w = world(on, { percent: 69, store: RECENT, estimate: 24000 })
-    await $.session.start(START)
+    await $.session.start(START); await settleLegacyStart($,w);
     await $.session.compact({ trigger: 'auto', messages: [SUMMARY] })
     expect(w.view().context).toBe(12)
     await $.prompt.submit({ text: 'next', wait: false, origin: { kind: 'composer' } })
@@ -42,7 +42,7 @@ describe('the offering box keeps up', () => {
 
   test('a precompute and a subagent compaction leave it alone', async ($, on) => {
     const w = world(on, { percent: 69, store: RECENT, estimate: 24000 })
-    await $.session.start(START)
+    await $.session.start(START); await settleLegacyStart($,w);
     await $.session.compact({ trigger: 'precompute', messages: [SUMMARY] })
     expect(w.view().context).toBe(69)
     await $.session.compact({ trigger: 'auto', messages: [SUMMARY], agentId: 'a1' })
@@ -51,20 +51,49 @@ describe('the offering box keeps up', () => {
 
   test('a fresh session shows the estimate, never a made-up 0 %', async ($, on) => {
     const w = world(on, { percent: null, store: RECENT, estimate: 16000 })
-    await $.session.start(START)
+    await $.session.start(START); await settleLegacyStart($,w);
     expect(w.view().context).toBe(8)
     expect(w.view().estimate).toBe(true)
   })
 
+  // his words (10-18): 「我随时变更我的compact阈值这个插件就随时跟着来，毫无延迟」. The box fills against the window the
+  // engine compacts at (his 400k on a 1M model), and follows a change of it at the settings' own notice.
+  test('it fills against his auto-compact window, and follows a change of it at once', async ($, on) => {
+    on('classic.ConfigChange', () => ({}))
+    on('classic.PostModelSwitch', () => ({}))
+    const w = world(on, { percent: 30, store: RECENT, compactWindow: 150000 })
+    await $.session.start(START); await settleLegacyStart($,w);
+    // the engine's 30 % of the model's 200000 is 60000 tokens: 40 % of his 150000
+    expect(w.view().contextTokens).toBe(60000)
+    expect(w.view().contextWindow).toBe(150000)
+    expect(w.view().context).toBe(40)
+    w.compactWindow = 100000
+    await $.classic.ConfigChange({ source: 'user_settings' })
+    await w.clock.advance(1)
+    expect(w.view().contextWindow).toBe(100000)
+    expect(w.view().context).toBe(60)
+    // another model has its own window (his: 400k for most, 100k for Haiku): the switch alone moves the box
+    w.compactWindow = 120000
+    await $.classic.PostModelSwitch({ from_model: 'claude-opus-5-5', to_model: 'claude-haiku-5-5' } as never)
+    await w.clock.advance(1)
+    expect(w.view().contextWindow).toBe(120000)
+    expect(w.view().context).toBe(50)
+    w.compactWindow = undefined // auto-compaction off: the model's own window
+    await $.classic.ConfigChange({ source: 'user_settings' })
+    await w.clock.advance(1)
+    expect(w.view().contextWindow).toBe(200000)
+    expect(w.view().context).toBe(30)
+  })
+
   test('with no figure and no estimate the box hides', async ($, on) => {
     const w = world(on, { percent: null, store: RECENT })
-    await $.session.start(START)
+    await $.session.start(START); await settleLegacyStart($,w);
     expect(w.view().context).toBe(null)
   })
 
   test('each response reads it immediately on either surface, without a spinner or a timer', async ($, on) => {
     const w = world(on, { percent: 20, store: RECENT })
-    await $.session.start(START)
+    await $.session.start(START); await settleLegacyStart($,w);
     await $.turn.start({ text: 'go', turnId: 't1' })
     for (const [index, percent] of [31, 33].entries()) {
       w.percent = percent
@@ -75,14 +104,14 @@ describe('the offering box keeps up', () => {
 
   test('the engine’s own measurement after a turn is taken as pushed', async ($, on) => {
     const w = world(on, { percent: 20, store: RECENT })
-    await $.session.start(START)
+    await $.session.start(START); await settleLegacyStart($,w);
     await $.session.measure({ context: { window: 200000, tokens: 90000, percent: 45 }, rateLimits: [], changed: ['context'] })
     expect(w.view().context).toBe(45)
   })
 
   test('/model and /rewind take effect at once', async ($, on) => {
     const w = world(on, { percent: 40, store: RECENT, estimate: 30000 })
-    await $.session.start(START)
+    await $.session.start(START); await settleLegacyStart($,w);
     w.percent = 8 // the same conversation against a window five times larger
     await $.command.run({ command: 'model', args: 'opus[1m]', origin: { kind: 'composer' }, presentation: { isFullscreen: false, columns: 100 } })
     expect(w.view().context).toBe(8)
@@ -94,7 +123,7 @@ describe('the offering box keeps up', () => {
 
   test('a running response changes the figure without a clock advance, tool call or stage', async ($, on) => {
     const w = world(on, { percent: 20, store: RECENT })
-    await $.session.start(START)
+    await $.session.start(START); await settleLegacyStart($,w);
     await $.turn.start({ text: 'think hard', turnId: 't1' })
     w.percent = 27 // a response landed during a long think
     for await (const chunk of $.turn.step({ turnId: 't1', index: 0, model: 'claude', messageCount: 1 })) {}
@@ -107,7 +136,7 @@ describe('the offering box keeps up', () => {
 
   test('nothing reads while nothing moves: no sprite, no turn, no timer', async ($, on) => {
     const w = world(on, { percent: 20, store: RECENT })
-    await $.session.start(START)
+    await $.session.start(START); await settleLegacyStart($,w);
     const before = w.reads
     await w.clock.advance(5 * 60_000)
     expect(w.reads).toBe(before)
@@ -116,11 +145,11 @@ describe('the offering box keeps up', () => {
 
 describe('the band keeps up with everything else', () => {
   test('a /config change applies at once: theme, reduced motion, language', async ($, on) => {
-    const settings: Record<string, unknown> = { theme: 'dark' }
-    const w = world(on, { settings, store: RECENT })
-    await $.session.start(START)
+    // C3 round 4 item 4: config.set updates the theme row; other preferences still come from settings.
+    const settings: Record<string, unknown> = {}
+    const w = world(on, { settings, config: themeConfig('dark'), store: RECENT })
+    await $.session.start(START); await settleLegacyStart($,w);
     expect(w.view().cue).toBe('claude')
-    settings.theme = 'light'
     settings.prefersReducedMotion = true
     settings.language = 'japanese'
     await $.config.set({ key: 'theme', value: 'light' })
@@ -134,11 +163,11 @@ describe('the band keeps up with everything else', () => {
 
   test('a turn the band did not hear start still shows him working, and he settles when it ends', async ($, on) => {
     const w = world(on, { store: RECENT })
-    await $.session.start(START)
+    await $.session.start(START); await settleLegacyStart($,w);
     const drawn = await $.ui.mount({ surface: 'desktop', ...band(90, true) })
     expect(String((await desktopPicture(drawn))?.props.source)).toContain('data:image/png;base64,')
-    expect(await drawn.find({ type: 'Text', text: /rereading a line/ })).toBeDefined()
+    expect(await drawn.find({ type: 'Text', text: /chin in hand, thinking/ })).toBeDefined()
     await drawn.redraw(band(90, false).props)
-    expect(await drawn.find({ type: 'Text', text: /training/ })).toBeDefined()
+    expect(await drawn.find({ type: 'Text', text: /curled up in the cup/ })).toBeDefined()
   })
 })
