@@ -7,7 +7,7 @@
   </picture>
 </p>
 
-Meet your cutest coding partner. Coco spots your bugs before you do, and makes sure you know how smug they are about it. An unofficial fan-made companion mod for Claude Code.
+Meet your cutest coding partner. Coco peeks at every bug you hit, and makes sure you know how smug they are about it. An unofficial fan-made companion mod for Claude Code.
 
 > [!NOTE]
 > Unofficial fan project, not affiliated with or endorsed by Anthropic. Claude, Claude Code and Clawd belong to Anthropic.
@@ -94,7 +94,7 @@ All on the Switches page. Anything that uses your plan says so. Switches that ca
 
 ## Privacy and cost
 
-By default, Coco makes no extra model calls or network calls, and collects no telemetry. Nothing about you leaves this computer.
+By default, Coco makes no extra model calls or network calls, and collects no telemetry. Coco itself sends nothing about you off this computer.
 
 Switches that call a model use your plan only after you turn them on, and each one shows its cost in the interface. Coco never touches permission prompts or security notices.
 
@@ -160,7 +160,7 @@ Unofficial fan project, not affiliated with or endorsed by Anthropic. Claude, Cl
 
 Claudie's look follows ZipZipPipe's Claude girl, [Claude 拟人立绘·橘白礼服ver](https://www.bilibili.com/opus/1239937623660691478). The design is [ZipZipPipe](https://space.bilibili.com/4168597)'s: please credit them when you share it, and don't use it commercially. Friend site: [蓝色大肥鱼.com](https://蓝色大肥鱼.com)
 
-Code: MIT. Character art: CC BY-NC 4.0, see [ART-LICENSE.md](ART-LICENSE.md). I made the art with an image model.
+Code: MIT. Character art: CC BY-NC 4.0, except the two DeepSeek-chan files in Coco's room, which are CC BY-NC-SA 4.0; see [ART-LICENSE.md](ART-LICENSE.md). I made the art with an image model.
 
 Tested with Claude Code 2.1.302 (the full test suite) and 2.1.299. The desktop app was last checked on a real machine on October 20, 2026.
 

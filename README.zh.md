@@ -9,7 +9,7 @@
 
 你的终端输入框上面，住着小小一只小克。
 
-你的 bug 她总能先一步瞅见，然后冲你竖起呆毛得意半天。这是我给 Claude Code 做的桌宠 mod。
+你的 bug 她总要瞅上一眼，然后冲你竖起呆毛得意半天。这是我给 Claude Code 做的桌宠 mod。
 
 > [!NOTE]
 > 非官方同人作品，与 Anthropic 无关，也未获其认可。Claude、Claude Code 和 Clawd 属于 Anthropic。
@@ -96,7 +96,7 @@ Claude 拒绝干活的时候（HTTP 418），她会把茶壶盖扣在脑袋上�
 
 ## 隐私和开销
 
-默认状态下，她待在屏幕上不调模型、不联网、不发统计数据，你的任何内容都不会出这台电脑。
+默认状态下，她待在屏幕上不调模型、不联网、不发统计数据，她自己不会把你的任何内容传出这台电脑。
 
 「开关」页里要调模型的功能，只有你亲手打开才走你的额度，花多少在界面上都写得明明白白。权限确认和安全提示她一概不碰。
 
@@ -162,7 +162,7 @@ claude plugin uninstall coco@coco && claude plugin marketplace remove coco
 
 大克的造型来自 ZipZipPipe 的 Claude 娘《[Claude 拟人立绘·橘白礼服ver](https://www.bilibili.com/opus/1239937623660691478)》，设计归 [ZipZipPipe](https://space.bilibili.com/4168597)，转发请一并署名，不可商用。友情网站：[蓝色大肥鱼.com](https://蓝色大肥鱼.com)
 
-代码采用 MIT 协议。角色画作采用 CC BY-NC 4.0，详见 [ART-LICENSE.md](ART-LICENSE.md)。画是我用图像模型生成的。
+代码采用 MIT 协议。角色画作采用 CC BY-NC 4.0，只有小克房间里大肥鱼的那两张图采用 CC BY-NC-SA 4.0，详见 [ART-LICENSE.md](ART-LICENSE.md)。画是我用图像模型生成的。
 
 实测过的版本：Claude Code 2.1.302（跑完完整测试）和 2.1.299。桌面版最后一次在真机上看是 2026 年 10 月 20 日。
 
