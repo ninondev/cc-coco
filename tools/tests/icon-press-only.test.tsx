@@ -6,13 +6,14 @@ import { iconAutomatic, iconCommand, iconFirstDraw, iconSettingsHydrated, openIc
 import { latest } from '../hooks/latest'
 import { normalizeLegacySettings } from '../hooks/settings-migration'
 import { BOOK_FILES } from './book-files'
-import { MOCK_WINDOWS_ROOT, samePath, slashPath } from './file-paths'
+import { MOCK_WINDOWS_ROOT, posixPath, samePath, slashPath } from './file-paths'
 import { band, P, PERSON, RECENT, settleLegacyStart, world } from './world'
 import { presenceWorld, snapshot } from './presence-world'
 import { TEST_PLUGIN_ROOT, WINDOWS_ROOTS } from './test-system'
 import { LANGS } from '../hooks/words'
 
 const notice = JSON.parse(BOOK_FILES['en.json']).settings.icon.S20
+const consentFile = /[\\/]app-icon-consent$/ // the engine hands a Windows host its file paths with a drive and backslashes
 const drain = async () => { for (let i=0;i<90;i++) await Promise.resolve() }
 
 function fixture(os: 'macos' | 'linux') {
@@ -362,7 +363,7 @@ describe('I1 press-only icon regression',()=>{
       expect(await book.find({type:'Text',text:words['S3.body']})).toBeDefined();expect(await book.find({key:'coco:icon:confirm'})).toBeDefined()
       await book.press({key:'coco:icon:confirm'});await w.clock.advance(0);await book.redraw()
       expect(calls.map(a=>a[2])).toEqual(['status','apply']);expect(record.appIcon).toBe('on')
-      expect(writes.filter(w=>w.path.endsWith('/app-icon-consent'))).toEqual([{path:'/tmp/i1-linux-first-enable-state/coco/app-icon-consent',text:'on\n'}])
+      expect(writes.filter(w=>consentFile.test(w.path)).map(w=>({...w,path:posixPath(w.path)}))).toEqual([{path:'/tmp/i1-linux-first-enable-state/coco/app-icon-consent',text:'on\n'}])
       expect(events.indexOf('settings:on')).toBeLessThan(events.indexOf('write:on\n'));expect(events.indexOf('write:on\n')).toBeLessThan(events.indexOf('native:apply'))
       expect(await book.find({type:'Text',text:words.S4})).toBeDefined();expect(await book.find({type:'Text',text:words.dockRedraw})).toBeUndefined()
     }else{
@@ -414,7 +415,7 @@ describe('I1 registered icon command provenance',()=>{
       })
       await $.session.start({cwd:'/tmp/i1-origin-only-project',surface:'terminal',isInteractive:true})
       await settleLegacyStart($,w)
-      expect(calls).toEqual([]);expect(writes.filter(w=>w.path.endsWith('/app-icon-consent'))).toEqual([])
+      expect(calls).toEqual([]);expect(writes.filter(w=>consentFile.test(w.path))).toEqual([])
       expect(record).toMatchObject(initial)
       await $.command.run({command:'coco',args:'settings',origin:PERSON,presentation:P})
       const book=await $.ui.mount({surface:'terminal',plugin:'coco',component:'Pane',requestId:'coco-book',props:{title:'Coco',isFocused:true,bodyColumns:42,placement:'dock',scroll:{offset:0,bodyRows:40},view:{}}})
@@ -437,7 +438,7 @@ describe('I1 registered icon command provenance',()=>{
         await book.redraw();expect((await book.find({key:`coco:icon:${action==='apply'?'choose':'clear'}`}))?.props.variant).toBe('primary')
         if(action==='apply')expect(await book.find({type:'Text',text:JSON.parse(BOOK_FILES['en.json']).settings.icon.S4})).toBeDefined()
         expect(w.toasts.includes(JSON.parse(BOOK_FILES['en.json']).settings.icon.dockRedraw)).toBe(action==='apply')
-        const consent=writes.filter(w=>w.path.endsWith('/app-icon-consent'))
+        const consent=writes.filter(w=>consentFile.test(w.path))
         expect(consent.map(w=>w.text)).toEqual(action==='apply'?['on\n']:['',''])
         expect(calls.flat()).not.toContain('--refresh-dock')
       }

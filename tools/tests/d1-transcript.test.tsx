@@ -6,6 +6,7 @@ import {world,RECENT,MORNING,settleLegacyStart,SUMMARY} from './world'
 import {C3_WORDS_RAW} from './c3-words-fixture'
 import {D1_TRANSCRIPT_WORDS_RAW} from './d1-transcript-words-fixture'
 import {WINDOWS_ROOTS} from './test-system'
+import {pathPattern} from './file-paths'
 import {planLine} from '../hooks/transcript'
 import {presenceWorld,snapshot} from './presence-world'
 const START={cwd:WINDOWS_ROOTS?'C:\\Users\\windows\\transcript-source':'/tmp/transcript-source',surface:'vscode' as const,isInteractive:true}
@@ -27,7 +28,7 @@ function trimFixture(on:On){
   if(e.argv[1]?.endsWith('algo-worker.mjs')){const r=JSON.parse(e.init?.stdin??'{}'),result=r.op==='recognize'?{kind:'test',tool:'bun',key:'bun test'}:r.op==='finish'?{parsed:{outcome:'fail'},slowness:{slow:false},history:{}}:null;return {value:{...OK,stdout:JSON.stringify({ok:true,result})}}}
   if(['xdg-open','open','cmd'].includes(e.argv[0]??''))opened.push(e.argv.at(-1)!);return {value:OK}
  })
- on('fs.exists',{path:'/System/Library/CoreServices/SystemVersion.plist'},()=>({value:false}))
+ on('fs.exists',{path:pathPattern('/System/Library/CoreServices/SystemVersion.plist')},()=>({value:false}))
  const w=world(on,{engineRows:true,sessionRoot:START.cwd,surfaces:['vscode'],store:{...RECENT,marks:'off',bandSettings:{trim:true,marks:'off'}},env:{HOME:'/tmp/d1-transcript-home',LANG:'en_US.UTF-8',TERM:'xterm-256color'},readText})
  return {w,persisted,opened,copied,id:()=>toolId}
 }

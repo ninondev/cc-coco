@@ -478,7 +478,7 @@ test('M1 actual Explain off then on discards old completion without a late book 
  expect(late,JSON.stringify(timeline)).toEqual(['bandWake','bandWake']);expect(f.models).toEqual(['model']);expect((writes.get('more.today') as any).rows.explain).toEqual({n:1,tokens:13,cacheRead:0})
  await pane.unmount();await band.unmount()
 })
-test('M1 A1 actual macOS all More off keeps classic watch paths and never starts a fallback child',{options:{band:'off'}},async($,on)=>{
+if(!WINDOWS_ROOTS)test('M1 A1 actual macOS all More off keeps classic watch paths and never starts a fallback child',{options:{band:'off'}},async($,on)=>{
  const f=gapFixture(on,{},'terminal',true),spawns:string[][]=[]
  on('fs.exists',{path:/^\/tmp\/m1-owned-watch(?:\/|$)|^\/System\/Library\/CoreServices\/SystemVersion\.plist$|^\/usr\/bin\/tail$/},()=>({value:true}))
  on('classic.SessionStart',()=>({}));on('classic.CwdChanged',()=>({}));on('process.spawn',async function*($,e,next){spawns.push([...e.argv]);return yield*next(e)})
@@ -486,6 +486,15 @@ test('M1 A1 actual macOS all More off keeps classic watch paths and never starts
  const started=await $.classic.SessionStart({session_id:'fixture-session',cwd:START.cwd,source:'startup'}),paths=started.watchPaths??[];expect(paths.length).toBe(1);expect(paths[0]).toBe('/tmp/m1-owned-watch/Library/Application Support/Coco/requests.jsonl')
  await f.w.clock.advance(2000);await settleLegacyStart($,f.w);expect(spawns).toEqual([])
  const moved=await $.classic.CwdChanged({session_id:'fixture-session',cwd:START.cwd,old_cwd:'/tmp/before'});expect(moved.watchPaths).toEqual(paths)
+ await f.w.clock.advance(600000);expect(spawns).toEqual([])
+})
+if(WINDOWS_ROOTS)test('M1 A1 actual Windows all More off watches no companion file and never starts a fallback child',{options:{band:'off'}},async($,on)=>{
+ const f=gapFixture(on,{},'terminal'),spawns:string[][]=[],cwd='C:\\Users\\windows\\project'
+ on('classic.SessionStart',()=>({}));on('classic.CwdChanged',()=>({}));on('process.spawn',async function*($,e,next){spawns.push([...e.argv]);return yield*next(e)})
+ await gapBegin($,f.w)
+ const started=await $.classic.SessionStart({session_id:'fixture-session',cwd,source:'startup'});expect(started.watchPaths??[]).toEqual([])
+ await f.w.clock.advance(2000);await settleLegacyStart($,f.w);expect(spawns).toEqual([])
+ const moved=await $.classic.CwdChanged({session_id:'fixture-session',cwd,old_cwd:'C:\\Users\\windows\\before'});expect(moved.watchPaths??[]).toEqual([])
  await f.w.clock.advance(600000);expect(spawns).toEqual([])
 })
 

@@ -11,6 +11,7 @@ import { ICON_AUTHOR_WORDS } from './icon-words-fixture'
 import { PLUGIN_SOURCES as PLUGIN_SOURCE } from './plugin-sources'
 import { settleLegacyStart, P, PERSON, RECENT, world, band } from './world'
 import { posixPath, samePath } from './file-paths'
+import { WINDOWS_ROOTS } from './test-system'
 import { LANGS } from '../hooks/words'
 
 function fake(os: 'macos' | 'linux' | 'other' = 'macos') {
@@ -236,7 +237,8 @@ describe('I1 consent and measured icon state',()=>{
     const ui=await $.ui.mount({surface:'desktop',...band(100)})
     expect(await ui.find({type:'Svg'})).toBeDefined()
     for(let i=0;i<10;i++)await $.command.run({command:'i1-boundary',args:'',origin:PERSON,presentation:P})
-    expect(calls.map(a=>a[2])).toEqual(['status'])
+    // Windows has no app icon: this world has no HOME, so its USERPROFILE makes it Windows and no status process ever starts.
+    expect(calls.map(a=>a[2])).toEqual(WINDOWS_ROOTS?[]:['status'])
     release?.();await ui.unmount()
   })
   // The band is an activation option; voice and icon consent live in the machine record.

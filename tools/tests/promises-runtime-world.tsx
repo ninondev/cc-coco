@@ -72,7 +72,7 @@ export function promiseWorld(on: On, options: { voice?: 'off' | 'light' | 'full'
     env: { HOME: PROMISE_HOME, LANG: 'en_US.UTF-8', TERM: options.pictures ? 'xterm-kitty' : 'xterm-256color', ...(options.pictures ? { KITTY_WINDOW_ID: '1' } : {}) },
     surfaces: [...SURFACES], sessionRoot: PROMISE_PROJECT, engineRows: true, stepText: PRIVATE.reply, onRender: options.onRender, toolCheck: options.toolCheck,
     toolResult: tool => tool === 'Read' ? { result: PRIVATE.file, text: PRIVATE.file } : undefined,
-    readText: path => path.endsWith('c3-text.json') ? C3_WORDS_RAW : path.endsWith('frame-manifest.json') ? JSON.stringify(C3_HEAD_MANIFEST) : options.companion && path.endsWith('/companion.json') ? JSON.stringify({ running: false, version: '0.1.2', targets: ['claude', 'vscode'] }) : undefined })
+    readText: path => path.endsWith('c3-text.json') ? C3_WORDS_RAW : path.endsWith('frame-manifest.json') ? JSON.stringify(C3_HEAD_MANIFEST) : options.companion && /[\\/]companion\.json$/.test(path) ? JSON.stringify({ running: false, version: '0.1.2', targets: ['claude', 'vscode'] }) : undefined })
   on('fs.exists', ($, e) => ({ value: samePath(e.path, '/System/Library/CoreServices/SystemVersion.plist') || !!options.companion && samePath(e.path, PROMISE_FOLDER) }))
   on('fs.stat', () => ({ value: { kind: 'file', size: 2, mtimeMs: 0, isLink: false } }))
   on('fs.write', () => ({ value: undefined }))

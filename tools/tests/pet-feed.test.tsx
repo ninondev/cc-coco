@@ -10,6 +10,7 @@ import { PLUGIN_VERSION } from '../hooks/book-text'
 import { TEST_PLUGIN_ROOT, WINDOWS_ROOTS } from './test-system'
 import { MORNING, P, PERSON, band, settleLegacyStart, world } from './world'
 import { snapshot } from './presence-world'
+import { samePath } from './file-paths'
 import { transportFixture } from './presence-transport-fixture'
 
 const HOME = WINDOWS_ROOTS ? 'C:\\Users\\windows' : '/home/pet'
@@ -44,13 +45,14 @@ function petWorld(on: Parameters<Parameters<typeof test>[1]>[1], o: { folder?: b
   const builds = new Set((o.builds ?? ['x86_64']).map(program))
   const runs: Run[] = []
   // On Linux the kit reads a Windows root as relative and puts the test's folder before it.
+  // On Windows the engine hands a POSIX path over with a drive and backslashes (samePath).
   on('fs.exists', async ($, e, next) => {
     if (e.path.endsWith(FOLDER)) return { value: state.folder }
     if (/[\\/]companion-rs[\\/]bin[\\/]/.test(e.path)) return { value: [...builds].some(build => e.path.endsWith(build)) }
-    if (e.path === '/System/Library/CoreServices/SystemVersion.plist') return { value: o.mac === true }
+    if (samePath(e.path, '/System/Library/CoreServices/SystemVersion.plist')) return { value: o.mac === true }
     // where `install` puts the pet (setup.rs app_folder)
     if (o.app !== undefined && /[\\/](?:coco-pet|Coco Pet)$/.test(e.path)) return { value: o.app }
-    if (o.shared && e.path === '/bin/sh') return { value: !WINDOWS_ROOTS }
+    if (o.shared && samePath(e.path, '/bin/sh')) return { value: !WINDOWS_ROOTS }
     return next(e)
   })
   on('process.run', ($, e) => {

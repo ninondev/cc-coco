@@ -5,6 +5,7 @@ import {RECENT,MORNING,world,settleLegacyStart} from './world'
 import {C3_WORDS_RAW} from './c3-words-fixture'
 import {TRIM_WORDS_RAW} from './d1-trim-words-fixture'
 import {WINDOWS_ROOTS} from './test-system'
+import {pathPattern} from './file-paths'
 const START={cwd:WINDOWS_ROOTS?'C:\\Users\\windows\\project':'/tmp/d1-trim-integration',surface:'vscode' as const,isInteractive:true}
 const FULL=Array.from({length:300},(_,i)=>'PASS suite-'+i).join('\n')+'\n',STDERR='FAIL diagnostic remains'
 const OK={exitCode:0,stdout:'',stderr:'',isStdoutTruncated:false,isStderrTruncated:false}
@@ -21,7 +22,7 @@ function fixture(on:On,answer:Record<string,unknown>){
   }
   return {value:OK}
  })
- on('fs.exists',{path:'/System/Library/CoreServices/SystemVersion.plist'},()=>({value:false}))
+ on('fs.exists',{path:pathPattern('/System/Library/CoreServices/SystemVersion.plist')},()=>({value:false}))
  const w=world(on,{store:{...RECENT,firstMet:MORNING,stamps:{met:MORNING},bandSettings:{trim:true}},sessionRoot:START.cwd,surfaces:['vscode'],env:{HOME:'/tmp/d1-trim-home',LANG:'en_US.UTF-8',TERM:'xterm-256color'},readText:path=>path.endsWith('c3-text.json')?C3_WORDS_RAW:path.endsWith('d1-words.json')?TRIM_WORDS_RAW:undefined})
  return {w,persisted}
 }

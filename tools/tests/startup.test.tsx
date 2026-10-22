@@ -13,6 +13,7 @@ import type { CocoView } from '../types'
 import { MORNING, P, PERSON, RECENT, band, desktopPicture, stubPng } from './world'
 import { M1_MORE_TEXT, M1_GAPS_TEXT } from './m1-more-data-fixture'
 import { WINDOWS_ROOTS, TEST_PLUGIN_ROOT } from './test-system'
+import { samePath } from './file-paths'
 
 const START = { cwd: '/tmp/startup-project', surface: null, isInteractive: false }
 const HOME = '/tmp/startup-shared'
@@ -97,7 +98,7 @@ function fixture(on: On, options: {
   on('session.id', () => ({ value: options.sessionId ?? 'fresh-start' }))
   on('session.root', () => ({ value: START.cwd }))
   on('session.surfaces', () => ({ value: ['desktop'] }))
-  on('fs.exists', ($, e) => ({ value: e.path === `${FOLDER}/diagnostics` ? !!options.diagnostics?.() : !!options.failedSpawn && (e.path === '/System/Library/CoreServices/SystemVersion.plist' || e.path === '/bin/sh' || e.path === FOLDER || e.path === `${FOLDER}/requests.jsonl`) }))
+  on('fs.exists', ($, e) => ({ value: samePath(e.path, `${FOLDER}/diagnostics`) ? !!options.diagnostics?.() : !!options.failedSpawn && (samePath(e.path, '/System/Library/CoreServices/SystemVersion.plist') || samePath(e.path, '/bin/sh') || samePath(e.path, FOLDER) || samePath(e.path, `${FOLDER}/requests.jsonl`)) }))
   on('fs.read', async ($, e) => {
     if (/[\\/]hooks[\\/]gaps-text\.json$/.test(e.path)) { wordReads.push('gaps');return {value:M1_GAPS_TEXT} as never }
     if (/[\\/]hooks[\\/]more-text\.json$/.test(e.path)) { wordReads.push('more');return {value:M1_MORE_TEXT} as never }

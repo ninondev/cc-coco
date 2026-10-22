@@ -8,6 +8,7 @@ import { BAG_TEXT_RAW } from './bag-text-fixture'
 import { transportFixture } from './presence-transport-fixture'
 import { drainFeed } from './feed-drain'
 import { WINDOWS_ROOTS } from './test-system'
+import { samePath } from './file-paths'
 
 const START = { cwd: '/tmp/reaction-project', surface: 'desktop' as const, isInteractive: true }
 const STEP = { turnId: 'response', index: 0, model: 'claude', messageCount: 3 }
@@ -244,8 +245,8 @@ describe('retained development helper: shared native follower acknowledgements r
       const transportCalls:string[]=[]
       const transport=transportFixture({v:1,seq:0,quietAt:MORNING,asleep:false,clingy:false,busy:false,event:{kind:'initial',id:'reaction-initial',at:MORNING}})
       const w=world(on,{withNativePresence:true,store:RECENT,env:{HOME:home,LANG:'en_US.UTF-8',TERM:'xterm-256color'},settings:{prefersReducedMotion:true},readText:path=>{
-        if(path.endsWith('/snapshot.json'))return JSON.stringify(transport.state)
-        if(path.endsWith('/companion.json')){recordReads++;return JSON.stringify({running:false,accessibility:true,size:'medium'})}
+        if(/[\\/]snapshot\.json$/.test(path))return JSON.stringify(transport.state)
+        if(/[\\/]companion\.json$/.test(path)){recordReads++;return JSON.stringify({running:false,accessibility:true,size:'medium'})}
         return undefined
       }})
       on('session.id',()=>({value:'companion-reaction'}))
@@ -253,7 +254,7 @@ describe('retained development helper: shared native follower acknowledgements r
       on('fs.exists',($,e)=>{
         warmProbes.push(e.path)
         if(recording)probes.push(e.path)
-        return {value:(!WINDOWS_ROOTS&&/[\\/]bin[\\/]coco-state(?:-macos-(?:x86_64|aarch64)|-linux-(?:x86_64|aarch64)|-windows-(?:x86_64|aarch64)\.exe)?$/.test(e.path))||e.path==='/System/Library/CoreServices/SystemVersion.plist'||e.path==='/bin/sh'||e.path===folder||e.path===`${folder}/requests.jsonl`||e.path===`${home}/Applications/Coco Pet.app/Contents/MacOS/coco-companion`}
+        return {value:(!WINDOWS_ROOTS&&/[\\/]bin[\\/]coco-state(?:-macos-(?:x86_64|aarch64)|-linux-(?:x86_64|aarch64)|-windows-(?:x86_64|aarch64)\.exe)?$/.test(e.path))||samePath(e.path,'/System/Library/CoreServices/SystemVersion.plist')||samePath(e.path,'/bin/sh')||samePath(e.path,folder)||samePath(e.path,`${folder}/requests.jsonl`)||samePath(e.path,`${home}/Applications/Coco Pet.app/Contents/MacOS/coco-companion`)}
       })
       on('process.run',async($,e)=>{
         if(e.argv[3]==='write'){
