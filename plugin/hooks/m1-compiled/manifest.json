@@ -175,8 +175,8 @@
       "sha256": "4da72c6767af6ec42f4479649db429da6545b6dfd4d779c6cf8c9da7af13e715"
     },
     "hooks-source/book-text.ts": {
-      "bytes": 223665,
-      "sha256": "e032a8b246deb6aeea8135c5cec8504cdd0da016107a3d69c0e6179f1a132846"
+      "bytes": 223385,
+      "sha256": "2cb51a4d8457067a21a2bb050ccceb4457416ad2d7738c1f9de4a168a006990d"
     },
     "hooks-source/line-slot.ts": {
       "bytes": 5835,
@@ -4681,7 +4681,7 @@
     "chunk-xpyfn99y.js": 10209,
     "chunk-znjj8sf4.js": 208526,
     "companion.js": 110982,
-    "motion_stills.js": 219189,
+    "motion_stills.js": 218909,
     "pages.js": 67905,
     "presence.js": 13396,
     "register.js": 224303

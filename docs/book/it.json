@@ -42,7 +42,7 @@
       "text": "Litigare su che giorno è oggi, i commit che dicono solo fix e un terminale silenzioso dove nessuno passa da ore."
     },
     {
-      "label": "Due lati",
+      "label": "Carattere",
       "text": "Non sta mai ferma e adora prendersi il merito. Tre test falliti di fila e il limitatore salta via, ma la sua rabbia è solo per il codice brutto, mai per te. Quando le cose si mettono male sul serio, mette via gli scherzi in un secondo e ti copre le spalle."
     }
   ],
@@ -76,7 +76,7 @@
     "pages": "Pagine lette insieme",
     "first": "Prima pagina",
     "latest": "La notte in cui abbiamo fatto più tardi",
-    "wild": "L'anima selvaggia è uscita",
+    "wild": "Sfuriate",
     "times": "{n} volte",
     "once": "una volta",
     "never": "Non ancora",
@@ -143,14 +143,7 @@
       "label": "Fascia sopra il prompt",
       "on": "Completa",
       "compact": "Una riga",
-      "off": "Nascosta",
-      "painted": "Dipinto",
-      "pixel": "Pixel"
-    },
-    "workSize": {
-      "label": "Mentre Claude lavora",
-      "same": "Stessa dimensione",
-      "smaller": "Più piccolo"
+      "off": "Nascosta"
     },
     "marks": {
       "label": "Segni nella conversazione",
@@ -253,7 +246,13 @@
         "Medio",
         "Grande"
       ],
+      "macSizes": [
+        "Medio",
+        "Grande",
+        "Più grande"
+      ],
       "login": "Avvia al login",
+      "capture": "Visibile in screenshot e registrazioni",
       "on": "Sì",
       "off": "No",
       "remove": "Rimuovi da questo Mac…",
@@ -311,24 +310,6 @@
       "label": "Luci dei vicini",
       "help": "Si accorge quando altri agenti di programmazione lavorano. Legge solo se sono occupati e il loro utilizzo, mai il contenuto. Non invia nulla."
     }
-  },
-  "stamps": {
-    "title": "Obiettivi",
-    "names": {
-      "met": "Primo incontro",
-      "green": "Dal rosso al verde",
-      "hundred": "Cento turni",
-      "night": "Notte fonda",
-      "shiori": "Cucù",
-      "calmed": "Di nuovo calma",
-      "week": "Settimana insieme"
-    },
-    "alt": "Obiettivo: {name}, {date}",
-    "blank": "Bloccato",
-    "summaryAlt": "{stamped} di {total} pagine timbrate"
-  },
-  "stamp": {
-    "earned": "obiettivo sbloccato: {stamp}."
   },
   "check": {
     "title": "Controllo",

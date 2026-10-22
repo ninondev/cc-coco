@@ -44,21 +44,6 @@
     "it": "Settimana scorsa",
     "pt-BR": "Ver semana passada"
   },
-  "week.empty": {
-    "zh": "过完一天这里就会有一枚签",
-    "zh-Hant": "過完一天這裡就會有一枚籤",
-    "en": "A bookmark appears here when a day is done.",
-    "ja": "一日が終わるとここにしおりが現れます。",
-    "ko": "하루가 끝나면 여기에 책갈피가 나타납니다.",
-    "de": "Am Ende des Tages erscheint hier ein Lesezeichen.",
-    "es-419": "Al final del día aparece aquí un marcador.",
-    "es-ES": "Al final del día aparece aquí un marcador.",
-    "fr": "Un marque-page apparaît ici quand la journée est finie.",
-    "hi": "दिन पूरा होने पर यहाँ एक निशानी आती है।",
-    "id": "Penanda muncul di sini saat hari selesai.",
-    "it": "Un segnalibro appare qui alla fine della giornata.",
-    "pt-BR": "Um marcador aparece aqui quando o dia termina."
-  },
   "week.facts": {
     "zh": "{pages}页,{green}次转绿",
     "zh-Hant": "{pages}頁,{green}次轉綠",
@@ -94,21 +79,6 @@
       "one": "{pages} página, {green} execuções verdes",
       "other": "{pages} páginas ao todo, {green} execuções verdes"
     }
-  },
-  "week.stamps": {
-    "zh": "本周新签",
-    "zh-Hant": "本週新籤",
-    "en": "Stamps this week",
-    "ja": "今週の新しい判",
-    "ko": "이번 주 새 도장",
-    "de": "Stempel diese Woche",
-    "es-419": "Sellos esta semana",
-    "es-ES": "Sellos esta semana",
-    "fr": "Cachets du moment",
-    "hi": "इस हफ़्ते की मुहरें",
-    "id": "Cap minggu ini",
-    "it": "Nuovi timbri",
-    "pt-BR": "Carimbos da semana"
   },
   "week.save": {
     "zh": "存为图片",
@@ -200,177 +170,6 @@
     "it": "Salvataggio non riuscito",
     "pt-BR": "Falha ao salvar"
   },
-  "week.dayAlt": {
-    "zh": "{weekday}: {pages}页; {kinds}; {green}次转绿",
-    "zh-Hant": "{weekday}: {pages}頁; {kinds}; {green}次轉綠",
-    "en": {
-      "one": "{weekday}: {pages} page; {kinds}; {green} green runs",
-      "other": "{weekday}: {pages} pages; {kinds}; {green} green runs"
-    },
-    "ja": "{weekday}: {pages}ページ; {kinds}; {green}回グリーン",
-    "ko": "{weekday}: {pages}페이지; {kinds}; {green}번 통과",
-    "de": {
-      "one": "{weekday}: {pages} Seite; {kinds}; {green} grüne Durchläufe",
-      "other": "{weekday}: {pages} Seiten; {kinds}; {green} grüne Durchläufe"
-    },
-    "es-419": {
-      "one": "{weekday}: {pages} página; {kinds}; {green} ejecuciones verdes",
-      "other": "{weekday}: {pages} páginas; {kinds}; {green} ejecuciones verdes"
-    },
-    "es-ES": {
-      "one": "{weekday}: {pages} página; {kinds}; {green} ejecuciones verdes",
-      "other": "{weekday}: {pages} páginas; {kinds}; {green} ejecuciones verdes"
-    },
-    "fr": {
-      "one": "{weekday}: {pages} page; {kinds}; {green} passages verts",
-      "other": "{weekday}: {pages} pages; {kinds}; {green} passages verts"
-    },
-    "hi": "{weekday}: {pages} पेज; {kinds}; {green} हरी रन",
-    "id": "{weekday}: {pages} halaman; {kinds}; {green} run hijau",
-    "it": {
-      "one": "{weekday}: {pages} pagina; {kinds}; {green} run verdi",
-      "other": "{weekday}: {pages} pagine; {kinds}; {green} run verdi"
-    },
-    "pt-BR": {
-      "one": "{weekday}: {pages} página; {kinds}; {green} execuções verdes",
-      "other": "{weekday}: {pages} páginas; {kinds}; {green} execuções verdes"
-    }
-  },
-  "week.kinds.read": {
-    "zh": "读",
-    "zh-Hant": "讀",
-    "en": "reading",
-    "ja": "読み",
-    "ko": "읽기",
-    "de": "lesen",
-    "es-419": "lectura",
-    "es-ES": "lectura",
-    "fr": "lecture",
-    "hi": "पढ़ना",
-    "id": "membaca",
-    "it": "lettura",
-    "pt-BR": "leitura"
-  },
-  "week.kinds.search": {
-    "zh": "搜索",
-    "zh-Hant": "搜尋",
-    "en": "searching",
-    "ja": "検索",
-    "ko": "검색",
-    "de": "suchen",
-    "es-419": "búsqueda",
-    "es-ES": "búsqueda",
-    "fr": "recherche",
-    "hi": "खोज",
-    "id": "mencari",
-    "it": "ricerca",
-    "pt-BR": "busca"
-  },
-  "week.kinds.write": {
-    "zh": "写",
-    "zh-Hant": "寫",
-    "en": "writing",
-    "ja": "書き",
-    "ko": "쓰기",
-    "de": "schreiben",
-    "es-419": "escritura",
-    "es-ES": "escritura",
-    "fr": "écriture",
-    "hi": "लिखना",
-    "id": "menulis",
-    "it": "scrittura",
-    "pt-BR": "escrita"
-  },
-  "week.kinds.run": {
-    "zh": "运行",
-    "zh-Hant": "執行",
-    "en": "running",
-    "ja": "実行",
-    "ko": "실행",
-    "de": "ausführen",
-    "es-419": "ejecución",
-    "es-ES": "ejecución",
-    "fr": "exécution",
-    "hi": "चलाना",
-    "id": "menjalankan",
-    "it": "esecuzione",
-    "pt-BR": "execução"
-  },
-  "week.kinds.web": {
-    "zh": "查资料",
-    "zh-Hant": "查資料",
-    "en": "looking things up",
-    "ja": "調べもの",
-    "ko": "조사",
-    "de": "nachschlagen",
-    "es-419": "consultas",
-    "es-ES": "consultas",
-    "fr": "recherches",
-    "hi": "खोजबीन",
-    "id": "mencari info",
-    "it": "ricerche",
-    "pt-BR": "consultas"
-  },
-  "week.kinds.plan": {
-    "zh": "规划",
-    "zh-Hant": "規劃",
-    "en": "planning",
-    "ja": "計画",
-    "ko": "계획",
-    "de": "planen",
-    "es-419": "planificación",
-    "es-ES": "planificación",
-    "fr": "planification",
-    "hi": "योजना",
-    "id": "perencanaan",
-    "it": "pianificazione",
-    "pt-BR": "planejamento"
-  },
-  "week.kinds.helpers": {
-    "zh": "帮手",
-    "zh-Hant": "幫手",
-    "en": "helpers",
-    "ja": "ヘルパー",
-    "ko": "헬퍼",
-    "de": "Helfer",
-    "es-419": "helpers",
-    "es-ES": "helpers",
-    "fr": "helpers",
-    "hi": "हेल्पर",
-    "id": "helper",
-    "it": "helper",
-    "pt-BR": "helpers"
-  },
-  "week.key": {
-    "zh": "织纹图例",
-    "zh-Hant": "織紋圖例",
-    "en": "What the weave means",
-    "ja": "織り模様の凡例",
-    "ko": "직조 범례",
-    "de": "Was das Muster bedeutet",
-    "es-419": "Qué significa el tejido",
-    "es-ES": "Qué significa el tejido",
-    "fr": "Sens du motif tissé",
-    "hi": "बुनावट का मतलब",
-    "id": "Arti pola tenunan",
-    "it": "Cosa significa la trama",
-    "pt-BR": "O que a trama significa"
-  },
-  "week.wild": {
-    "zh": "这回黑化了",
-    "zh-Hant": "這回黑化了",
-    "en": "the wild soul came out",
-    "ja": "黒化した",
-    "ko": "흑화했다",
-    "de": "Die wilde Seele kam heraus",
-    "es-419": "Salió el alma salvaje",
-    "es-ES": "Salió el alma salvaje",
-    "fr": "L'âme sauvage s'est montrée",
-    "hi": "जंगली आत्मा जाग गई",
-    "id": "Jiwa liar muncul",
-    "it": "L'anima selvaggia è uscita",
-    "pt-BR": "A alma selvagem apareceu"
-  },
   "week.ready": {
     "zh": "上周那页好了",
     "zh-Hant": "上週那頁好了",
@@ -461,21 +260,6 @@
     "it": "{pages} pagine insieme questa settimana, {green} run verdi.",
     "pt-BR": "{pages} páginas juntos esta semana, {green} execuções verdes."
   },
-  "card.week.stamps": {
-    "zh": "本周新签",
-    "zh-Hant": "本週新籤",
-    "en": "New this week",
-    "ja": "今週の新しい判",
-    "ko": "이번 주 새 도장",
-    "de": "Neu diese Woche",
-    "es-419": "Nuevos esta semana",
-    "es-ES": "Nuevos esta semana",
-    "fr": "Nouveaux",
-    "hi": "इस हफ़्ते नए",
-    "id": "Baru minggu ini",
-    "it": "Nuovi",
-    "pt-BR": "Novos esta semana"
-  },
   "card.week.saved": {
     "zh": "日志精简,省下约{tokens}token",
     "zh-Hant": "日誌精簡,省下約{tokens}token",
@@ -520,71 +304,5 @@
     "id": "s/d",
     "it": "al",
     "pt-BR": "a"
-  },
-  "week.row": {
-    "zh": "{weekday} {pages}页 {green}次转绿 {kinds}",
-    "zh-Hant": "{weekday} {pages}頁 {green}次轉綠 {kinds}",
-    "en": {
-      "one": "{weekday}: {pages} page, {green} green; {kinds}",
-      "other": "{weekday}: {pages} pages, {green} green; {kinds}"
-    },
-    "ja": "{weekday} {pages}ページ {green}回グリーン {kinds}",
-    "ko": "{weekday} {pages}페이지 {green}번 통과 {kinds}",
-    "de": {
-      "one": "{weekday}: {pages} Seite, {green} grün; {kinds}",
-      "other": "{weekday}: {pages} Seiten, {green} grün; {kinds}"
-    },
-    "es-419": {
-      "one": "{weekday}: {pages} página, {green} verdes; {kinds}",
-      "other": "{weekday}: {pages} páginas, {green} verdes; {kinds}"
-    },
-    "es-ES": {
-      "one": "{weekday}: {pages} página, {green} verdes; {kinds}",
-      "other": "{weekday}: {pages} páginas, {green} verdes; {kinds}"
-    },
-    "fr": {
-      "one": "{weekday}: {pages} page, {green} verts; {kinds}",
-      "other": "{weekday}: {pages} pages, {green} verts; {kinds}"
-    },
-    "hi": "{weekday}: {pages} पेज, {green} हरी; {kinds}",
-    "id": "{weekday}: {pages} halaman, {green} hijau; {kinds}",
-    "it": {
-      "one": "{weekday}: {pages} pagina, {green} verdi; {kinds}",
-      "other": "{weekday}: {pages} pagine, {green} verdi; {kinds}"
-    },
-    "pt-BR": {
-      "one": "{weekday}: {pages} página, {green} verdes; {kinds}",
-      "other": "{weekday}: {pages} páginas, {green} verdes; {kinds}"
-    }
-  },
-  "week.row.short": {
-    "zh": "{kinds} {weekday} {pages}页",
-    "zh-Hant": "{kinds} {weekday} {pages}頁",
-    "en": "{kinds}; {weekday} {pages}p {green}g",
-    "ja": "{kinds} {weekday} {pages}頁",
-    "ko": "{kinds}; {weekday} {pages}p {green}g",
-    "de": "{kinds}; {weekday} {pages}S {green}g",
-    "es-419": "{kinds}; {weekday} {pages}p {green}v",
-    "es-ES": "{kinds}; {weekday} {pages}p {green}v",
-    "fr": "{kinds}; {weekday} {pages}p {green}v",
-    "hi": "{kinds}; {weekday} {pages}p {green}g",
-    "id": "{kinds}; {weekday} {pages}h {green}g",
-    "it": "{kinds}; {weekday} {pages}p {green}v",
-    "pt-BR": "{kinds}; {weekday} {pages}p {green}v"
-  },
-  "week.key.bead": {
-    "zh": "转绿",
-    "zh-Hant": "轉綠",
-    "en": "green run",
-    "ja": "グリーン",
-    "ko": "통과",
-    "de": "grüner Durchlauf",
-    "es-419": "ejecución verde",
-    "es-ES": "ejecución verde",
-    "fr": "passage vert",
-    "hi": "हरी रन",
-    "id": "run hijau",
-    "it": "run verde",
-    "pt-BR": "execução verde"
   }
 }

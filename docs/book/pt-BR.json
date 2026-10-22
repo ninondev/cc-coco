@@ -42,7 +42,7 @@
       "text": "Discutir que dia é hoje, commits que só dizem fix e um terminal quieto onde ninguém aparece há horas."
     },
     {
-      "label": "Dois lados",
+      "label": "Temperamento",
       "text": "Não para quieta e adora levar o crédito. Três testes falhando seguidos e o limitador voa longe, mas a fúria dela é só para código ruim, nunca para você. Quando o bicho pega de verdade, ela guarda as piadas num segundo e segura a sua barra."
     }
   ],
@@ -76,7 +76,7 @@
     "pages": "Páginas lidas juntos",
     "first": "Primeira página",
     "latest": "A leitura que foi até mais tarde",
-    "wild": "A alma selvagem apareceu",
+    "wild": "Chiliques",
     "times": "{n} vezes",
     "once": "uma vez",
     "never": "Ainda não",
@@ -143,14 +143,7 @@
       "label": "Faixa acima do prompt",
       "on": "Completa",
       "compact": "Uma linha",
-      "off": "Desligada",
-      "painted": "Pintado",
-      "pixel": "Pixel"
-    },
-    "workSize": {
-      "label": "Enquanto Claude trabalha",
-      "same": "Mesmo tamanho",
-      "smaller": "Menor"
+      "off": "Desligada"
     },
     "marks": {
       "label": "Marcas na conversa",
@@ -253,7 +246,13 @@
         "Médio",
         "Grande"
       ],
+      "macSizes": [
+        "Médio",
+        "Grande",
+        "Maior"
+      ],
       "login": "Iniciar ao entrar",
+      "capture": "Mostrar em capturas e gravações",
       "on": "Ligado",
       "off": "Desligado",
       "remove": "Remover deste Mac…",
@@ -311,24 +310,6 @@
       "label": "Luzes dos vizinhos",
       "help": "Ela percebe quando outros agentes de programação estão trabalhando. Só vê se estão ocupados e o uso; nunca o conteúdo, e nada é enviado para fora."
     }
-  },
-  "stamps": {
-    "title": "Conquistas",
-    "names": {
-      "met": "Primeiro encontro",
-      "green": "Vermelho a verde",
-      "hundred": "Cem turnos",
-      "night": "Noite adentro",
-      "shiori": "Achou!",
-      "calmed": "Já se acalmou",
-      "week": "Uma semana juntos"
-    },
-    "alt": "Conquista: {name}, {date}",
-    "blank": "Bloqueada",
-    "summaryAlt": "{stamped} de {total} páginas carimbadas"
-  },
-  "stamp": {
-    "earned": "conquista desbloqueada: {stamp}."
   },
   "check": {
     "title": "Verificação",

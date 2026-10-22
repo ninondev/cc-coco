@@ -42,7 +42,7 @@
       "text": "Qu'on se dispute pour savoir quel jour on est, les commits qui disent juste fix, et un terminal silencieux où personne ne passe depuis des heures."
     },
     {
-      "label": "Deux facettes",
+      "label": "Caractère",
       "text": "Ne tient pas en place et adore s'attribuer le mérite. Trois tests ratés d'affilée et le limiteur saute, mais sa colère ne vise que le mauvais code, jamais toi. Quand ça tourne vraiment mal, elle range les blagues en une seconde et assure tes arrières."
     }
   ],
@@ -76,7 +76,7 @@
     "pages": "Pages lues ensemble",
     "first": "Première page",
     "latest": "La nuit où l'on a veillé le plus tard",
-    "wild": "L'âme sauvage est sortie",
+    "wild": "Coups de sang",
     "times": "{n} fois",
     "once": "une fois",
     "never": "Pas encore",
@@ -143,14 +143,7 @@
       "label": "Bandeau au-dessus du prompt",
       "on": "Complet",
       "compact": "Une ligne",
-      "off": "Masqué",
-      "painted": "Peint",
-      "pixel": "Pixels"
-    },
-    "workSize": {
-      "label": "Quand Claude travaille",
-      "same": "Même taille",
-      "smaller": "Plus petit"
+      "off": "Masqué"
     },
     "marks": {
       "label": "Marques dans la conversation",
@@ -253,7 +246,13 @@
         "Moyen",
         "Grand"
       ],
+      "macSizes": [
+        "Moyen",
+        "Grand",
+        "Plus grand"
+      ],
       "login": "Lancer à l'ouverture de session",
+      "capture": "Visible dans les captures et enregistrements",
       "on": "Oui",
       "off": "Non",
       "remove": "Retirer de ce Mac…",
@@ -311,24 +310,6 @@
       "label": "Lumières des voisins",
       "help": "Elle remarque quand d'autres agents de programmation travaillent. Elle ne lit que leur activité et leur utilisation, jamais le contenu. Rien n'est envoyé."
     }
-  },
-  "stamps": {
-    "title": "Succès",
-    "names": {
-      "met": "Première rencontre",
-      "green": "Rouge puis vert",
-      "hundred": "Cent tours",
-      "night": "Tard dans la nuit",
-      "shiori": "Coucou",
-      "calmed": "Calmée",
-      "week": "Une semaine à deux"
-    },
-    "alt": "Succès : {name}, {date}",
-    "blank": "Verrouillé",
-    "summaryAlt": "{stamped} pages tamponnées sur {total}"
-  },
-  "stamp": {
-    "earned": "succès débloqué : {stamp}."
   },
   "check": {
     "title": "Vérification",

@@ -86,7 +86,8 @@
    "coco": "Coco",
    "dake": "Claudie",
    "maid": "Maid Claudie",
-   "help": "Changes who's on the band in the desktop app and on Coco Pet. The terminal always has Coco."
+   "fish": "DeepSeek-chan",
+   "help": "Changes who's on the band in the desktop app, on Coco Pet and in Coco's room. The terminal always has Coco. In this version DeepSeek-chan only appears in the room; she comes to the band and Coco Pet in a later update."
   },
   "bagStyle": {
    "label": "Ita bag art",
@@ -115,7 +116,7 @@
   "vibeRows": {
    "firstFail": "First failing test",
    "fixed": "Red to green: {fixed}",
-   "storms": "Went berserk: {storms}",
+   "storms": "Bristled: {storms}",
    "stormsHelp": "Three reds in a row pop Coco's limiter off; a fix calms them down.",
    "build": "Builds usually ~{usual}, this one {now}",
    "buildSlow": "Slow for this project (median of the last 8)",
@@ -355,7 +356,8 @@
    "coco": "Coco",
    "dake": "Claudette",
    "maid": "Claudette soubrette",
-   "help": "Change qui apparaît sur le bandeau de l'app de bureau et dans Coco Pet. Dans le terminal, c'est toujours Coco."
+   "fish": "DeepSeek-chan",
+   "help": "Change qui apparaît sur le bandeau de l'app de bureau, dans Coco Pet et dans sa chambre. Dans le terminal, c'est toujours Coco. Pour l'instant, DeepSeek-chan n'apparaît que dans la chambre ; le bandeau et Coco Pet viendront dans une prochaine mise à jour."
   },
   "bagStyle": {
    "label": "Dessin de l’ita bag",
@@ -624,7 +626,8 @@
    "coco": "Coco",
    "dake": "Claudi",
    "maid": "Maid-Claudi",
-   "help": "Ändert, wer auf der Leiste der Desktop-App und in Coco Pet zu sehen ist. Im Terminal bleibt es immer Coco."
+   "fish": "DeepSeek-chan",
+   "help": "Ändert, wer auf der Leiste der Desktop-App, in Coco Pet und in Cocos Zimmer zu sehen ist. Im Terminal bleibt es immer Coco. DeepSeek-chan erscheint in dieser Version nur im Zimmer; Leiste und Coco Pet folgen in einem späteren Update."
   },
   "bagStyle": {
    "label": "Ita-Bag-Bild",
@@ -893,7 +896,8 @@
    "coco": "कोको",
    "dake": "क्लॉडी",
    "maid": "मेड क्लॉडी",
-   "help": "डेस्कटॉप ऐप की पट्टी और Coco Pet पर कौन दिखे, यह बदलता है। टर्मिनल में हमेशा कोको रहती है।"
+   "fish": "DeepSeek-chan",
+   "help": "डेस्कटॉप ऐप की पट्टी, Coco Pet और उसके कमरे में कौन दिखे, यह बदलता है। टर्मिनल में हमेशा कोको रहती है। इस वर्ज़न में DeepSeek-chan सिर्फ़ कमरे में आती है; पट्टी और Coco Pet पर वह आगे के अपडेट में आएगी।"
   },
   "bagStyle": {
    "label": "इटा बैग की तस्वीर",
@@ -1162,7 +1166,8 @@
    "coco": "Coco",
    "dake": "Claudie",
    "maid": "Claudie maid",
-   "help": "Mengganti siapa yang tampil di bilah aplikasi desktop dan di Coco Pet. Di terminal selalu Coco."
+   "fish": "DeepSeek-chan",
+   "help": "Mengganti siapa yang tampil di bilah aplikasi desktop, di Coco Pet, dan di kamarnya. Di terminal selalu Coco. Di versi ini DeepSeek-chan hanya muncul di kamar; bilah dan Coco Pet menyusul di pembaruan berikutnya."
   },
   "bagStyle": {
    "label": "Gambar ita bag",
@@ -1191,7 +1196,7 @@
   "vibeRows": {
    "firstFail": "Tes pertama yang gagal",
    "fixed": "Merah ke hijau: {fixed}",
-   "storms": "Ngamuk: {storms}",
+   "storms": "Sewot: {storms}",
    "stormsHelp": "Tiga kali gagal berturut-turut bikin pembatas Coco lepas; begitu diperbaiki, dia tenang lagi.",
    "build": "Build biasanya ~{usual}, kali ini {now}",
    "buildSlow": "Lambat untuk proyek ini (median 8 terakhir)",
@@ -1431,7 +1436,8 @@
    "coco": "Coco",
    "dake": "Claudina",
    "maid": "Claudina maid",
-   "help": "Cambia chi compare sulla fascia dell’app desktop e in Coco Pet. Nel terminale c’è sempre Coco."
+   "fish": "DeepSeek-chan",
+   "help": "Cambia chi compare sulla fascia dell’app desktop, in Coco Pet e nella sua stanza. Nel terminale c’è sempre Coco. In questa versione DeepSeek-chan compare solo nella stanza; fascia e Coco Pet arriveranno con un prossimo aggiornamento."
   },
   "bagStyle": {
    "label": "Disegno dell’ita bag",
@@ -1700,7 +1706,8 @@
    "coco": "Coco",
    "dake": "Claudeさま",
    "maid": "メイドのClaudeさま",
-   "help": "デスクトップアプリの帯とCoco Petの姿が変わります。ターミナルではずっとCocoのままです。"
+   "fish": "DeepSeek-chan",
+   "help": "デスクトップアプリの帯、Coco Pet、Cocoの部屋の姿が変わります。ターミナルではずっとCocoのままです。DeepSeek-chanはこのバージョンでは部屋にだけ出てきます。帯とCoco Petには今後のアップデートで登場します。"
   },
   "bagStyle": {
    "label": "痛バッグの絵",
@@ -1729,7 +1736,7 @@
   "vibeRows": {
    "firstFail": "最初に落ちたテスト",
    "fixed": "赤から緑{fixed}回",
-   "storms": "暴走{storms}回",
+   "storms": "毛を逆立てた{storms}回",
    "stormsHelp": "テストが三回続けて落ちるとリミッターが飛ぶ。直ればおさまる",
    "build": "ビルドはふだん~{usual}、今回は{now}",
    "buildSlow": "遅め(直近8回の中央値と比べて)",
@@ -1969,7 +1976,8 @@
    "coco": "코코",
    "dake": "클로디",
    "maid": "메이드 클로디",
-   "help": "데스크톱 앱의 띠와 Coco Pet에 나오는 모습이 바뀌어요. 터미널에서는 늘 코코예요."
+   "fish": "DeepSeek-chan",
+   "help": "데스크톱 앱의 띠, Coco Pet, 코코의 방에 나오는 모습이 바뀌어요. 터미널에서는 늘 코코예요. DeepSeek-chan은 이번 버전에서는 방에만 나와요. 띠와 Coco Pet에는 이후 업데이트에서 나올 거예요."
   },
   "bagStyle": {
    "label": "이타백 그림",
@@ -1998,7 +2006,7 @@
   "vibeRows": {
    "firstFail": "처음 실패한 테스트",
    "fixed": "빨강에서 초록 {fixed}번",
-   "storms": "폭주 {storms}번",
+   "storms": "발끈 {storms}번",
    "stormsHelp": "테스트가 세 번 연속 실패하면 리미터가 튕겨 나가요. 고치면 진정해요",
    "build": "빌드는 보통 ~{usual}, 이번엔 {now}",
    "buildSlow": "느린 편(최근 8번의 중앙값 기준)",
@@ -2238,7 +2246,8 @@
    "coco": "Coco",
    "dake": "Claudinha",
    "maid": "Claudinha maid",
-   "help": "Muda quem aparece na faixa do app de desktop e no Coco Pet. No terminal é sempre a Coco."
+   "fish": "DeepSeek-chan",
+   "help": "Muda quem aparece na faixa do app de desktop, no Coco Pet e no quarto dela. No terminal é sempre a Coco. Nesta versão a DeepSeek-chan só aparece no quarto; a faixa e o Coco Pet vêm numa próxima atualização."
   },
   "bagStyle": {
    "label": "Desenho da ita bag",
@@ -2267,7 +2276,7 @@
   "vibeRows": {
    "firstFail": "Primeiro teste que falhou",
    "fixed": "Do vermelho ao verde: {fixed}",
-   "storms": "Surtos: {storms}",
+   "storms": "Chiliques: {storms}",
    "stormsHelp": "Três falhas seguidas fazem o limitador da Coco voar; um conserto acalma ela.",
    "build": "Builds normalmente ~{usual}, desta vez {now}",
    "buildSlow": "Lento para este projeto (mediana dos últimos 8)",
@@ -2507,7 +2516,8 @@
    "coco": "Coco",
    "dake": "Claudita",
    "maid": "Claudita maid",
-   "help": "Cambia quién aparece en la banda de la app de escritorio y en Coco Pet. En la terminal siempre está Coco."
+   "fish": "DeepSeek-chan",
+   "help": "Cambia quién aparece en la banda de la app de escritorio, en Coco Pet y en su cuarto. En la terminal siempre está Coco. En esta versión DeepSeek-chan solo aparece en el cuarto; la banda y Coco Pet llegarán en una próxima actualización."
   },
   "bagStyle": {
    "label": "Dibujo de la ita bag",
@@ -2536,7 +2546,7 @@
   "vibeRows": {
    "firstFail": "Primera prueba fallida",
    "fixed": "De rojo a verde: {fixed}",
-   "storms": "Ataques de furia: {storms}",
+   "storms": "Berrinches: {storms}",
    "stormsHelp": "Tres fallos seguidos hacen saltar el limitador de Coco; un arreglo la calma.",
    "build": "Builds normalmente ~{usual}, esta vez {now}",
    "buildSlow": "Lento para este proyecto (mediana de los últimos 8)",
@@ -2776,7 +2786,8 @@
    "coco": "Coco",
    "dake": "Claudita",
    "maid": "Claudita maid",
-   "help": "Cambia quién aparece en la franja de la app de escritorio y en Coco Pet. En el terminal siempre está Coco."
+   "fish": "DeepSeek-chan",
+   "help": "Cambia quién aparece en la franja de la app de escritorio, en Coco Pet y en su habitación. En el terminal siempre está Coco. En esta versión DeepSeek-chan solo aparece en la habitación; la franja y Coco Pet llegarán en una próxima actualización."
   },
   "bagStyle": {
    "label": "Dibujo de la ita bag",
@@ -2805,7 +2816,7 @@
   "vibeRows": {
    "firstFail": "Primera prueba fallida",
    "fixed": "De rojo a verde: {fixed}",
-   "storms": "Ataques de furia: {storms}",
+   "storms": "Berrinches: {storms}",
    "stormsHelp": "Tres fallos seguidos hacen saltar el limitador de Coco; un arreglo la calma.",
    "build": "Builds normalmente ~{usual}, esta vez {now}",
    "buildSlow": "Lento para este proyecto (mediana de los últimos 8)",
@@ -2989,9 +3000,9 @@
    "小克的痛包,Coco Pet的{total}枚开关开着{on}枚,大小是{size}",
    "小克的痛包,5小时额度还剩{five}格,7天额度还剩{week}格,各{total}格",
    "小克的痛包,这次会话测试挂了{failed}次,修好了{fixed}次,压缩了{compacted}次",
-   "小克的痛包,{total}双袜子到手{have}双",
-   "小克的痛包,同人誌一共{issues}期,最新是第{latest}期",
-   "小克的痛包,存了{notes}张便利贴",
+   "小克的痛包:袜子已收齐{have}/{total}双",
+   "小克的痛包:同人誌共收录{issues}期,最新第{latest}期",
+   "小克的痛包:贴着{notes}张便利贴",
    "小克的痛包,{total}枚开关开着{on}枚"
   ],
   "groups": {
@@ -3006,8 +3017,8 @@
   "tags": {
    "tokens": "花token",
    "off": "默认关",
-   "mac": "只在Mac",
-   "new": "新加"
+   "mac": "仅Mac",
+   "new": "新增"
   },
   "vibeGroups": {
    "tests": "测试和构建",
@@ -3034,7 +3045,7 @@
    "more": "更多"
   },
   "sockGroups": {
-   "drawer": "抽屉"
+   "drawer": "袜子抽屉"
   },
   "noteGroups": {
    "notes": "便利贴",
@@ -3045,12 +3056,13 @@
    "coco": "小克",
    "dake": "大克",
    "maid": "女仆大克",
-   "help": "换的是桌面版横条和Coco Pet上的人,终端里一直是小克。"
+   "fish": "大肥鱼",
+   "help": "换的是桌面版横条、Coco Pet和房间里的人，终端里一直是小克。大肥鱼这一版只在房间里出现，横条和桌宠上的她以后更新。"
   },
   "bagStyle": {
-   "label": "痛包的画",
-   "classic": "未来",
-   "mv": "构成",
+   "label": "痛包插画",
+   "classic": "未来派",
+   "mv": "构成派",
    "help": "只换每页顶上那张痛包的画,别的都不变。"
   },
   "sockRows": {
@@ -3074,7 +3086,7 @@
   "vibeRows": {
    "firstFail": "第一个挂的测试",
    "fixed": "由红转绿{fixed}次",
-   "storms": "黑化{storms}次",
+   "storms": "炸毛{storms}次",
    "stormsHelp": "测试连挂三次,她的限制器就弹飞;修好以后就消气了",
    "build": "构建平时~{usual},这次{now}",
    "buildSlow": "算慢的(看最近8次的中位数)",
@@ -3105,7 +3117,7 @@
      "step": "红着收工也行,明天本天才陪你把它抓出来"
     },
     {
-     "verdict": "红灯没灭,bug赢了这一局",
+     "verdict": "红灯没灭,这回合算bug赢",
      "roasts": [
       "这测试红得比本天才的发夹还亮",
       "Claude说修好了,测试说你再想想"
@@ -3131,7 +3143,7 @@
      "step": "这波本天才给满分,中间狼狈的部分就不提了"
     },
     {
-     "verdict": "修好了{fixed}回,测试终于点头",
+     "verdict": "修好{fixed}处,测试总算点头了",
      "roasts": [
       "测试红的时候嘴挺硬,现在不吭声了",
       "Claude第一版写的什么,本天才就不提了"
@@ -3160,7 +3172,7 @@
      "verdict": "测试全绿,挑不出毛病",
      "roasts": [
       "想损两句都找不到素材,这测试太没意思了",
-      "Claude这次居然一次写对,赶紧截图留证"
+      "Claude居然一次写对,快截图留个纪念"
      ],
      "step": "这种日子不多,好好享受,本天才去睡会儿"
     },
@@ -3209,7 +3221,7 @@
      "step": "跑一遍测试也就几秒钟,本天才在旁边看着"
     },
     {
-     "verdict": "零测试,全凭信仰",
+     "verdict": "零测试裸奔,全凭信仰加持",
      "roasts": [
       "bug最喜欢这种会话,没人查岗",
       "Claude写完就交,作业从来不检查"
@@ -3258,9 +3270,9 @@
    "小克的痛包,Coco Pet的{total}枚開關開著{on}枚,大小是{size}",
    "小克的痛包,5小時額度還剩{five}格,7天額度還剩{week}格,各{total}格",
    "小克的痛包,這次會話測試掛了{failed}次,修好了{fixed}次,壓縮了{compacted}次",
-   "小克的痛包,{total}雙襪子到手{have}雙",
-   "小克的痛包,同人誌一共{issues}期,最新是第{latest}期",
-   "小克的痛包,存了{notes}張便利貼",
+   "小克的痛包:襪子已收齊{have}/{total}雙",
+   "小克的痛包:同人誌共收錄{issues}期,最新第{latest}期",
+   "小克的痛包:貼著{notes}張便利貼",
    "小克的痛包,{total}枚開關開著{on}枚"
   ],
   "groups": {
@@ -3275,8 +3287,8 @@
   "tags": {
    "tokens": "花token",
    "off": "預設關",
-   "mac": "只在Mac",
-   "new": "新加"
+   "mac": "僅Mac",
+   "new": "新增"
   },
   "vibeGroups": {
    "tests": "測試和構建",
@@ -3303,7 +3315,7 @@
    "more": "更多"
   },
   "sockGroups": {
-   "drawer": "抽屜"
+   "drawer": "襪子抽屜"
   },
   "noteGroups": {
    "notes": "便利貼",
@@ -3314,12 +3326,13 @@
    "coco": "小克",
    "dake": "大克",
    "maid": "女僕大克",
-   "help": "換的是桌面版橫條和Coco Pet上的人,終端裡一直是小克。"
+   "fish": "大肥魚",
+   "help": "換的是桌面版橫條、Coco Pet和房間裡的人，終端裡一直是小克。大肥魚這一版只在房間裡出現，橫條和桌寵上的她以後更新。"
   },
   "bagStyle": {
-   "label": "痛包的畫",
-   "classic": "未來",
-   "mv": "構成",
+   "label": "痛包插畫",
+   "classic": "未來派",
+   "mv": "構成派",
    "help": "只換每頁頂上那張痛包的畫,別的都不變。"
   },
   "sockRows": {
@@ -3343,7 +3356,7 @@
   "vibeRows": {
    "firstFail": "第一個掛的測試",
    "fixed": "由紅轉綠{fixed}次",
-   "storms": "黑化{storms}次",
+   "storms": "炸毛{storms}次",
    "stormsHelp": "測試連掛三次,她的限制器就彈飛;修好以後就消氣了",
    "build": "構建平時~{usual},這次{now}",
    "buildSlow": "算慢的(看最近8次的中位數)",
@@ -3374,7 +3387,7 @@
      "step": "紅著收工也行,明天本天才陪你把它抓出來"
     },
     {
-     "verdict": "紅燈沒滅,bug贏了這一局",
+     "verdict": "紅燈沒滅,這回合算bug贏",
      "roasts": [
       "這測試紅得比本天才的髮夾還亮",
       "Claude說修好了,測試說你再想想"
@@ -3400,7 +3413,7 @@
      "step": "這波本天才給滿分,中間狼狽的部分就不提了"
     },
     {
-     "verdict": "修好了{fixed}回,測試終於點頭",
+     "verdict": "修好{fixed}處,測試總算點頭了",
      "roasts": [
       "測試紅的時候嘴挺硬,現在不吭聲了",
       "Claude第一版寫的什麼,本天才就不提了"
@@ -3429,7 +3442,7 @@
      "verdict": "測試全綠,挑不出毛病",
      "roasts": [
       "想損兩句都找不到素材,這測試太沒意思了",
-      "Claude這次居然一次寫對,趕緊截圖留證"
+      "Claude居然一次寫對,快截圖留個紀念"
      ],
      "step": "這種日子不多,好好享受,本天才去睡會兒"
     },
@@ -3478,7 +3491,7 @@
      "step": "跑一遍測試也就幾秒鐘,本天才在旁邊看著"
     },
     {
-     "verdict": "零測試,全憑信仰",
+     "verdict": "零測試裸奔,全憑信仰加持",
      "roasts": [
       "bug最喜歡這種會話,沒人查崗",
       "Claude寫完就交,作業從來不檢查"

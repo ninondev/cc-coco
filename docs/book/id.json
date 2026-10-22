@@ -42,7 +42,7 @@
       "text": "Berdebat soal hari ini tanggal berapa, commit yang cuma bertuliskan fix, dan terminal sepi yang sudah lama tidak disapa siapa-siapa."
     },
     {
-      "label": "Dua sisi",
+      "label": "Watak",
       "text": "Tidak bisa diam dan suka mengklaim jasa. Tiga tes gagal berturut-turut dan limiternya terpental, tapi amarahnya cuma untuk kode jelek, tidak pernah untukmu. Kalau benar-benar ada masalah besar, dia langsung berhenti bercanda dan pasang badan buatmu."
     }
   ],
@@ -76,7 +76,7 @@
     "pages": "Halaman yang dibaca bersama",
     "first": "Halaman pertama",
     "latest": "Malam paling larut",
-    "wild": "Jiwa liarnya keluar",
+    "wild": "Sewot",
     "times": "{n} kali",
     "once": "1 kali",
     "never": "Belum",
@@ -143,14 +143,7 @@
       "label": "Bilah di atas prompt",
       "on": "Penuh",
       "compact": "Satu baris",
-      "off": "Mati",
-      "painted": "Lukisan",
-      "pixel": "Piksel"
-    },
-    "workSize": {
-      "label": "Saat Claude bekerja",
-      "same": "Ukuran tetap",
-      "smaller": "Lebih kecil"
+      "off": "Mati"
     },
     "marks": {
       "label": "Tanda dalam percakapan",
@@ -253,7 +246,13 @@
         "Sedang",
         "Besar"
       ],
+      "macSizes": [
+        "Sedang",
+        "Besar",
+        "Lebih besar"
+      ],
       "login": "Mulai saat masuk",
+      "capture": "Tampil di tangkapan layar dan rekaman",
       "on": "Aktif",
       "off": "Nonaktif",
       "remove": "Hapus dari Mac ini…",
@@ -311,24 +310,6 @@
       "label": "Lampu tetangga",
       "help": "Dia tahu saat agen pemrograman lain bekerja. Hanya status sibuk dan pemakaian, tidak pernah isi. Tidak ada yang dikirim ke mana pun."
     }
-  },
-  "stamps": {
-    "title": "Pencapaian",
-    "names": {
-      "met": "Pertemuan pertama",
-      "green": "Merah jadi hijau",
-      "hundred": "Seratus giliran",
-      "night": "Larut malam",
-      "shiori": "Cilukba",
-      "calmed": "Sudah reda",
-      "week": "Seminggu bersama"
-    },
-    "alt": "Pencapaian: {name}, {date}",
-    "blank": "Terkunci",
-    "summaryAlt": "{stamped} dari {total} halaman dicap"
-  },
-  "stamp": {
-    "earned": "pencapaian terbuka: {stamp}."
   },
   "check": {
     "title": "Pemeriksaan",

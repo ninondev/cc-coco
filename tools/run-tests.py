@@ -357,7 +357,8 @@ def review_texts(copy, readme_source=None):
     """Make the shipping Chinese README available to the sandboxed localization guard."""
     path = readme_source or os.path.join(ROOT, 'README.zh.md')
     if not readme_source and not os.path.isfile(path):
-        path = os.path.join(ROOT, 'coco', 'README.zh.md')
+        # the private tree keeps the shipping README's source here (the old coco/ link held a 0.1 checkout)
+        path = os.path.join(ROOT, 'handoffs', 'program', 'words', '1.0', 'readme', 'README.zh.md')
     with open(path, encoding='utf-8') as source:
         text = source.read()
     with open(os.path.join(copy, 'tests', 'review-texts.ts'), 'w', encoding='utf-8') as out:

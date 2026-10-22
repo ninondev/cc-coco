@@ -72,7 +72,7 @@ Type `/coco` to open the settings, and out comes Coco's ita bag. Seven pages:
 
 - **Coco**: Coco's profile, Coco Pet, and things to do together (focus, skill cards, diary). You can also switch to Claudie here (the terminal keeps Coco) or pick another style of bag art.
 - **Quota**: the 5-hour and weekly limits, what this session used, the price table.
-- **vibe check**: this session's record. How many times tests failed, how many fixes, how often Coco went wild, and whether the build ran faster or slower than usual. You can save it as a picture to share.
+- **vibe check**: this session's record. How many times tests failed, how many fixes, how often Coco bristled, and whether the build ran faster or slower than usual. You can save it as a picture to share.
 - **Socks**: thirteen pairs. Each "first time" you reach earns a pair; pick one and Coco puts it on.
 - **Doujin**: a zine, one issue a week, about what the two of you worked on.
 - **Sticky notes**: when a new session starts, Coco tells you where you stopped last time. Kept on this computer only.

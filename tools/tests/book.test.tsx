@@ -243,7 +243,7 @@ describe('his book', () => {
     const ui = await $.ui.mount({ surface: 'desktop', ...PANE })
     const log = await pageText(ui)
     expect(log).toMatch(/Pages read together\s+42/)
-    expect(log).toMatch(/The wild soul came out\s+once/)
+    expect(log).toMatch(/Bristled\s+once/)
     expect(log).toMatch(/First page\s+Oct 2, 2026/)
   })
 

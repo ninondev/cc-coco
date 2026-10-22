@@ -42,7 +42,7 @@
       "text": "Discutir qué día es hoy, los commits que solo dicen fix y una terminal en silencio por la que nadie pasa en horas."
     },
     {
-      "label": "Dos lados",
+      "label": "Carácter",
       "text": "No se está quieta y le encanta llevarse el mérito. Con tres tests fallidos seguidos, el limitador sale volando, pero su furia es solo para el código malo, nunca para ti. Cuando algo va mal de verdad, guarda las bromas en un segundo y te cubre las espaldas."
     }
   ],
@@ -76,7 +76,7 @@
     "pages": "Páginas leídas juntos",
     "first": "Primera página",
     "latest": "La vez que leímos hasta más tarde",
-    "wild": "El alma salvaje salió",
+    "wild": "Berrinches",
     "times": "{n} veces",
     "once": "una vez",
     "never": "Todavía no",
@@ -143,14 +143,7 @@
       "label": "Franja sobre el prompt",
       "on": "Completa",
       "compact": "Una línea",
-      "off": "Oculta",
-      "painted": "Pintado",
-      "pixel": "Píxel"
-    },
-    "workSize": {
-      "label": "Mientras Claude trabaja",
-      "same": "Mismo tamaño",
-      "smaller": "Más pequeño"
+      "off": "Oculta"
     },
     "marks": {
       "label": "Marcas en la conversación",
@@ -253,7 +246,13 @@
         "Mediano",
         "Grande"
       ],
+      "macSizes": [
+        "Mediano",
+        "Grande",
+        "Más grande"
+      ],
       "login": "Iniciar al iniciar sesión",
+      "capture": "Mostrar en capturas y grabaciones",
       "on": "Activado",
       "off": "Desactivado",
       "remove": "Quitar de este Mac…",
@@ -311,24 +310,6 @@
       "label": "Luces de los vecinos",
       "help": "Nota cuando otros agentes de programación están trabajando. Solo ve si están ocupados y su uso; nunca el contenido, y no envía nada a ningún sitio."
     }
-  },
-  "stamps": {
-    "title": "Logros",
-    "names": {
-      "met": "Primer encuentro",
-      "green": "De rojo a verde",
-      "hundred": "Cien turnos",
-      "night": "A altas horas",
-      "shiori": "Cucú",
-      "calmed": "Ya se calmó",
-      "week": "Una semana juntos"
-    },
-    "alt": "Logro: {name}, {date}",
-    "blank": "Bloqueado",
-    "summaryAlt": "{stamped} de {total} páginas selladas"
-  },
-  "stamp": {
-    "earned": "logro desbloqueado: {stamp}."
   },
   "check": {
     "title": "Revisión",

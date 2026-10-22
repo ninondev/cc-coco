@@ -5,6 +5,8 @@ import type { CostDeps } from '../../../plugin/hooks/cost/runtime'
 import type { ShippedPrices } from '../../../plugin/hooks/cost/prices'
 const SHIPPED = JSON.parse(readFileSync(new URL('../../../plugin/assets/prices.json', import.meta.url), 'utf8')) as ShippedPrices
 const NOW = Date.UTC(2026, 9, 7, 12)
+// a stored table counts only from the shipped table's day on; one fetched before it is stale
+const FRESH = Date.parse(SHIPPED.asOf) + 1
 const MAIN = { model: 'openai/gpt-6.1-sol', input_tokens: 1000000, cache_read_input_tokens: 1000000, cache_creation_input_tokens: 1000000, output_tokens: 1000000 }
 function fixture(options: { policy?: CostDeps['policy']; ledger?: number; stored?: unknown } = {}) {
   let ledger = options.ledger
@@ -55,7 +57,7 @@ test('W9 gateway fallback includes helpers and in-turn own calls, excluding idle
 
 test('W9 newest known maker table is used without any fetch; a table older than shipped is ignored', async () => {
   const maker = { maker: 'openai', label: 'OpenAI', models: [{ name: 'gpt-6.1-sol', input: 3, read: .3, output: 15 }] }
-  const f = fixture({ stored: { fetchedAt: NOW - 1, rows: [maker] } })
+  const f = fixture({ stored: { fetchedAt: FRESH, rows: [maker] } })
   await f.runtime.refreshPrices(); await finish(f)
   expect(f.runtime.snapshot().lastTurn?.usd).toBeCloseTo(21.3, 10)
   f.store.set('prices.others', { fetchedAt: Date.UTC(2026, 9, 5), rows: [maker] })
@@ -88,7 +90,7 @@ test('W9 missing maker cache-read rate is harmless when the response reports no 
 })
 
 test('W9 corrupt locally stored maker rates yield unknown rather than a non-finite estimate', async () => {
-  const f = fixture({ stored: { fetchedAt: NOW, rows: [{ maker: 'openai', label: 'OpenAI', models: [{ name: 'gpt-6.1-sol', input: null, read: .3, output: 15 }] }] } })
+  const f = fixture({ stored: { fetchedAt: FRESH, rows: [{ maker: 'openai', label: 'OpenAI', models: [{ name: 'gpt-6.1-sol', input: null, read: .3, output: 15 }] }] } })
   await f.runtime.refreshPrices(); await finish(f)
   expect(f.runtime.snapshot().lastTurn?.usd).toBeUndefined()
   expect(f.runtime.snapshot().sessionUSD).toBeUndefined()

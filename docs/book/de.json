@@ -42,7 +42,7 @@
       "text": "Streit darüber, welcher Tag heute ist, Commits, in denen nur fix steht, und ein stilles Terminal, um das sich ewig keiner kümmert."
     },
     {
-      "label": "Zwei Seiten",
+      "label": "Temperament",
       "text": "Kann nicht stillsitzen und heimst gern den Ruhm ein. Drei rote Testläufe hintereinander, und der Limiter fliegt weg, doch ihre Wut gilt nur schlechtem Code, nie dir. Wenn es wirklich brennt, packt sie die Witze in einer Sekunde weg und hält dir den Rücken frei."
     }
   ],
@@ -76,7 +76,7 @@
     "pages": "Gemeinsam gelesene Seiten",
     "first": "Erste Seite",
     "latest": "Späteste Lesestunde",
-    "wild": "Die wilde Seele kam heraus",
+    "wild": "Ausraster",
     "times": "{n}-mal",
     "once": "einmal",
     "never": "Noch nicht",
@@ -143,14 +143,7 @@
       "label": "Leiste über dem Prompt",
       "on": "Voll",
       "compact": "Eine Zeile",
-      "off": "Aus",
-      "painted": "Gemalt",
-      "pixel": "Pixel"
-    },
-    "workSize": {
-      "label": "Während Claude arbeitet",
-      "same": "Gleiche Größe",
-      "smaller": "Kleiner"
+      "off": "Aus"
     },
     "marks": {
       "label": "Zeichen im Gespräch",
@@ -253,7 +246,13 @@
         "Mittel",
         "Groß"
       ],
+      "macSizes": [
+        "Mittel",
+        "Groß",
+        "Größer"
+      ],
       "login": "Bei der Anmeldung starten",
+      "capture": "In Screenshots und Aufnahmen zeigen",
       "on": "Ein",
       "off": "Aus",
       "remove": "Von diesem Mac entfernen…",
@@ -311,24 +310,6 @@
       "label": "Lichter der Nachbarn",
       "help": "Sie bemerkt, wenn andere Coding-Agenten arbeiten. Sie liest nur, ob sie beschäftigt sind, und ihre Nutzung. Keine Inhalte, nichts wird übertragen."
     }
-  },
-  "stamps": {
-    "title": "Erfolge",
-    "names": {
-      "met": "Erste Begegnung",
-      "green": "Rot zu Grün",
-      "hundred": "Hundert Runden",
-      "night": "Späte Nacht",
-      "shiori": "Kuckuck",
-      "calmed": "Wieder ruhig",
-      "week": "Eine Woche mit dir"
-    },
-    "alt": "Erfolg: {name}, {date}",
-    "blank": "Noch gesperrt",
-    "summaryAlt": "{stamped} von {total} Seiten gestempelt"
-  },
-  "stamp": {
-    "earned": "Erfolg freigeschaltet: {stamp}."
   },
   "check": {
     "title": "Prüfung",

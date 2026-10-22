@@ -26,7 +26,7 @@ async function open($: Parameters<Parameters<typeof test>[1]>[0], args = '') {
     // BOOK 10-09: a pair stands as a label column and a value column, so each label and its value are two Texts in a row.
     const page = (await ui.findAll({ type: 'Text' })).map((node: any) => node.text ?? '').join(' ')
     expect(page).toMatch(/Pages read together\s+42/)
-    expect(page).toMatch(/The wild soul came out\s+once/)
+    expect(page).toMatch(/Bristled\s+once/)
     expect(page).toMatch(/First page\s+Oct 2, 2026/)
   })
 

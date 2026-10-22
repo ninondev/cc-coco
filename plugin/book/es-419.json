@@ -42,7 +42,7 @@
       "text": "Discutir qué día es hoy, los commits que solo dicen fix y una terminal callada donde nadie se asoma en horas."
     },
     {
-      "label": "Dos lados",
+      "label": "Carácter",
       "text": "No se queda quieta y le encanta llevarse el crédito. Con tres tests fallidos seguidos, el limitador sale volando, pero su furia es solo para el código malo, nunca para ti. Cuando algo sale mal de verdad, guarda las bromas en un segundo y te cubre la espalda."
     }
   ],
@@ -76,7 +76,7 @@
     "pages": "Páginas leídas juntos",
     "first": "Primera página",
     "latest": "La vez que leímos hasta más tarde",
-    "wild": "El alma salvaje salió",
+    "wild": "Berrinches",
     "times": "{n} veces",
     "once": "una vez",
     "never": "Todavía no",

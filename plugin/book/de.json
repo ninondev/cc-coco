@@ -42,7 +42,7 @@
       "text": "Streit darüber, welcher Tag heute ist, Commits, in denen nur fix steht, und ein stilles Terminal, um das sich ewig keiner kümmert."
     },
     {
-      "label": "Zwei Seiten",
+      "label": "Temperament",
       "text": "Kann nicht stillsitzen und heimst gern den Ruhm ein. Drei rote Testläufe hintereinander, und der Limiter fliegt weg, doch ihre Wut gilt nur schlechtem Code, nie dir. Wenn es wirklich brennt, packt sie die Witze in einer Sekunde weg und hält dir den Rücken frei."
     }
   ],
@@ -76,7 +76,7 @@
     "pages": "Gemeinsam gelesene Seiten",
     "first": "Erste Seite",
     "latest": "Späteste Lesestunde",
-    "wild": "Die wilde Seele kam heraus",
+    "wild": "Ausraster",
     "times": "{n}-mal",
     "once": "einmal",
     "never": "Noch nicht",

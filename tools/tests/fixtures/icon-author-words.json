@@ -521,8 +521,8 @@
   "ja": "アイコンを変えられなかった",
   "ko": "아이콘을 바꾸지 못했어.",
   "pt-BR": "Não foi possível mudar o ícone.",
-  "zh": "没能更换图标",
-  "zh-Hant": "沒能更換圖示"
+  "zh": "图标更换失败",
+  "zh-Hant": "圖示更換失敗"
  },
  "icon.fallback": {
   "de": "Versuch /coco icon apply oder clear.",
