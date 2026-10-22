@@ -2,7 +2,7 @@
 // little light at its front edge brightens as you breathe in and dims as you breathe out. It replaces the incense plume
 // and keeps its timing (play.ts: four seconds in, six out); nothing new is scheduled for it. On the desktop the light is
 // one CSS cycle set to the breath's phase; the terminal steps it with the breath's own cells. The source is
-// play_sprites.py (LAPTOP_SHUT, laptop_light) in handoffs/program/design/1.0/new-play/tools.
+// the unpublished drawing tool play_sprites.py (LAPTOP_SHUT, laptop_light).
 import { contrastSvg } from './high-contrast'
 import { BREATH_CYCLE_MS } from './play'
 import { PIXEL_EDGE_STYLE, pixelRuns } from './quota'

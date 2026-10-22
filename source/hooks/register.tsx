@@ -323,7 +323,7 @@ async function startM1($:Engine):Promise<void>{
  if(m1Ready)return
  await loadGapWords(()=>$.fs.read(joinPath($.plugin.root,'hooks/gaps-text.json')))
  if(generation!==lifecycleGeneration)return
- const [values,agreed,today,durations,again,model,repo,home,closings,payer,savedKey,keyToday,estimateFactor]=await Promise.all([$.store.get('more'),$.store.get('more.agreed'),$.store.get('more.today'),$.store.get('runDurations'),$.store.get('voiceAskAgain'),$.session.model().catch(()=>''),$.session.repo().catch(()=>null),$.env.get('HOME'),$.store.get('closings'),$.store.get('more.payer'),$.store.get('more.key'),$.store.get('more.keyToday'),$.store.get('more.estimateFactor')])
+ const [values,agreed,today,durations,again,model,repo,home,closings,payer,savedKey,keyToday,estimateFactor]=await Promise.all([$.store.get('more'),$.store.get('more.agreed'),$.store.get('more.today'),$.store.get('runDurations'),$.store.get('voiceAskAgain'),$.session.model().catch(()=>''),$.session.repo().catch(()=>null),Promise.all([$.env.get('HOME'),$.env.get('USERPROFILE')]).then(([home,profile])=>homePath(home,profile)),$.store.get('closings'),$.store.get('more.payer'),$.store.get('more.key'),$.store.get('more.keyToday'),$.store.get('more.estimateFactor')])
  if(generation!==lifecycleGeneration)return
  modGaps.restoreClosings(closings)
  // A history an older version kept as command text is stored again at once, hashed (DECISIONS 594).
@@ -336,6 +336,7 @@ async function startM1($:Engine):Promise<void>{
   // the chat's language heard the way the band hears a prompt (no model): his reply is told to answer in it (10-21)
   hearLanguage:text=>detectLanguageNow(text,[langChosen,cachedEngineSettings.language,heard,...locale]),
   debug:(step,detail)=>{diagnose($,step,undefined,detail)},
+  // Under the home folder, which on Windows is USERPROFILE (HOME is usually unset there).
   dataFolder:()=>home?joinPath(home,'.local/share/coco/mod'):undefined,
   // the line library's files, where the person opens and edits them (his 10-17 cards)
   linesFolder:()=>home?joinPath(home,'.config/coco/lines'):undefined,

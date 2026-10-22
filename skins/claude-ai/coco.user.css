@@ -6,6 +6,8 @@
 @license        MIT
 @preprocessor   default
 ==/UserStyle== */
+/* The code is MIT. The pixel Coco drawn below, as a data: image, is character art under CC BY-NC 4.0: see
+   ART-LICENSE.md in the repository. */
 
 @-moz-document domain("claude.ai") {
   /* Forced colours (a Windows contrast theme, or the browser's own colour override): the skin steps aside

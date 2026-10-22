@@ -1,6 +1,6 @@
 // The thermos (保温杯, lane C, 10-14): while keeping the cache warm is on, the band's cache cup becomes their coral thermos
 // with a metal cap and a cream band (the owner saw it on 《设置外面》). Drawn like the quota pictures, one rect per run, its
-// outline lightening on a dark ground. The source is play_sprites.py (THERMOS) in handoffs/program/design/1.0/new-play/tools.
+// outline lightening on a dark ground. The source is the unpublished drawing tool play_sprites.py (THERMOS).
 import { contrastSvg } from './high-contrast'
 import { PIXEL_EDGE_STYLE, pixelRuns } from './quota'
 

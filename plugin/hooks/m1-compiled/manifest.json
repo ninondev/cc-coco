@@ -195,8 +195,8 @@
       "sha256": "a003049843a79d2d0685177adda07d99251f0e717a87f69d12c93fa5898d4f99"
     },
     "hooks-source/quota.ts": {
-      "bytes": 23187,
-      "sha256": "aef9be8d7f1ac61c515df172e6e3aa7babb13697a4f84227be2d5fe3cdfb90c0"
+      "bytes": 23173,
+      "sha256": "62705fb560632f11c95bb5f4ef888130d9f9a84fe563488622894665a4383ba3"
     },
     "hooks-source/quota-trail.ts": {
       "bytes": 4672,
@@ -263,12 +263,12 @@
       "sha256": "825e505901b0ad1cc0f4386327e0dc5e105dd037fb47600d778a26d8d75c3b0a"
     },
     "hooks-source/bag.ts": {
-      "bytes": 29310,
-      "sha256": "2d96c2add63f6a548f11cb207902861383a3dca3115ef553370798ef9efa19ca"
+      "bytes": 29294,
+      "sha256": "3057f149c39442186f906ed22d781fde140461fd93a1bb0a6f5c440f2fbc9186"
     },
     "hooks-source/bag-mv.ts": {
-      "bytes": 20376,
-      "sha256": "e44aa86d036e607cb80b8547c7a2124010b849cee3670be0f2054a6697b51515"
+      "bytes": 20349,
+      "sha256": "e795ffdfe3ea341b76740087ba910377b1f7070bb4d31d2659d92758138284e6"
     },
     "hooks-source/bag-mv-glyphs.ts": {
       "bytes": 6126,
@@ -495,20 +495,20 @@
       "sha256": "8300821c009c85cba11db860d75b94bbe372f0b3e8bce457e1d7663be74c9a06"
     },
     "hooks-source/play-commits.ts": {
-      "bytes": 5794,
-      "sha256": "c59d17d937a16126921671f7be8e01617987596015e196e3d70a707af05ee3c3"
+      "bytes": 5780,
+      "sha256": "87d883a03c983c17872da82e0c091fac90c323abc031cff34b3f5e31bb113f63"
     },
     "hooks-source/play-focus.ts": {
-      "bytes": 2981,
-      "sha256": "736ce88b81669bf455231a82d2f9b2e4b3e250331bf89f7551ac8b5ed8c60f74"
+      "bytes": 2964,
+      "sha256": "ad2c1488e34f4e059b50eed123f8bbbb24abf3212ea796b5a4a9aafb19f9aa16"
     },
     "hooks-source/play-light.ts": {
-      "bytes": 3424,
-      "sha256": "9a4ceec63bdb3b5ac9963c33099b1a476cbfa2c9ee66984d9850194b36943efa"
+      "bytes": 3407,
+      "sha256": "e6d166940614b930d3539ce2e653a52d966e75ab9343fb1b726acc11ff9a4bad"
     },
     "hooks-source/play-thermos.ts": {
-      "bytes": 1395,
-      "sha256": "2df18c93ea44567d899692a6f26e8d156ba4b056ddd599751bf8b3a744293a80"
+      "bytes": 1378,
+      "sha256": "4b28a48353b8908e9206ecd8ecb9b21443052fd9bf1611107ddf489d03a0de1d"
     },
     "hooks-source/play-planes.ts": {
       "bytes": 3170,
@@ -655,16 +655,16 @@
       "sha256": "d9e0507c6dbd8c6da3e66090b7a6d582f91815a38fe848032d3362109543512d"
     },
     "hooks-source/notice-art.ts": {
-      "bytes": 10284,
-      "sha256": "b93263232a07704477330ae3d914908afa89e22259c5acd883b89a9b775b1fe0"
+      "bytes": 10272,
+      "sha256": "dca9fccad13d84ed3e0ec58a1a2cbfe07565291ea08e4023cc03bad52a46b066"
     },
     "hooks-source/notice-rows.tsx": {
       "bytes": 7254,
       "sha256": "7a7c54b98091c26c776cdf126583846e28e46f3c675d28cc22fe0fb556d8f1aa"
     },
     "hooks-source/register.tsx": {
-      "bytes": 313157,
-      "sha256": "ce093a2c278bffcc7c17a87a82f102d08f393f334cd2618ed7764f774cd1fb24"
+      "bytes": 313335,
+      "sha256": "297a66677c86338f39be9809034246ccf7a9fb8ef269384f2375b0c519c7fee8"
     },
     "hooks-source/touch-client.ts": {
       "bytes": 1190,
@@ -4684,6 +4684,6 @@
     "motion_stills.js": 219189,
     "pages.js": 67905,
     "presence.js": 13396,
-    "register.js": 224223
+    "register.js": 224303
   }
 }

@@ -2,7 +2,7 @@ import { contrastSvg } from './high-contrast'
 import type { Page } from './book-words'
 
 // Their itabag replaces his book as the settings (owner 10-14, DECISIONS 892 and 894): the panel is 小克的痛包, seven
-// pages in his order, the art drawn the way handoffs/program/design/1.0/new-play/tools/settings_drafts.py drew it
+// pages in his order, the art drawn the way the unpublished draft tool settings_drafts.py drew it
 // (Italian futurism: one 30 degree diagonal, Balla's triangles, the bag swinging in, its gear badge spinning). The
 // names are lane B's (hooks/bag-text.json, built by tools/build-bag-words.py) and are read when the panel first opens.
 

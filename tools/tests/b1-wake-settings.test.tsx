@@ -126,6 +126,30 @@ if (!WINDOWS_ROOTS) describe('B1 wake and shared settings on the rendered band',
     expect(await ui.find({ type: 'Text', text: LINES.en.set_clingy[0] })).toBeDefined()
   })
 
+  // 10-18 on his Mac the band stayed English while he wrote Chinese: another session that had heard nothing sent heard
+  // null, which cleared what this one heard, and its shown English outranked it (the Mac's f2c14b22).
+  test('another session that heard nothing and shows English leaves the Chinese this one heard', async ($, on) => {
+    const f = animatedPresence(on)
+    await $.session.start(START)
+    await $.ui.mount({ surface: 'desktop', ...band(100) })
+    await f.clock.advance(0)
+    await flush($)
+    const chinese = '帮我看看这个横条为什么一直是英文的，我明明一直在用中文跟你说话，麻烦你仔细查一下原因再告诉我'
+    await $.prompt.submit({ text: chinese, wait: false, origin: PERSON })
+    await flush($)
+    expect(f.view().lang).toBe('zh')
+    const at = f.clock.now(), changes = { heard: null, language: 'en', lang: 'auto' }
+    const event = { kind: 'settings', id: `settings:91:${at}`, at, lang: 'en', changes }
+    f.remote({ ...snapshot('activity', at, f.current.seq + 1), event, settingsEvent: event,
+      settings: { ...f.current.settings, ...changes } } as any)
+    await flush($)
+    expect(f.view().lang).toBe('zh')
+    // The next thing he writes keeps it there too.
+    await $.prompt.submit({ text: chinese, wait: false, origin: PERSON })
+    await flush($)
+    expect(f.view().lang).toBe('zh')
+  })
+
   test('sleeping poke pat poke shares the original wake clock, then reveals the burst line at 450 ms', async ($, on) => {
     const f = animatedPresence(on)
     await $.session.start(START)

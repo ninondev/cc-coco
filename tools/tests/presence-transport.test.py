@@ -53,9 +53,10 @@ def runtime_violations(plugin, files=None):
 
 
 def shipping_files(plugin):
-    # Use the assembler's approved inventory, so excluded Rust CI tooling is
-    # never mistaken for a Python helper shipped to users.
-    spec = importlib.util.spec_from_file_location('presence_release_policy', ROOT/'coco/scripts/release-policy.py')
+    # Use the release's approved inventory (the 1.0 policy: scripts/release-policy.py in the public tree, kept in
+    # tools/release/public-scripts here), so excluded Rust CI tooling is never mistaken for a Python helper shipped to users.
+    policy_file = next(p for p in (ROOT/'scripts/release-policy.py', ROOT/'tools/release/public-scripts/release-policy.py') if p.is_file())
+    spec = importlib.util.spec_from_file_location('presence_release_policy', policy_file)
     policy = importlib.util.module_from_spec(spec)
     spec.loader.exec_module(policy)
     return [path for path in plugin.rglob('*') if path.is_file() and policy.plugin_allowed(path.relative_to(plugin).as_posix())]

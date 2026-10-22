@@ -33,8 +33,8 @@ export function incenseAlt(lang: Lang, windows: readonly { kind: string; percent
 // baseline: the battery is cream with four bars that fill bottom up in sixths, the power bank charcoal with four
 // little lights (lit, half lit, off). A quarter or less left turns what is left coral; a spent window waits under
 // a hand-drawn bolt. Drawn as one rect per run of a colour, two CSS px per art pixel; the outline on the picture's
-// edge lightens on a dark ground the way the pixel family does (handoffs/program/design/1.0/new-play/tools/
-// play_sprites.py, battery_live and bank_live, are the source these rows are checked against).
+// edge lightens on a dark ground the way the pixel family does (battery_live and bank_live in the unpublished
+// drawing tool play_sprites.py are the source these rows are checked against).
 const QUOTA_INK: Record<string, string> = {
   O: '#5C2A1E', h: '#FFFDF8', i: '#F4ECE4', s: '#E0D1C6', M: '#F2EEEA', N: '#C9C2BC', Z: '#2E2E35',
   b: '#79B6E6', B: '#3A86C8', c: '#2A6399', r: '#F2A587', R: '#D97757', q: '#AE5539', e: '#A99282', E: '#CBB8AA',

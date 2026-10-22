@@ -1,7 +1,7 @@
 // The focus bar (lane C, 10-14): `/coco focus` runs 25 minutes by default, and beside their eight coral cells, their
 // hair-tie cubes, light one by one as it passes (the approved preview: 「专注默认 25 分钟分 8 格」). On the desktop
 // each cell lights by its own one-shot CSS step; the terminal draws the cells as text and keeps the stick's chained
-// timer, one step a cell. The source is play_sprites.py (focus_bar) in handoffs/program/design/1.0/new-play/tools.
+// timer, one step a cell. The source is the unpublished drawing tool play_sprites.py (focus_bar).
 import { contrastSvg } from './high-contrast'
 import { PIXEL_EDGE_STYLE, pixelRuns } from './quota'
 

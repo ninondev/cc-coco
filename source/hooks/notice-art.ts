@@ -1,7 +1,7 @@
 // The small pictures of the notices, drawn in code: their place marker (a sticky note), the slip he passes, the night
 // lamp, the rain pane and the reading-glasses stand-in. Every picture carries forced-color-adjust:none and
 // both high-contrast blocks; light and dark come from the picture's own media query.
-// Ported from handoffs/program/design/1.0/notices/tools/pieces.py and pieces2.py.
+// Ported from the unpublished drawing tools pieces.py and pieces2.py.
 import { contrastMedia } from './high-contrast'
 
 const DARK = (css: string): string => `@media(prefers-color-scheme:dark){${css}}`

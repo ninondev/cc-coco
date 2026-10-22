@@ -1,5 +1,5 @@
 //! The seam and release-path suites need Linux: a pty, a stand-in secret-tool and `unshare -m`.
-//! Elsewhere this one test says so, and the macOS and Windows checks are in handoffs/cloud/MAC-QUEUE.md.
+//! Elsewhere this one test says so; the macOS and Windows checks are run by hand on those systems.
 #![cfg(not(target_os = "linux"))]
 
 #[test]

@@ -1,7 +1,7 @@
 // The commit line (lane C, 10-14): how full the conversation is, drawn as up to five commits on one line, each a fifth of
 // the context window, with the tokens beside it in k (owner 10-14: 「把对话从百分比改成多少多少k」). While the
 // conversation is compacted the commits are pushed together; when it ends they flatten into one and that one springs
-// round (the squash). handoffs/program/design/1.0/new-play/tools/play_sprites.py (commit_line, squash_frames) is the
+// round (the squash). The unpublished drawing tool play_sprites.py (commit_line, squash_frames) is the
 // source these rows are checked against.
 import { contrastSvg } from './high-contrast'
 import { hasNumber, numberLocale } from './numbers'

@@ -1,174 +1,132 @@
 #!/bin/sh
-# assemble.sh - refresh claude-sama/plugin and public tests from the working tree.
-#
-# Maintainer script. The working copy lives next to this repo folder (../plugin, ../tools);
-# the public repo ships the plugin and its tests. Run this, then the maintainer check, then
-# commit.
-#
-# Usage: scripts/assemble.sh [--dry-run] [--source DIR] [--tools-source DIR]
-#   --dry-run              show what rsync would change; leave destination trees untouched
-#   --source DIR           working plugin folder (default: ../plugin relative to this repo)
-#   --tools-source DIR     working tools folder (default: ../tools relative to this repo)
-#
-# What is copied:
-#   plugin/               from the working plugin folder, without the files Claude Code writes into
-#                         a plugin it loads from a folder (.claude-plugin/types/ and tsconfig.json:
-#                         about 750 KB of type declarations that the engine regenerates per version)
-#   tools/tests/          from the working tools/tests (the generated book-files.ts is left out;
-#                         tools/run-tests.py writes it in its scratch copy)
-#   tools/run-tests.py    from the working tools folder
-# His compiled lines and voice ship inside the plugin; their maintainer sources stay private.
-# Nothing else under tools/ is copied: previews, mockups and asset builders stay private.
-#
-# The tree copies use rsync --delete, so files removed from the working tree disappear here too.
-# Scratch output of tests, editor leftovers and logs are never copied.
-#
-# Required leak guard: ../tools/release/leak-patterns.private stays outside the public tree,
-# one fixed string per line, case-insensitive. The inputs are staged in a scratch folder with
-# the same transfer filters as publication, then checked in maintainer scan mode. A match,
-# missing, unreadable or empty pattern file, or scan error stops the run before
-# destination trees are touched. Dry runs also use scratch storage for this scan.
-
+# Refresh a public payload only after a complete scratch preflight.
 set -eu
-
+export PYTHONDONTWRITEBYTECODE=1
 PROG=assemble.sh
-say() { printf '%s\n' "$*"; }
-die() {
-  printf '%s: %s\n' "$PROG" "$*" >&2
-  exit 2
-}
-
+die() { printf '%s: %s\n' "$PROG" "$*" >&2; exit 2; }
 ROOT=$(cd "$(dirname "$0")/.." && pwd -P)
 SRC=$ROOT/../plugin
 TOOLS_SRC=$ROOT/../tools
+README_SRC=
+WORD_INPUTS=
+DEST=$ROOT
+PATTERNS=$ROOT/../tools/release/leak-patterns.private
 DRY=0
-
-# The public tools files copied one by one.
-TOOLS_FILES="run-tests.py"
-
+MANIFEST=
 while [ $# -gt 0 ]; do
   case $1 in
-    --dry-run | -n) DRY=1 ;;
-    --source)
-      [ $# -ge 2 ] || die "--source needs a folder"
-      SRC=$2
-      shift
-      ;;
-    --tools-source)
-      [ $# -ge 2 ] || die "--tools-source needs a folder"
-      TOOLS_SRC=$2
-      shift
-      ;;
-    -h | --help)
+    --dry-run|-n) DRY=1 ;;
+    --source|--tools-source|--readme-source|--word-inputs|--dest|--private-guard|--manifest)
+      [ $# -ge 2 ] || die "$1 needs a path"
+      case $1 in
+        --source) SRC=$2 ;; --tools-source) TOOLS_SRC=$2 ;;
+        --readme-source) README_SRC=$2 ;; --word-inputs) WORD_INPUTS=$2 ;; --dest) DEST=$2 ;;
+        --private-guard) PATTERNS=$2 ;; --manifest) MANIFEST=$2 ;;
+      esac
+      shift ;;
+    --help|-h)
       cat <<EOF
-Usage: scripts/assemble.sh [--dry-run] [--source DIR] [--tools-source DIR]
-Refreshes claude-sama/plugin (from ../plugin), claude-sama/tools/tests and tools/run-tests.py
-(from ../tools) with rsync, leaving out test scratch output, logs, editor leftovers, the generated
-book-files.ts and the files Claude Code writes into a plugin it loads (.claude-plugin/types/,
-tsconfig.json).
---dry-run leaves destination trees untouched; the leak scan uses temporary scratch storage.
+Usage: scripts/assemble.sh [--dry-run] [--source PLUGIN] [--tools-source TOOLS]
+       [--readme-source DRAFTS] [--dest TREE] [--private-guard FILE] [--manifest JSON]
+Stages explicit runtime, companion source/assets, public tests, licenses and documentation.
+Rejects excluded files, a plugin over 64 MiB, leaks and tests that read private sources before copying.
+--dry-run scans and inventories scratch only; destinations stay untouched.
+--dest selects a separate assembly tree. Existing managed files use rsync --delete.
+Private guard must be a readable, nonempty regular file outside the public payload.
 EOF
-      exit 0
-      ;;
+      exit 0 ;;
     *) die "unknown argument: $1 (try --help)" ;;
   esac
   shift
 done
-
-PATTERNS=$ROOT/../tools/release/leak-patterns.private
-[ -f "$PATTERNS" ] && [ -r "$PATTERNS" ] && [ -s "$PATTERNS" ] || \
-  die "private guard missing, unreadable, empty or not a regular file: $PATTERNS; destination trees untouched"
-
-[ -d "$SRC" ] || die "working plugin folder not found: $SRC"
-SRC=$(cd "$SRC" && pwd -P)
-DEST=$ROOT/plugin
-
-[ -d "$TOOLS_SRC" ] || die "working tools folder not found: $TOOLS_SRC"
-TOOLS_SRC=$(cd "$TOOLS_SRC" && pwd -P)
-[ -d "$TOOLS_SRC/tests" ] || die "working tests folder not found: $TOOLS_SRC/tests"
-for f in $TOOLS_FILES; do
-  [ -f "$TOOLS_SRC/$f" ] || die "working tools file not found: $TOOLS_SRC/$f"
-done
-TOOLS_DEST=$ROOT/tools
-
-[ "$SRC" != "$DEST" ] || die "source and destination are the same folder: $SRC"
-[ "$TOOLS_SRC" != "$TOOLS_DEST" ] || die "tools source and destination are the same folder: $TOOLS_SRC"
-case $DEST/ in
-  "$SRC"/*) die "destination $DEST is inside the source $SRC" ;;
-esac
-case $TOOLS_DEST/ in
-  "$TOOLS_SRC"/*) die "destination $TOOLS_DEST is inside the tools source $TOOLS_SRC" ;;
-esac
+command -v python3 >/dev/null 2>&1 || die "python3 not found"
 command -v rsync >/dev/null 2>&1 || die "rsync not found"
-
-if [ ! -f "$SRC/.claude-plugin/plugin.json" ]; then
-  printf '%s: warning: %s has no .claude-plugin/plugin.json yet; the copy will not validate as a plugin\n' \
-    "$PROG" "$SRC" >&2
+[ -f "$PATTERNS" ] && [ -r "$PATTERNS" ] && [ -s "$PATTERNS" ] || die "private guard missing, unreadable or empty; destination untouched"
+[ -d "$SRC" ] && [ -d "$TOOLS_SRC/tests" ] || die "plugin or public tests source missing"
+SRC=$(cd "$SRC" && pwd -P)
+TOOLS_SRC=$(cd "$TOOLS_SRC" && pwd -P)
+if [ -z "$README_SRC" ]; then
+  README_SRC=$SRC/../handoffs/program/words/1.0/readme
+  [ -d "$README_SRC" ] || README_SRC=$ROOT
 fi
-
-# sync FROM/ TO/ [extra rsync options]
-# --delete-excluded also clears excluded leftovers that an earlier copy may have picked up.
-# The tests/... patterns apply to a plugin that carries its own tests/ folder; the bare ones
-# (out/, tmp/ ...) apply when the transfer root is a tests/ folder itself.
-sync() {
-  _from=$1
-  _to=$2
-  shift 2
-  rsync -a --delete --delete-excluded \
-    --exclude '.git/' \
-    --exclude '.DS_Store' \
-    --exclude 'node_modules/' \
-    --exclude '__pycache__/' \
-    --exclude '*.log' \
-    --exclude '*.tmp' \
-    --exclude '*.bak' \
-    --exclude '*.swp' \
-    --exclude '*~' \
-    --exclude 'tests/out/' \
-    --exclude 'tests/tmp/' \
-    --exclude 'tests/.tmp/' \
-    --exclude 'tests/scratch/' \
-    --exclude 'tests/.scratch/' \
-    --exclude 'tests/output/' \
-    --exclude 'tests/*.actual.*' \
-    "$@" "$_from" "$_to"
-}
-
-# publish PLUGIN_DEST TOOLS_DEST
-# Stage only the plugin and public tests. Keep all exclusions here or in sync.
-publish() {
-  _plugin_dest=$1
-  _tools_dest=$2
-  sync "$SRC/" "$_plugin_dest/" \
-    --exclude '/.claude-plugin/types/' \
-    --exclude '/tsconfig.json' || return $?
-  sync "$TOOLS_SRC/tests/" "$_tools_dest/tests/" \
-    --exclude 'book-files.ts' \
-    --exclude 'out/' \
-    --exclude 'tmp/' \
-    --exclude '.tmp/' \
-    --exclude 'scratch/' \
-    --exclude '.scratch/' \
-    --exclude 'output/' \
-    --exclude '*.actual.*' || return $?
-  for f in $TOOLS_FILES; do
-    rsync -a "$TOOLS_SRC/$f" "$_tools_dest/$f" || return $?
-  done
-}
-
-SCAN=$(mktemp -d "${TMPDIR:-/tmp}/assemble-scan.XXXXXX")
+[ -d "$README_SRC" ] || die "README source missing: $README_SRC"
+# Validate path relationships before any destination mutation, including new paths.
+python3 - "$SRC" "$TOOLS_SRC" "$ROOT" "$DEST" "$PATTERNS" "$MANIFEST" "$README_SRC" <<'PY'
+import sys
+from pathlib import Path
+src, tools, root, dest, guard = map(lambda p: Path(p).resolve(), sys.argv[1:6])
+raw_dest = Path(sys.argv[4]).absolute()
+for candidate in (raw_dest, *raw_dest.parents, *(raw_dest/d for d in ('plugin','tools','scripts','media','.claude-plugin','.github'))):
+    if candidate.is_symlink():
+        raise SystemExit('assembly destination contains a symlink')
+drafts = Path(sys.argv[7]).resolve()
+if dest == drafts or drafts in dest.parents or dest in drafts.parents:
+    if not (dest == root and drafts == root):
+        raise SystemExit('document source and destination must be separate trees')
+if sys.argv[6]:
+    output = Path(sys.argv[6]).resolve()
+    for protected in (src, tools, drafts, dest, guard, root):
+        if output == protected or protected in output.parents:
+            raise SystemExit('manifest output overlaps a source, payload or guard')
+    if Path(sys.argv[6]).is_symlink():
+        raise SystemExit('manifest output is a symlink')
+for source in (src, tools):
+    if dest == source or source in dest.parents or dest in source.parents:
+        raise SystemExit('assembly source and destination must be separate trees')
+if dest.exists():
+    import importlib.util
+    spec = importlib.util.spec_from_file_location('policy', root/'scripts/release-policy.py')
+    policy = importlib.util.module_from_spec(spec); spec.loader.exec_module(policy)
+    permitted = {n.split('/')[0] for n in policy.ROOT_FILES} | {'plugin','tools','.git'}
+    for entry in dest.iterdir():
+        if entry.name not in permitted:
+            raise SystemExit('unmanaged destination entry; retain and remove from release separately: ' + entry.name)
+if guard == dest or dest in guard.parents or root in guard.parents:
+    raise SystemExit('private guard must stay outside the public payload')
+PY
+SCRATCH_BASE=/private/tmp
+[ -d "$SCRATCH_BASE" ] || SCRATCH_BASE=${TMPDIR:-/tmp}
+SCAN=$(mktemp -d "$SCRATCH_BASE/coco-assemble.XXXXXX")
 cleanup() { rm -rf "$SCAN"; }
 trap cleanup EXIT
 trap 'exit 1' HUP INT TERM
-mkdir -p "$SCAN/plugin" "$SCAN/tools/tests" "$SCAN/scripts"
-if publish "$SCAN/plugin" "$SCAN/tools"; then
-  :
-else
-  die "could not stage inputs for leak scan (diagnostic above); destination trees untouched"
-fi
-# Only public comments change; working modules and their runtime contents stay untouched.
-for f in "$SCAN/plugin/hooks/lines.ts" "$SCAN/plugin/hooks/voice.ts" \
-    "$SCAN/plugin/hooks/words.ts" "$SCAN/tools/tests/book-fewer-words.test.tsx"; do
+mkdir -p "$SCAN/tree/plugin" "$SCAN/tree/tools"
+POLICY=$ROOT/scripts/release-policy.py
+python3 "$POLICY" filters plugin "$SRC" "$SCAN/plugin.filters"
+python3 "$POLICY" filters tools "$TOOLS_SRC" "$SCAN/tools.filters"
+rsync -a --delete --delete-excluded --filter="merge $SCAN/plugin.filters" "$SRC/" "$SCAN/tree/plugin/"
+rsync -a --delete --delete-excluded --filter="merge $SCAN/tools.filters" "$TOOLS_SRC/" "$SCAN/tree/tools/"
+chmod -R u+w "$SCAN/tree"
+# Public scaffolding is already in this repo. README drafts override only matching documents;
+# missing translations and the changelog remain existing public copies, visibly reported.
+python3 -B - "$ROOT" "$README_SRC" "$SCAN/tree" <<'PY'
+import importlib.util
+import shutil
+import sys
+from pathlib import Path
+root, drafts, stage = map(Path, sys.argv[1:])
+spec = importlib.util.spec_from_file_location('policy', root/'scripts/release-policy.py')
+policy = importlib.util.module_from_spec(spec); spec.loader.exec_module(policy)
+for name in sorted(policy.ROOT_FILES):
+    source = root/name
+    if name in {'README.md', 'README.zh.md', 'README.ja.md', 'LORE.md', 'CHANGELOG.md'}:
+        if (drafts/name).is_file():
+            source = drafts/name
+        else:
+            print('Document fallback to existing public copy: ' + name)
+    if source.is_file():
+        target = stage/name; target.parent.mkdir(parents=True, exist_ok=True)
+        shutil.copy2(source, target)
+for name in ('LICENSE','ART-LICENSE.md','README.md','README.zh.md','README.ja.md','LORE.md','CHANGELOG.md',
+             '.claude-plugin/marketplace.json','scripts/check.sh','scripts/release-policy.py','scripts/public-tests.py'):
+    if not (stage/name).is_file():
+        raise SystemExit('required public file missing: ' + name)
+PY
+[ -n "$WORD_INPUTS" ] || WORD_INPUTS=$TOOLS_SRC/../handoffs/program/words-1.0.i18n.json
+python3 "$ROOT/scripts/public-tests.py" "$TOOLS_SRC" "$SCAN/tree/tools" --word-inputs "$WORD_INPUTS"
+# Preserve the existing public generated-comment cleanup, without changing runtime data.
+for f in "$SCAN/tree/plugin/hooks/lines.ts" "$SCAN/tree/plugin/hooks/voice.ts" \
+    "$SCAN/tree/plugin/hooks/words.ts" "$SCAN/tree/tools/tests/book-fewer-words.test.tsx"; do
   [ -f "$f" ] || continue
   sed \
     -e 's|^// GENERATED by tools/build-lines.py from persona/.*|// GENERATED from private maintainer sources. Do not edit here.|' \
@@ -176,38 +134,44 @@ for f in "$SCAN/plugin/hooks/lines.ts" "$SCAN/plugin/hooks/voice.ts" \
     -e 's|^// Omikuji draw weights, from omikuji._about in persona/lines.json.|// Omikuji draw weights.|' \
     -e 's|^// lines.ts (generated from persona/lines.json).|// lines.ts (bundled with the plugin).|' \
     -e 's|^// Rank words pinned independently from persona/lines.json. Every slip is checked, not|// Rank words pinned independently from the bundled lines. Every slip is checked, not|' \
-    "$f" >"$f.public"
-  cat "$f.public" >"$f"
-  rm "$f.public"
+    "$f" >"$SCAN/comment.public"
+  cat "$SCAN/comment.public" >"$f"
 done
-# Use the same generic and private scans as the release gate; no validators or tests run here.
-cp "$ROOT/scripts/check.sh" "$SCAN/scripts/check.sh"
-if ! sh "$SCAN/scripts/check.sh" --scan-only --private-guard "$PATTERNS"; then
-  die "maintainer payload scan failed; destination trees untouched"
+python3 - "$SRC/hooks/voice.ts" "$SCAN/tree/plugin/hooks/voice.ts" "$SCAN/tree/plugin/hooks/voice-sizes.json" <<'PYVOICE'
+import hashlib, json, pathlib, sys
+source, staged, metadata = map(pathlib.Path, sys.argv[1:])
+sizes = json.loads(metadata.read_text())
+if sizes.get('sourceSha256') != hashlib.sha256(source.read_bytes()).hexdigest():
+    raise SystemExit('voice-size metadata does not match the pinned source')
+sizes['sourceSha256'] = hashlib.sha256(staged.read_bytes()).hexdigest()
+metadata.write_text(json.dumps(sizes, ensure_ascii=False, indent=2) + '\n')
+PYVOICE
+if ! sh "$SCAN/tree/scripts/check.sh" --scan-only --private-guard "$PATTERNS"; then
+  die "staged payload failed; destination untouched"
 fi
-
-say "Plugin source:   $SRC"
-say "Plugin dest:     $DEST"
-say "Tools source:    $TOOLS_SRC"
-say "Tools dest:      $TOOLS_DEST"
-# Transfer exactly the staged payload that passed the scan, including its public comments.
+python3 "$POLICY" manifest "$SCAN/tree" >"$SCAN/manifest.json"
+if [ -n "$MANIFEST" ]; then cp "$SCAN/manifest.json" "$MANIFEST"; fi
+python3 - "$SCAN/manifest.json" <<'PY'
+import json, sys
+m = json.load(open(sys.argv[1]))
+print('Staged total: %d files, %d bytes' % (m['files'], m['bytes']))
+for folder, row in m['folders'].items():
+    print('%s: %d files, %d bytes' % (folder, row['files'], row['bytes']))
+PY
 if [ "$DRY" -eq 1 ]; then
-  set -- --dry-run -v
-else
-  set --
-  mkdir -p "$DEST" "$TOOLS_DEST/tests"
+  printf '%s\n' 'Dry run passed; destination untouched.'
+  exit 0
 fi
-sync "$SCAN/plugin/" "$DEST/" "$@"
-sync "$SCAN/tools/tests/" "$TOOLS_DEST/tests/" "$@"
-for f in $TOOLS_FILES; do
-  rsync -a "$@" "$SCAN/tools/$f" "$TOOLS_DEST/$f"
+mkdir -p "$DEST"
+# Copy all and only scanned managed files. Preserve the repository database; clean old
+# excluded artifacts in managed folders. No git command is run.
+for folder in plugin tools scripts media .claude-plugin .github; do
+  [ -d "$SCAN/tree/$folder" ] || continue
+  mkdir -p "$DEST/$folder"
+  rsync -a --delete --delete-excluded "$SCAN/tree/$folder/" "$DEST/$folder/"
 done
-
-if [ "$DRY" -eq 1 ]; then
-  say "Dry run: destination trees untouched; temporary scan storage was used."
-else
-  n=$(find "$DEST" -type f | wc -l | tr -d ' ')
-  t=$(find "$TOOLS_DEST" -type f | wc -l | tr -d ' ')
-  say "Done: $n files in $DEST, $t in $TOOLS_DEST"
-  say "Next: scripts/check.sh --private-guard ../tools/release/leak-patterns.private"
-fi
+for file in "$SCAN/tree"/.* "$SCAN/tree"/*; do
+  [ -f "$file" ] || continue
+  rsync -a "$file" "$DEST/"
+done
+printf '%s\n' "Assembly passed: $DEST"

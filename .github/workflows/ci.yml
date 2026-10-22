@@ -6,14 +6,22 @@ name: CI
 on:
   push:
   pull_request:
+  # Run by hand: the Windows job alone, on the test files named, or the whole kit when none are.
+  workflow_dispatch:
+    inputs:
+      windows_tests:
+        description: Test files for the Windows job, separated by spaces (empty runs the whole kit)
+        type: string
+        default: ""
 
 # Read-only token; nothing here writes to the repository.
 permissions:
   contents: read
 
-# A newer push to the same branch or pull request replaces a run that is still going.
+# A newer push to the same branch or pull request replaces a run that is still going; a run by hand
+# replaces only an earlier run by hand.
 concurrency:
-  group: ci-${{ github.workflow }}-${{ github.ref }}
+  group: ci-${{ github.workflow }}-${{ github.ref }}-${{ github.event_name }}
   cancel-in-progress: true
 
 env:
@@ -34,6 +42,7 @@ env:
 jobs:
   check:
     name: check (${{ matrix.os }})
+    if: github.event_name != 'workflow_dispatch'
     runs-on: ${{ matrix.os }}
     timeout-minutes: 150
     strategy:
@@ -89,7 +98,8 @@ jobs:
     runs-on: windows-latest
     # Not tried on a real Windows machine yet; failures are reported without blocking the release.
     continue-on-error: true
-    timeout-minutes: 150
+    # The whole kit took about two hours here on 10-21, and the Windows-roots matrix runs after it.
+    timeout-minutes: 300
     # Python reads and writes files as UTF-8, as on macOS and Linux; Windows' own default cannot read the Chinese in them.
     env:
       PYTHONUTF8: "1"
@@ -146,7 +156,11 @@ jobs:
           done
 
       - name: Run the mod tests
+        env:
+          WINDOWS_TESTS: ${{ inputs.windows_tests }}
         run: |
-          python tools/run-tests.py --stage kit
+          $chosen = @()
+          foreach ($name in ("$env:WINDOWS_TESTS" -split '\s+' | Where-Object { $_ })) { $chosen += @('--test-file', $name) }
+          python tools/run-tests.py --stage kit @chosen
           if ($LASTEXITCODE -ne 0) { exit $LASTEXITCODE }
-          python tools/run-tests.py --stage kit --windows-roots
+          if ($chosen.Count -eq 0) { python tools/run-tests.py --stage kit --windows-roots }

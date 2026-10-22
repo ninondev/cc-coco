@@ -1,5 +1,5 @@
 // The bag's pictures in the duotone MV style (owner 10-17: both styles stay, the person picks, the current one by
-// default; lane A's drawing, handoffs/program/design/1.0/mv-bag/tools/mv_bag.py). A deep navy ground, Claude coral and
+// default; drawn with the unpublished tool mv_bag.py). A deep navy ground, Claude coral and
 // cream, a ring of bars behind the bag, the bag's window showing the page's reading as code (an off call struck
 // through) and the page's one number in slab letters on a band under a rule; where the window is narrow, small marks
 // of the same reading instead of code. Coco peeks in at the right in the same flat colours (bag-peek-mv.png).

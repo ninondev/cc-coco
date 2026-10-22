@@ -15,16 +15,16 @@
 #   3b. maintainer mode only: check the working modules against the private maintainer sources
 #   4. a syntax check of plugin/bin/*.sh and generic checks for local-only files and private keys
 # Public mode is the default and needs no private files. Maintainers can set
-# CLAUDE_SAMA_PRIVATE_GUARD or pass --private-guard FILE; a missing, unreadable or empty guard
+# COCO_PRIVATE_GUARD or pass --private-guard FILE; a missing, unreadable or empty guard
 # stops the check. Keep that file outside the public tree.
 # Every step runs even if an earlier one fails; the exit code is 1 if any step failed.
 #
 # The claude CLI runs with a throwaway HOME and config folder, so checking never touches your own
 # ~/.claude. Override the binary with CLAUDE_BIN=/path/to/claude (default: ~/.local/bin/claude,
-# then whatever `claude` is on PATH). The scratch folder this script makes goes to the Trash where
-# /usr/bin/trash exists (macOS) and is deleted outright where it does not (Linux CI).
+# then whatever `claude` is on PATH). Scratch lives under /private/tmp and is deleted after the check.
 
 set -eu
+export PYTHONDONTWRITEBYTECODE=1
 
 PROG=check.sh
 say() { printf '%s\n' "$*"; }
@@ -32,8 +32,8 @@ say() { printf '%s\n' "$*"; }
 ROOT=$(cd "$(dirname "$0")/.." && pwd -P)
 STRICT=
 SCAN_ONLY=0
-PRIVATE_GUARD=${CLAUDE_SAMA_PRIVATE_GUARD-}
-PRIVATE_MODE=${CLAUDE_SAMA_PRIVATE_GUARD+x}
+PRIVATE_GUARD=${COCO_PRIVATE_GUARD-}
+PRIVATE_MODE=${COCO_PRIVATE_GUARD+x}
 
 while [ $# -gt 0 ]; do
   case $1 in
@@ -49,8 +49,9 @@ while [ $# -gt 0 ]; do
       cat <<EOF
 Usage: scripts/check.sh [--strict] [--private-guard FILE] [--scan-only]
 Validates the marketplace (repo root) and plugin/, runs the mod tests if there are any,
-checks bin/*.sh syntax, and checks for local-only files and private keys. Exit 1 if anything fails.
-Public mode needs no private file. --private-guard FILE (or CLAUDE_SAMA_PRIVATE_GUARD)
+checks bin/*.sh syntax, explicit release includes, the 64 MiB plugin budget, excluded files,
+and byte-level local/private material. Exit 1 if anything fails.
+Public mode needs no private file. --private-guard FILE (or COCO_PRIVATE_GUARD)
 checks the working modules against private sources and adds a required fixed-string scan;
 keep the file outside the public tree.
 --scan-only runs just the payload scans, for maintainer assembly preflight.
@@ -84,15 +85,14 @@ if [ "$SCAN_ONLY" -eq 0 ] && [ -z "$CLAUDE" ]; then
   fi
 fi
 
-TMP=$(mktemp -d "${TMPDIR:-/tmp}/claude-sama-check.XXXXXX")
+SCRATCH_BASE=/private/tmp
+[ -d "$SCRATCH_BASE" ] || SCRATCH_BASE=${TMPDIR:-/tmp}
+TMP=$(mktemp -d "$SCRATCH_BASE/coco-check.XXXXXX")
 # shellcheck disable=SC2329  # called through trap
 cleanup() {
+  [ "${COCO_KEEP_SCRATCH:-0}" = 1 ] && return 0
   if [ -n "$TMP" ] && [ -d "$TMP" ]; then
-    if [ -x /usr/bin/trash ]; then
-      /usr/bin/trash "$TMP" >/dev/null 2>&1 || printf '%s: could not move %s to the Trash; left in place\n' "$PROG" "$TMP" >&2
-    else
-      rm -rf "$TMP"
-    fi
+    rm -rf "$TMP"
   fi
 }
 trap cleanup EXIT
@@ -107,6 +107,74 @@ fail() {
 skip() { say "skip  $1"; }
 
 scan_payload() {
+  # Remain self-contained for the public transport tests' minimal scanner fixtures.
+  # Real plugin/marketplace trees additionally require the explicit include policy.
+  # plugin/types and the Windows builds in plugin/companion-rs/bin and plugin/libexec ship;
+  # the policy below names each of those files.
+  if find "$ROOT" -name .git -prune -o \
+      \( -name evidence -o -name sheets -o -name previews -o -name preview \
+         -o -name target -o -name build -o -name dist -o -name .build \
+         -o \( -name types ! -path "$ROOT/plugin/types" \) -o -name tsconfig.json -o -name node_modules \
+         -o -name __pycache__ -o -name '*.app' \
+         -o \( -name '*.exe' ! -path "$ROOT/plugin/companion-rs/bin/*" ! -path "$ROOT/plugin/libexec/*" \) \
+         -o -name '*.o' -o -name '*.dylib' -o -name '*.so' \
+         -o -name '*.log' -o -name '*.tmp' -o -name '*.bak' -o -name '*.swp' \) \
+      -print >"$TMP/excluded-hits"; then
+    if [ -s "$TMP/excluded-hits" ]; then
+      head -n 20 "$TMP/excluded-hits" | sed 's/^/      /'
+      fail "excluded release files or directories found"
+    else
+      pass "no excluded release files or directories"
+    fi
+  else
+    fail "excluded release file inventory failed"
+  fi
+  if [ -f "$ROOT/plugin/.claude-plugin/plugin.json" ] || [ -f "$ROOT/.claude-plugin/marketplace.json" ]; then
+    if [ ! -f "$ROOT/scripts/release-policy.py" ] || [ ! -f "$ROOT/scripts/public-tests.py" ]; then
+      fail "release policy helper missing; restore scripts/release-policy.py and scripts/public-tests.py"
+    elif python3 -B "$ROOT/scripts/release-policy.py" check "$ROOT" >"$TMP/policy-out" 2>&1; then
+      sed 's/^/      /' "$TMP/policy-out"
+      pass "explicit release includes and plugin size budget"
+    else
+      sed 's/^/      /' "$TMP/policy-out"
+      fail "release include, executable or size policy failed"
+    fi
+  fi
+  # Shipping code may mention the snake; it must never invoke an interpreter.
+  if ! find "$ROOT/plugin" -type f -name '*.py' -print >"$TMP/python-hits" ||
+      ! find "$ROOT/plugin" -type f -print >"$TMP/python-files"; then
+    fail "Python runtime invocation scan failed (file inventory; rerun after fixing the error above)"
+    return
+  fi
+  : >"$TMP/python-errors"
+  while IFS= read -r f; do
+    case $f in
+      *.png|*.ico|*.icns|*.jpg|*.jpeg|*.gif|*.webp) ;;
+      *)
+        # Mach-O/ELF helpers contain arbitrary bytes. Scan as bytes, and retain
+        # both command statuses: POSIX pipelines have no pipefail.
+        if ! LC_ALL=C sed '/^[[:space:]]*\/\//d; /^[[:space:]]*#[^!]/d' "$f" >"$TMP/python-code"; then
+          printf '%s\n' "$f" >>"$TMP/python-errors"
+          continue
+        fi
+        if LC_ALL=C grep -aE "(^#!.*python[0-9.]*|(^|[;|&()[:space:]])(/(usr/)?bin/)?python[0-9.]*([[:blank:]]+[^[:blank:]]|[[:blank:]]*$)|/[^[:space:]\"']*python[0-9.]*[\"']|(^|[^[:alnum:]_])(argv|executableURL|spawn|exec|execFile|run)[^;]{0,160}[\"']python[0-9.]*[\"'])" "$TMP/python-code" >/dev/null; then
+          printf '%s\n' "$f" >>"$TMP/python-hits"
+        else
+          scan_status=$?
+          [ "$scan_status" -eq 1 ] || printf '%s\n' "$f" >>"$TMP/python-errors"
+        fi
+        ;;
+    esac
+  done <"$TMP/python-files"
+  if [ -s "$TMP/python-errors" ]; then
+    while IFS= read -r f; do printf '      %s\n' "$f"; done <"$TMP/python-errors"
+    fail "Python runtime invocation scan failed for the files above; fix the read or scanner error and rerun"
+  elif [ -s "$TMP/python-hits" ]; then
+    while IFS= read -r f; do printf '      %s\n' "$f"; done <"$TMP/python-hits"
+    fail "Python runtime invocation or helper found under plugin/"
+  else
+    pass "plugin/ has no Python runtime invocation or helper"
+  fi
   # Private authoring files never belong in the public payload, even as empty paths or symlinks.
   if [ -e "$ROOT/persona" ] || [ -L "$ROOT/persona" ] || \
       [ -e "$ROOT/tools/build-lines.py" ] || [ -L "$ROOT/tools/build-lines.py" ]; then
@@ -130,7 +198,7 @@ scan_payload() {
   fi
 
   # Anchor key headers to a whole line so this check's own expression is not a match.
-  if grep -rIlE --exclude-dir='.git' \
+  if LC_ALL=C grep -ralE --exclude-dir='.git' \
       '^-----BEGIN (RSA |DSA |EC |OPENSSH |ENCRYPTED )?PRIVATE KEY-----[[:space:]]*$' \
       "$ROOT" >"$TMP/key-hits"; then
     head -n 20 "$TMP/key-hits" | sed 's/^/      /'
@@ -145,8 +213,20 @@ scan_payload() {
   fi
 
   if [ -n "$PRIVATE_MODE" ]; then
+    if ! (cd "$ROOT" && find . -name .git -prune -o -print) >"$TMP/payload-paths"; then
+      fail "private guard path inventory failed"
+    elif LC_ALL=C grep -aiF -f "$PRIVATE_GUARD" "$TMP/payload-paths" >/dev/null; then
+      fail "private guard matched a public payload path"
+    else
+      scan_status=$?
+      if [ "$scan_status" -eq 1 ]; then
+        pass "no private guard path hits"
+      else
+        fail "private guard path scan failed (grep exit $scan_status)"
+      fi
+    fi
     # Print only filenames: a guard failure must not echo private text into a release log.
-    if grep -rIilF -f "$PRIVATE_GUARD" --exclude-dir='.git' "$ROOT" >"$TMP/private-hits"; then
+    if LC_ALL=C grep -railF -f "$PRIVATE_GUARD" --exclude-dir='.git' "$ROOT" >"$TMP/private-hits"; then
       head -n 20 "$TMP/private-hits" | sed 's/^/      /'
       fail "private guard matched text in the public payload"
     else
@@ -223,7 +303,7 @@ else
   # 3. tests
   if [ -f "$ROOT/tools/run-tests.py" ] && [ -d "$ROOT/tools/tests" ]; then
     if command -v python3 >/dev/null 2>&1; then
-      step "mod tests pass (tools/run-tests.py)" tail env CLAUDE_BIN="$CLAUDE" python3 "$ROOT/tools/run-tests.py"
+      step "mod tests pass (tools/run-tests.py)" tail env COCO_TEST_SERIAL_FILES=1 CLAUDE_BIN="$CLAUDE" python3 "$ROOT/tools/run-tests.py"
     else
       fail "python3 not found; cannot run tools/run-tests.py"
     fi
