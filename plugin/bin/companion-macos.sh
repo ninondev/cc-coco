@@ -69,7 +69,7 @@ Usage: $PROG install [--login] | start | stop | status | uninstall [--report]
   --report      Print result: ok | no-tools | old-tools | failed | not-mac as the last line
 
   Building needs Swift 5.9 or newer (Xcode 15 Command Line Tools or later).
-  His book's Settings page has the same controls as buttons. His card offers window following.
+  Coco's bag has the same controls as buttons. Coco Pet's card offers window following.
   -h, --help    This text
 EOF
 }
@@ -289,7 +289,7 @@ build() {
     fi
   done
   printf '%s\n' "$1" >"$NEW/Contents/Resources/build.txt"
-  # His icon for the app (shown where macOS asks about Accessibility); skipped if it cannot be made.
+  # Coco Pet's icon (shown where macOS asks about Accessibility); skipped if it cannot be made.
   if [ -f "$ICON" ] && [ -x /usr/bin/sips ]; then
     _set="$STAGE/AppIcon.iconset"
     /bin/mkdir "$_set"
