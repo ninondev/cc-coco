@@ -38,3 +38,19 @@ if (!WINDOWS_ROOTS) test("this session's compaction puts the outfit it changed i
   expect(f.current.settings?.outfit).toBe('A')
   await ui.unmount()
 })
+
+// With no shared presence on Windows the outfit is this session's own: a compaction changes it here and writes nothing shared.
+if (WINDOWS_ROOTS) test("Windows declines shared presence: a compaction changes this session's outfit and leaves the shared record alone", async ($, on) => {
+  on('session.compact', () => ({ messages: [SUMMARY], tokensBefore: 138000, tokensAfter: 20000 }))
+  const f = presenceWorld(on, snapshot(), { withNativePresence: true, readText: cocoBandText })
+  await $.session.start(START)
+  const ui = await $.ui.mount({ surface: 'desktop', ...band(100) })
+  await f.clock.advance(0); await flush($)
+  expect(f.view().outfit).toBeUndefined()
+  await $.session.compact({ trigger: 'manual', messages: [SUMMARY] }); await flush($)
+  expect(f.view().outfit).toBe('B')
+  expect(companionRecord(f.view()).outfit).toBe('B')
+  expect(f.current.settings?.outfit).toBeUndefined()
+  expect(f.calls.filter(call => call.argv.some(arg => /presence\.sh$/.test(arg)))).toEqual([])
+  await ui.unmount()
+})

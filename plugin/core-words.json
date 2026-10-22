@@ -80,7 +80,7 @@
     "again": "(one slip a day. same slip.)",
     "about": [
       "your cutest coworker.",
-      "coco finds your bug before you do, and is very smug about it."
+      "coco peeks at every bug you hit, and is very smug about it."
     ],
     "reply": {
       "voice": "noted. voice: {value}.",
@@ -203,7 +203,7 @@
     "again": "(un papier par jour. c'est encore celui d'aujourd'hui.)",
     "about": [
       "ta collègue la plus mignonne.",
-      "coco trouve ton bug avant toi, et en est très fière."
+      "coco vient jeter un œil à chacun de tes bugs, et en est très fière."
     ],
     "reply": {
       "voice": "noté. voix : {value}.",
@@ -326,7 +326,7 @@
     "again": "(Ein Zettel pro Tag. Das ist noch der von heute.)",
     "about": [
       "Deine niedlichste Kollegin.",
-      "Coco findet deinen Bug vor dir und ist mächtig stolz drauf."
+      "Coco schaut sich jeden deiner Bugs an und ist mächtig stolz drauf."
     ],
     "reply": {
       "voice": "Notiert. Stimme: {value}.",
@@ -449,7 +449,7 @@
     "again": "(दिन में एक ही पर्ची। यह आज वाली ही है।)",
     "about": [
       "तुम्हारी सबसे प्यारी साथी।",
-      "कोको तुमसे पहले तुम्हारा बग ढूँढ लेती है, और खूब इतराती है।"
+      "कोको तुम्हारे हर बग में झाँकती है, और खूब इतराती है।"
     ],
     "reply": {
       "voice": "ठीक है। आवाज़: {value}।",
@@ -572,7 +572,7 @@
     "again": "(sehari cuma satu. ini masih yang tadi.)",
     "about": [
       "rekan kerjamu yang paling imut.",
-      "coco nemu bug-mu duluan, terus sombongnya minta ampun."
+      "coco selalu ngintip tiap bug-mu, terus sombongnya minta ampun."
     ],
     "reply": {
       "voice": "oke, dicatat. suara: {value}.",
@@ -695,7 +695,7 @@
     "again": "(un biglietto al giorno. questo vale ancora per oggi.)",
     "about": [
       "la tua collega più carina.",
-      "coco trova il tuo bug prima di te, e se ne vanta un sacco."
+      "coco dà un'occhiata a ogni tuo bug, e se ne vanta un sacco."
     ],
     "reply": {
       "voice": "segnato. voce: {value}.",
@@ -818,7 +818,7 @@
     "again": "(おみくじは一日一本。これが今日のぶん)",
     "about": [
       "きみの一番かわいい同僚",
-      "Cocoはきみより先にバグを見つけて、思いっきりドヤ顔する"
+      "Cocoはきみのバグをいちいちのぞきに来て、思いっきりドヤ顔する"
     ],
     "reply": {
       "voice": "わかった。口調:{value}",
@@ -941,7 +941,7 @@
     "again": "(하루에 한 장이야. 이건 아직 오늘 거.)",
     "about": [
       "화면 안에 코코. 조그맣게 앉아 있어.",
-      "네 버그를 너보다 먼저 찾아내고, 엄청 우쭐해해."
+      "네 버그마다 꼭 들여다보고, 엄청 우쭐해해."
     ],
     "reply": {
       "voice": "알았어. 말투: {value}.",
@@ -1064,7 +1064,7 @@
     "again": "(um papelzinho por dia. esse ainda é o de hoje.)",
     "about": [
       "sua colega mais fofa.",
-      "a coco acha seu bug antes de você, e fica toda convencida."
+      "a coco espia cada bug seu, e fica toda convencida."
     ],
     "reply": {
       "voice": "anotado. voz: {value}.",
@@ -1187,7 +1187,7 @@
     "again": "(un papelito por día. este sigue siendo el de hoy.)",
     "about": [
       "tu compañera más linda.",
-      "coco encuentra tu bug antes que tú, y se pone muy presumida."
+      "coco se asoma a cada bug tuyo, y se pone muy presumida."
     ],
     "reply": {
       "voice": "anotado. voz: {value}.",
@@ -1310,7 +1310,7 @@
     "again": "(un papelito al día. este sigue siendo el de hoy.)",
     "about": [
       "tu compañera más mona.",
-      "coco encuentra tu bug antes que tú, y se lo tiene muy creído."
+      "coco se asoma a cada bug tuyo, y se lo tiene muy creído."
     ],
     "reply": {
       "voice": "apuntado. voz: {value}.",
@@ -1433,7 +1433,7 @@
     "again": "(每天一支,还是那支)",
     "about": [
       "小克坐在你的屏幕里,小小一只",
-      "你的bug她总比你先找到,还得意得不行"
+      "你的bug她总要瞅上一眼,还得意得不行"
     ],
     "reply": {
       "voice": "好,语气:{value}",
@@ -1556,7 +1556,7 @@
     "again": "(每天一支,還是那支)",
     "about": [
       "小克坐在你的螢幕裡,小小一隻",
-      "你的bug她總比你先找到,還得意得不行"
+      "你的bug她總要瞅上一眼,還得意得不行"
     ],
     "reply": {
       "voice": "好,語氣:{value}",

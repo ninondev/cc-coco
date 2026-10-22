@@ -9,6 +9,7 @@ import { companionRecord, companionSession } from '../hooks/companion'
 import { initialView } from '../hooks/mood'
 import { TERMINAL_COLUMNS, TERMINAL_ROWS, spriteCells } from '../hooks/pictures-lazy'
 import { P, PERSON, RECENT, band, settleLegacyStart, world } from './world'
+import { pathPattern } from './file-paths'
 
 const START = { cwd: '/tmp/project', surface: 'terminal' as const, isInteractive: true }
 const DESKTOP = { cwd: '/tmp/project', surface: 'desktop' as const, isInteractive: true }
@@ -222,7 +223,7 @@ describe('one stick', () => {
   const sound = (choice: 'quiet' | 'sound' | undefined, mac: boolean) => async ($: any, on: any) => {
     const played: string[] = []
     on('audio.play', (_$: unknown, e: { clip: unknown }) => { played.push(JSON.stringify(e.clip)); return { value: undefined } })
-    if (mac) on('fs.exists', { path: MAC }, () => ({ value: true }))
+    if (mac) on('fs.exists', { path: pathPattern(MAC) }, () => ({ value: true }))
     const w = world(on, { store: { ...RECENT, ...(choice ? { stickEnd: choice } : {}) }, surfaces: ['desktop'] })
     await $.session.start(DESKTOP); await settleLegacyStart($, w)
     await $.command.run({ command: 'coco', args: 'focus 5', origin: PERSON, presentation: P })

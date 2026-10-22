@@ -21,7 +21,7 @@ claude plugin marketplace add ninondev/cc-coco
 claude plugin install coco@coco
 ```
 
-装好之后，不管是终端还是桌面版，新开会话就能看到她。已经开着的会话重启一下就行。
+装好之后，不管是终端、桌面版还是 VS Code 插件，新开会话就能看到她。已经开着的会话重启一下就行。
 
 只想在当前项目里用，加 `--scope project`；只给自己用、不写进项目的共享配置，加 `--scope local`。如果装了全局版，想在某个项目里单独关掉她：
 
@@ -35,6 +35,7 @@ claude plugin disable coco@coco --scope local
 |---|---|---|---|
 | 终端 | 已实测 | CI 已测 | CI 已测 |
 | 桌面版（Code 页） | 已实测 | 未实测 | 未实测 |
+| VS Code 插件 | 已实测 | 未实测 | 未实测 |
 | 桌宠 Coco Pet | 已实测 | 未实测 | 未实测 |
 | 换 Claude 图标（默认关） | 支持 | 不支持 | 支持（改启动器） |
 
@@ -54,6 +55,8 @@ claude plugin disable coco@coco --scope local
 Claude 拒绝干活的时候（HTTP 418），她会把茶壶盖扣在脑袋上生闷气。
 
 桌面版里是全套手绘动画，平时能拿鼠标戳她，或者摸摸头。
+
+VS Code 插件里的横条跟桌面版一样，只是戳一下、摸摸头做成了常态显示的按钮，电池和充电宝的图标可以显示、无法点击。
 
 横条上的日常台词全在本地直接画出来，不调模型，不花一分钱 token。
 
@@ -164,6 +167,6 @@ claude plugin uninstall coco@coco && claude plugin marketplace remove coco
 
 代码采用 MIT 协议。角色画作采用 CC BY-NC 4.0，只有小克房间里大肥鱼的那两张图采用 CC BY-NC-SA 4.0，详见 [ART-LICENSE.md](ART-LICENSE.md)。画是我用图像模型生成的。
 
-实测过的版本：Claude Code 2.1.302（跑完完整测试）和 2.1.299。桌面版最后一次在真机上看是 2026 年 10 月 20 日。
+实测过的版本：Claude Code 2.1.302（跑完完整测试）和 2.1.299。桌面版和 VS Code 插件最近一次在真机上检验，是 2026 年 10 月 20 日。
 
 [English](README.md)、[日本語](README.ja.md)

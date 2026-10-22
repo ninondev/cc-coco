@@ -218,3 +218,15 @@ if (!WINDOWS_ROOTS) describe('a visitor on him in the terminal band', () => {
     expect(drawn).not.toMatch(/\ba paper plane/)
   })
 })
+// His sleep and his visitors come through shared presence, which Windows declines with no pet program.
+if (WINDOWS_ROOTS) test('Windows declines shared presence: a visitor on his sleeping picture never arrives', async ($, on) => {
+  const f = presenceWorld(on, sleeping('bulb'), { withNativePresence: true, readText, reducedMotion: false })
+  await $.session.start(START)
+  const ui = await $.ui.mount({ surface: 'desktop', ...band(100) })
+  await settle($, f)
+  const source = String((await desktopPicture(ui))?.props.source)
+  expect(source).not.toContain('class="vis"')
+  expect(source).not.toContain(ART.kinds.bulb!.sit.light)
+  expect(texts(await ui.drawn()).join(' ')).not.toContain('(a bulb lit above their head; they sleep)')
+  expect(f.view().mood).not.toBe('sleep')
+})

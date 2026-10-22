@@ -6,10 +6,10 @@ import { iconAutomatic, iconCommand, iconFirstDraw, iconSettingsHydrated, openIc
 import { latest } from '../hooks/latest'
 import { normalizeLegacySettings } from '../hooks/settings-migration'
 import { BOOK_FILES } from './book-files'
-import { samePath, slashPath } from './file-paths'
+import { MOCK_WINDOWS_ROOT, samePath, slashPath } from './file-paths'
 import { band, P, PERSON, RECENT, settleLegacyStart, world } from './world'
 import { presenceWorld, snapshot } from './presence-world'
-import { WINDOWS_ROOTS } from './test-system'
+import { TEST_PLUGIN_ROOT, WINDOWS_ROOTS } from './test-system'
 import { LANGS } from '../hooks/words'
 
 const notice = JSON.parse(BOOK_FILES['en.json']).settings.icon.S20
@@ -77,7 +77,7 @@ describe('I1 press-only icon regression',()=>{
     expect(f.metadata).toEqual(['/System/Library/CoreServices/SystemVersion.plist','/proc/sys/kernel/ostype'])
     for(let press=1;press<=3;press++){
       await runIcon(f.engine,c,'choose',()=>{})
-      expect(f.calls.length).toBe(press);expect(f.calls[press-1]).toEqual(['/bin/sh',WINDOWS_ROOTS?String.raw`C:\Users\windows\Coco\bin\icon-linux.sh`:'/tmp/press-only-plugin/bin/icon-linux.sh','status','--report','--restore-key'])
+      expect(f.calls.length).toBe(press);expect(f.calls[press-1]).toEqual(['/bin/sh',WINDOWS_ROOTS&&TEST_PLUGIN_ROOT===MOCK_WINDOWS_ROOT?MOCK_WINDOWS_ROOT+'\\bin\\icon-linux.sh':'/tmp/press-only-plugin/bin/icon-linux.sh','status','--report','--restore-key'])
       expect(c.failed).toBe(true);expect(c.confirming).toBe(false);expect(c.visible).toBe(true)
       await runIcon(f.engine,c,'confirm',()=>{});await runIcon(f.engine,c,'status',()=>{})
       await iconAutomatic(f.engine);iconSettingsHydrated(f.engine);await drain()

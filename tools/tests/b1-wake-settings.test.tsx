@@ -209,3 +209,24 @@ if (!WINDOWS_ROOTS) describe('B1 wake and shared settings on the rendered band',
   })
 
 })
+
+// Shared presence needs the pet program on a Windows root; with none, no wake or setting arrives from outside.
+if (WINDOWS_ROOTS) test('Windows declines shared presence: no remote wake arrives, and voice and warmth confirmations still show', async ($, on) => {
+  const f = animatedPresence(on)
+  await $.session.start(START)
+  const ui = await $.ui.mount({ surface: 'desktop', ...band(100) })
+  await f.clock.advance(0)
+  await flush($)
+  expect(f.calls.filter(call => call.argv.some(arg => /presence\.sh$/.test(arg)))).toEqual([])
+  const at = f.clock.now(), wake = { kind: 'wake', id: `wake:0:${at - 300000}`, at, lang: 'en' }
+  expect(f.remote({ ...snapshot('activity', at, f.current.seq + 1), event: wake, wakeEvent: wake, settings: f.current.settings } as any)).toBe(false)
+  await flush($)
+  await f.clock.advance(220)
+  expect(await hasWake(ui)).toBe(false)
+  for (const [args, line, property, value] of [['voice full', LINES.en.set_voice_full[0]!, 'voice', 'full'], ['warmth clingy', LINES.en.set_clingy[0]!, 'affection', 'clingy']] as const) {
+    await $.command.run({ command: 'coco', args, origin: PERSON, presentation: P })
+    await flush($)
+    expect(f.view()[property]).toBe(value)
+    expect(await ui.find({ type: 'Text', text: line })).toBeDefined()
+  }
+})

@@ -117,7 +117,6 @@ const zh: Strings = {
   sorted: { uses: '按用的次数', name: '按名字' },
 }
 
-// Not read by a native speaker.
 const en: Strings = {
   title: 'SKILL cards',
   count: n => `${n} ${n === 1 ? 'card' : 'cards'}`,
@@ -218,7 +217,6 @@ const zhHant: Strings = {
   sorted: { uses: '依使用次數', name: '依名稱' },
 }
 
-// Not read by a native speaker.
 const ja: Strings = {
   title: 'SKILLカード',
   count: n => `${n} 枚`,
@@ -266,7 +264,6 @@ const ja: Strings = {
   sorted: { uses: '使った回数順', name: '名前順' },
 }
 
-// Not read by a native speaker.
 const ko: Strings = {
   title: 'SKILL 카드',
   count: n => `${n}장`,
@@ -314,7 +311,7 @@ const ko: Strings = {
   sorted: { uses: '사용 횟수순', name: '이름순' },
 }
 
-// Not read by a native speaker. French spacing: a no-break space before : ; and inside « ».
+// French spacing: a no-break space before : ; and inside « ».
 const fr: Strings = {
   title: 'Cartes SKILL',
   count: n => `${n} ${n <= 1 ? 'carte' : 'cartes'}`,
@@ -362,7 +359,6 @@ const fr: Strings = {
   sorted: { uses: 'Par utilisations', name: 'Par nom' },
 }
 
-// Not read by a native speaker.
 const de: Strings = {
   title: 'SKILL-Karten',
   count: n => `${n} ${n === 1 ? 'Karte' : 'Karten'}`,
@@ -410,7 +406,7 @@ const de: Strings = {
   sorted: { uses: 'Nach Nutzung', name: 'Nach Name' },
 }
 
-// Not read by a native speaker. Spain: «» quotes, the present perfect for what just happened.
+// Spain: «» quotes, the present perfect for what just happened.
 const esES: Strings = {
   title: 'Cartas SKILL',
   count: n => `${n} ${n === 1 ? 'carta' : 'cartas'}`,
@@ -458,7 +454,7 @@ const esES: Strings = {
   sorted: { uses: 'Por usos', name: 'Por nombre' },
 }
 
-// Not read by a native speaker. Latin America: “” quotes, the simple past, próximo for next.
+// Latin America: “” quotes, the simple past, próximo for next.
 const es419: Strings = {
   ...esES,
   clearSearch: 'Borrar búsqueda',
@@ -476,7 +472,6 @@ const es419: Strings = {
   cocoBook: ['la página uno es mía, obvio. ¿alguna queja?', 'tus contadores delatan a tus favoritas~', 'el SR se gana con el uso. nada de pay-to-win~'],
 }
 
-// Not read by a native speaker.
 const ptBR: Strings = {
   title: 'Cartas SKILL',
   count: n => `${n} ${n === 1 ? 'carta' : 'cartas'}`,
@@ -524,7 +519,6 @@ const ptBR: Strings = {
   sorted: { uses: 'Por usos', name: 'Por nome' },
 }
 
-// Not read by a native speaker.
 const it: Strings = {
   title: 'Carte SKILL',
   count: n => `${n} ${n === 1 ? 'carta' : 'carte'}`,
@@ -572,7 +566,6 @@ const it: Strings = {
   sorted: { uses: 'Per usi', name: 'Per nome' },
 }
 
-// Not read by a native speaker.
 const hi: Strings = {
   title: 'SKILL कार्ड',
   count: n => `${n} कार्ड`,
@@ -620,7 +613,6 @@ const hi: Strings = {
   sorted: { uses: 'इस्तेमाल के अनुसार', name: 'नाम के अनुसार' },
 }
 
-// Not read by a native speaker.
 const id: Strings = {
   title: 'Kartu SKILL',
   count: n => `${n} kartu`,

@@ -4,7 +4,10 @@ import type { EngineInterface } from 'claude-code'
 import { IconBook } from '../hooks/icon-book'
 import { runIcon, resetIconSession, setIconSettingsWriter } from '../hooks/pages'
 import { latest } from '../hooks/latest'
-import { WINDOWS_ROOTS } from './test-system'
+import { MOCK_WINDOWS_ROOT } from './file-paths'
+import { TEST_PLUGIN_ROOT, WINDOWS_ROOTS } from './test-system'
+
+const swapped = WINDOWS_ROOTS && TEST_PLUGIN_ROOT === MOCK_WINDOWS_ROOT
 
 for (const os of ['macos', 'linux'] as const) {
   for (const action of ['status', 'apply', 'clear'] as const) test(`${os} ${action}: absolute shell and fixed PATH ignore poisoned session PATH`, async () => {
@@ -22,7 +25,7 @@ for (const os of ['macos', 'linux'] as const) {
     await runIcon(engine, new IconBook(), action, () => {})
     expect(calls.length).toBe(1)
     expect(calls[0].argv[0]).toBe('/bin/sh')
-    expect(calls[0].argv[1]).toBe(WINDOWS_ROOTS ? String.raw`C:\Users\windows\Coco\bin\icon-${os}.sh` : `/tmp/icon security/plugin with spaces/bin/icon-${os}.sh`)
+    expect(calls[0].argv[1]).toBe(swapped ? `${MOCK_WINDOWS_ROOT}\\bin\\icon-${os}.sh` : `/tmp/icon security/plugin with spaces/bin/icon-${os}.sh`)
     expect(calls[0].options.env).toEqual({ PATH: '/usr/bin:/bin:/usr/sbin:/sbin', COCO_LANGUAGE: 'zh-Hant' })
     expect(envReads.includes('PATH')).toBe(false)
     latest.view = undefined

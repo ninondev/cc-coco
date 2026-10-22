@@ -18,7 +18,7 @@ const strings = (node: any): string[] => typeof node === 'string' ? [node] : Arr
 // Four reads of the same part of one big file, `gap` ms apart, then the row under the fourth.
 async function circleNote($: any, on: On, gap: number): Promise<string> {
   on('process.run', () => ({ value: OK }))
-  const w = world(on, { store: { ...RECENT }, engineRows: true, toolResult: () => READ })
+  const w = world(on, { sessionRoot: ROOT, store: { ...RECENT }, engineRows: true, toolResult: () => READ })
   await $.session.start({ cwd: ROOT, surface: 'vscode', isInteractive: true })
   await settleLegacyStart($, w)
   await $.turn.start({ text: 'work', turnId: 't1' })

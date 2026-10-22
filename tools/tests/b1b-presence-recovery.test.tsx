@@ -2,11 +2,12 @@ import { expect, test } from 'claude-code/testing'
 import type { Engine } from 'claude-code/testing'
 import { presenceWorld, snapshot } from './presence-world'
 import { MORNING, P, PERSON, band } from './world'
+import { WINDOWS_ROOTS } from './test-system'
 const START={cwd:'/tmp/b1b-presence-recovery',surface:'desktop' as const,isInteractive:true}
 async function flush($:Engine){for(let i=0;i<12;i++)await $.command.run({command:'b1b-boundary',args:'',origin:PERSON,presentation:P})}
 function gate(){let release!:()=>void;const held=new Promise<void>(resolve=>{release=resolve});return{held,release}}
 
-test('timed-out presence setup cannot replace its successful retry',{timeoutMs:20000},async($,on)=>{
+if(!WINDOWS_ROOTS)test('timed-out presence setup cannot replace its successful retry',{timeoutMs:20000},async($,on)=>{
   const delayed=gate();let first=true,oldReturned=false
   on('fs.*',async($,e,next)=>{
     if(next.is('fs.exists',e)&&e.path==='/bin/sh'&&first){first=false;await delayed.held;oldReturned=true}
@@ -25,7 +26,7 @@ test('timed-out presence setup cannot replace its successful retry',{timeoutMs:2
   expect(await ui.find({type:'Text',text:'Coco'})).toBeDefined()
 })
 
-test('remote durable settings remain selected after another desktop attachment',{timeoutMs:20000},async($,on)=>{
+if(!WINDOWS_ROOTS)test('remote durable settings remain selected after another desktop attachment',{timeoutMs:20000},async($,on)=>{
   let record:Record<string,unknown>={}
   on('store.*',($,e,next)=>{if(next.is('store.set',e)&&e.key==='bandSettings')record=e.value as Record<string,unknown>;return next(e)})
   const f=presenceWorld(on,snapshot(),{withNativePresence:true})
@@ -41,7 +42,7 @@ test('remote durable settings remain selected after another desktop attachment',
   expect(record.voice).toBe('full');expect(record.futurePreference).toEqual({version:3})
 })
 
-test('accepted remote sleep requests redraw before a pending clock lookup',{timeoutMs:20000},async($,on)=>{
+if(!WINDOWS_ROOTS)test('accepted remote sleep requests redraw before a pending clock lookup',{timeoutMs:20000},async($,on)=>{
   const held=gate();let pause=false,entered=false
   on('clock.*',async($,e,next)=>{if(next.is('clock.now',e)&&pause){entered=true;await held.held}return next(e)})
   const f=presenceWorld(on,snapshot(),{withNativePresence:true})
@@ -56,4 +57,19 @@ test('accepted remote sleep requests redraw before a pending clock lookup',{time
     const ui=await $.ui.mount({surface:'desktop',...band(100)})
     expect(await ui.find({type:'Text',text:'Coco'})).toBeDefined()
   }finally{pause=false;held.release();await flush($)}
+})
+
+// Windows runs shared presence only through the pet program; with none, no setup starts to time out, retry or bring a setting in.
+if(WINDOWS_ROOTS)test('Windows declines shared presence: no follower starts after a wait or an attachment, and no remote setting arrives',{timeoutMs:20000},async($,on)=>{
+  const f=presenceWorld(on,snapshot(),{withNativePresence:true})
+  await $.session.start(START);await f.clock.advance(0);await flush($)
+  await f.clock.advance(5001);await flush($)
+  await $.session.attach({clientId:'retry',surface:'desktop'});await flush($)
+  expect(f.calls.filter(call=>call.argv[3]==='follow')).toEqual([])
+  const changes={voice:'full',affection:'clingy',band:'off',lang:'ja',language:'ja'}
+  const event={kind:'settings',id:`settings:10:${MORNING}`,at:MORNING,changes}
+  expect(f.remote({...snapshot('activity',MORNING,f.current.seq+1),event,settings:{...f.current.settings,...changes},settingsEvent:event} as never)).toBe(false);await flush($)
+  expect(f.view().lang).not.toBe('ja')
+  const ui=await $.ui.mount({surface:'desktop',...band(100)})
+  expect(await ui.find({type:'Text',text:'Coco'})).toBeDefined()
 })

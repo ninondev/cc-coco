@@ -5,6 +5,7 @@ import {gapCharacterName} from '../hooks/mod-gaps-words'
 import {WORDS} from '../hooks/words'
 import {LINES} from '../hooks/lines'
 import {world,settleLegacyStart,MORNING,P,PERSON,band} from './world'
+import {pathPattern} from './file-paths'
 import {C3_WORDS_RAW} from './c3-words-fixture'
 import {C3_HEAD_MANIFEST} from './c3-head-assets'
 
@@ -21,7 +22,7 @@ function fixture(on:On,options:{surface?:RenderSurface;sr?:boolean;store?:Record
  const headWrites:any[]=[]
  let marker=false,recording=false
  // Positive cases explicitly emulate the retained development helper.
- on('fs.exists',{path:'/System/Library/CoreServices/SystemVersion.plist'},()=>({value:true}))
+ on('fs.exists',{path:pathPattern('/System/Library/CoreServices/SystemVersion.plist')},()=>({value:true}))
  on('fs.exists',{path:/[\\/]bin[\\/]coco-state(?:-macos-(?:x86_64|aarch64)|-linux-(?:x86_64|aarch64)|-windows-(?:x86_64|aarch64)\.exe)?$/},()=>({value:options.guard!==false}))
  on('agent.list',()=>({value:[]}));on('session.model',()=>({value:'test-model'}));on('session.repo',()=>({value:null}));on('session.turns',()=>({value:options.turns??1}));on('fs.write',()=>({value:undefined}))
  on('model.complete',()=>{calls.push('model');return {deny:'unexpected model'} as never});on('agent.spawn',()=>{calls.push('agent');return {deny:'unexpected agent'} as never});on('tool.register',()=>{calls.push('tool');return {deny:'unexpected tool'} as never});on('http.fetch',()=>{calls.push('network');return {deny:'unexpected network'} as never})

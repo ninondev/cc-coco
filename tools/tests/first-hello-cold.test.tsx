@@ -9,6 +9,7 @@ import { C3_HEAD_MANIFEST } from './c3-head-assets'
 import { installM1Words } from './m1-more-data-fixture'
 import { MORNING, PERSON, band, settleLegacyStart, world } from './world'
 import { LINES } from '../hooks/lines'
+import { pathPattern } from './file-paths'
 
 installM1Words()
 const MODEL = 'claude-opus-5-5'
@@ -21,7 +22,7 @@ const LAPSED = { source: 'resume', seconds_since_last_response: 4000, prompt_cac
 function fixture(on: On) {
   const claims: string[][] = []
   on('classic.SessionStart', () => ({}))
-  on('fs.exists', { path: '/System/Library/CoreServices/SystemVersion.plist' }, () => ({ value: true }))
+  on('fs.exists', { path: pathPattern('/System/Library/CoreServices/SystemVersion.plist') }, () => ({ value: true }))
   on('fs.exists', { path: STATE }, () => ({ value: true }))
   on('fs.exists', () => ({ value: false }))
   on('process.run', ($, e) => {

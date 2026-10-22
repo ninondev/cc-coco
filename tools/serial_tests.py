@@ -88,7 +88,8 @@ def _startup_test_root(copy):
     declared = json.loads(lines[index][len(root_prefix):])
     if not isinstance(declared, str):
         raise ValueError('startup fixture root must be a string')
-    if windows[0] == 'false':
+    # Only the exact Windows mock root stays; a real root (any host) must follow the per-file copy.
+    if windows[0] == 'false' or declared != r'C:\Users\windows\Coco':
         lines[index] = root_prefix + json.dumps(str(copy)) + '\n'
         fixture.write_text(''.join(lines))
 

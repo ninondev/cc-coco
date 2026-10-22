@@ -9,7 +9,7 @@ import { band, MORNING, P, PERSON } from './world'
 import { WINDOWS_ROOTS } from './test-system'
 const START={cwd:'/tmp/m1-lazy-shared',surface:'desktop' as const,isInteractive:true}
 async function flush($:Engine){for(let i=0;i<80;i++)await $.command.run({command:'m1-host-boundary',args:'',origin:PERSON,presentation:P})}
-if(!WINDOWS_ROOTS)test('M1 clear during held first initialization lets the fresh lifecycle restore supported More',async($,on)=>{
+test('M1 clear during held first initialization lets the fresh lifecycle restore supported More',async($,on)=>{
  resetMoreWords();let reads=0,release=()=>{}
  const held=new Promise<void>(resolve=>{release=resolve})
  on('store.get',{key:'more'},async()=>{

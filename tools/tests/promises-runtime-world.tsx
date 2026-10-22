@@ -4,6 +4,7 @@ import { atomicFeed, PROCESS_OK } from './shared-world'
 import { C3_WORDS_RAW } from './c3-words-fixture'
 import { C3_HEAD_MANIFEST } from './c3-head-assets'
 import { RUNTIME_PROMISE_INPUT } from './promises-runtime-input'
+import { samePath } from './file-paths'
 
 export const PROMISE_HOME = '/tmp/p1-runtime-home'
 export const PROMISE_PROJECT = '/tmp/p1-runtime-project'
@@ -72,7 +73,7 @@ export function promiseWorld(on: On, options: { voice?: 'off' | 'light' | 'full'
     surfaces: [...SURFACES], sessionRoot: PROMISE_PROJECT, engineRows: true, stepText: PRIVATE.reply, onRender: options.onRender, toolCheck: options.toolCheck,
     toolResult: tool => tool === 'Read' ? { result: PRIVATE.file, text: PRIVATE.file } : undefined,
     readText: path => path.endsWith('c3-text.json') ? C3_WORDS_RAW : path.endsWith('frame-manifest.json') ? JSON.stringify(C3_HEAD_MANIFEST) : options.companion && path.endsWith('/companion.json') ? JSON.stringify({ running: false, version: '0.1.2', targets: ['claude', 'vscode'] }) : undefined })
-  on('fs.exists', ($, e) => ({ value: e.path === '/System/Library/CoreServices/SystemVersion.plist' || !!options.companion && e.path === PROMISE_FOLDER }))
+  on('fs.exists', ($, e) => ({ value: samePath(e.path, '/System/Library/CoreServices/SystemVersion.plist') || !!options.companion && samePath(e.path, PROMISE_FOLDER) }))
   on('fs.stat', () => ({ value: { kind: 'file', size: 2, mtimeMs: 0, isLink: false } }))
   on('fs.write', () => ({ value: undefined }))
   on('process.run', ($, e) => { const feed = atomicFeed(e.argv, e.init?.stdin); if (feed) writes.push(feed); return { value: PROCESS_OK } })

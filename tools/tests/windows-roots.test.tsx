@@ -9,7 +9,7 @@ import { IconBook } from '../hooks/icon-book'
 import { latest } from '../hooks/latest'
 import { runIcon } from '../hooks/pages'
 import { BOOK_FILES } from './book-files'
-import { WINDOWS_ROOTS } from './test-system'
+import { TEST_PLUGIN_ROOT, WINDOWS_ROOTS } from './test-system'
 import { settleLegacyStart, P, PERSON, RECENT, band, world } from './world'
 
 const ROOT = 'C:\\Users\\windows\\project'
@@ -63,7 +63,7 @@ describe('Windows roots and unsupported capabilities', () => {
     let writes = 0, spawns = 0, runs = 0
     on('session.id', () => ({ value: 'windows-session' }))
     on('session.surfaces', () => ({ value: [surface] }))
-    on('fs.exists', () => ({ value: true })) // even stray POSIX-looking records must not enable native tools
+    on('fs.exists', ($, e) => ({ value: !/[A-Za-z]:\\/.test(e.path) })) // even stray POSIX-looking records must not enable native tools; the pet program (a drive path; the Mac host prefixes it) is absent, as on the runner
     on('fs.write', () => { writes++; return { value: undefined } })
     on('process.run', () => { runs++; throw new Error('native command must not run') })
     on('process.spawn', async function* () { spawns++; return { code: 0, signal: null } })
@@ -79,7 +79,9 @@ describe('Windows roots and unsupported capabilities', () => {
     expect((await book.findAll({ type: 'Button' })).filter(button => String(button.key).startsWith('coco:book:tab:')).length).toBe(7)
     if (WINDOWS_ROOTS) {
       const windowsReads = w.fileReads.map(path => path.slice(path.indexOf('C:'))).filter(path => path.startsWith('C:'))
-      expect(windowsReads.filter(path => /\\(?:book|assets)\\/.test(path))).toEqual(['C:\\Users\\windows\\Coco\\book\\en.json'])
+      // Only the plugin's own shipped files, under its root (the mock Windows root, or the real one on Windows): the book words, the cost prices, and what a desktop band and the bag draw.
+      const shipped = ['assets\\prices.json', 'book\\en.json', ...(surface === 'desktop' ? ['assets\\coco\\band-A.json', 'assets\\coco\\band-B.json', 'assets\\coco\\bag-peek.png'] : [])].map(path => TEST_PLUGIN_ROOT + '\\' + path)
+      expect(windowsReads.filter(path => /\\(?:book|assets)\\/.test(path)).sort()).toEqual(shipped.sort())
       expect(windowsReads.every(path => /^C:\\/.test(path) && !path.includes('/'))).toBe(true)
 
     }

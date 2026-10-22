@@ -35,7 +35,7 @@ function ended(answer: string) { return { answer, durationMs: 1000, isAborted: f
   test('tool boundaries carry localized phrases; programs never expose their arguments', { timeoutMs: 60_000 }, async ($, on) => {
     let current: ReturnType<typeof feed>
     const starts: string[] = []
-    const setupWorld=world(on, { store: RECENT, env: { HOME, LANG: 'en_US.UTF-8' }, onTool: () => starts.push(current.latest().task ?? '') })
+    const setupWorld=world(on, { store: RECENT, ownSessionRoot: true, env: { HOME, LANG: 'en_US.UTF-8' }, onTool: () => starts.push(current.latest().task ?? '') })
     current = feed(on)
     await $.session.start(START); await settleLegacyStart($,setupWorld);
     await drainFeed($)
@@ -75,7 +75,7 @@ function ended(answer: string) { return { answer, durationMs: 1000, isAborted: f
   test('zh task phrases follow the selected session language', async ($, on) => {
     let current: ReturnType<typeof feed>
     let during = ''
-    const setupWorld=world(on, { store: RECENT, env: { HOME, LANG: 'zh_CN.UTF-8' }, onTool: () => { during = current.latest().task ?? '' } })
+    const setupWorld=world(on, { store: RECENT, ownSessionRoot: true, env: { HOME, LANG: 'zh_CN.UTF-8' }, onTool: () => { during = current.latest().task ?? '' } })
     current = feed(on)
     await $.session.start(START); await settleLegacyStart($,setupWorld);
     await drainFeed($)
@@ -90,7 +90,7 @@ function ended(answer: string) { return { answer, durationMs: 1000, isAborted: f
   test('permission and question waits retain their starting timestamp until resolved', async ($, on) => {
     let current: ReturnType<typeof feed>
     let question: Record | undefined
-    const w = world(on, { store: RECENT, ask: true, stepTools:[{id:'main-call',name:'Bash'}], env: { HOME, LANG: 'en_US.UTF-8' }, onTool: tool => { if (tool === 'AskUserQuestion') question = current.latest() } })
+    const w = world(on, { store: RECENT, ownSessionRoot: true, ask: true, stepTools:[{id:'main-call',name:'Bash'}], env: { HOME, LANG: 'en_US.UTF-8' }, onTool: tool => { if (tool === 'AskUserQuestion') question = current.latest() } })
     current = feed(on)
     // A call-bound permission check carries tool_use_id; a standalone query does not.
     await $.session.start(START); await settleLegacyStart($,w);
@@ -116,7 +116,7 @@ function ended(answer: string) { return { answer, durationMs: 1000, isAborted: f
   })
 
   test('project is read once and middle-cut; unchanged state and blinking never write', async ($, on) => {
-    const w = world(on, { store: RECENT, env: { HOME, LANG: 'en_US.UTF-8' } })
+    const w = world(on, { store: RECENT, ownSessionRoot: true, env: { HOME, LANG: 'en_US.UTF-8' } })
     const current = feed(on, '/tmp/abcdefghijklmnopqrstuvwxyz0123456789')
     await $.session.start(START); await settleLegacyStart($,w);
     await drainFeed($)
@@ -141,7 +141,7 @@ function ended(answer: string) { return { answer, durationMs: 1000, isAborted: f
   })
 
   test('reply excerpt removes Markdown and line breaks while preserving the words and punctuation', async ($, on) => {
-    const setupWorld=world(on, { store: RECENT, env: { HOME, LANG: 'en_US.UTF-8' } })
+    const setupWorld=world(on, { store: RECENT, ownSessionRoot: true, env: { HOME, LANG: 'en_US.UTF-8' } })
     const current = feed(on)
     await $.session.start(START); await settleLegacyStart($,setupWorld);
     await drainFeed($)
@@ -171,7 +171,7 @@ function ended(answer: string) { return { answer, durationMs: 1000, isAborted: f
   })
 
   test('helper turn completions do not replace the main loop task or reply', async ($, on) => {
-    const setupWorld=world(on, { store: RECENT, env: { HOME, LANG: 'en_US.UTF-8' } })
+    const setupWorld=world(on, { store: RECENT, ownSessionRoot: true, env: { HOME, LANG: 'en_US.UTF-8' } })
     const current = feed(on)
     await $.session.start(START); await settleLegacyStart($,setupWorld);
     await drainFeed($)
@@ -187,7 +187,7 @@ function ended(answer: string) { return { answer, durationMs: 1000, isAborted: f
   })
 
   test('CJK emphasis and link URLs preserve Claude punctuation and literal hashes', async ($, on) => {
-    const setupWorld=world(on, { store: RECENT, env: { HOME, LANG: 'en_US.UTF-8' } })
+    const setupWorld=world(on, { store: RECENT, ownSessionRoot: true, env: { HOME, LANG: 'en_US.UTF-8' } })
     const current = feed(on)
     await $.session.start(START); await settleLegacyStart($,setupWorld);
     await drainFeed($)
@@ -199,7 +199,7 @@ function ended(answer: string) { return { answer, durationMs: 1000, isAborted: f
   })
 
   test('code excerpts retain literal links, nested backticks and Markdown-looking punctuation', async ($, on) => {
-    const setupWorld=world(on, { store: RECENT, env: { HOME, LANG: 'en_US.UTF-8' } })
+    const setupWorld=world(on, { store: RECENT, ownSessionRoot: true, env: { HOME, LANG: 'en_US.UTF-8' } })
     const current = feed(on)
     await $.session.start(START); await settleLegacyStart($,setupWorld);
     await drainFeed($)
@@ -218,7 +218,7 @@ function ended(answer: string) { return { answer, durationMs: 1000, isAborted: f
   })
 
   test('classic notifications retain their kind and a 140-character excerpt', async ($, on) => {
-    const setupWorld=world(on, { store: RECENT, env: { HOME, LANG: 'en_US.UTF-8' } })
+    const setupWorld=world(on, { store: RECENT, ownSessionRoot: true, env: { HOME, LANG: 'en_US.UTF-8' } })
     const current = feed(on)
     on('classic.Notification', () => ({}))
     await $.session.start(START); await settleLegacyStart($,setupWorld);

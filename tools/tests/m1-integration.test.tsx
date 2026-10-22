@@ -13,6 +13,7 @@ import { momentText, durationText } from '../hooks/numbers'
 import { PLUGIN_MANIFEST } from './plugin-sources'
 import { WORDS, LANGS } from '../hooks/words'
 import { world, settleLegacyStart, RECENT, MORNING, P, PERSON, SUMMARY, desktopPicture, band as bandRow } from './world'
+import { pathPattern, samePath } from './file-paths'
 import { C3_WORDS_RAW } from './c3-words-fixture'
 import { c3Word } from '../hooks/c3-words'
 import { C3_HEAD_MANIFEST } from './c3-head-assets'
@@ -102,7 +103,7 @@ function m1Text(tree:any):string{return typeof tree==='string'?tree:Array.isArra
 function gapFixture(on:On,store:Record<string,unknown>={},surface:'terminal'|'desktop'|'vscode'|'mobile'='terminal',watch=false,modelReply?:()=>Promise<any>,environment?:Record<string,string>,stepText?:string){
  const messages:any[]=[],models:string[]=[],tools:any[]=[],registered:string[]=[]
  // This fixture opts into the native helper contract; shipping has no A17 binary.
- on('fs.exists',{path:'/System/Library/CoreServices/SystemVersion.plist'},()=>({value:true}))
+ on('fs.exists',{path:pathPattern('/System/Library/CoreServices/SystemVersion.plist')},()=>({value:true}))
  on('fs.exists',{path:/[\\/]bin[\\/]coco-state(?:-macos-(?:x86_64|aarch64)|-linux-(?:x86_64|aarch64)|-windows-(?:x86_64|aarch64)\.exe)?$/},()=>({value:true}))
  on('agent.list',()=>({value:[]}));on('session.model',()=>({value:'test-model'}));on('session.repo',()=>({value:null}));on('session.turns',()=>({value:1}));on('fs.write',()=>({value:undefined}))
  on('session.messages',()=>({value:messages.slice()}))
@@ -398,7 +399,7 @@ test('M1 MOD7 actual descriptions change language, preserve hints and register t
 })
 test('M1 MOD7 actual companion status calls one permission-scoped Bash with zero model work',async($,on)=>{
  const direct:string[][]=[],permission:any[]=[]
- on('fs.exists',{path:'/System/Library/CoreServices/SystemVersion.plist'},()=>({value:true}))
+ on('fs.exists',{path:pathPattern('/System/Library/CoreServices/SystemVersion.plist')},()=>({value:true}))
  on('process.*',($,e,next)=>{if(next.is('process.run',e)&&e.argv.some(arg=>arg.endsWith('/bin/companion-macos.sh')))direct.push([...e.argv]);return next(e)})
  on('tool.call',{tool:'Bash'},($,e,next)=>{if(e.command.includes('companion-macos.sh')&&e.command.includes("'install'")){permission.push({tool:e.tool,command:e.command,timeout:e.timeout});return {deny:'person declined installation'}}return next(e)})
  const f=gapFixture(on,{},'terminal',true);await gapBegin($,f.w);f.tools.length=0;await $.command.run({command:'coco',args:'companion status',origin:PERSON,presentation:P})
@@ -452,7 +453,7 @@ test('M1 MOD7 actual '+(WINDOWS_ROOTS?'Windows icon status skips unsupported nat
  const native:string[][]=[]
  on('process.*',($,e,next)=>{if(next.is('process.run',e)||next.is('process.spawn',e))native.push([...e.argv]);return next(e)})
  // Main's icon (10-09) asks first: with the app icon off, status only says S9, so this person has turned it on.
- const f=gapFixture(on,{bandSettings:{voice:'off',voiceChosen:true,notes:false,bookmark:false,guard:false,appIcon:'on'}});on('fs.exists',{path:'/System/Library/CoreServices/SystemVersion.plist'},()=>({value:true}));await gapBegin($,f.w);f.tools.length=0;native.length=0
+ const f=gapFixture(on,{bandSettings:{voice:'off',voiceChosen:true,notes:false,bookmark:false,guard:false,appIcon:'on'}});on('fs.exists',{path:pathPattern('/System/Library/CoreServices/SystemVersion.plist')},()=>({value:true}));await gapBegin($,f.w);f.tools.length=0;native.length=0
  await $.command.run({command:'coco',args:'icon status',origin:PERSON,presentation:P})
  if(WINDOWS_ROOTS){expect(f.tools).toEqual([]);expect(native).toEqual([])}
  // Main's icon actions (kept at the 10-09 merge) run the helper as a process with a fixed PATH, not as a Bash tool call.
@@ -490,7 +491,7 @@ test('M1 A1 actual macOS all More off keeps classic watch paths and never starts
 
 for(const surface of ['terminal','desktop','vscode'] as const)test(`M1 MOD11 actual Mac ${surface} Settings sound row defaults off, previews once on and persists off`,async($,on)=>{
  const plays:any[]=[],writes=gapStoreWrites(on)
- on('fs.exists',{path:'/System/Library/CoreServices/SystemVersion.plist'},()=>({value:true}))
+ on('fs.exists',{path:pathPattern('/System/Library/CoreServices/SystemVersion.plist')},()=>({value:true}))
  on('audio.play',($,e)=>{plays.push({clip:e.clip,gain:e.gain,shouldLoop:e.shouldLoop});return {value:undefined}})
  const f=gapFixture(on,{},surface,true);await gapBegin($,f.w,surface)
  await $.command.run({command:'coco',args:'settings',origin:PERSON,presentation:P})
@@ -507,7 +508,7 @@ for(const surface of ['terminal','desktop','vscode'] as const)test(`M1 MOD11 act
  await pane.press({key:'coco:set:waitSound:off'});await settleLegacyStart($,f.w);await pane.redraw();expect(plays.length).toBe(1);expect((writes.get('bandSettings') as any).waitSound).toBe(false);expect((await pane.find({type:'Button',key:'coco:set:waitSound:off'}))?.props.variant).toBe('primary');expect(f.models).toEqual([]);await pane.unmount()
 })
 for(const [platform,surface]of [['linux','terminal'],['windows','desktop'],['mac','mobile']] as const)test(`M1 MOD11 actual ${platform} ${surface} Settings hides the sound choice`,async($,on)=>{
- const plays:any[]=[];on('fs.exists',($,e)=>({value:platform==='mac'&&e.path==='/System/Library/CoreServices/SystemVersion.plist'}));on('audio.play',($,e)=>{plays.push(e.clip);return {value:undefined}})
+ const plays:any[]=[];on('fs.exists',($,e)=>({value:platform==='mac'&&samePath(e.path,'/System/Library/CoreServices/SystemVersion.plist')}));on('audio.play',($,e)=>{plays.push(e.clip);return {value:undefined}})
  const env=platform==='windows'?{OS:'Windows_NT',USERPROFILE:'C:\\Users\\m1-synthetic',LANG:'en_US.UTF-8',TERM:'xterm-256color'}:{HOME:'/tmp/m1-owned-watch',LANG:'en_US.UTF-8',TERM:'xterm-256color'}
  const f=gapFixture(on,{},surface,false,undefined,env);await gapBegin($,f.w,surface);await $.command.run({command:'coco',args:'settings',origin:PERSON,presentation:P})
  const pane=await $.ui.mount({surface,...M1_PANE});await f.w.clock.advance(0);await pane.redraw();expect(await pane.find({type:'Button',key:'coco:book:tab:settings'})).toBeDefined()
@@ -516,7 +517,7 @@ for(const [platform,surface]of [['linux','terminal'],['windows','desktop'],['mac
 
 test('M1 MOD11 actual held On preview respects Off, a newer On and lifecycle clear',async($,on)=>{
  const plays:any[]=[];let armed=false,held=false,gate=Promise.resolve(),entered=()=>{},observeChoice=(_value:boolean)=>{}
- on('fs.exists',{path:'/System/Library/CoreServices/SystemVersion.plist'},()=>({value:true}));on('audio.play',($,e)=>{plays.push(e.clip);return {value:undefined}})
+ on('fs.exists',{path:pathPattern('/System/Library/CoreServices/SystemVersion.plist')},()=>({value:true}));on('audio.play',($,e)=>{plays.push(e.clip);return {value:undefined}})
  const writes=gapStoreWrites(on,async(e,next)=>{if(next.is('store.delete',e)&&armed&&!held&&e.key==='bookmarks'){held=true;entered();await gate}},(e,next)=>{if(held&&e.key==='bandSettings'&&typeof (e.value as any).waitSound==='boolean')observeChoice((e.value as any).waitSound)})
  const f=gapFixture(on,{},'terminal',true);await gapBegin($,f.w);await $.command.run({command:'coco',args:'settings',origin:PERSON,presentation:P})
  const pane=await $.ui.mount({surface:'terminal',...M1_PANE});await f.w.clock.advance(0);await pane.redraw();expect(await pane.find({type:'Button',key:'coco:set:waitSound:on'})).toBeDefined()
@@ -537,7 +538,7 @@ test('M1 MOD11 actual held On preview respects Off, a newer On and lifecycle cle
 test('M1 MOD11 actual Off cancels a held notification before its own settings await completes',async($,on)=>{
  const plays:any[]=[];let holdNotice=false,holdOff=false,offHeld=false,noticeEntered!:()=>void,offEntered!:()=>void,releaseNotice!:()=>void,releaseOff!:()=>void
  const noticeGate=new Promise<void>(resolve=>{releaseNotice=resolve}),offGate=new Promise<void>(resolve=>{releaseOff=resolve}),noticeWaiting=new Promise<void>(resolve=>{noticeEntered=resolve}),offWaiting=new Promise<void>(resolve=>{offEntered=resolve})
- on('fs.exists',{path:'/System/Library/CoreServices/SystemVersion.plist'},()=>({value:true}));on('audio.play',($,e)=>{plays.push(e.clip);return {value:undefined}});on('classic.Notification',()=>({}))
+ on('fs.exists',{path:pathPattern('/System/Library/CoreServices/SystemVersion.plist')},()=>({value:true}));on('audio.play',($,e)=>{plays.push(e.clip);return {value:undefined}});on('classic.Notification',()=>({}))
  const writes=gapStoreWrites(on,async(e,next)=>{if(next.is('store.get',e)&&holdNotice&&e.key==='waitSoundAt'){noticeEntered();await noticeGate}if(next.is('store.delete',e)&&holdOff&&!offHeld&&e.key==='bookmarks'){offHeld=true;offEntered();await offGate}})
  const f=gapFixture(on,{bandSettings:{voice:'off',voiceChosen:true,notes:false,bookmark:false,guard:false,waitSound:true}},'terminal',true);await gapBegin($,f.w);await $.command.run({command:'coco',args:'settings',origin:PERSON,presentation:P})
  const pane=await $.ui.mount({surface:'terminal',...M1_PANE});await f.w.clock.advance(0);await pane.redraw();expect((await pane.find({type:'Button',key:'coco:set:waitSound:on'}))?.props.variant).toBe('primary');expect(plays).toEqual([])
@@ -548,7 +549,7 @@ test('M1 MOD11 actual Off cancels a held notification before its own settings aw
 
 test('M1 MOD11 actual consecutive permission waits settle by tool identity despite classic requests',async($,on)=>{
  const plays:any[]=[]
- on('fs.exists',{path:'/System/Library/CoreServices/SystemVersion.plist'},()=>({value:true}));on('audio.play',($,e)=>{plays.push(e.clip);return {value:undefined}});on('classic.Notification',()=>({}));on('classic.PermissionRequest',()=>({}))
+ on('fs.exists',{path:pathPattern('/System/Library/CoreServices/SystemVersion.plist')},()=>({value:true}));on('audio.play',($,e)=>{plays.push(e.clip);return {value:undefined}});on('classic.Notification',()=>({}));on('classic.PermissionRequest',()=>({}))
  on('tool.check',{tool:'Read'},()=>({decision:'ask'}))
  on('tool.call',{tool:'Read'},async(_hookEngine,e,next)=>{
   if(e.tool!=='Read')return next(e)
@@ -567,7 +568,7 @@ test('M1 MOD11 actual consecutive permission waits settle by tool identity despi
 test('M1 MOD11 actual session end cancels a notification held before its store read completes',async($,on)=>{
  const plays:any[]=[];let hold=false,entered!:()=>void,release!:()=>void
  const gate=new Promise<void>(resolve=>{release=resolve}),waiting=new Promise<void>(resolve=>{entered=resolve})
- on('fs.exists',{path:'/System/Library/CoreServices/SystemVersion.plist'},()=>({value:true}));on('audio.play',($,e)=>{plays.push(e.clip);return {value:undefined}});on('classic.Notification',()=>({}));on('session.end',()=>({sessionId:'fixture-session'}))
+ on('fs.exists',{path:pathPattern('/System/Library/CoreServices/SystemVersion.plist')},()=>({value:true}));on('audio.play',($,e)=>{plays.push(e.clip);return {value:undefined}});on('classic.Notification',()=>({}));on('session.end',()=>({sessionId:'fixture-session'}))
  const writes=gapStoreWrites(on,async(e,next)=>{if(next.is('store.get',e)&&hold&&e.key==='waitSoundAt'){entered();await gate}})
  const f=gapFixture(on,{bandSettings:{voice:'off',voiceChosen:true,notes:false,bookmark:false,guard:false,waitSound:true}},'terminal',true);await gapBegin($,f.w)
  hold=true;const notification=$.classic.Notification({session_id:'fixture-session',cwd:START.cwd,notification_type:'elicitation_dialog',message:'fixture question waiting'})

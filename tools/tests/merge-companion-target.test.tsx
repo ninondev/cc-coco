@@ -104,4 +104,19 @@ describe('merged companion target ordering and roster', () => {
     expect(f.companionFeeds.length).toBe(before)
     console.log('MERGE_TARGET_ROSTER '+JSON.stringify({ initialSurfaces: initial.surfaces, finalSurfaces: f.companionFeeds.at(-1)?.surfaces, feedCount: before, unchangedRosterWrites: f.companionFeeds.length-before, queries }))
   })
+
+  // The companion feed goes out through shared presence; with none on Windows a target choice stays in the view and the record.
+  if (WINDOWS_ROOTS) test('Windows declines shared presence: a companion target choice is kept in the view and the record, and no feed is written', { timeoutMs: 30_000 }, async ($, on) => {
+    let record: Record<string, unknown> = {}
+    on('store.*', ($, e, next) => { if (next.is('store.set', e) && e.key === 'bandSettings') record = e.value as Record<string, unknown>; return next(e) })
+    const f = presenceWorld(on, { ...snapshot(), settings: { companionTarget: 'auto', neighbours: true } }, { withNativePresence: true, companion: true })
+    await $.session.start(START)
+    await $.ui.mount({ surface: 'desktop', ...band(100) })
+    await f.clock.advance(0); await flush($)
+    await choose($, 'claude'); await choose($, 'vscode'); await flush($)
+    expect(f.view().companionTarget).toBe('vscode')
+    expect(record.companionTarget).toBe('vscode')
+    expect(f.companionFeeds).toEqual([])
+    expect(f.calls.filter(call => call.argv.some(arg => /presence\.sh$/.test(arg)))).toEqual([])
+  })
 })

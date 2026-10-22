@@ -36,6 +36,8 @@ export type World = {
   sessionCompact?: false // Private SDK boundary fixture: leave the native bottom unimplemented.
   sessionTurns?: false
   sessionRoot?: string
+  // The test registers its own session.root; a second registration is an error.
+  ownSessionRoot?: boolean
   sessionId?: string
   observeStore?: boolean
   surfaces?: ('terminal' | 'desktop' | 'vscode' | 'mobile')[]
@@ -148,7 +150,7 @@ export function world(on: On, w: World = {}) {
   on('fs.exists', { path: /^\/usr\/bin\/python3$/ }, () => ({ value: false }))
   const env = w.env ?? { LANG: 'en_US.UTF-8', TERM: 'xterm-256color' }
   mock.env(on, WINDOWS_ROOTS ? { ...env, ...(!env.HOME ? { USERPROFILE: 'C:\\Users\\windows' } : {}), PROCESSOR_ARCHITECTURE: env.PROCESSOR_ARCHITECTURE ?? 'AMD64' } : env)
-  if (w.sessionRoot || WINDOWS_ROOTS) on('session.root', () => ({ value: w.sessionRoot ?? 'C:\\Users\\windows\\project' }))
+  if (!w.ownSessionRoot && (w.sessionRoot || WINDOWS_ROOTS)) on('session.root', () => ({ value: w.sessionRoot ?? 'C:\\Users\\windows\\project' }))
   const cells = new Map<string, { value: unknown; version: number }>(Object.entries(w.initialState ?? {}).map(([key, value]) => [key, { value, version: 1 }]))
   const live: {
     percent: number | undefined

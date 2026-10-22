@@ -5,6 +5,7 @@ import type { On } from 'claude-code'
 import { CARD_METRICS_TEXT } from './card-metrics-data'
 import { OPENING_TEXT_RAW, WEEK_TEXT_RAW } from './week-text-fixture'
 import { MORNING, RECENT, P, PERSON, world, settleLegacyStart } from './world'
+import { posixPath, samePath, slashPath } from './file-paths'
 import { WeekTally, addDays, foldTurn, issueNumber, issueRows, viewTotals, weekFirstDay, weekIssues, weekKind, weekRange, weekRecordFrom, weekStart, weekView, lastWeekReady, zineCover } from '../hooks/week-days'
 import type { WeekDay, WeekRecord } from '../hooks/week-days'
 import { weekCardSvg, WEEK_CARD } from '../hooks/week-card'
@@ -186,10 +187,10 @@ function fixture(on: On, options: { failWrite?: boolean; noRaster?: boolean; wor
     return out
   })
   on('fs.read', { path: /[\\/]hooks[\\/]card-metrics\.json$/ }, () => ({ value: CARD_METRICS_TEXT }))
-  on('fs.exists', ($, e) => ({ value: e.path === '/System/Library/CoreServices/SystemVersion.plist' || files.has(e.path) }))
-  on('fs.stat', ($, e) => ({ value: e.path === PICTURES ? { kind: 'dir', size: 0, isLink: false } : files.has(e.path) ? { kind: 'file', size: 512, isLink: false } : { kind: 'missing', size: 0, isLink: false } } as never))
-  on('fs.read', { path: /\/Pictures\/Coco\// }, ($, e) => ({ value: { base64: files.get(e.path) ?? PNG_1080_1350 } } as never))
-  on('fs.write', ($, e) => { writes.push(e.path); texts.push(e.text); if (options.failWrite) throw new Error('fixture cannot write'); files.set(e.path, e.text); return { value: undefined } })
+  on('fs.exists', ($, e) => ({ value: samePath(e.path, '/System/Library/CoreServices/SystemVersion.plist') || files.has(posixPath(e.path)) }))
+  on('fs.stat', ($, e) => ({ value: samePath(e.path, PICTURES) ? { kind: 'dir', size: 0, isLink: false } : files.has(posixPath(e.path)) ? { kind: 'file', size: 512, isLink: false } : { kind: 'missing', size: 0, isLink: false } } as never))
+  on('fs.read', { path: /[\\/]Pictures[\\/]Coco[\\/]/ }, ($, e) => ({ value: { base64: files.get(posixPath(e.path)) ?? PNG_1080_1350 } } as never))
+  on('fs.write', ($, e) => { writes.push(e.path); texts.push(e.text); if (options.failWrite) throw new Error('fixture cannot write'); files.set(posixPath(e.path), e.text); return { value: undefined } })
   on('process.run', ($, e) => {
     commands.push([...e.argv])
     if (e.argv[0] === '/bin/test') return { value: OK }
@@ -247,7 +248,7 @@ test('WEEK the card carries this issue\'s cover, its lower part, in place of her
   const f = fixture(on, { store: finished }), ui = await open($, f)
   await ui.press({ key: 'coco:week:save' }); await ui.redraw()
   const svg = f.texts.find(text => text.startsWith('<svg')) ?? ''
-  const named = (type: string): string[] => [...svg.matchAll(new RegExp(`data:image/${type};base64,([A-Za-z0-9+/=]+)`, 'g'))].map(match => atob(match[1]!))
+  const named = (type: string): string[] => [...svg.matchAll(new RegExp(`data:image/${type};base64,([A-Za-z0-9+/=]+)`, 'g'))].map(match => slashPath(atob(match[1]!)))
   expect(named('jpeg').filter(art => art.includes('zine/cover-01.jpg')).length).toBe(1)
   expect(svg).toContain('preserveAspectRatio="xMidYMax slice"')
   expect(named('png').some(png => png.includes('card/week.png') || png.includes('card/reading.png') || png.includes('card/happy.png'))).toBe(false)
@@ -274,7 +275,7 @@ test('WEEK the zine page: this issue\'s cover beside its numbers, every issue un
   await ui.press({ key: 'coco:week:save' }); await ui.redraw()
   expect(f.files.has(`${FOLDER}/week-2026-09-06.png`)).toBe(true)
   const svg = f.texts.find(text => text.startsWith('<svg')) ?? ''
-  expect(atob(/data:image\/jpeg;base64,([A-Za-z0-9+/=]+)/.exec(svg)?.[1] ?? '')).toContain('zine/cover-01.jpg')
+  expect(slashPath(atob(/data:image\/jpeg;base64,([A-Za-z0-9+/=]+)/.exec(svg)?.[1] ?? ''))).toContain('zine/cover-01.jpg')
   expect(svg).toContain('>Issue 1</text>')
   expect(svg).toContain('40 pages together, 6 green runs')
   expect(svg).not.toContain('this week')

@@ -18,6 +18,7 @@ import { CompanionBook } from '../hooks/companion-book'
 import { bagBadgeSvg } from '../hooks/bag'
 import { companionRun } from '../hooks/pages'
 import { PLUGIN_SOURCES } from './plugin-sources'
+import { posixPath } from './file-paths'
 import { RUNTIME_PROMISE_INPUT } from './promises-runtime-input'
 import { world, RECENT, P, PERSON, band, desktopPicture, settleLegacyStart } from './world'
 import { PRIVATE, SURFACES, PANE, PROMISE_FOLDER, PROMISE_PROJECT, TOOL_CASES, DRIVEN_HOOKS, M1_DRIVEN_HOOKS, promiseWorld, drivePromiseEvents } from './promises-runtime-world'
@@ -25,7 +26,7 @@ import { PRIVATE, SURFACES, PANE, PROMISE_FOLDER, PROMISE_PROJECT, TOOL_CASES, D
 const ASK = { model: 'claude', promptModel: 'claude', tools: [], outputStyle: null, traits: [] }
 const containsPrivate = (value: unknown) => Object.values(PRIVATE).filter(marker => JSON.stringify(value)?.includes(marker))
 const canonical = (path: string) => {
-  const normalized = path.replace(/\\/g, '/').replace(/^\/private\/(?=(?:tmp|var)\/)/, '/')
+  const normalized = path.replace(/\\/g, '/').replace(/^[A-Za-z]:(?=\/)/, '').replace(/^\/private\/(?=(?:tmp|var)\/)/, '/')
   const pieces: string[] = []
   for (const piece of normalized.split('/')) {
     if (!piece || piece === '.') continue
@@ -136,10 +137,10 @@ test('B1 B2 B4 B8 event set keeps network empty and private payloads in bounded 
   expect(f.network).toEqual([])
   expect(f.stores.length > 0).toBe(true)
   expect(f.fs.length > 0).toBe(true)
-  expect(f.writes.some(write => write.path === PROMISE_FOLDER + '/view.json')).toBe(true)
+  expect(f.writes.some(write => posixPath(write.path) === PROMISE_FOLDER + '/view.json')).toBe(true)
   for (const entry of f.stores) expect(containsPrivate(entry.value), 'store ' + entry.key).toEqual([])
   for (const write of f.writes) {
-    if (write.path !== PROMISE_FOLDER + '/view.json') { expect(containsPrivate(write.text), write.path).toEqual([]); continue }
+    if (posixPath(write.path) !== PROMISE_FOLDER + '/view.json') { expect(containsPrivate(write.text), write.path).toEqual([]); continue }
     const record = JSON.parse(write.text)
     for (const name of ['reply', 'notice']) if (record[name]) expect([...record[name].text].length <= 140, name + ' excerpt bound').toBe(true)
     const { reply, notice, ...metadata } = record
@@ -159,11 +160,11 @@ test('B1 B2 B4 B8 event set keeps network empty and private payloads in bounded 
   }
   for (const call of f.fs) {
     const own = within(call.path, call.root) || within(call.path, PROMISE_FOLDER) || within(call.path, '/tmp/p1-runtime-home/Applications/Coco Pet.app')
-    const projectMetadata = call.name === 'exists' && call.path === PROMISE_PROJECT + '/.git'
-    const probe = call.name === 'exists' && !!probes[call.path]
+    const projectMetadata = call.name === 'exists' && posixPath(call.path) === PROMISE_PROJECT + '/.git'
+    const probe = call.name === 'exists' && !!probes[posixPath(call.path)]
     expect(own || probe || projectMetadata, call.name + ' outside owned folders: ' + call.path + '; plugin root: ' + call.root).toBe(true)
   }
-  const ended = JSON.parse(f.writes.filter(write => write.path === PROMISE_FOLDER + '/view.json').at(-1)!.text)
+  const ended = JSON.parse(f.writes.filter(write => posixPath(write.path) === PROMISE_FOLDER + '/view.json').at(-1)!.text)
   expect(ended).toMatchObject({ ended: true, reply: null, notice: null, channel: false })
   console.log('P1_RUNTIME_CHANNELS ' + JSON.stringify({ networkCalls: f.network.length, modelCalls: f.models.length, storeWrites: f.stores.length, filesystemCalls: f.fs.length, recordedWrites: f.writes.length }))
 })
@@ -406,7 +407,7 @@ test('D9 shipped coco command verbs each have an existing button path', { timeou
 test('G12 settled Settings check-up performs no timed probes', { timeoutMs: 120000 }, async ($, on) => {
   const f = runtimeWorld(on)
   await $.session.start({ cwd: PROMISE_PROJECT, surface: 'terminal', isInteractive: true }); await settleLegacyStart($, f.w)
-  const relevant = () => f.fs.filter(call => /\/(?:companion|health|snapshot)\.json$/.test(call.path)).length
+  const relevant = () => f.fs.filter(call => /[\\/](?:companion|health|snapshot)\.json$/.test(call.path)).length
   for (const surface of SURFACES) {
     await $.command.run({ command: 'coco', args: 'settings', origin: PERSON, presentation: P })
     const ui = await $.ui.mount({ surface, ...PANE })

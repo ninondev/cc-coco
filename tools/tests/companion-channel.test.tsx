@@ -10,6 +10,7 @@ import { MORNING, RECENT, stubPng } from './world'
 import { atomicFeed, PROCESS_OK } from './shared-world'
 import { transportFixture } from './presence-transport-fixture'
 import { M1_MORE_TEXT } from './m1-more-data-fixture'
+import { WINDOWS_ROOTS } from './test-system'
 
 const START = { cwd: '/tmp/project', surface: 'terminal' as const, isInteractive: true }
 const HOME = '/tmp/channel-test'
@@ -251,7 +252,7 @@ function ended(answer = 'Done.') { return { answer, durationMs: 1000, isAborted:
     expect(actions).toBe(0)
   })
 
-  test('absent deferred helper ignores requests and attempts no guard execution', async ($, on) => {
+  if (!WINDOWS_ROOTS) test('absent deferred helper ignores requests and attempts no guard execution', async ($, on) => {
     const f = fixture(on, { guard: false })
     await $.session.start(START)
     await f.w.clock.advance(0)
@@ -268,7 +269,7 @@ function ended(answer = 'Done.') { return { answer, durationMs: 1000, isAborted:
     await f.finish()
   })
 
-  test('one shared follower before companion installation; first unchanged push enables requests without another child', async ($, on) => {
+  if (!WINDOWS_ROOTS) test('one shared follower before companion installation; first unchanged push enables requests without another child', async ($, on) => {
     const f = fixture(on, { installed: false, missingFile: true, voice: 'light' })
     await $.session.start(START)
     await f.w.clock.advance(0)
@@ -299,7 +300,7 @@ function ended(answer = 'Done.') { return { answer, durationMs: 1000, isAborted:
     expect(f.closed()).toBe(true)
   })
 
-  test('integrated journal input never submits or clears while seen remains permitted', async ($, on) => {
+  if (!WINDOWS_ROOTS) test('integrated journal input never submits or clears while seen remains permitted', async ($, on) => {
     const f = fixture(on)
     await $.session.start(START)
     await f.w.clock.advance(0)
@@ -331,7 +332,7 @@ function ended(answer = 'Done.') { return { answer, durationMs: 1000, isAborted:
     expect(f.closed()).toBe(true)
   })
 
-  test('a desktop window attaching keeps the session\'s channel: the pet\'s note still gets its receipt', async ($, on) => {
+  if (!WINDOWS_ROOTS) test('a desktop window attaching keeps the session\'s channel: the pet\'s note still gets its receipt', async ($, on) => {
     const f = fixture(on, { moreText: true })
     on('session.attach', ($, e) => ({ clientId: e.clientId }))
     await $.session.start({ ...START, surface: 'desktop' })
@@ -637,7 +638,7 @@ function ended(answer = 'Done.') { return { answer, durationMs: 1000, isAborted:
     expect(actions).toBe(0)
   })
 
-  test('folder removal stops requests while retaining the shared follower and rejects further input', async ($, on) => {
+  if (!WINDOWS_ROOTS) test('folder removal stops requests while retaining the shared follower and rejects further input', async ($, on) => {
     const f = fixture(on)
     await $.session.start(START)
     await f.w.clock.advance(0)
@@ -656,7 +657,7 @@ function ended(answer = 'Done.') { return { answer, durationMs: 1000, isAborted:
     expect(f.writes.length).toBe(before)
   })
 
-  test('a child ending naturally writes channel false and never restarts', async ($, on) => {
+  if (!WINDOWS_ROOTS) test('a child ending naturally writes channel false and never restarts', async ($, on) => {
     const f = fixture(on)
     await $.session.start(START)
     await f.w.clock.advance(0)
@@ -676,7 +677,7 @@ function ended(answer = 'Done.') { return { answer, durationMs: 1000, isAborted:
     expect(f.latest().channel).toBe(false)
   })
 
-  test('unloading the module with an open tail leaves no unhandled completion rejection', async ($, on) => {
+  if (!WINDOWS_ROOTS) test('unloading the module with an open tail leaves no unhandled completion rejection', async ($, on) => {
     const f = fixture(on)
     await $.session.start(START)
     await f.w.clock.advance(0)
@@ -690,7 +691,7 @@ function ended(answer = 'Done.') { return { answer, durationMs: 1000, isAborted:
     // its tail open: the runner's file-end check must find no unhandled rejection.
   })
 
-  test('a spawn failure stays false with no retry on later pushes', async ($, on) => {
+  if (!WINDOWS_ROOTS) test('a spawn failure stays false with no retry on later pushes', async ($, on) => {
     const f = fixture(on, { failSpawn: true })
     await $.session.start(START)
     await f.w.clock.advance(0)
@@ -705,5 +706,21 @@ function ended(answer = 'Done.') { return { answer, durationMs: 1000, isAborted:
     await f.drain()
     expect(f.latest().channel).toBe(false)
     expect(f.spawns.length).toBe(1)
+  })
+
+  // The follower is the pet program's: with none on a Windows root there is no stream to carry a request.
+  if (WINDOWS_ROOTS) test('a Windows package without the pet program starts no follower and never opens the channel', async ($, on) => {
+    const f = fixture(on)
+    await $.session.start(START)
+    await f.w.clock.advance(0)
+    await drainFeed($)
+    await drainFeed($)
+    await f.drain()
+    await $.turn.start({ text: 'go', turnId: 't1' })
+    await drainFeed($)
+    expect(f.spawns.length).toBe(0)
+    expect(f.records.some(record => record.channel)).toBe(false)
+    expect(f.submitted).toEqual([])
+    expect(f.cleared).toEqual([])
   })
 })

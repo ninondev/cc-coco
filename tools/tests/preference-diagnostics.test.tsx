@@ -8,6 +8,7 @@ import { initialView } from '../hooks/mood'
 import { MORNING, P, PERSON, RECENT, SUMMARY, band, cocoBandText, desktopPicture } from './world'
 import { M1_MORE_TEXT, M1_GAPS_TEXT } from './m1-more-data-fixture'
 import { C3_HEAD_MANIFEST } from './c3-head-assets'
+import { samePath } from './file-paths'
 
 const HOME = '/tmp/diagnostic-fixture'
 const START = { cwd: '/tmp/private-project', surface: 'desktop' as const, isInteractive: true }
@@ -28,7 +29,7 @@ function fixture(on: On, store: Record<string, unknown>, enabled = false, held?:
   on('session.id', () => ({ value: 'test-session' }))
   on('session.root', () => ({ value: START.cwd }))
   on('session.surfaces', () => ({ value: ['desktop'] }))
-  on('fs.exists', ($, e) => { exists.push(e.path); return { value: e.path === `${HOME}/Library/Application Support/Coco/diagnostics` && enabled } })
+  on('fs.exists', ($, e) => { exists.push(e.path); return { value: samePath(e.path, `${HOME}/Library/Application Support/Coco/diagnostics`) && enabled } })
   on('fs.read', ($, e) => {
     if (/[\\/]hooks[\\/]gaps-text\.json$/.test(e.path)) { wordReads.push('gaps'); return {value:M1_GAPS_TEXT} as never }
     if (/[\\/]hooks[\\/]more-text\.json$/.test(e.path)) { wordReads.push('more'); return {value:M1_MORE_TEXT} as never }

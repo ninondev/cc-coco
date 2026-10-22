@@ -56,3 +56,14 @@ if (!WINDOWS_ROOTS) describe('the head after a visit', () => {
     await ui.unmount()
   })
 })
+// A visit comes through shared presence, which Windows declines with no pet program: the head is drawn as usual.
+if (WINDOWS_ROOTS) test('Windows declines shared presence: a visit never reaches the head', async ($, on) => {
+  const f = setup(on, 'vscode')
+  await $.session.start({ cwd: '/tmp/presence-project', surface: 'vscode', isInteractive: true })
+  await f.clock.advance(0); await flush($)
+  await turn($)
+  const ui = await $.ui.mount({ ...reply('head-1', 'vscode'), surface: 'vscode' })
+  expect(String((await ui.find({ type: 'Svg' }))?.props.source)).not.toContain(ART.kinds.bulb!.sit.light)
+  expect(texts(await ui.drawn()).join(' ')).not.toContain('a light bulb came by')
+  await ui.unmount()
+})

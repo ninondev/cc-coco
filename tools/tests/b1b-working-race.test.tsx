@@ -65,3 +65,23 @@ if(!WINDOWS_ROOTS)test('pending presence bootstrap and delayed boot retain deskt
   console.log('B1B_WORKING_RACE '+JSON.stringify({unknownBootHadNoSetup:true,bootReleasedBeforeKnownMore:true,setupHeld:true,animationReadHeld:true,claimBusy:f.current.busy,feedMood:feed?.mood}))
  }finally{setup.release();boot.release();art.release();await flush($)}
 })
+
+// Windows has no shared presence to put the band to sleep, so an active turn only has to draw its think and then the art.
+if(WINDOWS_ROOTS)test('Windows declines shared presence: an active turn draws its synchronous think and the art arrives when read',{timeoutMs:20000},async($,on)=>{
+ const art=gate();let artEntered=false
+ on('fs.*',async($,e,next)=>{if(next.is('fs.read',e)&&/[\\/]assets[\\/]coco[\\/]band-A\.json$/.test(e.path)){artEntered=true;await art.held}return next(e)})
+ const f=presenceWorld(animated(on),snapshot(),{withNativePresence:true})
+ try{
+  await $.session.start(START);await f.clock.advance(0);await flush($)
+  await $.turn.start({text:'fixture work',turnId:'active-turn'});await flush($)
+  expect(f.calls.filter(call=>call.argv.some(arg=>/presence\.sh$/.test(arg)))).toEqual([])
+  expect(f.remote(snapshot('sleep',MORNING-300000,f.current.seq+1))).toBe(false);await flush($)
+  expect(f.view().mood).toBe('think')
+  const ui=await $.ui.mount({surface:'desktop',...band(100,true)})
+  expect(String((await desktopPicture(ui))?.props.source)).toContain('data-coco="A think"')
+  await f.clock.advance(0);await flush($)
+  expect(artEntered).toBe(true)
+  art.release();await flush($);await f.clock.advance(0);await flush($)
+  expect(String((await desktopPicture(ui))?.props.source)).toContain('@keyframes')
+ }finally{art.release();await flush($)}
+})

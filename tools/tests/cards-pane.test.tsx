@@ -7,6 +7,7 @@ import { expect, test } from 'claude-code/testing'
 import type { On } from 'claude-code'
 import { P, PERSON, RECENT, band, desktopPicture, settleLegacyStart, world } from './world'
 import { CARDS_ART_TEXT } from './cards-art-fixture'
+import { posixPath, samePath } from './file-paths'
 
 installM1Words()
 
@@ -64,15 +65,15 @@ function cardsWorld(
     initialState,
     env: { LANG: 'en_US.UTF-8', TERM: 'xterm-256color', HOME: '/home/tester' },
     readText: path =>
-      path === '/home/tester/.claude/agents/note-taker.md' ? AGENT_FILE : /[\\/]hooks[\\/]cards-art\.json$/.test(path) ? art() : undefined,
+      samePath(path, '/home/tester/.claude/agents/note-taker.md') ? AGENT_FILE : /[\\/]hooks[\\/]cards-art\.json$/.test(path) ? art() : undefined,
   })
   on('command.list', () => ({ value: commands }) as never)
   // the skills folder holds one skill; the subagents folder a definition file, a stray note and a folder
   const listed: string[] = []
   on('fs.list', async ($, e, next) => {
     listed.push(e.path)
-    if (e.path === '/home/tester/.claude/skills') return { value: [{ name: 'tidy-notes', kind: 'other', ...NO_FILE, isLink: true }] } as never
-    if (e.path === '/home/tester/.claude/agents')
+    if (samePath(e.path, '/home/tester/.claude/skills')) return { value: [{ name: 'tidy-notes', kind: 'other', ...NO_FILE, isLink: true }] } as never
+    if (samePath(e.path, '/home/tester/.claude/agents'))
       return { value: [{ name: 'note-taker.md', kind: 'file', ...NO_FILE, size: 90 }, { name: 'README.txt', kind: 'file', ...NO_FILE, size: 9 }, { name: 'old', kind: 'dir', ...NO_FILE }] } as never
     if (/[\\/]\.claude[\\/](skills|agents)$/.test(e.path)) return { value: [] } as never
     return next(e)
@@ -347,8 +348,8 @@ test("Claude's folders wait for /coco cards, and the person's commands run befor
   expect(w.claudes()).toEqual([])
 
   await $.command.run(cardsCommand)
-  expect(w.claudes()).toContain('/home/tester/.claude/skills')
-  expect(w.claudes()).toContain('/home/tester/.claude/agents/note-taker.md')
+  expect(w.claudes().map(posixPath)).toContain('/home/tester/.claude/skills')
+  expect(w.claudes().map(posixPath)).toContain('/home/tester/.claude/agents/note-taker.md')
   await until(() => used('command:standup') === 2)
   expect([used('command:standup'), used('skill:tidy-notes'), used('command:tidy-notes')]).toEqual([2, 1, 0])
   expect(Object.keys(cell('cardsUsage')).filter(id => id.startsWith('run:'))).toEqual([])

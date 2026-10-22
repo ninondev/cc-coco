@@ -5,6 +5,7 @@ import { vibeBalance, vibeCardSvg, vibePngSize, vibeRarity, vibeWrap } from '../
 import { BAG_TEXT_RAW } from './bag-text-fixture'
 import { OPENING_TEXT_RAW, WEEK_TEXT_RAW } from './week-text-fixture'
 import { RECENT, P, PERSON, world, settleLegacyStart, stubPng } from './world'
+import { posixPath, samePath, slashPath } from './file-paths'
 
 const BAG = JSON.parse(BAG_TEXT_RAW)
 const PNG_1080_1350 = 'iVBORw0KGgoAAAANSUhEUgAABDgAAAVGAQAAAABTNDYnAAAAyUlEQVR4nO3BMQEAAADCoPVPbQ0PoAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAIB3A81OAAGYNrEaAAAAAElFTkSuQmCC'
@@ -80,10 +81,10 @@ const allText = (n: any): string => typeof n === 'string' ? n : Array.isArray(n)
 
 function fixture(on: On, options: { failWrite?: boolean; noRaster?: boolean; noPictures?: boolean } = {}) {
   const commands: string[][] = [], files = new Map<string, string>(), texts: string[] = []
-  on('fs.exists', ($, e) => ({ value: e.path === '/System/Library/CoreServices/SystemVersion.plist' || files.has(e.path) }))
-  on('fs.stat', ($, e) => ({ value: e.path === PICTURES && !options.noPictures ? { kind: 'dir', size: 0, isLink: false } : files.has(e.path) ? { kind: 'file', size: 512, isLink: false } : { kind: 'missing', size: 0, isLink: false } } as never))
-  on('fs.read', { path: /\/Pictures\/Coco\// }, ($, e) => ({ value: { base64: files.get(e.path) ?? PNG_1080_1350 } } as never))
-  on('fs.write', ($, e) => { texts.push(e.text); if (options.failWrite) throw new Error('fixture cannot write'); files.set(e.path, e.text); return { value: undefined } })
+  on('fs.exists', ($, e) => ({ value: samePath(e.path, '/System/Library/CoreServices/SystemVersion.plist') || files.has(posixPath(e.path)) }))
+  on('fs.stat', ($, e) => ({ value: samePath(e.path, PICTURES) && !options.noPictures ? { kind: 'dir', size: 0, isLink: false } : files.has(posixPath(e.path)) ? { kind: 'file', size: 512, isLink: false } : { kind: 'missing', size: 0, isLink: false } } as never))
+  on('fs.read', { path: /[\\/]Pictures[\\/]Coco[\\/]/ }, ($, e) => ({ value: { base64: files.get(posixPath(e.path)) ?? PNG_1080_1350 } } as never))
+  on('fs.write', ($, e) => { texts.push(e.text); if (options.failWrite) throw new Error('fixture cannot write'); files.set(posixPath(e.path), e.text); return { value: undefined } })
   on('process.run', ($, e) => {
     commands.push([...e.argv])
     if (e.argv[0] === 'sips') { if (options.noRaster) return { value: { ...OK, exitCode: 1 } }; files.set(e.argv.at(-1)!, PNG_1080_1350); return { value: OK } }
@@ -125,7 +126,7 @@ test('VIBE the card holds the day\'s verdict, their painting for it, and nothing
   await ui.press({ key: 'coco:vibe:save' }); await ui.redraw()
   const svg = f.texts.find(text => text.startsWith('<svg')) ?? ''
   expect(BAG.en.vibe.noTests.some((set: { verdict: string }) => svg.includes(set.verdict.split(' ')[0]!))).toBe(true)
-  const named = [...svg.matchAll(/data:image\/png;base64,([A-Za-z0-9+/=]+)/g)].map(match => atob(match[1]!))
+  const named = [...svg.matchAll(/data:image\/png;base64,([A-Za-z0-9+/=]+)/g)].map(match => slashPath(atob(match[1]!)))
   expect(named.some(png => png.includes('card/vibe-noTests.png'))).toBe(true)
   expect(svg).not.toContain('vibe-fixture-project')
   expect(svg).not.toContain(HOME)

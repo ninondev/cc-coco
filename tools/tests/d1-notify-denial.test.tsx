@@ -5,6 +5,7 @@ import {transportFixture} from './presence-transport-fixture'
 import {drainFeed} from './feed-drain'
 import {atomicFeed,PROCESS_OK} from './shared-world'
 import {samePath} from './file-paths'
+import {WINDOWS_ROOTS} from './test-system'
 import {D1_WORDS_TEXT} from './d1-room-fixture'
 import { BAG_TEXT_RAW } from './bag-text-fixture'
 // her desktop companion stands on her page once lane B has named its group there (bag step 2), else on the switches page
@@ -15,7 +16,7 @@ const start={cwd:'/tmp/d1-notify-denial-project',isInteractive:true}
 const pane={plugin:'coco',component:'Pane' as const,requestId:'coco-book',props:{title:'fixture',isFocused:true,bodyColumns:100,placement:'dock' as const,scroll:{offset:0,bodyRows:40},view:{}}}
 const words=JSON.parse(D1_WORDS_TEXT)
 
-for(const surface of ['desktop','terminal'] as const)test(`D1 ${surface} companion denial durably returns Notify to Band and redraws its settings action without authorization`,async($,on)=>{
+for(const surface of ['desktop','terminal'] as const)if(!WINDOWS_ROOTS)test(`D1 ${surface} companion denial durably returns Notify to Band and redraws its settings action without authorization`,async($,on)=>{
  const readStored=fixtureStoreReader(on)
  const paneReturns=async()=>Number((await $.command.run({command:'d1-fixture-owned-pane-returns',args:JSON.stringify([pane.requestId,surface]),origin:PERSON,presentation:P})).text)
  const records:Record<string,unknown>[]=[]
@@ -86,4 +87,24 @@ for(const surface of ['desktop','terminal'] as const)test(`D1 ${surface} compani
  expect((await readStored($,'bandSettings') as {longTask?:string}).longTask).toBe('band')
  expect(submitCalls).toBe(0);expect(toolCalls).toBe(0)
  await $.command.run({command:'d1-fixture-close-owned-pane',args:'',origin:PERSON,presentation:P});await book.unmount()
+})
+
+// The companion's follower and its denial event come through the pet's shared presence, which a Windows root declines.
+for(const surface of ['desktop','terminal'] as const)if(WINDOWS_ROOTS)test(`D1 Windows plugin root starts no companion follower on ${surface} and offers no companion rows`,async($,on)=>{
+ const shared=transportFixture({v:1,seq:0,quietAt:MORNING,asleep:false,clingy:false,busy:false,event:{kind:'initial',id:`initial:0:${MORNING}`,at:MORNING}})
+ let followed=false
+ const w=world(on,{withNativePresence:true,store:{...RECENT,longTask:'band'},env:{HOME:home,LANG:'en_US.UTF-8',TERM:'xterm-256color'},settings:{prefersReducedMotion:true},readText:path=>path.endsWith('/snapshot.json')?JSON.stringify(shared.state):path.endsWith('d1-words.json')?D1_WORDS_TEXT:undefined})
+ on('session.id',()=>({value:'denial-session'}))
+ on('session.surfaces',()=>({value:[surface]}))
+ on('fs.exists',($,e)=>({value:samePath(e.path,'/System/Library/CoreServices/SystemVersion.plist')||samePath(e.path,'/bin/sh')||samePath(e.path,folder)||samePath(e.path,folder+'/requests.jsonl')||samePath(e.path,home+'/Applications/Coco Pet.app/Contents/MacOS/coco-companion')}))
+ on('process.run',()=>({value:PROCESS_OK}))
+ on('process.spawn',async function*($,e){if(e.argv[3]==='follow')followed=true;return {value:{code:0,signal:null}}})
+ await $.session.start({...start,surface});await settleLegacyStart($,w);await drainFeed($)
+ await w.clock.advance(1600);await drainFeed($)
+ expect(followed,'a Windows plugin root declines the presence follower').toBe(false)
+ expect(Object.keys(shared.state.claims).length).toBe(0)
+ await $.command.run({command:'coco',args:'settings',origin:PERSON,presentation:P})
+ const book=await $.ui.mount({surface,...pane});await settleLegacyStart($,w);await drainFeed($)
+ expect((await book.findAll({type:'Button'})).filter(button=>/^coco:companion:/.test(String(button.key)))).toEqual([])
+ await book.unmount()
 })

@@ -251,8 +251,8 @@
       "sha256": "e1f0ec8e747a5c090255b2957bd44c07f65c4cb1b541690aa65aa7a04722c92e"
     },
     "hooks-source/words.ts": {
-      "bytes": 57381,
-      "sha256": "b90b25868e8427e4d7a2c5742834ff5ae0871f51d2170a504d54102fbe110732"
+      "bytes": 57375,
+      "sha256": "f21ff98add2d780ea944f3b49bdc6b7df909b0d384e7456681d4ea189ae804a3"
     },
     "hooks-source/book.tsx": {
       "bytes": 91412,
@@ -375,8 +375,8 @@
       "sha256": "4681eb8102d57bae66abcc118f06b8b75522eecd8e6b21bc705a7450a89a467d"
     },
     "hooks-source/cards/i18n.ts": {
-      "bytes": 42397,
-      "sha256": "3a82bcaf4f5dec0a9c54f9e80957526a91094d1f881a14fe2b49a6d6dcce162a"
+      "bytes": 42043,
+      "sha256": "f999bd8ee89d9878001ec2e373f95ca43b33d584308ff681c17572b58c9f5c7d"
     },
     "hooks-source/cards/model.ts": {
       "bytes": 1006,
@@ -2411,13 +2411,13 @@
         "tableOf": "i18n__tableOf"
       },
       "exportLines": {
-        "tableOf": 692,
-        "listOf": 719,
-        "langOf": 724,
+        "tableOf": 684,
+        "listOf": 711,
+        "langOf": 716,
         "LANGS": 10,
         "Lang": 11,
         "Said": 13,
-        "STRINGS": 671
+        "STRINGS": 663
       }
     },
     "hooks-source/cards/model.ts": {
@@ -4577,16 +4577,16 @@
     "hooks/line-types.ts",
     "hooks/lines.ts",
     "hooks/m1-always.ts",
-    "hooks/m1-compiled/chunk-0xn4g3h9.js",
-    "hooks/m1-compiled/chunk-7950858m.js",
-    "hooks/m1-compiled/chunk-7q1018wj.js",
-    "hooks/m1-compiled/chunk-bb3jvbad.js",
-    "hooks/m1-compiled/chunk-gpg4makf.js",
+    "hooks/m1-compiled/chunk-dvfdck8w.js",
+    "hooks/m1-compiled/chunk-fmkypf4j.js",
     "hooks/m1-compiled/chunk-jahhamrc.js",
-    "hooks/m1-compiled/chunk-k2qpbs5d.js",
-    "hooks/m1-compiled/chunk-m4mw4vmb.js",
-    "hooks/m1-compiled/chunk-q7dbte03.js",
-    "hooks/m1-compiled/chunk-yq26bpww.js",
+    "hooks/m1-compiled/chunk-k53aj8za.js",
+    "hooks/m1-compiled/chunk-pa648mys.js",
+    "hooks/m1-compiled/chunk-sj6qrg8p.js",
+    "hooks/m1-compiled/chunk-vtgab2n2.js",
+    "hooks/m1-compiled/chunk-wm95cpnh.js",
+    "hooks/m1-compiled/chunk-xpyfn99y.js",
+    "hooks/m1-compiled/chunk-znjj8sf4.js",
     "hooks/m1-compiled/companion.d.ts",
     "hooks/m1-compiled/companion.js",
     "hooks/m1-compiled/manifest.json",
@@ -4670,16 +4670,16 @@
     "hooks/words.ts"
   ],
   "chunkBytes": {
-    "chunk-0xn4g3h9.js": 46688,
-    "chunk-7950858m.js": 62111,
-    "chunk-7q1018wj.js": 93871,
-    "chunk-bb3jvbad.js": 199472,
-    "chunk-gpg4makf.js": 10209,
+    "chunk-dvfdck8w.js": 359237,
+    "chunk-fmkypf4j.js": 199472,
     "chunk-jahhamrc.js": 63116,
-    "chunk-k2qpbs5d.js": 359268,
-    "chunk-m4mw4vmb.js": 20980,
-    "chunk-q7dbte03.js": 224308,
-    "chunk-yq26bpww.js": 208526,
+    "chunk-k53aj8za.js": 224308,
+    "chunk-pa648mys.js": 62122,
+    "chunk-sj6qrg8p.js": 93885,
+    "chunk-vtgab2n2.js": 46697,
+    "chunk-wm95cpnh.js": 20980,
+    "chunk-xpyfn99y.js": 10209,
+    "chunk-znjj8sf4.js": 208526,
     "companion.js": 110982,
     "motion_stills.js": 219189,
     "pages.js": 67905,

@@ -4,7 +4,6 @@ import { describe, expect, test } from 'claude-code/testing'
 import { MORNING, P, PERSON, RECENT, settleLegacyStart, world } from './world'
 import { VISITORS_TEXT_RAW } from './visitors-text-fixture'
 import { VISITOR_ART_TEXT } from './visitor-art-fixture'
-import { WINDOWS_ROOTS } from './test-system'
 
 const START = { cwd: '/tmp/project', surface: 'terminal' as const, isInteractive: true }
 const PANE = {
@@ -17,7 +16,7 @@ const VISITS = [{ id: 'visit:3:1', kind: 'keycap', at: MORNING - 86_400_000 * 3,
 const texts = (node: any): string[] => Array.isArray(node) ? node.flatMap(texts) : typeof node === 'string' ? [node] : node && typeof node === 'object' ? texts(node.children ?? []) : []
 const open = ($: any) => $.command.run({ command: 'coco', args: 'visitors', origin: PERSON, presentation: P })
 
-if (!WINDOWS_ROOTS) describe('the guest book on its first opening', () => {
+describe('the guest book on its first opening', () => {
   test('says it is reading his notes until the pictures are in, then shows the visits', async ($, on) => {
     let release!: () => void
     const gate = new Promise<void>(resolve => { release = resolve })

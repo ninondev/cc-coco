@@ -19,7 +19,7 @@ claude plugin marketplace add ninondev/cc-coco
 claude plugin install coco@coco
 ```
 
-Once it's installed, Coco shows up in every new Claude Code session on this computer, in the terminal and in the desktop app. Sessions that are already open need a restart.
+Once it's installed, Coco shows up in every new Claude Code session on this computer, in the terminal, the desktop app and the VS Code extension. Sessions that are already open need a restart.
 
 For one project only, add `--scope project`. To keep it to yourself without writing it into the project's shared settings, use `--scope local`. To turn Coco off in one project after a global install:
 
@@ -33,6 +33,7 @@ Plugins can't load in the desktop app's Chat and Cowork tabs, or in cloud sessio
 |---|---|---|---|
 | Terminal | Tested | Tested in CI | Tested in CI |
 | Desktop app (Code tab) | Tested | Not tested yet | Not tested yet |
+| VS Code extension | Tested | Not tested yet | Not tested yet |
 | Coco Pet | Tested | Not tested yet | Not tested yet |
 | Change the Claude icon (off by default) | Yes | No | Yes (changes the launcher) |
 
@@ -52,6 +53,8 @@ Their animations track what Claude is doing: their eyes follow the text while Cl
 If Claude refuses a request (HTTP 418), they put a teapot lid on their head and sulk.
 
 The desktop app has the full set of hand-drawn animations, and you can poke Coco or pat their head with the mouse any time.
+
+The VS Code extension draws the same band, except that Poke and Pat are buttons that stay on screen, and the battery and power bank icons can't be clicked.
 
 All band lines are drawn locally on your screen. They never call a model and cost zero tokens.
 
@@ -162,6 +165,6 @@ Claudie's look follows ZipZipPipe's Claude girl, [Claude 拟人立绘·橘白礼
 
 Code: MIT. Character art: CC BY-NC 4.0, except the two DeepSeek-chan files in Coco's room, which are CC BY-NC-SA 4.0; see [ART-LICENSE.md](ART-LICENSE.md). I made the art with an image model.
 
-Tested with Claude Code 2.1.302 (the full test suite) and 2.1.299. The desktop app was last checked on a real machine on October 20, 2026.
+Tested with Claude Code 2.1.302 (the full test suite) and 2.1.299. The desktop app and the VS Code extension were last checked on a real machine on October 20, 2026.
 
 [中文](README.zh.md), [日本語](README.ja.md)

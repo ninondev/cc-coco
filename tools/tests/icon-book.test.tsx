@@ -10,7 +10,7 @@ import { BOOK_FILES } from './book-files'
 import { ICON_AUTHOR_WORDS } from './icon-words-fixture'
 import { PLUGIN_SOURCES as PLUGIN_SOURCE } from './plugin-sources'
 import { settleLegacyStart, P, PERSON, RECENT, world, band } from './world'
-import { samePath } from './file-paths'
+import { posixPath, samePath } from './file-paths'
 import { LANGS } from '../hooks/words'
 
 function fake(os: 'macos' | 'linux' | 'other' = 'macos') {
@@ -369,7 +369,7 @@ describe('I1 consent and measured icon state',()=>{
     const ui=await $.ui.mount({surface:'terminal',plugin:'coco',component:'Pane',requestId:'coco-book',props:{title:'Coco',isFocused:true,bodyColumns:42,placement:'dock',scroll:{offset:0,bodyRows:40},view:{}}})
     await ui.press({key:'coco:icon:choose'});await w.clock.advance(0);await ui.redraw()
     await ui.press({key:'coco:icon:confirm'});await w.clock.advance(0)
-    expect(writes).toContain('/tmp/custom-state/coco/app-icon-consent')
+    expect(writes.map(posixPath)).toContain('/tmp/custom-state/coco/app-icon-consent')
   })
   test('explicit Linux status while off keeps cached discovery and performs no launcher IO',async($,on)=>{
     const calls:string[][]=[],writes:string[]=[]

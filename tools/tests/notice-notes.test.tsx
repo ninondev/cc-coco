@@ -36,7 +36,7 @@ function fixture(on: On, options: { tools?: Record<string, any>; verdict?: (requ
     }
     return { value: OK }
   })
-  const w = world(on, { store: { ...RECENT, ...options.store }, engineRows: true, theme: options.theme, env: options.env, toolResult: tool => tools[tool], readText: options.readText })
+  const w = world(on, { sessionRoot: ROOT, store: { ...RECENT, ...options.store }, engineRows: true, theme: options.theme, env: options.env, toolResult: tool => tools[tool], readText: options.readText })
   return { w, requests, writes, tools }
 }
 type Fixture = ReturnType<typeof fixture>
