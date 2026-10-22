@@ -5,13 +5,18 @@ import json
 import os
 from pathlib import Path
 import subprocess
+import sys
 import tempfile
+
+sys.path.insert(0, str(Path(__file__).resolve().parents[1]))
+from hooks_source import hook_source
 
 ROOT = Path(__file__).resolve().parents[2]
 parser = argparse.ArgumentParser()
 parser.add_argument('--plugin', type=Path, default=ROOT / 'plugin')
 options = parser.parse_args()
-source = (options.plugin / 'hooks/register.tsx').read_text()
+# hooks/*.ts(x) are generated; the code under test lives in hooks-source.
+source = hook_source(options.plugin / 'hooks/register.tsx').read_text()
 start = source.index('function repositoryBranch(')
 end = source.index('\nfunction syncNeighbours(', start)
 entry = source[start:end]
@@ -28,8 +33,8 @@ with tempfile.TemporaryDirectory(prefix='s2-branch-security-', dir=os.environ['T
     script.write_text('''import {existsSync,readFileSync,mkdirSync,writeFileSync,symlinkSync} from 'node:fs'
 import {join} from 'node:path'
 import {spawnSync} from 'node:child_process'
-import {joinPath} from ''' + json.dumps(str(ROOT / 'plugin/hooks/paths.ts')) + '''
-import {readRepositoryBranch} from ''' + json.dumps(str(ROOT / 'plugin/hooks/repository-branch.ts')) + '''
+import {joinPath} from ''' + json.dumps(str(hook_source(ROOT / 'plugin/hooks/paths.ts'))) + '''
+import {readRepositoryBranch} from ''' + json.dumps(str(hook_source(ROOT / 'plugin/hooks/repository-branch.ts'))) + '''
 type Engine=any
 const c3Branches=new Map<string,Promise<string|undefined>>()
 ''' + entry + '''

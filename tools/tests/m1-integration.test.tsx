@@ -558,7 +558,8 @@ test('M1 MOD11 actual Off cancels a held notification before its own settings aw
 
 test('M1 MOD11 actual consecutive permission waits settle by tool identity despite classic requests',async($,on)=>{
  const plays:any[]=[]
- on('fs.exists',{path:pathPattern('/System/Library/CoreServices/SystemVersion.plist')},()=>({value:true}));on('audio.play',($,e)=>{plays.push(e.clip);return {value:undefined}});on('classic.Notification',()=>({}));on('classic.PermissionRequest',()=>({}))
+ // From engine 2.1.308 on $.tool.call asks first: the person allows, then the hook beneath replays the waits.
+ on('fs.exists',{path:pathPattern('/System/Library/CoreServices/SystemVersion.plist')},()=>({value:true}));on('audio.play',($,e)=>{plays.push(e.clip);return {value:undefined}});on('classic.Notification',()=>({}));on('classic.PermissionRequest',()=>({decision:{behavior:'allow'}}) as never)
  on('tool.check',{tool:'Read'},()=>({decision:'ask'}))
  on('tool.call',{tool:'Read'},async(_hookEngine,e,next)=>{
   if(e.tool!=='Read')return next(e)
@@ -571,6 +572,44 @@ test('M1 MOD11 actual consecutive permission waits settle by tool identity despi
  await $.tool.call({tool:'Read',file_path:START.cwd+'/first.ts'});expect(plays).toEqual([{asset:'assets/sound/waiting.wav'}])
  await f.w.clock.advance(31000)
  await $.classic.Notification({session_id:'fixture-session',cwd:START.cwd,notification_type:'permission_prompt',message:'fixture settled permission'});expect(plays.length).toBe(1)
+ await $.tool.call({tool:'Read',file_path:START.cwd+'/second.ts'});expect(plays).toEqual([{asset:'assets/sound/waiting.wav'},{asset:'assets/sound/waiting.wav'}]);expect(f.models).toEqual([])
+})
+
+test('M1 MOD11 actual a call that fails beneath Coco ends its wait at once',async($,on)=>{
+ const plays:any[]=[];let lose=true
+ on('fs.exists',{path:pathPattern('/System/Library/CoreServices/SystemVersion.plist')},()=>({value:true}));on('audio.play',($,e)=>{plays.push(e.clip);return {value:undefined}});on('classic.Notification',()=>({}));on('classic.PermissionRequest',()=>({decision:{behavior:'allow'}}) as never)
+ on('tool.check',{tool:'Read'},()=>({decision:'ask'}))
+ on('tool.call',{tool:'Read'},async(_hookEngine,e,next)=>{
+  if(e.tool!=='Read')return next(e)
+  await $.tool.check({tool:'Read',input:{file_path:e.file_path},tool_use_id:e.tool_use_id})
+  await $.classic.Notification({session_id:'fixture-session',cwd:START.cwd,notification_type:'permission_prompt',message:'fixture permission waiting'})
+  if(lose){lose=false;throw new Error('fixture call lost')}
+  return next(e)
+ })
+ const f=gapFixture(on,{bandSettings:{voice:'off',voiceChosen:true,notes:false,bookmark:false,guard:false,waitSound:true}},'terminal',true);await gapBegin($,f.w)
+ await $.turn.start({turnId:'two-reads',text:'read two files'})
+ await $.tool.call({tool:'Read',file_path:START.cwd+'/first.ts'}).catch(()=>undefined);expect(plays).toEqual([{asset:'assets/sound/waiting.wav'}])
+ await f.w.clock.advance(31000)
+ await $.tool.call({tool:'Read',file_path:START.cwd+'/second.ts'});expect(plays).toEqual([{asset:'assets/sound/waiting.wav'},{asset:'assets/sound/waiting.wav'}]);expect(f.models).toEqual([])
+})
+
+test('M1 MOD11 actual a helper\'s wait ends with the turn, so the next permission rings',async($,on)=>{
+ const plays:any[]=[]
+ on('fs.exists',{path:pathPattern('/System/Library/CoreServices/SystemVersion.plist')},()=>({value:true}));on('audio.play',($,e)=>{plays.push(e.clip);return {value:undefined}});on('classic.Notification',()=>({}));on('classic.PermissionRequest',()=>({decision:{behavior:'allow'}}) as never)
+ on('tool.check',{tool:'Read'},()=>({decision:'ask'}))
+ on('tool.call',{tool:'Read'},async(_hookEngine,e,next)=>{
+  if(e.tool!=='Read')return next(e)
+  await $.tool.check({tool:'Read',input:{file_path:e.file_path},tool_use_id:e.tool_use_id})
+  await $.classic.Notification({session_id:'fixture-session',cwd:START.cwd,notification_type:'permission_prompt',message:'fixture permission waiting'})
+  return next(e)
+ })
+ const f=gapFixture(on,{bandSettings:{voice:'off',voiceChosen:true,notes:false,bookmark:false,guard:false,waitSound:true}},'terminal',true);await gapBegin($,f.w)
+ // A background helper's question has no answer event of its own; only the turn's end clears it.
+ await $.turn.start({turnId:'helper-asks',text:'start a helper'})
+ await $.classic.Notification({session_id:'fixture-session',cwd:START.cwd,notification_type:'agent_needs_input',message:'fixture helper waiting'});expect(plays).toEqual([{asset:'assets/sound/waiting.wav'}])
+ await $.turn.complete({turnId:'helper-asks',answer:'',reason:'answer',durationMs:900,isAborted:false})
+ await f.w.clock.advance(31000)
+ await $.turn.start({turnId:'next-call',text:'read a file'})
  await $.tool.call({tool:'Read',file_path:START.cwd+'/second.ts'});expect(plays).toEqual([{asset:'assets/sound/waiting.wav'},{asset:'assets/sound/waiting.wav'}]);expect(f.models).toEqual([])
 })
 

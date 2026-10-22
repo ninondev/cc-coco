@@ -3011,6 +3011,8 @@ async function turnStarted($: Engine, id: string): Promise<void> {
   if(reminderSettings(storedSettings).longTask!=='off')d1?.startTurn(id,began);d1LongSaid='';delete view.longTask
   toolPoses.reset(began);c3HeadPose=undefined;c3ReactionPose=undefined;c3ReactionUntil=0;delete view.pose
   mainToolCalls.clear()
+  // A wait whose call never came back (it failed beneath this plugin) ends with its turn, so the next one rings.
+  waitBell.end()
   currentTask = null
   companionTask({ key: 'thinking' })
   companionActivity({ waitAt: null })
@@ -3147,6 +3149,7 @@ async function turnEnded($: Engine, e: TurnCompleteInput): Promise<void> {
   if(e.reason!=='answer')cancelCalming()
   working = false
   mainToolCalls.clear()
+  waitBell.end()
   currentTask = null
   companionTask(null)
   askedAt = 0
@@ -4622,7 +4625,8 @@ export const register: Register = (on, options) => {
     if (isMain) {talkTool=e.tool;m1More?.recordTool(e.tool,clockSnapshot);await startC3($);mainToolCalls.add(e.tool_use_id);await toolStarted($,e,command);visitStart=clockSnapshot;const headName=poseForTool(e.tool);c3HeadPose={name:headName,frame:headName+'-a',aside:headName==='work'?WORDS[view.lang].aside.work:c3Word(view.lang,'aside.'+headName),at:clockSnapshot};await runtimeC3($).toolStart({id:e.tool_use_id,name:e.tool,input:e as unknown as Record<string,unknown>,cwd:presenceMetadata.cwd,branch:command?await repositoryBranch($,presenceMetadata.cwd??''):undefined,at:clockSnapshot})}
     if(command){m1Commands.set(e.tool_use_id,{command,recognized:runtimeC3($).isRecognized(e.tool_use_id)});while(m1Commands.size>256)m1Commands.delete(m1Commands.keys().next().value!)}
     runtimeNotice($).toolStart({id:e.tool_use_id,tool:e.tool,background:'run_in_background' in e&&e.run_in_background===true,main:isMain})
-    let ran = await next(e)
+    // A call that fails beneath this hook still settles its wait, so the next wait in the turn rings.
+    let ran = await next(e).catch((error:unknown)=>{waitBell.settled(e.tool_use_id);throw error})
     if(own!==d1Epoch)return ran
     if(e.tool==='Agent'||String(e.tool)==='Task'){const r=ran.result as unknown as Record<string,unknown>|undefined,id=d1Spawns.get(e.tool_use_id);if(id&&r?.status==='completed'){await d1Finished($,id,'done',{tokens:typeof r.totalTokens==='number'?r.totalTokens:undefined,durationMs:typeof r.totalDurationMs==='number'?r.totalDurationMs:undefined,toolUses:typeof r.totalToolUseCount==='number'?r.totalToolUseCount:undefined})}else if(id&&(ran.isError||ran.deny))await d1Finished($,id,ran.deny?'stopped':'failed')}
     waitBell.settled(e.tool_use_id)

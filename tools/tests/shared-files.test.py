@@ -100,6 +100,22 @@ class SharedFiles(unittest.TestCase):
         self.assertGreater(observed, 0)
         self.assertFalse(list(self.folder.glob('.view.*')))
 
+    def test_a_write_sweeps_temporaries_whose_writer_is_gone(self):
+        finished = subprocess.Popen(['/usr/bin/true']); finished.wait()
+        stale = self.folder / f'.companion-{finished.pid}-0'; stale.write_text('{"half":')
+        live = self.folder / f'.companion-{os.getpid()}-0'; live.write_text('{}')
+        outside = self.folder.parent / 'outside'; outside.write_text('untouched')
+        alias = self.folder / f'.companion-{finished.pid}-1'; alias.symlink_to(outside)
+        shared = self.folder / f'.companion-{finished.pid}-2'; shared.write_text('x'); os.link(shared, self.folder.parent / 'second-name')
+        unusual = self.folder / f'.companion-{finished.pid}-03'; unusual.write_text('not a name the helper makes')
+        self.assertEqual(run(ATOMIC, self.folder, '{"session":"after"}', 'view.json').returncode, 0)
+        self.assertFalse(stale.exists())
+        self.assertEqual(live.read_text(), '{}')
+        self.assertTrue(alias.is_symlink()); self.assertEqual(outside.read_text(), 'untouched')
+        self.assertEqual(shared.read_text(), 'x')
+        self.assertTrue(unusual.exists())
+        self.assertEqual(json.loads((self.folder / 'view.json').read_text())['session'], 'after')
+
     def test_atomic_write_does_not_recreate_a_missing_folder_or_accept_other_targets(self):
         missing = self.folder / 'uninstalled'
         self.assertNotEqual(run(ATOMIC, missing, '{}', 'view.json').returncode, 0)

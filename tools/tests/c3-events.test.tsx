@@ -61,10 +61,12 @@ test('C3 actual hook classifies before allowed Bash, but only an asking call rec
  let enter!:(id:string)=>void,finish!:()=>void
  const started=new Promise<string>(resolve=>{enter=resolve}),held=new Promise<void>(resolve=>{finish=resolve})
  on('tool.call',{tool:'Bash'},async($,e,next)=>{if(e.tool==='Bash'){enter(e.tool_use_id);await held}return next(e)})
+ // From engine 2.1.308 on $.tool.call runs the permission check too; the check allows until this test asks.
+ let asking=false;on('tool.check',{tool:['Bash','Read']},($,e,next)=>asking?next(e):{decision:'allow'})
  const f=fixture(on,{ask:true})
  await begin($,f);const running=$.tool.call({tool:'Bash',command:'rm -rf /'}),id=await started
  expect(f.notices.filter(n=>n.text!==undefined).length).toBe(0)
- await $.tool.check({tool:'Bash',input:{command:'rm -rf /'},tool_use_id:id});expect(f.notices.some(n=>n.id===id&&n.text===WORDS['guard.rm'].en.replace('{target}','/'))).toBe(true)
+ asking=true;await $.tool.check({tool:'Bash',input:{command:'rm -rf /'},tool_use_id:id});expect(f.notices.some(n=>n.id===id&&n.text===WORDS['guard.rm'].en.replace('{target}','/'))).toBe(true)
  finish();await running;expect(f.notices[f.notices.length-1]!.text).toBeUndefined();expect(f.workers).toContain('guard')
 })
 
@@ -72,9 +74,11 @@ test('C3 terminal band guardian has one safety line until resolution and no dupl
  let enter!:(id:string)=>void,finish!:()=>void
  const started=new Promise<string>(resolve=>{enter=resolve}),held=new Promise<void>(resolve=>{finish=resolve})
  on('tool.call',{tool:'Bash'},async($,e,next)=>{if(e.tool==='Bash'){enter(e.tool_use_id);await held}return next(e)})
+ // From engine 2.1.308 on $.tool.call runs the permission check too; the check allows until this test asks.
+ let asking=false;on('tool.check',{tool:['Bash','Read']},($,e,next)=>asking?next(e):{decision:'allow'})
  const f=fixture(on,{surface:'terminal',ask:true})
  await begin($,f,'terminal');const ui=await $.ui.mount({surface:'terminal',...band(100,true)});const running=$.tool.call({tool:'Bash',command:'rm -rf /'}),id=await started
- await $.tool.check({tool:'Bash',input:{command:'rm -rf /'},tool_use_id:id});await ui.redraw();expect(text(await ui.drawn())).toContain(WORDS['guard.rm'].en.replace('{target}','/'));expect(f.notices.some(n=>n.text!==undefined)).toBe(false)
+ asking=true;await $.tool.check({tool:'Bash',input:{command:'rm -rf /'},tool_use_id:id});await ui.redraw();expect(text(await ui.drawn())).toContain(WORDS['guard.rm'].en.replace('{target}','/'));expect(f.notices.some(n=>n.text!==undefined)).toBe(false)
  finish();await running;await ui.redraw();expect(text(await ui.drawn())).not.toContain(WORDS['guard.rm'].en.replace('{target}','/'));await ui.unmount()
 })
 

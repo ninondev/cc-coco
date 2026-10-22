@@ -167,6 +167,6 @@ claude plugin uninstall coco@coco && claude plugin marketplace remove coco
 
 代码采用 MIT 协议。角色画作采用 CC BY-NC 4.0，只有小克房间里大肥鱼的那两张图采用 CC BY-NC-SA 4.0，详见 [ART-LICENSE.md](ART-LICENSE.md)。画是我用图像模型生成的。
 
-实测过的版本：Claude Code 2.1.302（跑完完整测试）和 2.1.299。桌面版和 VS Code 插件最近一次在真机上检验，是 2026 年 10 月 20 日。
+实测过的版本：Claude Code 2.1.308（跑完完整测试）和 2.1.299。桌面版和 VS Code 插件最近一次在真机上检验，是 2026 年 10 月 20 日。
 
 [English](README.md)、[日本語](README.ja.md)

@@ -229,7 +229,9 @@ def desktop_fit_phase(claude, scratch):
         # prepare_fit saves a fully populated general page. Rebuild this phase's
         # placeholder page so its scope is exactly the required104 narrow bands.
         page = Path(preview.TEMPLATE).read_text().replace('/*THEMES*/{}', json.dumps({'dark': {}, 'light': {}, 'mine': {}}))
-        status = 0 if preview.fit_check(page, narrow) else 1
+        # Only the narrow bands go to WebKit here; the complete kit compares every capture
+        # with the layout golden afterwards (build-preview.py --check-layout).
+        status = 0 if preview.fit_check(page, narrow, layout=False) else 1
     except SystemExit as error:
         status = error.code if isinstance(error.code, int) and error.code else 1
         sys.stderr.write('desktop WebKit fit stage capture failed: %s\n' % error)

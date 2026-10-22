@@ -3,6 +3,7 @@
 #include <sys/types.h>
 #include <sys/stat.h>
 #include <sys/file.h>
+#include <dirent.h>
 #include <fcntl.h>
 #include <unistd.h>
 #include <errno.h>
@@ -79,10 +80,27 @@ static int bounded_read(int fd, const char *name, char *out, size_t cap) {
     if (n != 0 || memchr(out, 0, size)) return -1;
     out[size] = 0; return (int)size;
 }
+/* A writer stopped between its temporary and the rename (the plugin's time limit, a session
+   closing) leaves .companion-<pid>-<n> behind; a later write removes those whose writer is gone. */
+static void sweep_temporaries(int fd) {
+    int copy = dup(fd); if (copy < 0) return;
+    DIR *dir = fdopendir(copy); if (!dir) { close(copy); return; }
+    rewinddir(dir); /* the copy shares fd's position, which an earlier sweep left at the end */
+    struct dirent *entry; struct stat st;
+    while ((entry = readdir(dir))) {
+        long pid; unsigned n; char expected[96];
+        if (sscanf(entry->d_name, ".companion-%9ld-%3u", &pid, &n) != 2 || pid <= 0 || pid == (long)getpid()) continue;
+        snprintf(expected, sizeof expected, ".companion-%ld-%u", pid, n);
+        if (strcmp(expected, entry->d_name) || kill((pid_t)pid, 0) == 0 || errno != ESRCH) continue;
+        if (leaf(fd, entry->d_name, &st) == 1) unlinkat(fd, entry->d_name, 0);
+    }
+    closedir(dir);
+}
 static int replace_bytes(int fd, const char *name, const char *data, size_t count) {
     struct stat previous, current;
     int exists = leaf(fd, name, &previous);
     if (exists < 0) return 1;
+    sweep_temporaries(fd);
     char temporary[96]; int file = -1;
     for (unsigned i = 0; i < 128 && file < 0; i++) {
         snprintf(temporary, sizeof temporary, ".companion-%ld-%u", (long)getpid(), i);

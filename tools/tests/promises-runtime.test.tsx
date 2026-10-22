@@ -185,6 +185,8 @@ test('B7 every tool type preserves host allow ask deny and PermissionRequest res
   await $.turn.start({ text: '', turnId: 'p1-permission' })
   const inputs = [...TOOL_CASES, ...RUNTIME_PROMISE_INPUT.builtinTools.filter(tool => !TOOL_CASES.some(input => input.tool === tool)).map(tool => ({ tool, p1Private: PRIVATE.input }))]
   for (const input of inputs) {
+    // From engine 2.1.308 on $.tool.call runs the permission check too, so each call starts from allow.
+    decision = 'allow'
     const result = await $.tool.call({ ...input, tool_use_id: 'p1-' + input.tool } as never)
     expect(result, input.tool + ' host tool result').toEqual(input.tool === 'Read' ? { result: PRIVATE.file, text: PRIVATE.file } : { result: { ok: true } })
     for (const answer of ['allow', 'ask', 'deny'] as const) {

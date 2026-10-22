@@ -23,9 +23,9 @@ languages. The old kami is gone, and so is everything that came with the shrine.
   shell. Cocky, quick to show off, quick to tease
   the code; never at you. Coco's lines, face and name are new in every language.
   Rollback: 0.1.1.
-- **Going wild is the limiter now.** Three failed test runs in a row and the keycap clip on Coco's
-  fringe pops off and Coco goes after the bad code with a claw. When the tests pass, the clip
-  goes back on and Coco calls it an AI hallucination. Rollback: 0.1.1.
+- **Coco bristles now.** Three failed test runs in a row and the keycap clip on Coco's fringe
+  (the limiter) pops off and Coco goes after the bad code with a claw. When the tests pass, the
+  clip goes back on and Coco calls it an AI hallucination. Rollback: 0.1.1.
 - **Coco naps after four to six quiet minutes**, hood pulled down, and every session
   falls asleep and wakes up together. Rollback: 0.1.1.
 
@@ -39,8 +39,8 @@ languages. The old kami is gone, and so is everything that came with the shrine.
   prompt button types the command for you, and the collection book counts each card's uses.
 - **Quota as two charms on the band.** A battery for the 5-hour limit and a power bank for the
   week, drawn from the real readings. Hover for when they reset and whether the pace holds.
-- **vibe check.** What this session went through: failed tests, fixes, how often Coco went
-  wild, whether the build was slower than usual.
+- **vibe check.** What this session went through: failed tests, fixes, how often Coco
+  bristled, whether the build was slower than usual.
 - **Thirteen pairs of socks** to collect, one for each "first time"; pick a pair and Coco wears
   it on the band and the desktop pet.
 - **A weekly doujin issue** and **sticky notes** that tell you where you stopped last time.

@@ -3,7 +3,10 @@
 from pathlib import Path
 import os
 import re
+import sys
 import unittest
+sys.path.insert(0, str(Path(__file__).resolve().parents[1]))
+from hooks_source import hook_source
 ROOT = Path(__file__).resolve().parents[2]
 PLUGIN = Path(os.environ.get('PRESENCE_SECURITY_PLUGIN', ROOT / 'plugin'))
 class PresenceSecurity(unittest.TestCase):
@@ -11,7 +14,8 @@ class PresenceSecurity(unittest.TestCase):
         for relative in ['bin/presence-native.c', 'companion/Sources/PresenceObserver.swift']:
             source = (PLUGIN / relative).read_text()
             self.assertFalse('KERN_PROCARGS2' in source, relative)
-        source = (PLUGIN / 'hooks/presence.ts').read_text()
+        # hooks/presence.ts is a generated facade; the implementation lives in hooks-source.
+        source = hook_source(PLUGIN / 'hooks/presence.ts').read_text()
         self.assertFalse('reader.args' in source)
         self.assertIn('registeredOwner', source)
         self.assertFalse('this.io.write(' in source)
@@ -47,7 +51,7 @@ class PresenceSecurity(unittest.TestCase):
             'hooks/presence.ts',
         )
         for relative in readers:
-            source = (PLUGIN / relative).read_text()
+            source = hook_source(PLUGIN / relative).read_text()
             for pattern in forbidden:
                 with self.subTest(reader=relative, forbidden=pattern):
                     self.assertIsNone(re.search(pattern, source), relative)

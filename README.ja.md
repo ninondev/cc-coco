@@ -167,6 +167,6 @@ Claudeさまの姿は、ZipZipPipeさんのClaude娘「[Claude 拟人立绘·橘
 
 コードにはMITライセンスを適用しています。キャラクターのイラストにはCC BY-NC 4.0を適用しています。ただし、Cocoの部屋にいるDeepSeekちゃんの2ファイルはCC BY-NC-SA 4.0です（[ART-LICENSE.md](ART-LICENSE.md)を参照）。イラストは私が画像生成モデルを使って作ったものです。
 
-動作確認したバージョン：Claude Code 2.1.302（全テスト）と2.1.299。デスクトップ版とVS Code拡張機能を最後に実機で確認した日：2026年10月20日。
+動作確認したバージョン：Claude Code 2.1.308（全テスト）と2.1.299。デスクトップ版とVS Code拡張機能を最後に実機で確認した日：2026年10月20日。
 
 [English](README.md)、[中文](README.zh.md)
