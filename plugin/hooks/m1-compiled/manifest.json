@@ -403,8 +403,8 @@
       "sha256": "21092f50b3c04c3f0aed7725bf8f3123db94c5fad1b3e31ab8915759918995b3"
     },
     "hooks-source/more-runtime.ts": {
-      "bytes": 91152,
-      "sha256": "21e5c23028c25f77508861dab15f37e8dcaba7c77e6de3f60270a86fcd4e01af"
+      "bytes": 91480,
+      "sha256": "cfa293be54e09d8a66b1e500640f264347223a9a45f77e9c6f2e2692b810545b"
     },
     "hooks-source/talk-parts.ts": {
       "bytes": 7255,
@@ -2662,7 +2662,7 @@
       "exportLines": {
         "talkEstimate": 63,
         "talkLooksLikeWork": 66,
-        "rewriteKeepsExact": 122,
+        "rewriteKeepsExact": 124,
         "MorePayerChoice": 22,
         "MoreKey": 22,
         "MoreKeyToday": 22,
@@ -2688,7 +2688,7 @@
         "EXPLAIN_TEXT_LIMIT": 61,
         "MoreBindings": 76,
         "LOOK_DENY": 112,
-        "MoreRuntime": 131
+        "MoreRuntime": 133
       }
     },
     "hooks-source/talk-parts.ts": {
@@ -4577,9 +4577,9 @@
     "hooks/line-types.ts",
     "hooks/lines.ts",
     "hooks/m1-always.ts",
-    "hooks/m1-compiled/chunk-0xd1sfea.js",
     "hooks/m1-compiled/chunk-0xn4g3h9.js",
     "hooks/m1-compiled/chunk-7950858m.js",
+    "hooks/m1-compiled/chunk-7q1018wj.js",
     "hooks/m1-compiled/chunk-bb3jvbad.js",
     "hooks/m1-compiled/chunk-gpg4makf.js",
     "hooks/m1-compiled/chunk-jahhamrc.js",
@@ -4670,9 +4670,9 @@
     "hooks/words.ts"
   ],
   "chunkBytes": {
-    "chunk-0xd1sfea.js": 93770,
     "chunk-0xn4g3h9.js": 46688,
-    "chunk-7950858m.js": 62122,
+    "chunk-7950858m.js": 62111,
+    "chunk-7q1018wj.js": 93871,
     "chunk-bb3jvbad.js": 199472,
     "chunk-gpg4makf.js": 10209,
     "chunk-jahhamrc.js": 63116,

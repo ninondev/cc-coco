@@ -116,6 +116,8 @@ const MORE_LANGUAGE:Record<string,string>=Object.fromEntries(LANGS.map(lang=>[la
 // A message is heard by name at the band's own bar (mood.ts HEARING.sure); one with this many letters and no name heard
 // is still words in some language, so his reply follows it rather than an older one.
 const TALK_LANGUAGE_SURE=0.7,TALK_LANGUAGE_LETTERS=6
+// Ends the language line of a reply or a first DM: the actions in brackets go in that language as well.
+const TALK_BRACKETS=', actions in brackets too.'
 function boundedMoreValues(values:MoreValues):MoreValues {const safe={...values};for(const id of MORE_IDS)if(!moreBoundarySupported(id))delete safe[id];return safe}
 // 口语版 keeps the original's exact parts (his card 10-20): a code line or span, a link, or a number of two or more
 // digits missing from the rewrite shows the original instead.
@@ -426,20 +428,23 @@ export class MoreRuntime {
  }
  /** The language his reply is named (owner 10-21, any language): what the person just wrote, heard clearly; else, when
   *  it has words in a language not heard by name, theirs; else (too short: «ok», «好») their last message heard in
-  *  this chat; else the band's. Without it a short Chinese line once got Japanese, the persona's examples outweighing it. */
+  *  this chat; else the band's. Without it a short Chinese line once got Japanese, the persona's examples outweighing it.
+  *  The actions in brackets are named too: a Chinese reply still opened with a Japanese one, copied from older messages. */
  private replyLanguage(text:string,history:readonly MoreExchange[]):string{
    const named=(said:string)=>{let heard:{lang:string;confidence:number}|undefined;try{heard=this.bindings.hearLanguage?.(said)}catch{};return heard&&heard.confidence>=TALK_LANGUAGE_SURE?MORE_LANGUAGE[heard.lang]:undefined}
    const wordy=(said:string)=>(said.match(/\p{L}/gu)??[]).length>=TALK_LANGUAGE_LETTERS
+   const reply=(language:string)=>`Reply in ${language}${TALK_BRACKETS}`
    const now=named(text)
-   if(now)return `Reply in ${now}.`
-   if(wordy(text))return 'Reply in the language of their message.'
+   if(now)return reply(now)
+   if(wordy(text))return reply('the language of their message')
    for(const item of [...history].reverse()){
      if(item.side!=='person')continue
      const before=named(item.text)
-     if(before)return `Reply in ${before}.`
-     if(wordy(item.text))return 'Reply in the language of their messages.'
+     if(before)return reply(before)
+     if(wordy(item.text))return reply('the language of their messages')
    }
-   return MORE_LANGUAGE[this.lang]?`Reply in ${MORE_LANGUAGE[this.lang]}.`:''
+   const band=MORE_LANGUAGE[this.lang]
+   return band?reply(band):''
  }
  private async answer($:EngineInterface,text:string,persona:string,now:number,generation:number,token:number,payer:MorePayerChoice):Promise<void>{
    const current=()=>generation===this.sessionGeneration&&this.operationCurrent('talk',token),who=this.talkWho()
@@ -690,7 +695,7 @@ export class MoreRuntime {
    const system=!this.linesForm&&items.some(item=>item.who)?persona+'\n\n'+TALK_SHARED_COCO:persona
    const talkFacts=this.bindings.talkFacts?.()
    const context=[talkFacts?talkContextLine(talkFacts,this.lastTalkAt||undefined):'',dmMomentLine(moment)].filter(Boolean).join(' ')
-   const instruction=moreFill(cue,{moment:dmMomentLine(moment)})+'\nWrite in '+(MORE_LANGUAGE[this.lang]??'English')+'.'
+   const instruction=moreFill(cue,{moment:dmMomentLine(moment)})+'\nWrite in '+(MORE_LANGUAGE[this.lang]??'English')+TALK_BRACKETS
    const prompt=[this.talkSummary?TALK_NOTES_HEAD+'\n'+this.talkSummary+'\n':'',...items.map(item=>line(item)+'\n'),context?context+'\n':'',instruction].join('')
    const payer=this.payer()
    try{

@@ -179,7 +179,7 @@ describe('DM thread', () => {
     expect(request.prompt).toContain(dmMomentLine('away'))
     expect(request.prompt).toContain('Text them first about this')
     // Lane B's instruction ends «Write in the language named at the end»: the request's last line names it.
-    expect(request.prompt.split('\n').at(-1)).toBe('Write in English.')
+    expect(request.prompt.split('\n').at(-1)).toBe('Write in English, actions in brackets too.')
     expect(t.her().length).toBeGreaterThanOrEqual(1)
     expect(t.her().length).toBeLessThanOrEqual(3)
     expect(t.r.dm().unread).toBe(t.her().length)

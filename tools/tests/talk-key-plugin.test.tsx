@@ -75,7 +75,7 @@ describe('TALK-KEY plugin side', () => {
     expect(init.timeoutMs).toBe(30000)
     const request = JSON.parse(init.stdin)
     // no cap of its own (owner 10-17): the program takes the model's own limit
-    expect(request).toEqual({ system: PERSONA, messages: [{ role: 'user', content: 'Reply in the language of their message.\nlong day. the tests finally pass' }] })
+    expect(request).toEqual({ system: PERSONA, messages: [{ role: 'user', content: 'Reply in the language of their message, actions in brackets too.\nlong day. the tests finally pass' }] })
     expect(r.exchanges.at(-1)).toEqual({ side: 'him', text: 'key reply' })
     expect(r.keyToday).toEqual({ date: r.keyToday.date, n: 1, tokens: 1400, usd: keyCost(TOKENS, PRICE), day: 1 })
     // A typical message: 1,200 in and 200 out is $0.00022 at Haiku 5.5 (TALK-KEY §3).
@@ -125,24 +125,24 @@ describe('TALK-KEY plugin side', () => {
     const f = world(), r = keyed('ja')
     r.exchanges = [{ side: 'him', text: '呼...这波大活,本天才监工得漂亮吧?' }]
     await r.talk(f.$, '我不睡觉了，我喝了American style coffee', AT)
-    expect(JSON.parse((f.runs()[0]!.args[1] as { stdin: string }).stdin).messages).toEqual([{ role: 'user', content: 'Your earlier messages in this chat:\n呼...这波大活,本天才监工得漂亮吧?\n\nReply in Chinese (Simplified).\n我不睡觉了，我喝了American style coffee' }])
+    expect(JSON.parse((f.runs()[0]!.args[1] as { stdin: string }).stdin).messages).toEqual([{ role: 'user', content: 'Your earlier messages in this chat:\n呼...这波大活,本天才监工得漂亮吧?\n\nReply in Chinese (Simplified), actions in brackets too.\n我不睡觉了，我喝了American style coffee' }])
     await r.talk(f.$, 'ok', AT)
-    expect(last(f)).toBe('Reply in Chinese (Simplified).\nok')
+    expect(last(f)).toBe('Reply in Chinese (Simplified), actions in brackets too.\nok')
     await r.talk(f.$, 'привет, как дела', AT)
-    expect(last(f)).toBe('Reply in the language of their message.\nпривет, как дела')
+    expect(last(f)).toBe('Reply in the language of their message, actions in brackets too.\nпривет, как дела')
     await r.talk(f.$, 'ok', AT)
-    expect(last(f)).toBe('Reply in the language of their messages.\nok')
+    expect(last(f)).toBe('Reply in the language of their messages, actions in brackets too.\nok')
     // a guess under the band's bar names nothing
     await r.talk(f.$, 'hallo zusammen', AT)
-    expect(last(f)).toBe('Reply in the language of their message.\nhallo zusammen')
+    expect(last(f)).toBe('Reply in the language of their message, actions in brackets too.\nhallo zusammen')
     const g = world(), fresh = keyed('ja')
     await fresh.talk(g.$, 'ok', AT)
-    expect(last(g)).toBe('Reply in Japanese.\nok')
+    expect(last(g)).toBe('Reply in Japanese, actions in brackets too.\nok')
     // on the plan the same line rides before their message
     const h = world(), plan = new MoreRuntime({ 'more.model.talk.persona': PERSONA }, { hearLanguage: hear })
     plan.restore({ talk: true }, [], undefined, AT)
     await plan.talk(h.$, '在吗', AT)
-    expect((h.calls.find(c => c.name === 'model.complete')!.args[0] as { prompt: string }).prompt).toBe('Reply in Chinese (Simplified).\nperson: 在吗')
+    expect((h.calls.find(c => c.name === 'model.complete')!.args[0] as { prompt: string }).prompt).toBe('Reply in Chinese (Simplified), actions in brackets too.\nperson: 在吗')
   })
 
   test('the plan path asks for effort low, for Talk and for Explain', async () => {
@@ -307,10 +307,10 @@ describe('TALK-KEY plugin side', () => {
     await r.talk(f.$, 'hello', AT)
     expect(r.estimateFactor).toBe(2)
     // with no language heard and no earlier message, the band's: English here
-    expect(f.stored['more.estimateFactor']).toEqual({ factor: 2, estimate: talkEstimate(PERSONA, 'Reply in English.\nperson: hello'), usage: 50000 })
+    expect(f.stored['more.estimateFactor']).toEqual({ factor: 2, estimate: talkEstimate(PERSONA, 'Reply in English, actions in brackets too.\nperson: hello'), usage: 50000 })
     const logged = f.calls.filter(c => c.name === 'ui.log')
     expect(logged.length).toBe(1)
-    expect(logged[0]!.args).toEqual([`talk estimate too low (${talkEstimate(PERSONA, 'Reply in English.\nperson: hello')} estimated, 50000 sent); estimates now count double`, { to: 'debug' }])
+    expect(logged[0]!.args).toEqual([`talk estimate too low (${talkEstimate(PERSONA, 'Reply in English, actions in brackets too.\nperson: hello')} estimated, 50000 sent); estimates now count double`, { to: 'debug' }])
     r.exchanges = Array.from({ length: 12 }, (_, k) => ({ side: k % 2 ? 'him' : 'person', text: String(k).padEnd(6000, 'w') }))
     await r.talk(f.$, 'again', AT)
     const prompt = (f.calls.filter(c => c.name === 'model.complete').at(-1)!.args[0] as { prompt: string }).prompt
