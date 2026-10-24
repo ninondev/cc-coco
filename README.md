@@ -1,3 +1,4 @@
+[日本語](README.ja.md), [中文](README.zh.md)
 # Coco
 
 <p align="center">
@@ -166,5 +167,3 @@ Claudie's look follows ZipZipPipe's Claude girl, [Claude 拟人立绘·橘白礼
 Code: MIT. Character art: CC BY-NC 4.0, except the two DeepSeek-chan files in Coco's room, which are CC BY-NC-SA 4.0; see [ART-LICENSE.md](ART-LICENSE.md). I made the art with an image model.
 
 Tested with Claude Code 2.1.308 (the full test suite) and 2.1.299. The desktop app and the VS Code extension were last checked on a real machine on October 20, 2026.
-
-[中文](README.zh.md), [日本語](README.ja.md)
