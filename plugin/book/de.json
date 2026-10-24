@@ -120,8 +120,7 @@
     ],
     "shelf": {
       "head": "Am häufigsten geöffnet",
-      "note": "Die fünf Dateien, die Claude hier in den letzten 30 Tagen am häufigsten geöffnet hat. Nur Dateinamen.",
-      "empty": "Wenn Claude hier Dateien liest, erscheinen die fünf am häufigsten geöffneten hier.",
+      "note": "Die fünf Dateien, die Claude hier in den letzten 30 Tagen am häufigsten geöffnet hat.",
       "error": "Die Dateiliste konnte nicht gelesen werden. Erneut öffnen versucht es nochmal."
     }
   },
@@ -224,11 +223,8 @@
       "failed": "Der Build wurde nicht fertig",
       "retry": "Noch einmal versuchen",
       "stopped": "Läuft nicht",
-      "stoppedLine": "(ruht hinter der Bühne)",
       "hidden": "Bis {time} verborgen",
-      "hiddenLine": "(wartet hinter den Kulissen)",
       "corner": "Kann deinem Fenster noch nicht folgen",
-      "cornerLine": "(wartet in einer Bildschirmecke)",
       "follow": "Ihr erlauben, dem Fenster zu folgen",
       "followHelp": "Sie liest nur die Position des Fensters.",
       "waiting": "Wartet auf dein Okay",
@@ -236,7 +232,6 @@
       "waitingHelp": "Coco Pet unter Datenschutz & Sicherheit › Bedienungshilfen einschalten.",
       "openSettings": "Systemeinstellungen öffnen",
       "following": "Neben deinem Fenster",
-      "followingLine": "(folgt ihm überallhin)",
       "update": "Update verfügbar",
       "updateButton": "Sie aktualisieren",
       "size": "Ihre Größe",
@@ -296,7 +291,7 @@
     },
     "bookmark": {
       "label": "Klebezettel und häufig geöffnete Dateien",
-      "help": "Zu Beginn einer neuen Sitzung sagt sie dir, wo du aufgehört hast. Nur auf diesem Computer gespeichert."
+      "help": "Zu Beginn einer neuen Sitzung sagt sie dir, wo du aufgehört hast."
     },
     "notes": {
       "label": "Ihre Hinweise",
@@ -308,7 +303,7 @@
     },
     "neighbours": {
       "label": "Lichter der Nachbarn",
-      "help": "Sie bemerkt, wenn andere Coding-Agenten arbeiten. Sie liest nur, ob sie beschäftigt sind, und ihre Nutzung. Keine Inhalte, nichts wird übertragen."
+      "help": "Sie bemerkt, wenn andere Coding-Agenten arbeiten. Sie liest nur, ob sie beschäftigt sind, und ihre Nutzung."
     }
   },
   "check": {

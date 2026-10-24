@@ -331,19 +331,19 @@
     "pt-BR": "Lembretes e arquivos mais abertos"
   },
   "settings.bookmark.help": {
-    "zh": "新会话开始时告诉你上次停在哪,只存在这台电脑上",
-    "zh-Hant": "新會話開始時告訴你上次停在哪,只存在這臺電腦上",
-    "en": "When a new session starts, Coco tells you where you stopped. Kept on this computer only.",
-    "ja": "新しいセッションの始まりに、前回どこまで進んだかを教えます。このコンピューターにだけ保存します",
-    "de": "Zu Beginn einer neuen Sitzung sagt sie dir, wo du aufgehört hast. Nur auf diesem Computer gespeichert.",
-    "es-419": "Al comenzar una nueva sesión, te dice dónde te quedaste. Solo se guarda en esta computadora.",
-    "es-ES": "Al comenzar una nueva sesión, te dice dónde te quedaste. Solo se guarda en este ordenador.",
-    "fr": "Au début d'une nouvelle session, elle te dit où tu en étais. Conservé uniquement sur cet ordinateur.",
-    "hi": "नया सेशन शुरू होने पर वह बताएगी कि पिछली बार कहाँ रुके थे। सिर्फ़ इसी कंप्यूटर पर रखा जाता है।",
-    "id": "Saat sesi baru, dia memberi tahu di mana kamu berhenti. Disimpan di komputer ini saja.",
-    "it": "All'inizio di una nuova sessione, ti dice a che punto eri. Salvato solo su questo computer.",
-    "ko": "새 세션이 시작되면 지난번에 멈춘 곳을 알려 줍니다. 이 컴퓨터에만 저장합니다.",
-    "pt-BR": "Quando uma nova sessão começa, ela diz onde você parou. Guardado só neste computador."
+    "zh": "新会话开始时告诉你上次停在哪",
+    "zh-Hant": "新會話開始時告訴你上次停在哪",
+    "en": "When a new session starts, Coco tells you where you stopped.",
+    "ja": "新しいセッションの始まりに、前回どこまで進んだかを教えます",
+    "de": "Zu Beginn einer neuen Sitzung sagt sie dir, wo du aufgehört hast.",
+    "es-419": "Al comenzar una nueva sesión, te dice dónde te quedaste.",
+    "es-ES": "Al comenzar una nueva sesión, te dice dónde te quedaste.",
+    "fr": "Au début d'une nouvelle session, elle te dit où tu en étais.",
+    "hi": "नया सेशन शुरू होने पर वह बताएगी कि पिछली बार कहाँ रुके थे।",
+    "id": "Saat sesi baru, dia memberi tahu di mana kamu berhenti.",
+    "it": "All'inizio di una nuova sessione, ti dice a che punto eri.",
+    "ko": "새 세션이 시작되면 지난번에 멈춘 곳을 알려 줍니다.",
+    "pt-BR": "Quando uma nova sessão começa, ela diz onde você parou."
   },
   "pace": {
     "zh": "额度({window})用得快,还剩{t}",
@@ -451,19 +451,19 @@
     "pt-BR": "Luzes dos vizinhos"
   },
   "settings.neighbours.help": {
-    "zh": "别的编程助手在干活时,她也看得到。只看有没有在忙和额度,不看内容,不外发",
-    "zh-Hant": "別的程式設計助手在幹活時,她也看得到。只看有沒有在忙和額度,不看內容,不外發",
-    "en": "Coco notices when other coding agents are working. Only whether they are busy and their usage; never content, never sent anywhere.",
-    "ja": "ほかのコーディングエージェントが働いているのがわかります。忙しいかどうかと使用量だけで、中身は見ず、外にも送りません",
-    "de": "Sie bemerkt, wenn andere Coding-Agenten arbeiten. Sie liest nur, ob sie beschäftigt sind, und ihre Nutzung. Keine Inhalte, nichts wird übertragen.",
-    "es-419": "Nota cuando otros agentes de programación están trabajando. Solo ve si están ocupados y su uso; nunca el contenido, y no envía nada a ningún lado.",
-    "es-ES": "Nota cuando otros agentes de programación están trabajando. Solo ve si están ocupados y su uso; nunca el contenido, y no envía nada a ningún sitio.",
-    "fr": "Elle remarque quand d'autres agents de programmation travaillent. Elle ne lit que leur activité et leur utilisation, jamais le contenu. Rien n'est envoyé.",
-    "hi": "दूसरे कोडिंग सहायकों के काम करने का पता चलता है। सिर्फ़ व्यस्त होने और इस्तेमाल की जानकारी देखती है, सामग्री नहीं। कुछ बाहर नहीं भेजा जाता।",
-    "id": "Dia tahu saat agen pemrograman lain bekerja. Hanya status sibuk dan pemakaian, tidak pernah isi. Tidak ada yang dikirim ke mana pun.",
-    "it": "Si accorge quando altri agenti di programmazione lavorano. Legge solo se sono occupati e il loro utilizzo, mai il contenuto. Non invia nulla.",
-    "ko": "다른 코딩 에이전트가 일하는 것을 알아챕니다. 작업 여부와 사용량만 확인하고 내용은 보지 않습니다. 어디에도 보내지 않습니다.",
-    "pt-BR": "Ela percebe quando outros agentes de programação estão trabalhando. Só vê se estão ocupados e o uso; nunca o conteúdo, e nada é enviado para fora."
+    "zh": "别的编程助手在干活时,她也看得到。只看有没有在忙和额度",
+    "zh-Hant": "別的程式設計助手在幹活時,她也看得到。只看有沒有在忙和額度",
+    "en": "Coco notices when other coding agents are working. Only whether they are busy and their usage.",
+    "ja": "ほかのコーディングエージェントが働いているのがわかります。忙しいかどうかと使用量だけ",
+    "de": "Sie bemerkt, wenn andere Coding-Agenten arbeiten. Sie liest nur, ob sie beschäftigt sind, und ihre Nutzung.",
+    "es-419": "Nota cuando otros agentes de programación están trabajando. Solo ve si están ocupados y su uso.",
+    "es-ES": "Nota cuando otros agentes de programación están trabajando. Solo ve si están ocupados y su uso.",
+    "fr": "Elle remarque quand d'autres agents de programmation travaillent. Elle ne lit que leur activité et leur utilisation.",
+    "hi": "दूसरे कोडिंग सहायकों के काम करने का पता चलता है। सिर्फ़ व्यस्त होने और इस्तेमाल की जानकारी देखती है।",
+    "id": "Dia tahu saat agen pemrograman lain bekerja. Hanya status sibuk dan pemakaian.",
+    "it": "Si accorge quando altri agenti di programmazione lavorano. Legge solo se sono occupati e il loro utilizzo.",
+    "ko": "다른 코딩 에이전트가 일하는 것을 알아챕니다. 작업 여부와 사용량만 확인합니다.",
+    "pt-BR": "Ela percebe quando outros agentes de programação estão trabalhando. Só vê se estão ocupados e o uso."
   },
   "neighbour.busy": {
     "zh": "{agent}在隔壁忙着呢",
@@ -1623,21 +1623,6 @@
     "ko": "토큰 소모 없음. 20초 넘는 턴에서 옆 불빛이 천천히 숨 쉼",
     "pt-BR": "Sem tokens. A luzinha respira devagar em turnos de mais de 20 s."
   },
-  "settings.breathe.help": {
-    "zh": "合上的轻薄本侧灯跟着呼吸一明一暗:吸气时亮起,呼气时暗下,一分钟六次,这轮结束就停",
-    "zh-Hant": "合上的輕薄本側燈跟著呼吸一明一暗:吸氣時亮起,呼氣時暗下,一分鐘六次,這輪結束就停",
-    "en": "The closed laptop's side light brightens as you breathe in and dims as you breathe out, six breaths a minute. It stops when the turn ends.",
-    "ja": "閉じたノートPCの横のランプが、吸うとき明るく、吐くとき暗くなります。一分間に六回。ターンが終わると止まります",
-    "de": "Das Seitenlicht des zugeklappten Notebooks wird beim Einatmen heller und beim Ausatmen dunkler, sechs Atemzüge pro Minute. Es hört auf, wenn der Turn endet.",
-    "es-419": "La lucecita de la laptop cerrada se ilumina al inhalar y se atenúa al exhalar, seis respiraciones por minuto. Se detiene al terminar el turno.",
-    "es-ES": "La lucecita del portátil cerrado se ilumina al inhalar y se atenúa al exhalar, seis respiraciones por minuto. Se detiene al terminar el turno.",
-    "fr": "La petite lumière du portable fermé s'allume à l'inspiration et baisse à l'expiration, six fois par minute. S'arrête en fin de tour.",
-    "hi": "बंद लैपटॉप की साइड लाइट साँस लेते समय तेज़ और छोड़ते समय मद्धम होती है, एक मिनट में छह बार। टर्न ख़त्म होने पर रुक जाती है।",
-    "id": "Lampu samping laptop yang tertutup menyala saat menghirup dan meredup saat menghembuskan, enam napas per menit. Berhenti saat turn selesai.",
-    "it": "La lucina del portatile chiuso si accende inspirando e si attenua espirando, sei respiri al minuto. Si ferma alla fine del turno.",
-    "ko": "닫힌 노트북 옆 불빛이 숨을 들이쉴 때 밝아지고 내쉴 때 어두워집니다. 분당 여섯 번. 턴이 끝나면 멈춥니다.",
-    "pt-BR": "A luzinha do notebook fechado acende ao inspirar e esmaece ao expirar, seis respirações por minuto. Para quando o turno termina."
-  },
   "durations": {
     "zh": [
       "58秒",
@@ -2142,21 +2127,6 @@
     "it": "Tutto sbloccato",
     "ko": "전부 해금",
     "pt-BR": "Tudo desbloqueado"
-  },
-  "socks.mode.help": {
-    "zh": "收集:第一次做到某件事给一双,没拿到的写着怎么拿",
-    "zh-Hant": "收集:第一次做到某件事給一雙,沒拿到的寫著怎麼拿",
-    "en": "Collect: each first earns a pair; the ones Coco doesn't have yet say how to get them",
-    "ja": "集める: 何かを初めてやるたびに1足。まだのぶんには、もらい方が書いてある",
-    "de": "Sammeln: Jedes erste Mal bringt ein Paar; bei den fehlenden steht, wie man sie bekommt.",
-    "es-419": "Coleccionar: cada primera vez da un par; los que faltan dicen cómo conseguirlos.",
-    "es-ES": "Coleccionar: cada primera vez da un par; los que faltan dicen cómo conseguirlos.",
-    "fr": "Collection : chaque première fois rapporte une paire ; celles qui manquent disent comment les avoir.",
-    "hi": "इकट्ठा करना: हर पहली बार पर एक जोड़ी; जो अभी नहीं मिले, उन पर लिखा है कि कैसे मिलेंगे।",
-    "id": "Kumpulkan: tiap pertama kali dapat sepasang; yang belum ada tertulis cara dapatnya.",
-    "it": "Collezionare: ogni prima volta vale un paio; quelli che mancano dicono come averli.",
-    "ko": "모으기: 무언가를 처음 해낼 때마다 한 켤레. 아직 없는 건 얻는 법이 적혀 있어.",
-    "pt-BR": "Colecionar: cada primeira vez dá um par; os que faltam dizem como conseguir."
   },
   "socks.hint.matcha": {
     "zh": "第一次让挂掉的测试变绿",

@@ -120,8 +120,7 @@
     ],
     "shelf": {
       "head": "File yang paling sering dibuka",
-      "note": "Lima file yang paling sering dibuka Claude di sini dalam 30 hari terakhir. Hanya nama.",
-      "empty": "Setelah Claude membaca file di folder ini, lima yang paling sering dibuka akan muncul di sini.",
+      "note": "Lima file yang paling sering dibuka Claude di sini dalam 30 hari terakhir.",
       "error": "Tidak bisa membaca daftar file. Buka lagi untuk mencoba ulang."
     }
   },
@@ -224,11 +223,8 @@
       "failed": "Proses build belum selesai",
       "retry": "Coba lagi",
       "stopped": "Tidak berjalan",
-      "stoppedLine": "(istirahat di belakang panggung)",
       "hidden": "Tersembunyi sampai {time}",
-      "hiddenLine": "(menunggu di balik panggung)",
       "corner": "Belum bisa mengikuti jendelamu",
-      "cornerLine": "(menunggu di sudut layar dulu)",
       "follow": "Izinkan dia mengikuti jendela",
       "followHelp": "Dia hanya membaca letak jendela.",
       "waiting": "Menunggu izinmu",
@@ -236,7 +232,6 @@
       "waitingHelp": "Aktifkan Coco Pet di Privasi & Keamanan › Aksesibilitas.",
       "openSettings": "Buka Pengaturan Sistem",
       "following": "Di samping jendelamu",
-      "followingLine": "(mengikutinya ke mana pun)",
       "update": "Pembaruan siap",
       "updateButton": "Perbarui dia",
       "size": "Ukurannya",
@@ -296,7 +291,7 @@
     },
     "bookmark": {
       "label": "Catatan tempel dan file yang sering dibuka",
-      "help": "Saat sesi baru, dia memberi tahu di mana kamu berhenti. Disimpan di komputer ini saja."
+      "help": "Saat sesi baru, dia memberi tahu di mana kamu berhenti."
     },
     "notes": {
       "label": "Catatan darinya",
@@ -308,7 +303,7 @@
     },
     "neighbours": {
       "label": "Lampu tetangga",
-      "help": "Dia tahu saat agen pemrograman lain bekerja. Hanya status sibuk dan pemakaian, tidak pernah isi. Tidak ada yang dikirim ke mana pun."
+      "help": "Dia tahu saat agen pemrograman lain bekerja. Hanya status sibuk dan pemakaian."
     }
   },
   "check": {

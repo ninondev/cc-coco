@@ -29,8 +29,6 @@
   "tools/tests/k1-words.test.py",
   "tools/tests/layout-golden.test.py",
   "tools/tests/m1-native.test.py",
-  "tools/tests/m1-zh-hant-inputs.test.py",
-  "tools/tests/p1-high-contrast-red.py",
   "tools/tests/pixel-design.test.py",
   "tools/tests/preview-renderer.test.py",
   "tools/tests/promises-decisions.test.py",

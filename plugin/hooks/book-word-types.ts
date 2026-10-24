@@ -7,10 +7,10 @@ export type CompanionBookWords = {
   absent: string; absentLine: string; install: string
   building: string; buildingLine: string; tools: string; toolsButton: string; toolsAfter: string
   oldTools: string; oldToolsButton: string; oldToolsAfter: string
-  failed: string; retry: string; stopped: string; stoppedLine: string; hidden: string; hiddenLine: string
-  corner: string; cornerLine: string; follow: string; followHelp: string
+  failed: string; retry: string; stopped: string; hidden: string
+  corner: string; follow: string; followHelp: string
   waiting: string; waitingLine: string; waitingHelp: string; openSettings: string
-  following: string; followingLine: string; update: string; updateButton: string
+  following: string; update: string; updateButton: string
   size: string; sizes: readonly string[]; macSizes: readonly string[]
   sizeAlt: { pixel: string; painted: string }
   login: string; capture: string; on: string; off: string

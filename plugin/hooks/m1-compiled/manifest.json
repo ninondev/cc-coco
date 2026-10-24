@@ -175,8 +175,8 @@
       "sha256": "4da72c6767af6ec42f4479649db429da6545b6dfd4d779c6cf8c9da7af13e715"
     },
     "hooks-source/book-text.ts": {
-      "bytes": 223385,
-      "sha256": "2cb51a4d8457067a21a2bb050ccceb4457416ad2d7738c1f9de4a168a006990d"
+      "bytes": 217779,
+      "sha256": "0f5222b3fa177559f11af57f3edb0e2e85642c064a432a06b545f0b142827455"
     },
     "hooks-source/line-slot.ts": {
       "bytes": 5835,
@@ -255,16 +255,16 @@
       "sha256": "f21ff98add2d780ea944f3b49bdc6b7df909b0d384e7456681d4ea189ae804a3"
     },
     "hooks-source/book.tsx": {
-      "bytes": 91412,
-      "sha256": "4e92b02ce04a363d92ab3f125c760f152f953349ebbb6baabc1ad184d9647c54"
+      "bytes": 90236,
+      "sha256": "33c86da1345d73bfa18429181318a5b1fa44d9da5c74e645ca130a4796b9769b"
     },
     "hooks-source/book-portrait.ts": {
       "bytes": 821,
       "sha256": "825e505901b0ad1cc0f4386327e0dc5e105dd037fb47600d778a26d8d75c3b0a"
     },
     "hooks-source/bag.ts": {
-      "bytes": 29294,
-      "sha256": "3057f149c39442186f906ed22d781fde140461fd93a1bb0a6f5c440f2fbc9186"
+      "bytes": 29285,
+      "sha256": "77d8980cc48040aaf0cb62208468c7d183cf5c6708b469553753c7992f4eea60"
     },
     "hooks-source/bag-mv.ts": {
       "bytes": 20349,
@@ -295,8 +295,8 @@
       "sha256": "264785393d00822a1526f0c764705ca692488a4454c66afe0a6800a9e3679ee0"
     },
     "hooks-source/c3-words.ts": {
-      "bytes": 9675,
-      "sha256": "c1690f6ec54b4e5f5fe8bc465248c807e6714ee5e5638501e831cd5d5adce831"
+      "bytes": 9341,
+      "sha256": "58ff1cb876cfad0461948c79bf4d55b7aaf915a9db42d1dec133bb34340af063"
     },
     "hooks-source/config-words.ts": {
       "bytes": 5452,
@@ -363,8 +363,8 @@
       "sha256": "c7e55b4d1261a2dd45c851eb4defa9eeef74c370004c80cc10565b63536805af"
     },
     "hooks-source/cards/cards.tsx": {
-      "bytes": 89406,
-      "sha256": "aa118d0b1df30c55b41460c19b24d55d3886e389f557643e44435854732e7964"
+      "bytes": 89172,
+      "sha256": "6f15b0b7d3a351e30ca9f36539f502ff49eec73b0dbfa2fb76f6d25e0a91df91"
     },
     "hooks-source/cards/catalog.ts": {
       "bytes": 7045,
@@ -375,8 +375,8 @@
       "sha256": "4681eb8102d57bae66abcc118f06b8b75522eecd8e6b21bc705a7450a89a467d"
     },
     "hooks-source/cards/i18n.ts": {
-      "bytes": 42043,
-      "sha256": "f999bd8ee89d9878001ec2e373f95ca43b33d584308ff681c17572b58c9f5c7d"
+      "bytes": 38878,
+      "sha256": "bedbe976d9821e516b7e56e9534f45a1c23437d0c3cea2ae4c0e33092de0bfb0"
     },
     "hooks-source/cards/model.ts": {
       "bytes": 1006,
@@ -563,8 +563,8 @@
       "sha256": "a51c9d29e867295af794fdab5ba351db60233beb0425e02686fc4b62cbfd6e63"
     },
     "hooks-source/companion-book.tsx": {
-      "bytes": 11836,
-      "sha256": "5d8d3d9e3673a0c96f026aa8692e529949eec5021451e5abd194194c723f2a62"
+      "bytes": 11937,
+      "sha256": "2dfcca0d12f3293561b2545493feb21eeb46ed4695af5cb61cc7577d9760cf4c"
     },
     "hooks-source/checkup.ts": {
       "bytes": 6623,
@@ -639,8 +639,8 @@
       "sha256": "588b4f8e89493a98a462b06b5c6c35d200debf519491fe47c8c05df8e838ba61"
     },
     "hooks-source/book.js": {
-      "bytes": 45533,
-      "sha256": "1879877c9c3e3189d1b365c9b701a6c23cbfad097d09acbbe4aada39803b9b4e"
+      "bytes": 44932,
+      "sha256": "b6b0cecb00e3ca53c8654dea2dd75f45fd6b3ebe254d7217aab11c46df5a658d"
     },
     "hooks-source/visitors.ts": {
       "bytes": 18458,
@@ -703,12 +703,12 @@
       "sha256": "35f4cf9a23e0a5c68945b8ce6000262a1c7ba923b0c7d3d3f96d1ad6fe1f34fa"
     },
     "hooks-source/book-word-types.ts": {
-      "bytes": 3932,
-      "sha256": "969c2dd85bc09b504235d472dd3565b27a26c69c0157785a19ff100ef0316f2b"
+      "bytes": 3848,
+      "sha256": "6022ed4a7b87b8e5cd4223be5950fa47290cda0357b925d6bbaf87e066a1a29d"
     },
     "hooks-source/book.d.ts": {
       "bytes": 146,
-      "sha256": "dd70820c2f8a4ead989d3f0f462592707e5965b05fe1be336b3aa961c5885873"
+      "sha256": "c6b9a13973636ac7f77cdc5b47da36d77663e6a161cb31705c395f91f1c8580f"
     },
     "hooks-source/card-metrics-hi-bold.ts": {
       "bytes": 10812,
@@ -1755,9 +1755,9 @@
         "moment": 199,
         "answeredVoiceRow": 207,
         "pageBlocks": 232,
-        "helperBoard": 705,
-        "desktopBook": 882,
-        "terminalBook": 1090,
+        "helperBoard": 697,
+        "desktopBook": 874,
+        "terminalBook": 1082,
         "NO_ITALIC": 72,
         "BookData": 79,
         "GuestBook": 134,
@@ -2411,13 +2411,13 @@
         "tableOf": "i18n__tableOf"
       },
       "exportLines": {
-        "tableOf": 684,
-        "listOf": 711,
-        "langOf": 716,
+        "tableOf": 658,
+        "listOf": 685,
+        "langOf": 690,
         "LANGS": 10,
         "Lang": 11,
         "Said": 13,
-        "STRINGS": 663
+        "STRINGS": 637
       }
     },
     "hooks-source/cards/model.ts": {
@@ -4577,16 +4577,16 @@
     "hooks/line-types.ts",
     "hooks/lines.ts",
     "hooks/m1-always.ts",
-    "hooks/m1-compiled/chunk-dvfdck8w.js",
-    "hooks/m1-compiled/chunk-fmkypf4j.js",
+    "hooks/m1-compiled/chunk-4hrjx3cy.js",
+    "hooks/m1-compiled/chunk-9ydxy6m3.js",
+    "hooks/m1-compiled/chunk-bk2b9vfr.js",
+    "hooks/m1-compiled/chunk-ek12ehn3.js",
+    "hooks/m1-compiled/chunk-gcw5ffvh.js",
     "hooks/m1-compiled/chunk-jahhamrc.js",
-    "hooks/m1-compiled/chunk-k53aj8za.js",
-    "hooks/m1-compiled/chunk-pa648mys.js",
-    "hooks/m1-compiled/chunk-sj6qrg8p.js",
-    "hooks/m1-compiled/chunk-vtgab2n2.js",
-    "hooks/m1-compiled/chunk-wm95cpnh.js",
-    "hooks/m1-compiled/chunk-xpyfn99y.js",
-    "hooks/m1-compiled/chunk-znjj8sf4.js",
+    "hooks/m1-compiled/chunk-qvpsx367.js",
+    "hooks/m1-compiled/chunk-w7fd3pbp.js",
+    "hooks/m1-compiled/chunk-yqjgx0e1.js",
+    "hooks/m1-compiled/chunk-z24mmvqv.js",
     "hooks/m1-compiled/companion.d.ts",
     "hooks/m1-compiled/companion.js",
     "hooks/m1-compiled/manifest.json",
@@ -4670,20 +4670,20 @@
     "hooks/words.ts"
   ],
   "chunkBytes": {
-    "chunk-dvfdck8w.js": 359237,
-    "chunk-fmkypf4j.js": 199472,
+    "chunk-4hrjx3cy.js": 208514,
+    "chunk-9ydxy6m3.js": 93865,
+    "chunk-bk2b9vfr.js": 358930,
+    "chunk-ek12ehn3.js": 62122,
+    "chunk-gcw5ffvh.js": 46697,
     "chunk-jahhamrc.js": 63116,
-    "chunk-k53aj8za.js": 224308,
-    "chunk-pa648mys.js": 62122,
-    "chunk-sj6qrg8p.js": 93885,
-    "chunk-vtgab2n2.js": 46697,
-    "chunk-wm95cpnh.js": 20980,
-    "chunk-xpyfn99y.js": 10209,
-    "chunk-znjj8sf4.js": 208526,
-    "companion.js": 110982,
-    "motion_stills.js": 218909,
-    "pages.js": 67905,
-    "presence.js": 13396,
-    "register.js": 224395
+    "chunk-qvpsx367.js": 10209,
+    "chunk-w7fd3pbp.js": 20980,
+    "chunk-yqjgx0e1.js": 199344,
+    "chunk-z24mmvqv.js": 220602,
+    "companion.js": 110980,
+    "motion_stills.js": 213563,
+    "pages.js": 67095,
+    "presence.js": 13394,
+    "register.js": 224397
   }
 }

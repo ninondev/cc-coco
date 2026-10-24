@@ -84,11 +84,10 @@ describe('his remote book', () => {
     await $.command.run({ command: 'coco', args: COMPANION_PAGE, origin: PERSON, presentation: P })
     const ui = await $.ui.mount({ surface: 'vscode', ...PANE })
     await ui.redraw()
-    expect(await ui.find({ type: 'Button', key: 'coco:set:companionTarget:auto' })).toBeDefined()
-    expect(await ui.find({ type: 'Text', text: /Automatic\u00a0\(VS\u00a0Code\)/ })).toBeDefined()
+    expect((await ui.find({ type: 'Button', key: 'coco:set:companionTarget:auto' }))?.props.variant).toBe('primary')
     expect((await ui.findAll({ type: 'Svg' })).some(e => String(e.props.alt).includes('VS\u00a0Code'))).toBe(true)
     await ui.press({ key: 'coco:set:companionTarget:claude' })
-    expect(await ui.find({ type: 'Text', text: /Now:\u00a0Claude/ })).toBeDefined()
+    expect((await ui.find({ type: 'Button', key: 'coco:set:companionTarget:claude' }))?.props.variant).toBe('primary')
   })
   test('the open automatic target follows attached surfaces without a prompt', async ($, on) => {
     let surfaces: ('vscode' | 'desktop')[] = ['vscode']
@@ -101,13 +100,15 @@ describe('his remote book', () => {
     await $.command.run({ command: 'coco', args: COMPANION_PAGE, origin: PERSON, presentation: P })
     const ui = await $.ui.mount({ surface: 'vscode', ...PANE })
     await ui.redraw()
-    expect(await ui.find({ type: 'Text', text: /Automatic\u00a0\(VS\u00a0Code\)/ })).toBeDefined()
+    // VS Code tells where Automatic goes by the stage picture, not a "Now:" line (owner 10-23)
+    const stage = async () => (await ui.findAll({ type: 'Svg' })).map(e => String(e.props.alt)).join('\n')
+    expect(await stage()).toContain("VS\u00a0Code's window")
     surfaces = ['vscode', 'desktop']
     await $.session.attach({ clientId: 'desktop-1', surface: 'desktop' })
-    expect(await ui.find({ type: 'Text', text: /Automatic\u00a0\(Claude/ })).toBeDefined()
+    expect(await stage()).toContain("Claude's window")
     surfaces = ['vscode']
     await $.session.detach({ clientId: 'desktop-1', surface: 'desktop' })
-    expect(await ui.find({ type: 'Text', text: /Automatic\u00a0\(VS\u00a0Code\)/ })).toBeDefined()
+    expect(await stage()).toContain("VS\u00a0Code's window")
   })
   test('mobile never exposes companion controls even on a Mac', async ($, on) => {
     world(on, { store: RECENT })

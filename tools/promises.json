@@ -105,7 +105,7 @@
         "feature": "keep warm",
         "default": "off until an explicit More row turn-on",
         "cost": "one cache re-read per tick while away, stopped by the budget rule at one full re-read in total",
-        "disclosedIn": "the More row's cost and help lines (more.warm.cost, more.warm.help)",
+        "disclosedIn": "the More row's cost line (more.warm.cost)",
         "callSites": [
           "hooks/register.tsx:$.model.fork("
         ]

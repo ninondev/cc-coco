@@ -92,8 +92,7 @@
   "bagStyle": {
    "label": "Ita bag art",
    "classic": "Futurist",
-   "mv": "Constructivist",
-   "help": "Only the bag picture at the top of each page changes. Nothing else does."
+   "mv": "Constructivist"
   },
   "sockRows": {
    "wearing": "Wearing",
@@ -129,12 +128,11 @@
   },
   "lead": {
    "him": "{name} is on your desktop keeping you company. Size: {size}.",
-   "offerings": "5h: {fiveLeft} left. Week: {weekLeft} left.",
    "omen": "This session's record: tests failed: {failed}, fixed: {fixed}, squashed (compacted): {compacted}.",
-   "socks": "Pairs collected: {have} of {total}. Pick one and Coco puts it right on.",
+   "socks": "Pairs collected: {have} of {total}.",
    "log": "Issues in the collection: {issues}. Latest: #{latest}.",
-   "library": "Sticky notes up: {notes}. In a new chat, Coco reminds you where you left off.",
-   "settings": "Switches on: {on} of {total}. Everything that uses tokens is marked."
+   "library": "Sticky notes up: {notes}.",
+   "settings": "Switches on: {on} of {total}."
   },
   "vibe": {
    "stillRed": [
@@ -362,8 +360,7 @@
   "bagStyle": {
    "label": "Dessin de l’ita bag",
    "classic": "Futuriste",
-   "mv": "Constructiviste",
-   "help": "Seul le dessin de l’ita bag en haut de chaque page change. Le reste ne bouge pas."
+   "mv": "Constructiviste"
   },
   "sockRows": {
    "wearing": "Aux pieds",
@@ -399,12 +396,11 @@
   },
   "lead": {
    "him": "{name} est sur ton bureau et te tient compagnie. Taille actuelle : {size}",
-   "offerings": "Fenêtre de 5 h : il reste {fiveLeft}. Fenêtre de 7 jours : il reste {weekLeft}.",
    "omen": "Bilan de la session : tests ratés : {failed}, réparés : {fixed}, squashs (compactages) : {compacted}.",
-   "socks": "Chaussettes collectionnées : {have} sur {total}. Choisis une paire et Coco l'enfile sagement.",
+   "socks": "Chaussettes collectionnées : {have} sur {total}.",
    "log": "Numéros du doujin dans la collection : {issues}. Dernier paru : n° {latest}.",
-   "library": "Pense-bêtes collés : {notes}. Dans une nouvelle conversation, Coco te rappelle où tu en étais.",
-   "settings": "Interrupteurs activés : {on} sur {total}. Tout ce qui coûte des tokens est signalé."
+   "library": "Pense-bêtes collés : {notes}.",
+   "settings": "Interrupteurs activés : {on} sur {total}."
   },
   "vibe": {
    "stillRed": [
@@ -632,8 +628,7 @@
   "bagStyle": {
    "label": "Ita-Bag-Bild",
    "classic": "Futuristisch",
-   "mv": "Konstruktivistisch",
-   "help": "Nur das Ita-Bag-Bild oben auf jeder Seite ändert sich. Sonst bleibt alles gleich."
+   "mv": "Konstruktivistisch"
   },
   "sockRows": {
    "wearing": "Trägt gerade",
@@ -669,12 +664,11 @@
   },
   "lead": {
    "him": "{name} ist auf dem Desktop und leistet dir Gesellschaft. Aktuelle Größe: {size}",
-   "offerings": "5-Stunden-Fenster: noch {fiveLeft}. 7-Tage-Fenster: noch {weekLeft}.",
    "omen": "Bilanz dieser Sitzung: Tests rot: {failed}, repariert: {fixed}, plattgesessen (komprimiert): {compacted}.",
-   "socks": "Socken gesammelt: {have} von {total}. Such ein Paar aus, und Coco zieht es brav an.",
+   "socks": "Socken gesammelt: {have} von {total}.",
    "log": "Doujin-Ausgaben in der Sammlung: {issues}. Neueste Ausgabe: Nr. {latest}.",
-   "library": "Klebezettel an der Wand: {notes}. In einem neuen Chat erinnert Coco dich, wo du aufgehört hast.",
-   "settings": "Schalter an: {on} von {total}. Alles, was Tokens kostet, ist markiert."
+   "library": "Klebezettel an der Wand: {notes}.",
+   "settings": "Schalter an: {on} von {total}."
   },
   "vibe": {
    "stillRed": [
@@ -902,8 +896,7 @@
   "bagStyle": {
    "label": "इटा बैग की तस्वीर",
    "classic": "भविष्यवादी",
-   "mv": "रचनावादी",
-   "help": "सिर्फ़ हर पेज के ऊपर वाली इटा बैग की तस्वीर बदलती है। बाकी सब वैसा ही रहता है।"
+   "mv": "रचनावादी"
   },
   "sockRows": {
    "wearing": "अभी पहने हैं",
@@ -939,12 +932,11 @@
   },
   "lead": {
    "him": "{name} डेस्कटॉप पर तुम्हारे साथ है। अभी का साइज़: {size}",
-   "offerings": "5 घंटे की सीमा में {fiveLeft} बाकी, 7 दिन की सीमा में {weekLeft} बाकी",
    "omen": "इस सेशन का स्कोर: टेस्ट फेल {failed}, ठीक हुए {fixed}, squash (compact) {compacted}",
-   "socks": "मोज़े जमा हुए: {total} में से {have}। कोई जोड़ी चुनो, कोको चुपचाप वही पहन लेगी।",
+   "socks": "मोज़े जमा हुए: {total} में से {have}",
    "log": "ज़ीन के अंक जमा: {issues}। ताज़ा अंक: {latest}",
-   "library": "चिपके स्टिकी नोट्स: {notes}। नई बातचीत में कोको याद दिलाती है कि पिछली बार बात कहाँ रुकी थी।",
-   "settings": "स्विच चालू: {total} में से {on}। टोकन ख़र्च करने वाले सब पर निशान लगा है।"
+   "library": "चिपके स्टिकी नोट्स: {notes}",
+   "settings": "स्विच चालू: {total} में से {on}"
   },
   "vibe": {
    "stillRed": [
@@ -1172,8 +1164,7 @@
   "bagStyle": {
    "label": "Gambar ita bag",
    "classic": "Futuris",
-   "mv": "Konstruktivis",
-   "help": "Hanya gambar ita bag di atas tiap halaman yang berganti. Yang lain tetap sama."
+   "mv": "Konstruktivis"
   },
   "sockRows": {
    "wearing": "Sedang dipakai",
@@ -1209,12 +1200,11 @@
   },
   "lead": {
    "him": "{name} ada di desktop menemanimu. Ukuran sekarang: {size}",
-   "offerings": "Jendela 5 jam: sisa {fiveLeft}. Jendela 7 hari: sisa {weekLeft}.",
    "omen": "Rekor sesi ini: tes gagal {failed}, diperbaiki {fixed}, digencet (dipadatkan) {compacted}.",
-   "socks": "Kaus kaki terkumpul: {have} dari {total}. Pilih satu pasang, Coco langsung nurut memakainya.",
+   "socks": "Kaus kaki terkumpul: {have} dari {total}.",
    "log": "Edisi doujin yang terkumpul: {issues}. Edisi terbaru: no. {latest}.",
-   "library": "Catatan tempel yang tertempel: {notes}. Di obrolan baru, Coco mengingatkan terakhir kamu berhenti di mana.",
-   "settings": "Sakelar menyala: {on} dari {total}. Semua yang pakai token sudah ditandai."
+   "library": "Catatan tempel yang tertempel: {notes}.",
+   "settings": "Sakelar menyala: {on} dari {total}."
   },
   "vibe": {
    "stillRed": [
@@ -1442,8 +1432,7 @@
   "bagStyle": {
    "label": "Disegno dell’ita bag",
    "classic": "Futurista",
-   "mv": "Costruttivista",
-   "help": "Cambia solo il disegno dell’ita bag in cima a ogni pagina. Il resto resta uguale."
+   "mv": "Costruttivista"
   },
   "sockRows": {
    "wearing": "Indossa ora",
@@ -1479,12 +1468,11 @@
   },
   "lead": {
    "him": "{name} è sulla scrivania e ti fa compagnia. Dimensione attuale: {size}",
-   "offerings": "Ancora disponibile: {fiveLeft} della finestra di 5 ore, {weekLeft} di quella di 7 giorni.",
    "omen": "Bilancio di questa sessione: test falliti: {failed}, sistemati: {fixed}, squash (compattazioni): {compacted}.",
-   "socks": "Calzini collezionati: {have} su {total}. Scegline un paio e Coco se lo mette, buona buona.",
+   "socks": "Calzini collezionati: {have} su {total}.",
    "log": "Numeri del doujin in collezione: {issues}. L'ultimo uscito: n. {latest}.",
-   "library": "Foglietti attaccati: {notes}. In una nuova chat, Coco ti ricorda dove avevi lasciato.",
-   "settings": "Interruttori attivi: {on} su {total}. Tutto quello che usa token è segnalato."
+   "library": "Foglietti attaccati: {notes}.",
+   "settings": "Interruttori attivi: {on} su {total}."
   },
   "vibe": {
    "stillRed": [
@@ -1712,8 +1700,7 @@
   "bagStyle": {
    "label": "痛バッグの絵",
    "classic": "未来派",
-   "mv": "構成主義",
-   "help": "各ページの上にある痛バッグの絵だけが変わります。ほかはそのままです。"
+   "mv": "構成主義"
   },
   "sockRows": {
    "wearing": "いまの靴下",
@@ -1749,12 +1736,11 @@
   },
   "lead": {
    "him": "{name}はデスクトップできみのそばにいます。いまの大きさ:{size}",
-   "offerings": "5時間枠は残り{fiveLeft}、7日枠は残り{weekLeft}",
    "omen": "今回の戦績:テスト失敗{failed}回、修正{fixed}回、ぺしゃんこ圧縮{compacted}回",
-   "socks": "靴下{total}足中{have}足コレクト済み。選ぶと素直にはきかえます",
+   "socks": "靴下{total}足中{have}足コレクト済み",
    "log": "同人誌は全{issues}号を収録、最新刊は第{latest}号",
-   "library": "付箋{notes}枚を貼っています。新しい会話を始めると、前回どこで止まったかを教えてくれます",
-   "settings": "スイッチ全{total}個、オン{on}個。トークンを使うものにはぜんぶタグがついてるよ"
+   "library": "付箋{notes}枚を貼っています",
+   "settings": "スイッチ全{total}個、オン{on}個"
   },
   "vibe": {
    "stillRed": [
@@ -1982,8 +1968,7 @@
   "bagStyle": {
    "label": "이타백 그림",
    "classic": "미래파",
-   "mv": "구성주의",
-   "help": "각 페이지 위쪽의 이타백 그림만 바뀌어요. 나머지는 그대로예요."
+   "mv": "구성주의"
   },
   "sockRows": {
    "wearing": "지금 신은 양말",
@@ -2019,12 +2004,11 @@
   },
   "lead": {
    "him": "{name}가 데스크톱에서 곁에 있어요. 지금 크기: {size}",
-   "offerings": "5시간 한도 {fiveLeft} 남음, 7일 한도 {weekLeft} 남음",
    "omen": "이번 전적: 테스트 실패 {failed}번, 고침 {fixed}번, 깔고 앉아 압축 {compacted}번",
-   "socks": "양말 {total}켤레 중 {have}켤레 수집. 하나 고르면 코코가 얌전히 갈아 신어요",
+   "socks": "양말 {total}켤레 중 {have}켤레 수집",
    "log": "동인지 총 {issues}호 수록, 최신호는 {latest}호",
-   "library": "메모지 {notes}장 붙어 있어요. 새 대화를 열면 지난번에 어디서 멈췄는지 알려 줘요",
-   "settings": "스위치 총 {total}개, 켜진 건 {on}개. 토큰을 쓰는 건 전부 표시해 뒀어"
+   "library": "메모지 {notes}장 붙어 있어요",
+   "settings": "스위치 총 {total}개, 켜진 건 {on}개"
   },
   "vibe": {
    "stillRed": [
@@ -2252,8 +2236,7 @@
   "bagStyle": {
    "label": "Desenho da ita bag",
    "classic": "Futurista",
-   "mv": "Construtivista",
-   "help": "Só muda o desenho da ita bag no alto de cada página. O resto continua igual."
+   "mv": "Construtivista"
   },
   "sockRows": {
    "wearing": "Usando agora",
@@ -2289,12 +2272,11 @@
   },
   "lead": {
    "him": "A {name} está na área de trabalho te fazendo companhia. Tamanho atual: {size}",
-   "offerings": "Janela de 5 horas: restam {fiveLeft}. Janela de 7 dias: restam {weekLeft}.",
    "omen": "Placar desta sessão: testes que falharam: {failed}, consertos: {fixed}, squashes (compactações): {compacted}.",
-   "socks": "Meias colecionadas: {have} de {total}. Escolha um par e a Coco calça, toda obediente.",
+   "socks": "Meias colecionadas: {have} de {total}.",
    "log": "Edições do doujin na coleção: {issues}. A mais recente: nº {latest}.",
-   "library": "Lembretes colados: {notes}. Numa conversa nova, a Coco te lembra onde você parou.",
-   "settings": "Interruptores ligados: {on} de {total}. Tudo o que gasta tokens está marcado."
+   "library": "Lembretes colados: {notes}.",
+   "settings": "Interruptores ligados: {on} de {total}."
   },
   "vibe": {
    "stillRed": [
@@ -2522,8 +2504,7 @@
   "bagStyle": {
    "label": "Dibujo de la ita bag",
    "classic": "Futurista",
-   "mv": "Constructivista",
-   "help": "Solo cambia el dibujo de la ita bag arriba de cada página. Lo demás sigue igual."
+   "mv": "Constructivista"
   },
   "sockRows": {
    "wearing": "Ahora lleva",
@@ -2559,12 +2540,11 @@
   },
   "lead": {
    "him": "{name} está en el escritorio haciéndote compañía. Tamaño actual: {size}",
-   "offerings": "Ventana de 5 horas: queda {fiveLeft}. Ventana de 7 días: queda {weekLeft}.",
    "omen": "Balance de esta sesión: pruebas fallidas: {failed}, arregladas: {fixed}, squashes (compactaciones): {compacted}.",
-   "socks": "Calcetines coleccionados: {have} de {total}. Elige un par y Coco se lo pone, muy obediente.",
+   "socks": "Calcetines coleccionados: {have} de {total}.",
    "log": "Números del doujin en la colección: {issues}. El más reciente: n.º {latest}.",
-   "library": "Notitas pegadas: {notes}. En una conversación nueva, Coco te recuerda dónde te quedaste.",
-   "settings": "Interruptores activados: {on} de {total}. Todo lo que gasta tokens está marcado."
+   "library": "Notitas pegadas: {notes}.",
+   "settings": "Interruptores activados: {on} de {total}."
   },
   "vibe": {
    "stillRed": [
@@ -2792,8 +2772,7 @@
   "bagStyle": {
    "label": "Dibujo de la ita bag",
    "classic": "Futurista",
-   "mv": "Constructivista",
-   "help": "Solo cambia el dibujo de la ita bag arriba de cada página. Lo demás sigue igual."
+   "mv": "Constructivista"
   },
   "sockRows": {
    "wearing": "Ahora lleva",
@@ -2829,12 +2808,11 @@
   },
   "lead": {
    "him": "{name} está en el escritorio haciéndote compañía. Tamaño actual: {size}",
-   "offerings": "Ventana de 5 horas: queda {fiveLeft}. Ventana de 7 días: queda {weekLeft}.",
    "omen": "Balance de esta sesión: pruebas fallidas: {failed}, arregladas: {fixed}, squashes (compactaciones): {compacted}.",
-   "socks": "Calcetines coleccionados: {have} de {total}. Elige un par y Coco se lo pone, muy obediente.",
+   "socks": "Calcetines coleccionados: {have} de {total}.",
    "log": "Números del doujin en la colección: {issues}. El más reciente: n.º {latest}.",
-   "library": "Pósits pegados: {notes}. En una conversación nueva, Coco te recuerda dónde lo dejaste.",
-   "settings": "Interruptores activados: {on} de {total}. Todo lo que gasta tokens va marcado."
+   "library": "Pósits pegados: {notes}.",
+   "settings": "Interruptores activados: {on} de {total}."
   },
   "vibe": {
    "stillRed": [
@@ -3062,8 +3040,7 @@
   "bagStyle": {
    "label": "痛包插画",
    "classic": "未来派",
-   "mv": "构成派",
-   "help": "只换每页顶上那张痛包的画,别的都不变。"
+   "mv": "构成派"
   },
   "sockRows": {
    "wearing": "穿着",
@@ -3099,12 +3076,11 @@
   },
   "lead": {
    "him": "{name}正在桌面上陪你,当前尺寸:{size}",
-   "offerings": "5小时额度还剩{fiveLeft},7天额度还剩{weekLeft}",
    "omen": "本场战绩:测试挂了{failed}次,修好{fixed}次,坐扁压缩了{compacted}次",
-   "socks": "{total}双袜子已收集{have}双。点选一双,她就乖乖换上",
+   "socks": "{total}双袜子已收集{have}双",
    "log": "同人誌已收录{issues}期,最新刊是第{latest}期",
-   "library": "贴着{notes}张便利贴。新开对话时,她会提醒你上次停在哪",
-   "settings": "共{total}个开关,已开启{on}个。会消耗token的都标出来啦"
+   "library": "贴着{notes}张便利贴",
+   "settings": "共{total}个开关,已开启{on}个"
   },
   "vibe": {
    "stillRed": [
@@ -3332,8 +3308,7 @@
   "bagStyle": {
    "label": "痛包插畫",
    "classic": "未來派",
-   "mv": "構成派",
-   "help": "只換每頁頂上那張痛包的畫,別的都不變。"
+   "mv": "構成派"
   },
   "sockRows": {
    "wearing": "穿著",
@@ -3369,12 +3344,11 @@
   },
   "lead": {
    "him": "{name}正在桌面上陪你,當前尺寸:{size}",
-   "offerings": "5小時額度還剩{fiveLeft},7天額度還剩{weekLeft}",
    "omen": "本場戰績:測試掛了{failed}次,修好{fixed}次,坐扁壓縮了{compacted}次",
-   "socks": "{total}雙襪子已收集{have}雙。點選一雙,她就乖乖換上",
+   "socks": "{total}雙襪子已收集{have}雙",
    "log": "同人誌已收錄{issues}期,最新刊是第{latest}期",
-   "library": "貼著{notes}張便利貼。新開對話時,她會提醒你上次停在哪",
-   "settings": "共{total}個開關,已開啟{on}個。會消耗token的都標出來啦"
+   "library": "貼著{notes}張便利貼",
+   "settings": "共{total}個開關,已開啟{on}個"
   },
   "vibe": {
    "stillRed": [

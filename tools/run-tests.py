@@ -735,9 +735,9 @@ def run_stage(stage, args, claude):
             if not budgets:
                 raise RuntimeError('missing per-hook CPU budget inventory in promises C6')
         status = run_kit(args, binary, envelope_budgets=budgets)
-        # A targeted file invocation remains a unit check; the complete gate
-        # also checks the preview tree independently of WebKit availability.
-        if (stage == 'kit' and not args.test_file and not args.windows_roots
+        # A targeted file invocation remains a unit check; the complete gate, on either
+        # engine, also checks the preview tree independently of WebKit availability.
+        if (not args.test_file and not args.windows_roots
                 and not args.plugin_source and not args.tests_source and not left_out('tools/build-preview.py')):
             with TemporaryDirectory(prefix='p1-layout-home-') as home:
                 status = merge_status(status, observed_run(

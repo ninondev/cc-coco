@@ -122,8 +122,9 @@ describe('B4b book state and capability', () => {
     expect(targetWrites).toEqual([])
     expect(deletes).toEqual([])
     const text = (await ui.findAll({ type: 'Text' })).map(t => String(t.text)).join('\n')
-    expect(text.includes('Now:\u00a0VS\u00a0Code')).toBe(name === 'vscode.json')
+    expect(text).not.toContain('Now:') // the chosen target is its marked button (owner 10-23)
     if (name === 'vscode.json') {
+      expect((await ui.find({ type: 'Button', key: 'coco:set:companionTarget:vscode' }))?.props.variant).toBe('primary')
       expect(await ui.find({ type: 'Button', key: 'coco:set:companionTarget:vscode' })).toHaveProperty('props.label', 'VS\u00a0Code')
       expect(text).toContain('With several VS\u00a0Code windows')
       expect(text).not.toContain('VS Code')
@@ -153,10 +154,12 @@ describe('B4b book state and capability', () => {
     expect(blocks.props?.gap).toBeUndefined() // the room above each block is its own margin now (BOOK F5, F9)
     // the switches page stands in lane B's groups (step 2): a group's name is not a setting, even where it reads the same
     const groupNames: string[] = Object.values(JSON.parse(BAG_TEXT_RAW).en.groups)
-    const choices = (blocks.children ?? []).filter(g => !groupNames.includes(textOf(g)) && ["Coco's voice in replies", 'Warmth', 'Marks in the conversation', 'Language'].some(label => textOf(g).startsWith(label)))
+    // with no "Now:" line (owner 10-23) the language setting reads just like its group's name, so a name is told by having no buttons
+    const groupName = (g: unknown) => groupNames.includes(textOf(g)) && !nodes(g).some(n => n.type === 'Button')
+    const choices = (blocks.children ?? []).filter(g => !groupName(g) && ["Coco's voice in replies", 'Warmth', 'Marks in the conversation', 'Language'].some(label => textOf(g).startsWith(label)))
     expect(choices.length).toBe(4)
     // two blank rows above every setting, on every surface; nothing above the first block of the page or right under a group's name
-    for (const group of choices) { const i = blocks.children!.indexOf(group); expect((group as Tree).props?.marginTop ?? 0).toBe(i === 0 || groupNames.includes(textOf(blocks.children![i - 1])) ? 0 : 2) }
+    for (const group of choices) { const i = blocks.children!.indexOf(group); expect((group as Tree).props?.marginTop ?? 0).toBe(i === 0 || groupName(blocks.children![i - 1]) ? 0 : 2) }
     await ui.press({ key: 'coco:book:tab:offerings' }); await ui.redraw()
     tree = await ui.drawn()
     const page = (tree as Tree).children?.[4] as Tree

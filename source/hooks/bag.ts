@@ -41,7 +41,7 @@ export type BagWords = {
   himGroups?: Record<'companion' | 'together', string>; quotaGroups?: Record<'quota' | 'session' | 'more', string>
   noteGroups?: Record<'notes' | 'lastStop', string>
   look?: Record<'label' | 'coco' | 'dake' | 'maid' | 'fish' | 'help', string> // who is on the desktop band and the pet (claudeForm)
-  bagStyle?: Record<'label' | 'classic' | 'mv' | 'help', string> // the bag's pictures: the current ones or the MV's (bagStyle)
+  bagStyle?: Record<'label' | 'classic' | 'mv', string> // the bag's pictures: the current ones or the MV's (bagStyle)
   // their open windows on the first page (E1-2): the group's name with {n}, what a window is doing since {time} or now,
   // and the marks for the window you are reading in and the one the desktop pet follows
   windows?: Record<'title' | 'working' | 'quiet' | 'workingNow' | 'quietNow' | 'here' | 'follows', string>

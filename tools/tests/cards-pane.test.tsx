@@ -278,8 +278,8 @@ for (const surface of ['terminal', 'vscode', 'mobile'] as const) for (const cols
   await flat()
   // in words the tray shows only once a card is in it, without its hints (owner 10-19: 「纯文字版把这些去掉」)
   const words = surface !== 'mobile'
-  const hints = async () => [await ui.find({ text: /Nothing in the tray/ }), await ui.find({ text: /Once it is sent/ })].filter(Boolean).length
-  expect(await hints()).toBe(words ? 0 : 2)
+  const hints = async () => [await ui.find({ text: /Nothing in the tray/ })].filter(Boolean).length
+  expect(await hints()).toBe(words ? 0 : 1)
   expect(!!(await ui.find({ text: /Going with the next message/ }))).toBe(!words)
   expect(!!(await ui.find({ key: 'motion:' }))).toBe(!words)
   await ui.press({ key: 'card:agent:note-taker' })
@@ -292,7 +292,7 @@ for (const surface of ['terminal', 'vscode', 'mobile'] as const) for (const cols
   await w.clock.advance(1000)
   expect(await ui.find({ key: 'untray:agent:note-taker' })).toBeDefined()
   expect(await ui.find({ text: /Going with the next message/ })).toBeDefined()
-  expect(await hints()).toBe(words ? 0 : 1)
+  expect(await hints()).toBe(0)
   await flat()
   // a second press puts it back
   await ui.press({ key: 'card:agent:note-taker' })

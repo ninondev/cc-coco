@@ -3,9 +3,15 @@
 from pathlib import Path
 import shutil
 import subprocess
+import sys
 import tempfile
 
+sys.path.insert(0, str(Path(__file__).resolve().parents[1]))
+from hooks_source import hook_directory
+
 ROOT = Path(__file__).resolve().parents[2]
+# The canonical cost source: plugin/hooks-source here, source/hooks in the public tree.
+HOOKS = hook_directory(ROOT / 'plugin').relative_to(ROOT)
 
 def check(root, script):
     return subprocess.run(['python3', str(root / 'tools' / script), '--check'],
@@ -21,16 +27,16 @@ def main():
             return result.returncode
     with tempfile.TemporaryDirectory(prefix='k1-bundles-red-') as folder:
         copy = Path(folder)
-        shutil.copytree(ROOT / 'plugin/hooks/cost', copy / 'plugin/hooks/cost')
+        shutil.copytree(ROOT / HOOKS / 'cost', copy / HOOKS / 'cost')
         (copy / 'tools').mkdir()
-        for name in (*scripts, 'cost-units-entry.ts'):
+        for name in (*scripts, 'cost-units-entry.ts', 'hooks_source.py'):
             shutil.copy2(ROOT / 'tools' / name, copy / 'tools' / name)
         for script in scripts:
             result = check(copy, script)
             if result.returncode:
                 raise RuntimeError('Bundle is not deterministic across scratch roots: ' + result.stdout + result.stderr)
         for script, relative in zip(scripts, ('core/index.ts', 'runtime.ts')):
-            source = copy / 'plugin/hooks/cost' / relative
+            source = copy / HOOKS / 'cost' / relative
             original = source.read_text()
             source.write_text(original + '\n// Controlled stale source fixture.\n')
             result = check(copy, script)

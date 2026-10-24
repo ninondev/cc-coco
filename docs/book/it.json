@@ -120,8 +120,7 @@
     ],
     "shelf": {
       "head": "File più aperti",
-      "note": "I cinque file che Claude ha aperto di più qui negli ultimi 30 giorni. Solo i nomi.",
-      "empty": "Quando Claude leggerà file in questa cartella, i cinque più aperti appariranno qui.",
+      "note": "I cinque file che Claude ha aperto di più qui negli ultimi 30 giorni.",
       "error": "Non è stato possibile leggere l'elenco. Riaprire per riprovare."
     }
   },
@@ -224,11 +223,8 @@
       "failed": "La compilazione non è finita",
       "retry": "Riprova",
       "stopped": "Non è in esecuzione",
-      "stoppedLine": "(riposa dietro le quinte)",
       "hidden": "Nascosto fino alle {time}",
-      "hiddenLine": "(aspetta dietro le quinte)",
       "corner": "Non può ancora seguire la tua finestra",
-      "cornerLine": "(aspetta in un angolo dello schermo)",
       "follow": "Lasciala seguire la finestra",
       "followHelp": "Legge solo la posizione della finestra.",
       "waiting": "Aspetta il tuo sì",
@@ -236,7 +232,6 @@
       "waitingHelp": "Attiva Coco Pet in Privacy e sicurezza › Accessibilità.",
       "openSettings": "Apri Impostazioni di Sistema",
       "following": "Accanto alla tua finestra",
-      "followingLine": "(la segue ovunque)",
       "update": "Aggiornamento disponibile",
       "updateButton": "Aggiornala",
       "size": "La sua taglia",
@@ -296,7 +291,7 @@
     },
     "bookmark": {
       "label": "Foglietti e file più aperti",
-      "help": "All'inizio di una nuova sessione, ti dice a che punto eri. Salvato solo su questo computer."
+      "help": "All'inizio di una nuova sessione, ti dice a che punto eri."
     },
     "notes": {
       "label": "Le sue note",
@@ -308,7 +303,7 @@
     },
     "neighbours": {
       "label": "Luci dei vicini",
-      "help": "Si accorge quando altri agenti di programmazione lavorano. Legge solo se sono occupati e il loro utilizzo, mai il contenuto. Non invia nulla."
+      "help": "Si accorge quando altri agenti di programmazione lavorano. Legge solo se sono occupati e il loro utilizzo."
     }
   },
   "check": {

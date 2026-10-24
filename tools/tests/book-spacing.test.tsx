@@ -150,10 +150,11 @@ describe('zh and ja book spacing', () => {
     expect(wrong).toEqual([])
   })
 
-  // BOOK 10-09 (label column, D3): a choice stands as its label (bold) with "Now: value" under it in the secondary colour,
-  // and from 48 columns a fact is its label in a column and its value beside it, with no colon. Under 48 columns a fact keeps
+  // BOOK 10-09 (label column, D3): a choice stands as its label (bold) with "Now: value" under it in the secondary colour
+  // in the terminal; the desktop marks the chosen button and has no "Now:" line (owner 10-23). From 48 columns
+  // a fact is its label in a column and its value beside it, with no colon. Under 48 columns a fact keeps
   // today's inline form, so zh, zh-Hant and ja keep their colon there.
-  for (const {code} of LANGS) test('choice labels carry Now under them on both book surfaces; zh and ja facts keep their colon under 48 columns: '+code, { options:{language:'auto',resolvedLanguage:code}, timeoutMs: 60_000 }, async ($, on) => {
+  for (const {code} of LANGS) test('choice labels carry Now under them in the terminal and not on the desktop; zh and ja facts keep their colon under 48 columns: '+code, { options:{language:'auto',resolvedLanguage:code}, timeoutMs: 60_000 }, async ($, on) => {
     await loadD1Words(async () => D1_WORDS_TEXT)
     // The Breathing row (PLAY 4.1, main Settings since 10-09) takes its words from c3-text.json, as the plugin does.
     await loadC3Words(async () => C3_WORDS_RAW)
@@ -183,7 +184,9 @@ describe('zh and ja book spacing', () => {
         const rendered = (await ui.findAll({ type: 'Text' })).map(node => String(node.text))
         for (const header of headers) {
           if (!rendered.includes(header.label)) wrong.push(`${code}.${surface}.${columns}: missing choice label ${JSON.stringify(header.label)}`)
-          if (!rendered.some(shown => glued(shown) === glued(header.now))) wrong.push(`${code}.${surface}.${columns}: missing Now line ${JSON.stringify(header.now)}`)
+          const nowShown = rendered.some(shown => glued(shown) === glued(header.now))
+          if (surface === 'terminal' && !nowShown) wrong.push(`${code}.${surface}.${columns}: missing Now line ${JSON.stringify(header.now)}`)
+          if (surface === 'desktop' && nowShown) wrong.push(`${code}.${surface}.${columns}: Now line on the desktop ${JSON.stringify(header.now)}`)
           if (rendered.includes(`${header.label}:${header.now}`)) wrong.push(`${code}.${surface}.${columns}: colon joined choice header ${header.label}`)
         }
         if (code.startsWith('zh') || code === 'ja') {
@@ -203,8 +206,8 @@ describe('zh and ja book spacing', () => {
             await ui.press({ key: 'coco:book:tab:settings' })
             await ui.redraw()
           }
-          if (code === 'zh' && (!rendered.includes('回复语气') || !rendered.includes('现在:开'))) wrong.push(`${code}.${surface}.${columns}: exact voice header missing`)
-          if (code === 'ja' && (!rendered.includes('言語') || !rendered.some(shown => glued(shown) === 'いま:自動(日本語)'))) wrong.push(`${code}.${surface}.${columns}: exact language header missing`)
+          if (code === 'zh' && (!rendered.includes('回复语气') || (surface === 'terminal') !== rendered.includes('现在:开'))) wrong.push(`${code}.${surface}.${columns}: exact voice header missing`)
+          if (code === 'ja' && (!rendered.includes('言語') || (surface === 'terminal') !== rendered.some(shown => glued(shown) === 'いま:自動(日本語)'))) wrong.push(`${code}.${surface}.${columns}: exact language header missing`)
         }
         await ui.unmount()
       }

@@ -188,7 +188,13 @@ describe('the companion section on both book surfaces', () => {
       expect(text).not.toContain('A newer companion came with this plugin.')
       // a pet that reports no capture switch (Linux, or one from before it) gets no row for it
       expect(text).not.toContain('Show in screenshots and recordings')
-      expect(text).toContain('Now:\u00a0Larger'); expect(text).toContain('Now:\u00a0On')
+      // the terminal says the size and the login in words; the desktop marks the chosen buttons (owner 10-23)
+      if (surface === 'terminal') { expect(text).toContain('Now:\u00a0Larger'); expect(text).toContain('Now:\u00a0On') }
+      else {
+        expect(text).not.toContain('Now:\u00a0Larger')
+        expect((await ui.find({ type: 'Button', key: 'coco:companion:larger' }))?.props.variant).toBe('primary')
+        expect((await ui.find({ type: 'Button', key: 'coco:companion:on' }))?.props.variant).toBe('primary')
+      }
       expect(text).not.toContain('Shown here at half size.')
       const sizeFigures = (await ui.findAll({ type: 'Svg' })).filter(svg => String(svg.props.alt).startsWith('Larger:'))
       // Coco Pet draws her hand-drawn at every size, so every size's preview is read as painted
@@ -198,7 +204,9 @@ describe('the companion section on both book surfaces', () => {
     test(`${surface}: the capture switch shows only when the pet reports it`, async ($, on) => {
       const f = fixture(on, { info: { running: true, accessibility: true, size: 'medium', version: PLUGIN_VERSION, capture: false } }); const ui = await settings($, surface, f.w)
       const text = (await ui.findAll({ type: 'Text' })).map(t => t.text).join('\n')
-      expect(text).toContain('Show in screenshots and recordings'); expect(text).toContain('Now:\u00a0Off')
+      expect(text).toContain('Show in screenshots and recordings')
+      if (surface === 'terminal') expect(text).toContain('Now:\u00a0Off')
+      else expect((await ui.find({ type: 'Button', key: 'coco:companion:captureOff' }))?.props.variant).toBe('primary')
       expect(await ui.find({ type: 'Button', key: 'coco:companion:captureOn' })).toBeDefined()
       expect(await ui.find({ type: 'Button', key: 'coco:companion:captureOff' })).toBeDefined()
     })

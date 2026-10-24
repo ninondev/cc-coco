@@ -409,10 +409,10 @@ describe('his book: the shelf and the comment he liked last', () => {
     expect(page.join('')).not.toContain(ROOT)
   })
 
-  test('a new folder says what will appear; Bookmark and shelf off deletes the shelf and hides the list', async ($, on) => {
+  test('a new folder shows no shelf until Claude reads a file; Bookmark and shelf off deletes the shelf and hides the list', async ($, on) => {
     const f = fixture(on)
     await begin($, f, 'desktop')
-    expect(await book($, 'log')).toContain(WORDS_BOOK.en.library.shelf.empty)
+    expect(await book($, 'log')).not.toContain(WORDS_BOOK.en.library.shelf.head)
     await read($, f, 'r1', 'a.ts')
     await $.turn.complete({ turnId: 't1', answer: 'done', reason: 'answer', durationMs: 900, isAborted: false })
     expect(await book($, 'log')).toContain('1. a.ts')
@@ -424,7 +424,6 @@ describe('his book: the shelf and the comment he liked last', () => {
     expect(f.writes.some(w => w.key === 'shelf' && w.value === undefined)).toBe(true)
     const page = await book($, 'log')
     expect(page).not.toContain(WORDS_BOOK.en.library.shelf.head)
-    expect(page).not.toContain(WORDS_BOOK.en.library.shelf.empty)
   })
 
   test('the Reading log holds the comment he liked last, from this session\'s memory', async ($, on) => {

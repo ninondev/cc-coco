@@ -9,8 +9,6 @@
   "demo.surface.desktop": "डेस्कटॉप",
   "demo.surface.chat": "चैट में",
   "demo.surface.book": "सेटिंग्स",
-  "demo.prompt": "आपका प्रॉम्प्ट; Claude Code इसे बनाता है; यहाँ नहीं",
-  "demo.caption": "एक डेमो। प्रोजेक्ट, सेशन और संख्याएँ काल्पनिक हैं। फ़्रेम के अंदर सब कुछ कोको का असली कोड बनाता है।",
   "demo.width.columns": "चौड़ाई: {n} कॉलम",
   "demo.width.px": "चौड़ाई: {n} px",
   "demo.session": "सेशन",
@@ -32,14 +30,12 @@
   "demo.resume": "जारी",
   "demo.restart": "शुरू से",
   "demo.skip": "सेशन पर जाएँ",
-  "demo.key": "बैंड के चिह्न: चैट कितनी भरी है, 5 घंटे की विंडो, सेटिंग्स",
   "demo.openings": "वह सेशन कैसे शुरू करती है",
   "demo.opening.startup": "नया",
   "demo.opening.resume": "जारी",
   "demo.opening.clear": "साफ़",
   "demo.opening.compact": "संक्षिप्त",
   "demo.opening.fork": "फ़ोर्क",
-  "demo.hello": "नमस्ते",
   "demo.chip.poke": "छेड़ो",
   "demo.chip.praise": "शाबाश",
   "demo.notHere": "यह प्लगइन में काम करता है, आपके कंप्यूटर पर",
@@ -49,6 +45,5 @@
   "demo.unofficial": "अनौपचारिक फ़ैन प्रोजेक्ट, Anthropic से जुड़ा नहीं और Anthropic से मंज़ूर भी नहीं। Claude, Claude Code और Clawd Anthropic के हैं।",
   "demo.theme.light": "लाइट",
   "demo.theme.dark": "डार्क",
-  "demo.langMenu": "भाषा",
-  "demo.reply": "ऐप का जवाब"
+  "demo.langMenu": "भाषा"
 }

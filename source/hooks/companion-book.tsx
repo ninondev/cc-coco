@@ -99,7 +99,8 @@ export class CompanionBook {
 export function companionSection(ui: Elements['desktop'] | Elements['terminal'] | Elements['vscode'] | Elements['mobile'], desktop: boolean, mac: BookWords['settings']['companion'], now: string, d: CompanionBookData, press: (action: CompanionAction) => void | Promise<void>, slant: boolean, columns: number, hiddenTime: string, language?: BookWords['settings']['language'], remote = false): RenderElement {
   const { Box, Text, Button } = ui
   const Svg = 'Svg' in ui ? ui.Svg : undefined
-  const nowLine = (value: string) => nowFit(fill(now, { value }), columns)
+  // the desktop, VS Code and the phone mark the chosen button themselves; the terminal says it in words
+  const nowLine = (value: string) => desktop ? null : `  ${nowFit(fill(now, { value }), columns)}`
   const app = (d.info.targets?.includes('vscode') ? d.targetApp ?? 'Claude' : 'Claude').replace(/VS Code/g, 'VS\u00a0Code')
   const note = (text: string) => {
     const shown = text.replace(/VS Code/g, 'VS\u00a0Code')
@@ -139,7 +140,7 @@ export function companionSection(ui: Elements['desktop'] | Elements['terminal'] 
         {program ? programNotes() : null}
       </Box>
     </Box>
-    {language && d.info.targets?.includes('vscode') ? <Box flexDirection="column" {...(remote ? {} : { gap: 1 })}><Text wrap="wrap"><Text bold>{w.target.label}</Text>{`  ${nowLine(d.target === 'auto' || !d.target ? fill(language.autoNow, { auto: language.auto, language: app }) : app)}`}</Text><Box flexDirection="row" flexWrap="wrap" gap={1}>{(['auto', 'claude', 'vscode'] as const).map(value => <Button key={`coco:set:companionTarget:${value}`} label={value === 'auto' ? language.auto : value === 'claude' ? 'Claude' : 'VS\u00a0Code'} {...((d.target ?? 'auto') === value ? { variant: 'primary' as const } : {})} onPress={() => {}} />)}</Box>{note(w.target.help)}</Box> : null}
+    {language && d.info.targets?.includes('vscode') ? <Box flexDirection="column" {...(remote ? {} : { gap: 1 })}><Text wrap="wrap"><Text bold>{w.target.label}</Text>{nowLine(d.target === 'auto' || !d.target ? fill(language.autoNow, { auto: language.auto, language: app }) : app)}</Text><Box flexDirection="row" flexWrap="wrap" gap={1}>{(['auto', 'claude', 'vscode'] as const).map(value => <Button key={`coco:set:companionTarget:${value}`} label={value === 'auto' ? language.auto : value === 'claude' ? 'Claude' : 'VS\u00a0Code'} {...((d.target ?? 'auto') === value ? { variant: 'primary' as const } : {})} onPress={() => {}} />)}</Box>{note(w.target.help)}</Box> : null}
     {d.notRun ? note(w.notRun) : null}
     {s === 'tools' && d.afterTools ? note(w.toolsAfter) : null}
     {s === 'oldTools' && d.afterTools ? note(w.oldToolsAfter) : null}
@@ -150,7 +151,7 @@ export function companionSection(ui: Elements['desktop'] | Elements['terminal'] 
     </Box> : null}
     {running ? <>
       <Box flexDirection="column" {...(remote ? {} : { marginTop: 1, gap: 1 })}>
-        <Text wrap="wrap"><Text bold>{w.size}</Text>{`  ${nowLine(names[sizes.indexOf(size)] ?? size)}`}</Text>
+        <Text wrap="wrap"><Text bold>{w.size}</Text>{nowLine(names[sizes.indexOf(size)] ?? size)}</Text>
         <Box flexDirection="row" flexWrap="wrap" gap={1} alignItems="flex-end">
           {sizes.map((value, i) => <Box flexDirection="column" alignItems="center" gap={1}>
             {desktop && Svg && d.figures?.[value] ? <Svg {...d.figures[value]!} alt={fill(w.sizeAlt.painted, { size: names[i] ?? value })} /> : null}
@@ -159,11 +160,11 @@ export function companionSection(ui: Elements['desktop'] | Elements['terminal'] 
         </Box>
       </Box>
       <Box flexDirection="column" {...(remote ? {} : { marginTop: 1, gap: 1 })}>
-        <Text wrap="wrap"><Text bold>{w.login}</Text>{`  ${nowLine(d.login ? w.on : w.off)}`}</Text>
+        <Text wrap="wrap"><Text bold>{w.login}</Text>{nowLine(d.login ? w.on : w.off)}</Text>
         {buttons(button('on', w.on, d.login), button('off', w.off, !d.login))}
       </Box>
       {typeof d.info.capture === 'boolean' ? <Box flexDirection="column" {...(remote ? {} : { marginTop: 1, gap: 1 })}>
-        <Text wrap="wrap"><Text bold>{w.capture}</Text>{`  ${nowLine(d.info.capture ? w.on : w.off)}`}</Text>
+        <Text wrap="wrap"><Text bold>{w.capture}</Text>{nowLine(d.info.capture ? w.on : w.off)}</Text>
         {buttons(button('captureOn', w.on, d.info.capture), button('captureOff', w.off, !d.info.capture))}
       </Box> : null}
     </> : null}

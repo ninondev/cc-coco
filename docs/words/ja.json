@@ -9,8 +9,6 @@
   "demo.surface.desktop": "デスクトップ",
   "demo.surface.chat": "チャット内",
   "demo.surface.book": "設定",
-  "demo.prompt": "あなたのプロンプト。Claude Codeが描画、ここでは描画しない",
-  "demo.caption": "デモです。プロジェクト名、セッション、数値はすべて架空です。枠内はすべてCocoの本物のコードが描いています。",
   "demo.width.columns": "ターミナル幅:{n}列",
   "demo.width.px": "幅:{n} px",
   "demo.session": "セッション",
@@ -32,14 +30,12 @@
   "demo.resume": "再開",
   "demo.restart": "最初から",
   "demo.skip": "セッションへスキップ",
-  "demo.key": "バンドのマーク:チャットの埋まり具合、5時間ウィンドウ、設定",
   "demo.openings": "セッションの始め方",
   "demo.opening.startup": "新規",
   "demo.opening.resume": "再開",
   "demo.opening.clear": "クリア",
   "demo.opening.compact": "圧縮済み",
   "demo.opening.fork": "フォーク",
-  "demo.hello": "あいさつ",
   "demo.chip.poke": "つんつん",
   "demo.chip.praise": "えらい",
   "demo.notHere": "プラグインで動きます、あなたのパソコンで",
@@ -49,6 +45,5 @@
   "demo.unofficial": "非公式のファンメイド作品であり、Anthropicとは一切関係なく、公認されたものでもありません。Claude、Claude Code、およびClawdはAnthropicに帰属します。",
   "demo.theme.light": "明色",
   "demo.theme.dark": "暗色",
-  "demo.langMenu": "言語",
-  "demo.reply": "アプリ応答"
+  "demo.langMenu": "言語"
 }

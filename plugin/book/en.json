@@ -120,8 +120,7 @@
     ],
     "shelf": {
       "head": "Most-opened files",
-      "note": "The five files Claude opened most here in the last 30 days. Only names are kept.",
-      "empty": "After Claude reads files in this folder, the five it opens most will appear here.",
+      "note": "The five files Claude opened most here in the last 30 days.",
       "error": "Could not read the file list. Opening again will retry."
     }
   },
@@ -224,11 +223,8 @@
       "failed": "The build didn't finish",
       "retry": "Try again",
       "stopped": "Not running",
-      "stoppedLine": "(resting offstage)",
       "hidden": "Hidden until {time}",
-      "hiddenLine": "(waiting in the wings)",
       "corner": "Can't follow your window yet",
-      "cornerLine": "(waiting in a corner instead)",
       "follow": "Let Coco follow the window",
       "followHelp": "Coco only reads where the window is.",
       "waiting": "Waiting for your OK",
@@ -236,7 +232,6 @@
       "waitingHelp": "Switch on Coco Pet under Privacy & Security › Accessibility.",
       "openSettings": "Open System Settings",
       "following": "Beside your window",
-      "followingLine": "(follows it wherever it goes)",
       "update": "Update ready",
       "updateButton": "Update Coco",
       "size": "Coco's size",
@@ -296,7 +291,7 @@
     },
     "bookmark": {
       "label": "Sticky notes and most-opened files",
-      "help": "When a new session starts, Coco tells you where you stopped. Kept on this computer only."
+      "help": "When a new session starts, Coco tells you where you stopped."
     },
     "notes": {
       "label": "Coco's notes",
@@ -308,7 +303,7 @@
     },
     "neighbours": {
       "label": "Neighbours' lights",
-      "help": "Coco notices when other coding agents are working. Only whether they are busy and their usage; never content, never sent anywhere."
+      "help": "Coco notices when other coding agents are working. Only whether they are busy and their usage."
     }
   },
   "check": {

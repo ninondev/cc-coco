@@ -155,7 +155,8 @@ describe('the review of his book and marks', () => {
     const keys = (await book.findAll({ type: 'Button' })).map(b => String(b.key)).filter(k => k.startsWith('coco:set:marks:'))
     expect(keys).toEqual(['coco:set:marks:on', 'coco:set:marks:replies', 'coco:set:marks:off'])
     const shown = (await book.findAll({ type: 'Text' })).map((node: any) => node.text ?? '').join(' ')
-    expect(shown).toMatch(/Marks in the conversation\s+Now:\u00a0Only\u00a0Coco's/)
+    expect(shown).toMatch(/Marks in the conversation/)
+    expect((await book.find({ type: 'Button', key: 'coco:set:marks:replies' }))?.props.variant).toBe('primary')
   })
 
   test('the footer label is the desktop\'s, behind the marks switch', async ($, on) => {

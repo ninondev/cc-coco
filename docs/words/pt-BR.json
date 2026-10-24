@@ -9,8 +9,6 @@
   "demo.surface.desktop": "Desktop",
   "demo.surface.chat": "No chat",
   "demo.surface.book": "Ajustes",
-  "demo.prompt": "Seu prompt; Claude Code o desenha; não desenhado aqui",
-  "demo.caption": "Uma demo. O projeto, a sessão e os números são fictícios. O código real da Coco desenha tudo dentro do quadro.",
   "demo.width.columns": "Largura: {n} colunas",
   "demo.width.px": "Largura: {n} px",
   "demo.session": "A sessão",
@@ -32,14 +30,12 @@
   "demo.resume": "Continuar",
   "demo.restart": "Reiniciar",
   "demo.skip": "Ir para a sessão",
-  "demo.key": "As marcas da faixa: quão cheia está a conversa, a janela de 5 horas, os ajustes",
   "demo.openings": "Como ela inicia uma sessão",
   "demo.opening.startup": "Nova",
   "demo.opening.resume": "Retomada",
   "demo.opening.clear": "Limpa",
   "demo.opening.compact": "Compactada",
   "demo.opening.fork": "Bifurcada",
-  "demo.hello": "Saudar",
   "demo.chip.poke": "Cutucar",
   "demo.chip.praise": "Mandou bem",
   "demo.notHere": "Isso funciona no plugin, no seu computador",
@@ -49,6 +45,5 @@
   "demo.unofficial": "Projeto de fã não oficial, sem vínculo com a Anthropic e sem o aval dela. Claude, Claude Code e Clawd pertencem à Anthropic.",
   "demo.theme.light": "Claro",
   "demo.theme.dark": "Escuro",
-  "demo.langMenu": "Idioma",
-  "demo.reply": "resposta do app"
+  "demo.langMenu": "Idioma"
 }

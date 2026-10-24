@@ -259,7 +259,7 @@ function bagStyleBlocks(d: BookData, w: BookWords, lang: string): Block[] {
   const style = bagWords(lang)?.bagStyle
   if (!style) return []
   const current = bagStyleOf(d)
-  return [{ t: 'choice', label: style.label, current, now: fill(w.settings.now, { value: style[current] }), options: BAG_STYLES.map(value => ({ value, label: style[value], key: `coco:set:bagStyle:${value}` })), help: style.help }]
+  return [{ t: 'choice', label: style.label, current, now: fill(w.settings.now, { value: style[current] }), options: BAG_STYLES.map(value => ({ value, label: style[value], key: `coco:set:bagStyle:${value}` })) }]
 }
 function pageLead(page: Page, body: readonly Block[], d: BookData, w: BookWords): string | undefined {
   const lang = d.view?.lang ?? 'en', template = bagWords(lang)?.lead?.[page]
@@ -276,22 +276,14 @@ function pageLead(page: Page, body: readonly Block[], d: BookData, w: BookWords)
     const size = c.info.size === 'tiny' || c.info.size === 'small' ? 'medium' : c.info.size ?? 'medium'
     return bagFill(template, { size: w.settings.companion.macSizes[MAC_SIZES.indexOf(size)] ?? size, name: bagWords(lang)?.look?.[lookOf(d)] ?? d.own.name })
   }
-  // what is left of each window, as a percentage (owner 10-15: 「5小时额度还剩「具体额度」7天额度还剩「具体额度」」); both or none
-  if (page === 'offerings') {
-    const limits = d.usage?.rateLimits ?? d.view?.quota?.rateLimits ?? [], lang = d.view?.lang ?? 'en'
-    const left = (kind: string) => { const limit = limits.find(l => l.kind === kind); return limit && hasNumber(limit.percentUsed) ? percentText(Math.round(Math.max(0, 100 - limit.percentUsed)), lang) : undefined }
-    const fiveLeft = left('five_hour'), weekLeft = left('seven_day')
-    const q = bagQuota(d)
-    return fiveLeft && weekLeft ? bagFill(template, { fiveLeft, weekLeft, five: q.five ?? 0, week: q.week ?? 0, total: 4 }) : undefined
-  }
   return undefined
 }
 // The files he opens most and the seven short reads, as the sticky notes page draws them and, from step 2, the zine page.
 function shelfBlocks(d: BookData, w: BookWords, lang: string): Block[] {
   const sh = w.library.shelf, shelf = d.shelf
-  return !reminderSettings(d.store).bookmark || shelf === undefined ? [] : [
+  return !reminderSettings(d.store).bookmark || shelf === undefined || shelf === 'empty' ? [] : [
     { t: 'heading', text: sh.head },
-    ...(shelf === 'error' ? [{ t: 'note' as const, text: sh.error }] : shelf === 'empty' ? [{ t: 'note' as const, text: sh.empty }]
+    ...(shelf === 'error' ? [{ t: 'note' as const, text: sh.error }]
       : [...shelf.names.map((name, n): Block => ({ t: 'para', text: `${numberText(n + 1, lang)}. ${name}` })), { t: 'note' as const, text: sh.note }]),
   ]
 }
@@ -349,7 +341,7 @@ function pageBody(page: Page, w: BookWords, d: BookData, surface: 'desktop' | 't
     const bag = bagWords(lang), names = bag?.socks, worn = d.socks ?? 'honmei', drawer = d.drawer ?? { mode: 'all' as const, open: SOCK_PAIRS }
     // How the drawer fills (owner 10-15): collect, a pair for each first, or every pair at once.
     const ways = { collect: playWord(lang, 'socks.mode.collect'), all: playWord(lang, 'socks.mode.all') }, label = playWord(lang, 'socks.mode.label')
-    const mode: Block[] = label && ways.collect && ways.all ? [{ t: 'choice', label, current: drawer.mode, now: fill(w.settings.now, { value: ways[drawer.mode] }), options: (['collect', 'all'] as const).map(value => ({ value, label: ways[value], key: `coco:set:socksMode:${value}` })), help: playWord(lang, 'socks.mode.help') }] : []
+    const mode: Block[] = label && ways.collect && ways.all ? [{ t: 'choice', label, current: drawer.mode, now: fill(w.settings.now, { value: ways[drawer.mode] }), options: (['collect', 'all'] as const).map(value => ({ value, label: ways[value], key: `coco:set:socksMode:${value}` })) }] : []
     // A pair they do not have yet says how they get it.
     const pairs: Block = { t: 'socks', pairs: SOCK_PAIRS.map((key, i) => ({ key, label: names?.[i] ?? key, worn: key === worn, ...(drawer.open.includes(key) ? {} : { locked: playWord(lang, `socks.hint.${key}`) }) })) }
     // Step 2 (settings_drafts.py body_socks): the drawer under its group name, then the pair they wear and the way back
@@ -567,7 +559,7 @@ function pageBody(page: Page, w: BookWords, d: BookData, surface: 'desktop' | 't
     if (surface === 'mobile' || !cost || !label) return []
     // Where the screen lock cannot be read it stops after 30 minutes, which the question's own two hours do not say.
     const noLock = cost.warmNoLock ? costWord(lang, 'more.warm.helpNoLock') : ''
-    const help = [costWord(lang, 'more.warm.help'), costWord(lang, 'more.warm.cost'), noLock, cost.warmEnabled ? warmTodayLine(cost, lang) : warmHeldOffLine(cost, lang)].filter(Boolean).join('\n')
+    const help = [costWord(lang, 'more.warm.cost'), noLock, cost.warmEnabled ? warmTodayLine(cost, lang) : warmHeldOffLine(cost, lang)].filter(Boolean).join('\n')
     if (cost.warmAsking) return [choice(label, 'warm', 'on', { no: moreWord('ask.no', lang), on: moreWord('ask.yes', lang) }, warmAskLine(cost, lang) ? [warmAskLine(cost, lang), noLock].filter(Boolean).join('\n') : help, undefined, switches.off)]
     return [choice(label, 'warm', cost.warmEnabled ? 'on' : 'off', cost.warmEnabled || cost.warmAsked ? switches : { ask: switches.on, off: switches.off }, help)]
   }
@@ -698,8 +690,8 @@ function limitBlocks(d: BookData, w: BookWords, lang: string): Block[] {
 function breatheBlocks(choice: (label: string, setting: string, current: string, options: Record<string, string>, help?: string) => Block, on: boolean, switches: Record<string, string>, lang: string): Block[] {
   const label = playWord(lang, 'settings.breathe.label')
   if (!label) return []
-  const cost = playWord(lang, 'settings.breathe.cost'), help = playWord(lang, 'settings.breathe.help')
-  return [choice(label, 'breathe', on ? 'on' : 'off', switches, cost), ...(help ? [{ t: 'note' as const, text: help }] : [])]
+  const cost = playWord(lang, 'settings.breathe.cost')
+  return [choice(label, 'breathe', on ? 'on' : 'off', switches, cost)]
 }
 
 export function helperBoard(d:BookData,w:BookWords):Block[] {
@@ -975,18 +967,18 @@ export function desktopBook(
         </Box>
         const help = b.help ? <Text italic={aside(b.help)} wrap="wrap">{b.help}</Text> : null
         const tags = b.tags?.length ? <Text color="inactive" wrap="wrap">{tagLine(b.tags, lang)}</Text> : null
-        // A Button never wraps, and the label column's width is only its least (it grows to its longest line, as
-        // «Actuellement : Automatique (Français)» does), so the buttons stand beside it only when the widest one fits
-        // what is left; otherwise the label goes above them («Español (Latinoamérica)» at 52 columns).
-        const labelPx = Math.max(labelW * COLUMN_PX, planPx(b.label, true), planPx(b.now), b.tags?.length ? planPx(tagLine(b.tags, lang)) : 0)
+        // A Button never wraps, and the label column's width is only its least (it grows to its longest line), so the
+        // buttons stand beside it only when the widest one fits what is left; otherwise the label goes above them
+        // («Español (Latinoamérica)» at 52 columns).
+        const labelPx = Math.max(labelW * COLUMN_PX, planPx(b.label, true), b.tags?.length ? planPx(tagLine(b.tags, lang)) : 0)
         const beside = grid && labelPx + 2 * COLUMN_PX + Math.max(...b.options.map(o => planPx(o.label, o.value === b.current) + BUTTON_PAD)) <= measure * COLUMN_PX
         return beside
           ? <Box flexDirection="row" columnGap={2}>
-            <Box flexDirection="column" width={labelW} flexShrink={0}><Text bold wrap="wrap">{b.label}</Text><Text color="inactive" wrap="wrap">{nowFit(b.now, labelW)}</Text>{tags}</Box>
+            <Box flexDirection="column" width={labelW} flexShrink={0}><Text bold wrap="wrap">{b.label}</Text>{tags}</Box>
             <Box flexDirection="column" rowGap={1} flexGrow={1} flexShrink={1} minWidth={0}>{buttons}{help}</Box>
           </Box>
           : <Box flexDirection="column" rowGap={1}>
-            <Box flexDirection="column"><Text bold wrap="wrap">{b.label}</Text><Text color="inactive" wrap="wrap">{nowFit(b.now, measure)}</Text>{tags}</Box>
+            <Box flexDirection="column"><Text bold wrap="wrap">{b.label}</Text>{tags}</Box>
             {buttons}{help}
           </Box>
       }

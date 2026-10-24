@@ -9,8 +9,6 @@
   "demo.surface.desktop": "Bureau",
   "demo.surface.chat": "Dans le chat",
   "demo.surface.book": "Réglages",
-  "demo.prompt": "Ton prompt; Claude Code le dessine; pas dessiné ici",
-  "demo.caption": "Une démo. Le projet, la session et ses chiffres sont fictifs. Son vrai code dessine ce qui est dans le cadre.",
   "demo.width.columns": "Largeur: {n} colonnes",
   "demo.width.px": "Largeur: {n} px",
   "demo.session": "La session",
@@ -32,14 +30,12 @@
   "demo.resume": "Reprendre",
   "demo.restart": "Relancer",
   "demo.skip": "Aller à la session",
-  "demo.key": "Les repères du bandeau : remplissage du chat, fenêtre de 5 heures, réglages",
   "demo.openings": "Comment elle lance une session",
   "demo.opening.startup": "Nouvelle",
   "demo.opening.resume": "Reprise",
   "demo.opening.clear": "Effacée",
   "demo.opening.compact": "Compactée",
   "demo.opening.fork": "Branchée",
-  "demo.hello": "Saluer",
   "demo.chip.poke": "La piquer",
   "demo.chip.praise": "Bien joué",
   "demo.notHere": "Ça fonctionne dans le plugin, sur ton ordi",
@@ -49,6 +45,5 @@
   "demo.unofficial": "Projet de fan non officiel, sans lien avec Anthropic et non approuvé par Anthropic. Claude, Claude Code et Clawd appartiennent à Anthropic.",
   "demo.theme.light": "Clair",
   "demo.theme.dark": "Sombre",
-  "demo.langMenu": "Langue",
-  "demo.reply": "réponse de l'app"
+  "demo.langMenu": "Langue"
 }

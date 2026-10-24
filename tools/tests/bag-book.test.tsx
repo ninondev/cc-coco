@@ -158,7 +158,7 @@ describe('her itabag', () => {
   })
   // 10-17 (his yes on lane A's seven): the bag's pictures in the MV style, chosen on their page; the current ones stay the default
   test('their page offers the MV pictures: choosing them draws every page in navy and coral and keeps what a screen reader hears', async ($, on) => {
-    const STYLE = { label: 'Bag pictures', classic: 'As they are', mv: 'MV', help: 'How the bag at the top is drawn.' }
+    const STYLE = { label: 'Bag pictures', classic: 'As they are', mv: 'MV' }
     on('fs.read', { path: /[\\/]hooks[\\/]bag-text\.json$/ }, () => ({ value: JSON.stringify({ ...BAG, en: { ...BAG.en, bagStyle: STYLE } }) }))
     let settingsRecord: Record<string, unknown> | undefined
     on('store.*', ($, e, next) => { if (next.is('store.set', e) && e.key === 'bandSettings') settingsRecord = e.value as Record<string, unknown>; return next(e) })

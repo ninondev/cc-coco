@@ -61,8 +61,10 @@ describe('B4c companion rhythm and Now glue', () => {
       }
     }
   })
-  test('companion target, size and login glue Now to the current value', () => {
-    const shown = nodes(section('vscode')).filter(n => n.type === 'Text').map(text)
+  test('companion target, size and login glue Now to the current value in the terminal', () => {
+    const shown = nodes(section('terminal')).filter(n => n.type === 'Text').map(text)
     for (const expected of ['Now:\u00a0VS\u00a0Code', 'Now:\u00a0Medium', 'Now:\u00a0On']) expect(shown.some(s => s.includes(expected)), expected).toBe(true)
+    // VS Code, the desktop and the phone mark the chosen buttons instead (owner 10-23)
+    for (const surface of ['vscode', 'mobile', 'desktop'] as const) expect(nodes(section(surface)).filter(n => n.type === 'Text').map(text).some(s => s.includes('Now:')), surface).toBe(false)
   })
 })

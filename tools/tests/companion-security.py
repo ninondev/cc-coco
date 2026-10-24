@@ -15,7 +15,8 @@ with TemporaryDirectory(prefix='s2-swift-security-', dir=os.environ.get('TMPDIR'
     scratch = Path(scratch_name).resolve()
     env = dict(os.environ, HOME=str(scratch), CLAUDE_CONFIG_DIR=str(scratch / 'config'))
     sources = []
-    for name in ('SecureFiles.swift', 'RequestChannel.swift', 'Requests.swift', 'Motion.swift', 'Health.swift', 'PointerMonitor.swift'):
+    for name in ('SecureFiles.swift', 'RequestChannel.swift', 'Requests.swift', 'Motion.swift', 'Health.swift', 'PointerMonitor.swift',
+                 'DmThread.swift', 'QuotaPixels.swift', 'NewChat.swift'):
         source = options.source / name
         if source.exists():
             target = scratch / name
@@ -24,6 +25,15 @@ with TemporaryDirectory(prefix='s2-swift-security-', dir=os.environ.get('TMPDIR'
     feed = (options.source / 'Feed.swift').read_text()
     (scratch / 'FeedRecords.swift').write_text(feed.split('@MainActor\nfinal class Feed {', 1)[0])
     sources.append(str(scratch / 'FeedRecords.swift'))
+    # The feed records also name value types that live in drawing files: take those types alone.
+    if (options.source / 'D1.swift').exists():
+        d1 = (options.source / 'D1.swift').read_text()
+        (scratch / 'D1Records.swift').write_text('import Foundation\n' + d1[d1.index('struct D1Helper:'):d1.index('enum D1Away {')])
+        sources.append(str(scratch / 'D1Records.swift'))
+    if (options.source / 'PlayShake.swift').exists():
+        play = (options.source / 'PlayShake.swift').read_text()
+        (scratch / 'Stick.swift').write_text('import Foundation\n' + play[play.index('struct Stick:'):play.index('/// His stick, small')])
+        sources.append(str(scratch / 'Stick.swift'))
     pet = (options.source / 'Pet.swift').read_text()
     (scratch / 'Size.swift').write_text('import Foundation\n' + pet[pet.index('enum Size:'):pet.index('/// The idle animation')])
     sources.append(str(scratch / 'Size.swift'))

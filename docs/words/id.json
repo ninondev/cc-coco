@@ -9,8 +9,6 @@
   "demo.surface.desktop": "Desktop",
   "demo.surface.chat": "Di chat",
   "demo.surface.book": "Pengaturan",
-  "demo.prompt": "Prompt kamu; digambar Claude Code; tidak ditampilkan",
-  "demo.caption": "Sebuah demo. Proyek, sesi, dan angkanya fiktif. Semua yang ada di dalam bingkai digambar oleh kode aslinya.",
   "demo.width.columns": "Lebar: {n} kolom",
   "demo.width.px": "Lebar: {n} px",
   "demo.session": "Sesi",
@@ -32,14 +30,12 @@
   "demo.resume": "Lanjut",
   "demo.restart": "Mulai lagi",
   "demo.skip": "Langsung ke sesi",
-  "demo.key": "Tanda di pita: seberapa penuh obrolan, jendela 5 jam, pengaturan",
   "demo.openings": "Cara dia memulai sesi",
   "demo.opening.startup": "Baru",
   "demo.opening.resume": "Lanjutan",
   "demo.opening.clear": "Dihapus",
   "demo.opening.compact": "Diringkas",
   "demo.opening.fork": "Dicabang",
-  "demo.hello": "Sapa",
   "demo.chip.poke": "Colek",
   "demo.chip.praise": "Bagus",
   "demo.notHere": "Ini berfungsi di plugin, di komputermu",
@@ -49,6 +45,5 @@
   "demo.unofficial": "Proyek penggemar tidak resmi, tidak berafiliasi dengan Anthropic dan tidak didukung Anthropic. Claude, Claude Code, dan Clawd milik Anthropic.",
   "demo.theme.light": "Terang",
   "demo.theme.dark": "Gelap",
-  "demo.langMenu": "Bahasa",
-  "demo.reply": "balasan aplikasi"
+  "demo.langMenu": "Bahasa"
 }

@@ -120,8 +120,7 @@
     ],
     "shelf": {
       "head": "Arquivos mais abertos",
-      "note": "Os cinco arquivos que o Claude mais abriu aqui nos últimos 30 dias. Apenas nomes.",
-      "empty": "Quando o Claude ler arquivos nesta pasta, os cinco mais abertos aparecerão aqui.",
+      "note": "Os cinco arquivos que o Claude mais abriu aqui nos últimos 30 dias.",
       "error": "Não foi possível ler a lista de arquivos. Abrir novamente vai tentar de novo."
     }
   },
@@ -224,11 +223,8 @@
       "failed": "A compilação não terminou",
       "retry": "Tentar de novo",
       "stopped": "Não está rodando",
-      "stoppedLine": "(descansando nos bastidores)",
       "hidden": "Escondido até {time}",
-      "hiddenLine": "(esperando nos bastidores)",
       "corner": "Ainda não pode seguir sua janela",
-      "cornerLine": "(espera num canto da tela)",
       "follow": "Deixar ela seguir a janela",
       "followHelp": "Ela só lê a posição da janela.",
       "waiting": "Esperando seu sim",
@@ -236,7 +232,6 @@
       "waitingHelp": "Ative Coco Pet em Privacidade e Segurança › Acessibilidade.",
       "openSettings": "Abrir Ajustes do Sistema",
       "following": "Ao lado da sua janela",
-      "followingLine": "(segue ela aonde for)",
       "update": "Atualização disponível",
       "updateButton": "Atualizar ela",
       "size": "Tamanho dela",
@@ -296,7 +291,7 @@
     },
     "bookmark": {
       "label": "Lembretes e arquivos mais abertos",
-      "help": "Quando uma nova sessão começa, ela diz onde você parou. Guardado só neste computador."
+      "help": "Quando uma nova sessão começa, ela diz onde você parou."
     },
     "notes": {
       "label": "As notas dela",
@@ -308,7 +303,7 @@
     },
     "neighbours": {
       "label": "Luzes dos vizinhos",
-      "help": "Ela percebe quando outros agentes de programação estão trabalhando. Só vê se estão ocupados e o uso; nunca o conteúdo, e nada é enviado para fora."
+      "help": "Ela percebe quando outros agentes de programação estão trabalhando. Só vê se estão ocupados e o uso."
     }
   },
   "check": {

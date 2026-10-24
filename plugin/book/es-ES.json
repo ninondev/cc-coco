@@ -120,8 +120,7 @@
     ],
     "shelf": {
       "head": "Archivos más abiertos",
-      "note": "Los cinco archivos que más abrió Claude aquí en 30 días. Solo nombres.",
-      "empty": "Cuando Claude lea archivos en esta carpeta, los cinco más abiertos aparecerán aquí.",
+      "note": "Los cinco archivos que más abrió Claude aquí en 30 días.",
       "error": "No se pudo leer la lista de archivos. Ábrela de nuevo para reintentar."
     }
   },
@@ -224,11 +223,8 @@
       "failed": "La compilación no ha terminado",
       "retry": "Volver a intentarlo",
       "stopped": "No está en ejecución",
-      "stoppedLine": "(descansa entre bastidores)",
       "hidden": "Oculto hasta {time}",
-      "hiddenLine": "(espera entre bastidores)",
       "corner": "Aún no puede seguir tu ventana",
-      "cornerLine": "(espera en una esquina de la pantalla)",
       "follow": "Dejarla seguir la ventana",
       "followHelp": "Solo lee la posición de la ventana.",
       "waiting": "Espera tu permiso",
@@ -236,7 +232,6 @@
       "waitingHelp": "Activa Coco Pet en Privacidad y seguridad › Accesibilidad.",
       "openSettings": "Abrir Ajustes del Sistema",
       "following": "Junto a tu ventana",
-      "followingLine": "(la sigue adonde vaya)",
       "update": "Actualización disponible",
       "updateButton": "Actualizarla",
       "size": "Su tamaño",
@@ -296,7 +291,7 @@
     },
     "bookmark": {
       "label": "Pósits y archivos más abiertos",
-      "help": "Al comenzar una nueva sesión, te dice dónde te quedaste. Solo se guarda en este ordenador."
+      "help": "Al comenzar una nueva sesión, te dice dónde te quedaste."
     },
     "notes": {
       "label": "Sus notas",
@@ -308,7 +303,7 @@
     },
     "neighbours": {
       "label": "Luces de los vecinos",
-      "help": "Nota cuando otros agentes de programación están trabajando. Solo ve si están ocupados y su uso; nunca el contenido, y no envía nada a ningún sitio."
+      "help": "Nota cuando otros agentes de programación están trabajando. Solo ve si están ocupados y su uso."
     }
   },
   "check": {

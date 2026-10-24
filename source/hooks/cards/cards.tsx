@@ -1288,11 +1288,9 @@ export function registerCards(on: On, language: () => string): void {
     const pulledId = pane.pulled ?? pane.sinking ?? null
     const pulled = pulledId ? catalog.cards.find(c => c.id === pulledId) : undefined
     // a narrow pane stacks the face over the box, where the draft hides the empty slot too
-    // the empty place for it, as the draft's dashed outline with a line in it
+    // the empty place for it, as the draft's dashed outline
     let face: RenderElement | null = wide && !inline ? (
-      <Box key="hint" borderStyle="single" justifyContent="center" paddingX={2} paddingY={3}>
-        <Text color="inactive">{s.pullHint}</Text>
-      </Box>
+      <Box key="hint" borderStyle="single" justifyContent="center" paddingX={2} paddingY={3} />
     ) : null
     if (pulled) {
       const n = toNext(usage[pulled.id], now)
@@ -1373,8 +1371,8 @@ export function registerCards(on: On, language: () => string): void {
           <Box key="t" paddingX={0.5}>{button(`untray:${c.id}`, `${c.name} ×`, { plain: true })}</Box>
         </Box>
       )
-    // the tray: a heading with "all back" at its right, the slips in a shallow tray, and how the tray works
-    // in words (the terminal, VS Code) the tray shows only once a card is in it, without its hints (owner 10-19, on
+    // the tray: a heading with "all back" at its right and the slips in a shallow tray
+    // in words (the terminal, VS Code) the tray shows only once a card is in it (owner 10-19, on
     // the empty tray's lines: 「纯文字版把这些去掉」)
     const trayBox = flat && trayCards.length === 0 ? null : (
       <Box key="tray" flexDirection="column" rowGap={0.5}>
@@ -1383,7 +1381,6 @@ export function registerCards(on: On, language: () => string): void {
           {trayCards.length > 0 ? button('allback:', s.allBack, { plain: true, dimColor: true }) : null}
         </Box>
         {filmed('chips', 'tray', {}, { flexWrap: 'wrap', columnGap: 1, rowGap: 0.5, padding: flat ? 0.5 : 1, minHeight: flat ? undefined : 3 }, trayCards.length > 0 ? trayCards.map(chip) : <Text key="empty" color="inactive">{s.trayEmpty}</Text>)}
-        {flat ? null : <Text key="hint" color="inactive">{s.trayHint}</Text>}
       </Box>
     )
 
@@ -1424,7 +1421,7 @@ export function registerCards(on: On, language: () => string): void {
         else used += cw
       }
       const chips = Math.max(3, 1 + rowsN * 1.5 + (rowsN - 1) * 0.25)
-      return 1 + 0.25 + chips + 0.25 + linesOf(s.trayHint, width)
+      return 1 + 0.25 + chips
     }
     const kindsCols = (['all', 'skill', 'agent', 'command'] as const).reduce((n, k) => n + colsOf(`${s.kind[k]} ${counts[k]}`) + 4, 0)
     /** Rows above the box: the bar's title, search, kinds and views and the gaps between, and the gap under it. */

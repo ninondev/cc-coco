@@ -216,19 +216,19 @@
     "pt-BR": "Página semanal"
   },
   "week.setting.help": {
-    "zh": "每周记一页:只存次数,只存在这台电脑上。关掉后删除记录,这一页和每周一句都不再出现。",
-    "zh-Hant": "每週記一頁:只存次數,只存在這臺電腦上。關掉後刪除記錄,這一頁和每週一句都不再出現。",
-    "en": "A page each week: counts only, on this computer only. Off deletes the record, and the page and weekly line stop.",
-    "ja": "毎週1ページ:回数のみ、このパソコンのみ。オフで記録削除、ページと週の一言も消えます。",
-    "ko": "매주 한 페이지 기록합니다. 횟수만, 이 컴퓨터에만. 끄면 기록이 삭제되고 페이지와 주간 문구가 사라집니다.",
-    "de": "Jede Woche eine Seite: nur Zahlen, nur hier. Aus löscht alles, Seite und Wochenzeile verschwinden.",
-    "es-419": "Una página por semana: solo conteos, solo aquí. Al desactivar se borra todo y la página desaparece.",
-    "es-ES": "Una página por semana: solo conteos, solo aquí. Al desactivar se borra todo y la página desaparece.",
-    "fr": "Une page par semaine: compteurs seulement, sur cet ordi. Désactiver efface tout et la page disparaît.",
-    "hi": "हर हफ़्ते एक पन्ना: सिर्फ़ गिनती, इसी कंप्यूटर पर। बंद करें तो सब मिटता है।",
-    "id": "Satu halaman tiap minggu: hanya hitungan, hanya di sini. Matikan untuk hapus semua.",
-    "it": "Una pagina a settimana: solo conteggi, solo qui. Disattivare cancella tutto, pagina e riga spariscono.",
-    "pt-BR": "Uma página por semana: só contagens, só aqui. Desativar apaga tudo."
+    "zh": "每周记一页。关掉后删除记录,这一页和每周一句都不再出现。",
+    "zh-Hant": "每週記一頁。關掉後刪除記錄,這一頁和每週一句都不再出現。",
+    "en": "A page each week. Off deletes the record, and the page and weekly line stop.",
+    "ja": "毎週1ページ。オフで記録削除、ページと週の一言も消えます。",
+    "ko": "매주 한 페이지 기록합니다. 끄면 기록이 삭제되고 페이지와 주간 문구가 사라집니다.",
+    "de": "Jede Woche eine Seite. Aus löscht alles, Seite und Wochenzeile verschwinden.",
+    "es-419": "Una página por semana. Al desactivar se borra todo y la página desaparece.",
+    "es-ES": "Una página por semana. Al desactivar se borra todo y la página desaparece.",
+    "fr": "Une page par semaine. Désactiver efface tout et la page disparaît.",
+    "hi": "हर हफ़्ते एक पन्ना। बंद करें तो सब मिटता है।",
+    "id": "Satu halaman tiap minggu. Matikan untuk hapus semua.",
+    "it": "Una pagina a settimana. Disattivare cancella tutto, pagina e riga spariscono.",
+    "pt-BR": "Uma página por semana. Desativar apaga tudo."
   },
   "card.week.title": {
     "zh": "这周的一页",

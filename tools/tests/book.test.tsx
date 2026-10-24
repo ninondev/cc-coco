@@ -115,11 +115,11 @@ describe('his book', () => {
     await $.session.start(START); await settleLegacyStart($,w);
     await open($, 'settings')
     const ui = await $.ui.mount({ surface: 'desktop', ...PANE })
-    expect(await ui.find({ type: 'Text', text: /Now:\u00a0Light/ })).toBeDefined()
+    expect((await ui.find({ type: 'Button', key: 'coco:set:voice:light' }))?.props.variant).toBe('primary')
     await ui.press({ key: 'coco:set:voice:full' })
     await ui.redraw()
     expect(w.view().voice).toBe('full')
-    expect(await ui.find({ type: 'Text', text: /Now:\u00a0Full/ })).toBeDefined()
+    expect((await ui.find({ type: 'Button', key: 'coco:set:voice:full' }))?.props.variant).toBe('primary')
     const ask = { model: 'claude', promptModel: 'claude', tools: [], outputStyle: null, traits: [], surfaces: ['desktop' as const] }
     const sections = (await $.prompt.compose(ask)).sections.filter(s => s.id === 'coco:voice')
     expect(sections.map(s => s.text)).toEqual([VOICE.full])
@@ -136,18 +136,22 @@ describe('his book', () => {
     await $.session.start(START); await settleLegacyStart($,w);
     await open($, 'settings')
     const ui = await $.ui.mount({ surface: 'desktop', ...PANE })
-    expect(await pageText(ui)).toMatch(/Now:[\s\u00a0]Automatic[\s\u00a0]\(English\)/) // too long for the label column, so it wraps at its spaces (BOOK F2)
+    // the desktop marks the chosen language by its button, with no "Now:" line (owner 10-23); the terminal says it in words
+    expect(await pageText(ui)).not.toMatch(/Now:/)
+    expect((await ui.find({ type: 'Button', key: 'coco:set:lang:auto' }))?.props.variant).toBe('primary')
     expect(await ui.find({ type: 'Button', key: 'coco:set:lang:hi' })).toBeDefined()
     expect(await ui.find({ type: 'Button', key: 'coco:set:lang:zh', text: '华文' })).toBeDefined()
     await ui.press({ key: 'coco:set:lang:ja' })
     await ui.redraw()
     expect(w.view().lang).toBe('ja')
     expect(await ui.find({ type: 'Button', text: 'Coco' })).toBeDefined() // her itabag's first page in Japanese
-    expect(await ui.find({ type: 'Text', text: /いま:日本語/ })).toBeDefined()
+    expect((await ui.find({ type: 'Button', key: 'coco:set:lang:ja' }))?.props.variant).toBe('primary')
     await ui.press({ key: 'coco:set:lang:zh' })
     await ui.redraw()
     expect(w.view().lang).toBe('zh')
-    expect(await ui.find({ type: 'Text', text: /现在:华文(?![(（])/ })).toBeDefined()
+    expect((await ui.find({ type: 'Button', key: 'coco:set:lang:zh' }))?.props.variant).toBe('primary')
+    const term = await $.ui.mount({ surface: 'terminal', ...PANE })
+    expect(await term.find({ type: 'Text', text: /现在:华文(?![(（])/ })).toBeDefined()
   })
 
   test('Chinese (Singapore) dates, times and numbers appear in both book surfaces', async ($, on) => {
@@ -386,10 +390,11 @@ describe('his marks on the engine rows', () => {
     await beginText($)
     await open($, 'settings')
     const book = await $.ui.mount({ surface: 'desktop', ...PANE })
-    expect(await pageText(book)).toMatch(/Marks in the conversation\s+Now:[\s\u00a0]Coco's[\s\u00a0]and[\s\u00a0]yours/)
+    expect(await pageText(book)).toMatch(/Marks in the conversation/)
+    expect((await book.find({ type: 'Button', key: 'coco:set:marks:on' }))?.props.variant).toBe('primary')
     await book.press({ key: 'coco:set:marks:off' })
     await book.redraw()
-    expect(await pageText(book)).toMatch(/Marks in the conversation\s+Now:[\s\u00a0]Off/)
+    expect((await book.find({ type: 'Button', key: 'coco:set:marks:off' }))?.props.variant).toBe('primary')
     for (const row of [REPLY, prompt('composer'), ASK, output('compact', false)]) {
       expect(await (await $.ui.mount({ surface: 'desktop', ...row })).drawn()).toEqual(ENGINE)
     }

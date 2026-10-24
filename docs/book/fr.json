@@ -120,8 +120,7 @@
     ],
     "shelf": {
       "head": "Fichiers les plus ouverts",
-      "note": "Les cinq fichiers les plus ouverts par Claude ici en 30 jours. Noms seulement.",
-      "empty": "Quand Claude lira des fichiers ici, les cinq plus ouverts apparaîtront ici.",
+      "note": "Les cinq fichiers les plus ouverts par Claude ici en 30 jours.",
       "error": "Impossible de lire la liste. Rouvrir pour réessayer."
     }
   },
@@ -224,11 +223,8 @@
       "failed": "La compilation n'a pas abouti",
       "retry": "Réessayer",
       "stopped": "Il n'est pas lancé",
-      "stoppedLine": "(au repos en coulisses)",
       "hidden": "Caché jusqu'à {time}",
-      "hiddenLine": "(attend dans les coulisses)",
       "corner": "Il ne peut pas encore suivre ta fenêtre",
-      "cornerLine": "(attend dans un coin de l'écran)",
       "follow": "La laisser suivre la fenêtre",
       "followHelp": "Elle ne lit que la position de la fenêtre.",
       "waiting": "Il attend ton accord",
@@ -236,7 +232,6 @@
       "waitingHelp": "Active Coco Pet dans Confidentialité et sécurité › Accessibilité.",
       "openSettings": "Ouvrir Réglages Système",
       "following": "À côté de ta fenêtre",
-      "followingLine": "(elle la suit partout)",
       "update": "Mise à jour disponible",
       "updateButton": "La mettre à jour",
       "size": "Sa taille",
@@ -296,7 +291,7 @@
     },
     "bookmark": {
       "label": "Pense-bêtes et fichiers les plus ouverts",
-      "help": "Au début d'une nouvelle session, elle te dit où tu en étais. Conservé uniquement sur cet ordinateur."
+      "help": "Au début d'une nouvelle session, elle te dit où tu en étais."
     },
     "notes": {
       "label": "Ses notes",
@@ -308,7 +303,7 @@
     },
     "neighbours": {
       "label": "Lumières des voisins",
-      "help": "Elle remarque quand d'autres agents de programmation travaillent. Elle ne lit que leur activité et leur utilisation, jamais le contenu. Rien n'est envoyé."
+      "help": "Elle remarque quand d'autres agents de programmation travaillent. Elle ne lit que leur activité et leur utilisation."
     }
   },
   "check": {
