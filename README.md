@@ -8,7 +8,7 @@
   </picture>
 </p>
 
-Meet your cutest coding partner. Coco peeks at every bug you hit, and makes sure you know how smug they are about it. An unofficial fan-made companion mod for Claude Code.
+Meet your cutest coding partner. Coco peeks at every bug you hit, and makes sure you know how smug they are about it.
 
 > [!NOTE]
 > Unofficial fan project, not affiliated with or endorsed by Anthropic. Claude, Claude Code and Clawd belong to Anthropic.
