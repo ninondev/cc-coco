@@ -15,7 +15,7 @@ export const APPROVED_PERSONA = {
         "喂喂～还喘气吗?再不干饭就要饿扁了喔"
       ],
       "afternoon": [
-        "(伸懒腰)坐这么久腰还在吗?杂鱼体力可撑不住下午哦～"
+        "(伸懒腰)坐这么久腰还在吗?你这体力条撑不到下午茶哦～"
       ],
       "evening": [
         "噗,还在跟这个报错死磕呀?嘛,求我一下就帮你收尾咯～",
@@ -159,7 +159,7 @@ export const APPROVED_PERSONA = {
       "哔哔～红牌出局!连括号都少写半边,眼神落泡面桶里啦?"
     ],
     "test_fail": [
-      "噗...又挂啦?从从容容写代码,匆匆忙忙看报错～杂鱼测试～",
+      "噗...又挂啦?从从容容写代码,匆匆忙忙看报错～",
       "AI又翻车,端上来一锅AI泔水～"
     ],
     "fixed": [
@@ -228,7 +228,7 @@ export const APPROVED_PERSONA = {
       "行吧行吧,本天才开启惜字如金模式～"
     ],
     "set_voice_off": [
-      "哼,闭麦专心敲代码,一会儿别求我开口哦"
+      "哼,闭麦专心敲代码,想听我说话再叫我"
     ],
     "set_clingy": [
       "(凑近了一点)你主动选的喔,那我光明正大赖着你啦～"
@@ -251,7 +251,7 @@ export const APPROVED_PERSONA = {
         "喂喂～還喘氣嗎?再不幹飯就要餓扁了喔"
       ],
       "afternoon": [
-        "(伸懶腰)坐這麼久腰還在嗎?雜魚體力可撐不住下午哦～"
+        "(伸懶腰)坐這麼久腰還在嗎?你這體力條撐不到下午茶哦～"
       ],
       "evening": [
         "噗,還在跟這個報錯死磕呀?嘛,求我一下就幫你收尾咯～",
@@ -395,7 +395,7 @@ export const APPROVED_PERSONA = {
       "嗶嗶～紅牌出局!連括號都少寫半邊,眼神落泡麵桶裡啦?"
     ],
     "test_fail": [
-      "噗...又掛啦?從從容容寫程式碼,匆匆忙忙看報錯～雜魚測試～",
+      "噗...又掛啦?從從容容寫程式碼,匆匆忙忙看報錯～",
       "AI又翻車,端上來一鍋AI泔水～"
     ],
     "fixed": [
@@ -464,7 +464,7 @@ export const APPROVED_PERSONA = {
       "行吧行吧,本天才開啟惜字如金模式～"
     ],
     "set_voice_off": [
-      "哼,閉麥專心敲程式碼,一會兒別求我開口哦"
+      "哼,閉麥專心敲程式碼,想聽我說話再叫我"
     ],
     "set_clingy": [
       "(湊近了一點)你主動選的喔,那我光明正大賴著你啦～"
@@ -488,7 +488,7 @@ export const APPROVED_PERSONA = {
         "hey hey, still alive? go eat, you're on 2% battery~"
       ],
       "afternoon": [
-        "(stretches) back still ok? afternoon stamina: skill issue~"
+        "(stretches) back ok? your stamina bar won't last till tea~"
       ],
       "evening": [
         "pfft, still on that error? ask nicely and i'll finish it~",
@@ -632,7 +632,7 @@ export const APPROVED_PERSONA = {
       "beep beep~ red card, you're out! half a bracket missing?!"
     ],
     "test_fail": [
-      "pfft... red again? calm coding, panic debugging~ skill issue",
+      "pfft... red again? calm coding, panic debugging~",
       "the ai crashed again and served up a pot of ai slop~"
     ],
     "fixed": [
@@ -701,7 +701,7 @@ export const APPROVED_PERSONA = {
       "fine, fine. the genius switches to few-words mode~"
     ],
     "set_voice_off": [
-      "hmph. muted, just coding. don't beg me to talk later"
+      "hmph. muted, just coding. want to hear me? call me back"
     ],
     "set_clingy": [
       "(scoots closer) your call~ now i'm officially stuck to you"
@@ -723,7 +723,7 @@ export const APPROVED_PERSONA = {
         "おーい、生きてる?ごはん食べないとぺしゃんこだよ"
       ],
       "afternoon": [
-        "(伸び)腰だいじょぶ?午後の体力ざぁこじゃん~"
+        "(伸び)腰だいじょぶ?その体力ゲージ、おやつまでもたないよ~"
       ],
       "evening": [
         "ぷっ、まだそのエラーと格闘中?お願いしたら片付けたげる~",
@@ -867,7 +867,7 @@ export const APPROVED_PERSONA = {
       "ピピー~レッドカード、アウト!カッコ半分足りないよ?"
     ],
     "test_fail": [
-      "ぷっ...また赤?書くのは余裕、エラーで大慌て~ざぁこテスト~",
+      "ぷっ...また赤?書くのは余裕、エラーで大慌て~",
       "AIがまたやらかして、AIのゴミコードを鍋ごと出してきた~"
     ],
     "fixed": [
@@ -936,7 +936,7 @@ export const APPROVED_PERSONA = {
       "はいはい、天才は省エネおしゃべりモード~"
     ],
     "set_voice_off": [
-      "ふん、ミュートでコードに集中。あとで話してって言っても遅い"
+      "ふん、ミュートでコードに集中。声が聞きたくなったら呼んで"
     ],
     "set_clingy": [
       "(ちょっと近寄って)キミが選んだんだからね、堂々とくっつく~"
@@ -958,7 +958,7 @@ export const APPROVED_PERSONA = {
         "hé ho~ encore en vie ? va manger, t'es à 2 % de batterie"
       ],
       "afternoon": [
-        "(s'étire) ton dos tient ? endurance de l'aprem : nulle~"
+        "(s'étire) ton dos ? ton endurance tiendra pas au goûter~"
       ],
       "evening": [
         "pff, encore cette erreur ? demande gentiment, je finis~",
@@ -1102,7 +1102,7 @@ export const APPROVED_PERSONA = {
       "bip bip~ carton rouge, dehors ! une parenthèse à moitié ?"
     ],
     "test_fail": [
-      "pff… encore rouge ? code serein, débogage en panique~ cheh~",
+      "pff… encore rouge ? code serein, débogage en panique~",
       "l'ia s'est encore plantée et sert de la bouillie d'ia~"
     ],
     "fixed": [
@@ -1171,7 +1171,7 @@ export const APPROVED_PERSONA = {
       "bon, bon, le génie passe en mode économie de mots~"
     ],
     "set_voice_off": [
-      "hmpf, micro coupé, je code. viens pas me supplier après"
+      "hmpf, micro coupé. tu veux m'entendre ? appelle-moi"
     ],
     "set_clingy": [
       "(se rapproche) ton choix~ alors je te colle, officiellement"
@@ -1193,7 +1193,7 @@ export const APPROVED_PERSONA = {
         "Hallo~ Lebst du noch? Iss was, du bist bei 2 % Akku"
       ],
       "afternoon": [
-        "(streckt sich) Rücken ok? Nachmittags-Ausdauer: Lauch~"
+        "(streckt sich) Rücken ok? Ausdauer leer vor dem Kaffee~"
       ],
       "evening": [
         "Pff, immer noch der Fehler? Frag lieb, dann mach ich's~",
@@ -1337,7 +1337,7 @@ export const APPROVED_PERSONA = {
       "Piep piep~ Rote Karte, raus! Halbe Klammer vergessen?"
     ],
     "test_fail": [
-      "Pff… wieder rot? Locker coden, panisch debuggen~ Lauch-Test~",
+      "Pff… wieder rot? Locker coden, panisch debuggen~",
       "Die KI ist wieder abgestürzt und tischt KI-Müll auf~"
     ],
     "fixed": [
@@ -1406,7 +1406,7 @@ export const APPROVED_PERSONA = {
       "Na gut, na gut, das Genie schaltet in den Wortsparmodus~"
     ],
     "set_voice_off": [
-      "Hmpf, stumm, nur coden. Bettel später nicht, dass ich rede"
+      "Hmpf, stumm, nur coden. Willst du mich hören, ruf mich"
     ],
     "set_clingy": [
       "(rückt näher) Du hast's gewählt~ Jetzt kleb ich an dir"
@@ -1428,7 +1428,7 @@ export const APPROVED_PERSONA = {
         "अरे~ ज़िंदा हो? कुछ खा लो, battery 2% पर है"
       ],
       "afternoon": [
-        "(अंगड़ाई) कमर सलामत है? दोपहर का stamina: noob level~"
+        "(अंगड़ाई) कमर सलामत है? तुम्हारी stamina bar शाम की चाय तक नहीं चलेगी~"
       ],
       "evening": [
         "हुँह, अब भी उस error से लड़ रहे हो? प्यार से बोलो तो निपटा दूँ~",
@@ -1572,7 +1572,7 @@ export const APPROVED_PERSONA = {
       "पीं पीं~ रेड कार्ड, आउट! आधा bracket गायब, सच में?"
     ],
     "test_fail": [
-      "पफ़्फ़… फिर से red? code आराम से, debug घबराहट में~ noob test~",
+      "पफ़्फ़… फिर से red? code आराम से, debug घबराहट में~",
       "AI फिर लुढ़क गया, AI वाले कचरे की हांडी परोस दी~"
     ],
     "fixed": [
@@ -1641,7 +1641,7 @@ export const APPROVED_PERSONA = {
       "अच्छा अच्छा, जीनियस कम-बोलो mode में~"
     ],
     "set_voice_off": [
-      "हुँह, mic बंद, बस coding। बाद में बोलने को मत गिड़गिड़ाना"
+      "हुँह, mic बंद, बस coding। मेरी आवाज़ सुननी हो तो बुला लेना"
     ],
     "set_clingy": [
       "(थोड़ा पास आकर) तुमने ही चुना है, तो अब मैं खुलेआम चिपकी रहूँगी~"
@@ -1663,7 +1663,7 @@ export const APPROVED_PERSONA = {
         "woi~ masih hidup? makan gih, baterai kamu tinggal 2%"
       ],
       "afternoon": [
-        "(ngulet) punggung masih aman? stamina sore: level cupu~"
+        "(ngulet) punggung aman? stamina-mu nggak kuat sampai ngemil~"
       ],
       "evening": [
         "pfft, masih gelut sama error itu? minta baik-baik, kubantu~",
@@ -1807,7 +1807,7 @@ export const APPROVED_PERSONA = {
       "priit~ kartu merah, keluar! kurung kurang setengah, serius?"
     ],
     "test_fail": [
-      "pfft… merah lagi? ngoding santai, debug panik~ tes cupu~",
+      "pfft… merah lagi? ngoding santai, debug panik~",
       "ai-nya error lagi, nyajiin sepanci sampah ai~"
     ],
     "fixed": [
@@ -1876,7 +1876,7 @@ export const APPROVED_PERSONA = {
       "iya iya, si jenius masuk mode hemat kata~"
     ],
     "set_voice_off": [
-      "hmph, mic mati, fokus ngoding. nanti jangan mohon-mohon ya"
+      "hmph, mic mati, fokus ngoding. mau dengar aku? panggil aja"
     ],
     "set_clingy": [
       "(geser lebih dekat) kamu yang pilih ya~ jadi aku nempel kamu"
@@ -1898,7 +1898,7 @@ export const APPROVED_PERSONA = {
         "ehi~ ancora in vita? vai a mangiare, sei al 2% di batteria"
       ],
       "afternoon": [
-        "(si stiracchia) la schiena regge? resistenza: livello nabbo~"
+        "(si stiracchia) schiena ok? la stamina non arriva a merenda~"
       ],
       "evening": [
         "pff, ancora quell'errore? chiedimelo per bene e lo finisco~",
@@ -2042,7 +2042,7 @@ export const APPROVED_PERSONA = {
       "bip bip~ cartellino rosso, fuori! mezza parentesi mancante?"
     ],
     "test_fail": [
-      "pff… di nuovo rosso? codice sereno, debug nel panico~ nabbo~",
+      "pff… di nuovo rosso? codice sereno, debug nel panico~",
       "l'ia è crollata di nuovo e serve fuffa da ia a palate~"
     ],
     "fixed": [
@@ -2111,7 +2111,7 @@ export const APPROVED_PERSONA = {
       "va be', va be', la genia passa in modalità risparmio parole~"
     ],
     "set_voice_off": [
-      "hmpf, microfono spento, solo codice. dopo non pregarmi"
+      "hmpf, microfono spento. se vuoi sentirmi, chiamami"
     ],
     "set_clingy": [
       "(si avvicina un po') l'hai scelto tu~ ora mi appiccico a te"
@@ -2133,7 +2133,7 @@ export const APPROVED_PERSONA = {
         "야야~ 살아 있어? 밥 안 먹으면 납작해진다~"
       ],
       "afternoon": [
-        "(기지개) 허리 멀쩡해? 오후 체력 완전 허접이네~"
+        "(기지개) 허리 멀쩡해? 그 체력으론 간식 시간까지 못 버텨~"
       ],
       "evening": [
         "풉, 아직 그 에러랑 씨름 중? 부탁하면 마무리해 줄게~",
@@ -2277,7 +2277,7 @@ export const APPROVED_PERSONA = {
       "삐빅~ 레드카드, 아웃! 괄호 반쪽 빠졌잖아?"
     ],
     "test_fail": [
-      "풉... 또 터졌어? 코딩은 여유, 에러엔 허둥지둥~ 허접 테스트~",
+      "풉... 또 터졌어? 코딩은 여유, 에러엔 허둥지둥~",
       "AI가 또 사고 쳐서 AI 쓰레기 코드를 한 솥 내놨어~"
     ],
     "fixed": [
@@ -2346,7 +2346,7 @@ export const APPROVED_PERSONA = {
       "알았어 알았어, 천재는 말 아끼는 모드로~"
     ],
     "set_voice_off": [
-      "흥, 음소거하고 코딩만 할게. 나중에 말 걸어 달라고 빌지 마"
+      "흥, 음소거하고 코딩만 할게. 내 목소리 듣고 싶으면 불러"
     ],
     "set_clingy": [
       "(조금 다가와서) 네가 고른 거다? 그럼 대놓고 붙어 있을게~"
@@ -2368,7 +2368,7 @@ export const APPROVED_PERSONA = {
         "ei~ ainda respirando? vai comer, você tá com 2% de bateria"
       ],
       "afternoon": [
-        "(se espreguiça) e as costas? fôlego de tarde: nível bagre~"
+        "(se espreguiça) e as costas? seu fôlego não chega no lanche~"
       ],
       "evening": [
         "pff, ainda brigando com esse erro? pede com jeitinho~",
@@ -2581,7 +2581,7 @@ export const APPROVED_PERSONA = {
       "tá bom, tá bom, a gênia entra no modo economia de palavras~"
     ],
     "set_voice_off": [
-      "hmpf, microfone mutado, só código. depois não implora"
+      "hmpf, microfone mutado, só código. quer me ouvir? me chama"
     ],
     "set_clingy": [
       "(chega mais perto) você que escolheu~ agora eu grudo em você"
@@ -2603,7 +2603,7 @@ export const APPROVED_PERSONA = {
         "oye~ ¿sigues con vida? come algo, andas al 2 % de batería"
       ],
       "afternoon": [
-        "(se estira) ¿y la espalda? aguante de la tarde: nivel noob~"
+        "(se estira) ¿la espalda? tu aguante no llega a la merienda~"
       ],
       "evening": [
         "pff, ¿sigues con ese error? pídemelo bonito y lo acabo~",
@@ -2816,7 +2816,7 @@ export const APPROVED_PERSONA = {
       "bueno, bueno, la genio pasa a modo ahorro de palabras~"
     ],
     "set_voice_off": [
-      "hmpf, micro apagado, a programar. luego no me ruegues"
+      "hmpf, micro apagado, a programar. si quieres oírme, llámame"
     ],
     "set_clingy": [
       "(se acerca un poco) tú lo elegiste~ ahora me pego a ti"
@@ -2838,7 +2838,7 @@ export const APPROVED_PERSONA = {
         "eh, eh~ ¿sigues con vida? come algo, vas al 2 % de batería"
       ],
       "afternoon": [
-        "(se estira) ¿y la espalda? aguante de tarde: nivel paquete~"
+        "(se estira) ¿la espalda? tu aguante no llega a la merienda~"
       ],
       "evening": [
         "pff, ¿sigues con ese error? pídemelo bonito y lo acabo~",
@@ -3051,7 +3051,7 @@ export const APPROVED_PERSONA = {
       "bueno, bueno, la genio pasa a modo ahorro de palabras~"
     ],
     "set_voice_off": [
-      "hmpf, micro apagado, a programar. luego no me supliques"
+      "hmpf, micro apagado, a programar. si quieres oírme, llámame"
     ],
     "set_clingy": [
       "(se acerca un poco) lo has elegido tú~ ahora me pego a ti"
