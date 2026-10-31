@@ -12,6 +12,8 @@ old behavior back.
 
 ## [Unreleased]
 
+## [1.0.1] - 2026-10-31
+
 ### Fixed
 
 - **Beta 3.** In the desktop app the Switches page lost eight rows, the line library

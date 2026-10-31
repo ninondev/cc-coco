@@ -1,6 +1,6 @@
 // Generated from plugin/book/*.json and the plugin manifest by tools/build-book-bundle.py.
 import type { BookWords } from './book-words'
-export const PLUGIN_VERSION = "1.0.0"
+export const PLUGIN_VERSION = "1.0.1"
 // Encoded payloads avoid evaluating every unopened page at activation.
 const cached: Partial<Record<string, BookWords>> = {}
 function read(lang: string, text: string): BookWords { return cached[lang] ??= JSON.parse(text) as BookWords }

@@ -176,7 +176,7 @@
     },
     "hooks-source/book-text.ts": {
       "bytes": 217779,
-      "sha256": "0f5222b3fa177559f11af57f3edb0e2e85642c064a432a06b545f0b142827455"
+      "sha256": "74bfd46776b9a2ebded47379c54a8bbe0e69b692ae4ed5fdd8459187f9ec17ff"
     },
     "hooks-source/line-slot.ts": {
       "bytes": 5835,
@@ -220,7 +220,7 @@
     },
     "hooks-source/plugin-version.ts": {
       "bytes": 105,
-      "sha256": "59f2fe608e71be5328070e8aee43f5e5e1d9619f47da83b3a5f0e404c006fbea"
+      "sha256": "38e1c67691c76d5ecb64cbd757750f9e3900d3f8173bd0edc95174f2145ce069"
     },
     "hooks-source/high-contrast.ts": {
       "bytes": 1024,
@@ -4577,15 +4577,15 @@
     "hooks/line-types.ts",
     "hooks/lines.ts",
     "hooks/m1-always.ts",
-    "hooks/m1-compiled/chunk-1wrzd7qh.js",
     "hooks/m1-compiled/chunk-6dxd2qfy.js",
     "hooks/m1-compiled/chunk-77ye58zq.js",
     "hooks/m1-compiled/chunk-98geg7q2.js",
     "hooks/m1-compiled/chunk-d863xdtm.js",
     "hooks/m1-compiled/chunk-grp1ryrs.js",
     "hooks/m1-compiled/chunk-jahhamrc.js",
+    "hooks/m1-compiled/chunk-makgx7hq.js",
     "hooks/m1-compiled/chunk-vyxtapf2.js",
-    "hooks/m1-compiled/chunk-x5p0y4bg.js",
+    "hooks/m1-compiled/chunk-wjathm2m.js",
     "hooks/m1-compiled/chunk-ymmmxg0p.js",
     "hooks/m1-compiled/companion.d.ts",
     "hooks/m1-compiled/companion.js",
@@ -4670,15 +4670,15 @@
     "hooks/words.ts"
   ],
   "chunkBytes": {
-    "chunk-1wrzd7qh.js": 20974,
-    "chunk-6dxd2qfy.js": 220586,
-    "chunk-77ye58zq.js": 62122,
+    "chunk-6dxd2qfy.js": 220583,
+    "chunk-77ye58zq.js": 62115,
     "chunk-98geg7q2.js": 208527,
     "chunk-d863xdtm.js": 46697,
     "chunk-grp1ryrs.js": 358909,
     "chunk-jahhamrc.js": 63116,
+    "chunk-makgx7hq.js": 199344,
     "chunk-vyxtapf2.js": 93882,
-    "chunk-x5p0y4bg.js": 199344,
+    "chunk-wjathm2m.js": 20980,
     "chunk-ymmmxg0p.js": 10209,
     "companion.js": 110980,
     "motion_stills.js": 213563,
