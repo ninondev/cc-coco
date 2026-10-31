@@ -663,8 +663,8 @@
       "sha256": "7a7c54b98091c26c776cdf126583846e28e46f3c675d28cc22fe0fb556d8f1aa"
     },
     "hooks-source/register.tsx": {
-      "bytes": 313656,
-      "sha256": "a672c3c972b31d3b9a5551125de1e132b015a8179cc62bb014fa2a7fd0c51700"
+      "bytes": 314057,
+      "sha256": "942530bb710a1fb9e88a7f42d20d716a4f8fcbd935b761b339eca8292d7bd521"
     },
     "hooks-source/touch-client.ts": {
       "bytes": 1190,
@@ -4684,6 +4684,6 @@
     "motion_stills.js": 213563,
     "pages.js": 67095,
     "presence.js": 13394,
-    "register.js": 224397
+    "register.js": 224548
   }
 }

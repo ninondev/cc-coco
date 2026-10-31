@@ -12,6 +12,11 @@ old behavior back.
 
 ## [Unreleased]
 
+### Fixed
+
+- **Beta 3.** In the desktop app the Switches page lost eight rows, the line library
+  and DMs among them. They are back.
+
 ## [1.0.0] - 2026-10-20
 
 Claude-sama is now Coco: a new character, new pictures, a new settings page, and words in 13
