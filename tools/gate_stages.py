@@ -14,11 +14,11 @@ ICON = ('icon-words-generator.test.py', 'i1-icon-source.test.py',
         'icon-script.test.py', 'icon-png.test.py', 'icon-native.test.py')
 
 PYTHON = (
-    'zh-hant.test.py', 'chinese-language.test.py',
+    'zh-hant.test.py', 'chinese-language.test.py', 'characters-generator.test.py',
     'desktop-sprite.test.py', 'motion-sync.test.py', 'shared-files.test.py',
     'scratch-cleanup.test.py', 'serial-runner.test.py', 'words-round-b1.test.py', 'companion-words-generator.test.py',
     'webkit-prerequisite.test.py', 'approved-names-w2.test.py', 'voice-names-w2.test.py', 'preview-renderer.test.py',
-    'presence-transport.test.py', 'c3-book-canonical.test.py',
+    'presence-transport.test.py', 'presence-files.test.py', 'presence-deep-path.test.py', 'c3-book-canonical.test.py',
     'companion-script.test.py', 'icon-script.test.py', 'head-art.test.py', 'talk-key.test.py',
     'promises-decisions.test.py', 'layout-golden.test.py', 'hook-cpu-receipts.test.py',
     'b1c-config-manifest.test.py', 'b4-art-words-capture.test.py',

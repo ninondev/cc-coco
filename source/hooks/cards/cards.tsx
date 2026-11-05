@@ -1,12 +1,9 @@
-// Coco's skill cards (`/coco cards`): Coco deals the session's skills, subagents and slash commands as cards in a
-// pane of their own, counts each real use, and sends the cards picked for the next message along with it as hidden
-// context. register.tsx calls registerCards first, so these hooks stand outside Coco's own: `/coco cards` is taken
-// before the /coco verbs, the picks join a message before Talk routing, and the tray's line sits above Coco's band. A
-// plugin holds one hook without a matcher per event, so Coco's session.start and agent.spawn hooks call cardsStarted
-// and cardsSpawned instead.
-// What it relies on was measured on the desktop app (docs/cards/DESKTOP.md); the reasons behind the choices are in
-// docs/cards/DECISIONS.md. Everything the pane shows comes from $.state; presses and typing arrive as ui.press and
-// ui.input events and are handled there with a fresh `$`.
+// Coco's skill cards (`/coco cards`): the session's skills, subagents and slash commands dealt as cards in a pane of
+// their own; each real use is counted and picked cards ride along with the next message as hidden context.
+// register.tsx calls registerCards first, so these hooks stand outside Coco's own (`/coco cards` is taken before the
+// /coco verbs, picks join a message before Talk routing, the tray's line sits above Coco's band). A plugin holds one
+// hook without a matcher per event, so Coco's session.start and agent.spawn hooks call cardsStarted and cardsSpawned.
+// Measured desktop facts: docs/cards/DESKTOP.md; reasons for the choices: docs/cards/DECISIONS.md.
 import type { EngineInterface, On, RenderElement } from 'claude-code'
 import type { BookSort, Card, Catalog, CocoState, KindFilter, PaneState, Usage, View } from './model'
 import { COCO_DEFAULT, PANE_DEFAULT, STORE_PREFS, STORE_USAGE } from './model'
@@ -24,94 +21,61 @@ import { FLAG, cocoCard, flagAt, stamp } from './card'
 import { atom, read, update } from './state'
 
 const PANE = 'coco-cards'
-/** Coco's picture in CSS px: the frames' 320x400 at the size the owner approved on the desktop. */
 const W = 112
 const H = 140
-/** At this many columns and more the pulled card and the tray stand beside the box instead of under it. */
 const WIDE = 96
 const SIDE = 38
-/** One row of the pane in CSS px (13 px type on a 19 px line): how many rows a drawing takes. */
 const ROW_PX = 19
-/** Columns the box keeps clear at its right for Coco's card, as the draft's walls keep 150 px for it. */
 const COCO_COLS = 21
-/** Rows the desktop's search field takes, about: a field and its button on one line. */
 const SEARCH_ROWS = 1.5
-/** A blank picture: a drawing's room, or the gap that sets Coco's frame into their card to the pixel. */
 const BLANK = '<svg xmlns="http://www.w3.org/2000/svg" width="1" height="1"></svg>'
-/** Rows a docked part runs on past the window's foot: the most the rounded window's place can be off. */
+/** Rows a docked part runs past the window's foot: the most the rounded window can be off. */
 const SKIRT = 0.5
-/**
- * How a narrow pane's sheet comes up, as [ms after the press, share of it showing]: the draft slides it up in 0.32 s,
- * easing out, and a Box cannot move, so it is drawn three times, most of the way in the first.
- */
+/** Narrow sheet coming up as [ms after the press, share showing]: three drawings for the draft's 0.32 s slide (a Box cannot move). */
 const RISE = [[0, 0.45], [70, 0.82], [140, 1]] as const
-/** How it goes back down, the same way: [ms after the press, share of it still showing]. */
 const SINK = [[0, 0.55], [70, 0.18], [140, 0]] as const
-/**
- * How a wide pane's pulled card comes out of the box to its column, as [ms after the press, share of the way still
- * to go]: the draft flies it there in 0.36 s, easing out; a Box cannot move, so it is drawn three times.
- */
+/** Wide pulled card out of the box as [ms after the press, share still to go]: three drawings for the draft's 0.36 s fly. */
 const FLY = [[0, 0.55], [70, 0.18], [140, 0]] as const
-/** The "+1" coming off a pulled card, as the draft fades it over 0.6 s: when, its opacity, how far up it has gone in px. */
 const PEEL = [[0, 0.8, 1], [150, 0.45, 2.5], [300, 0.15, 3.5], [450, 0, 4]] as const
-/** The motion switch's knob sliding over as motion comes on, as the draft's does in 0.2 s: when, how far over, 0 to 1. */
 const KNOB = [[0, 0.4], [70, 0.8], [140, 1]] as const
-/** The longest the pane's first opening in a session waits for the deck Claude's folders complete (openPane). */
+/** Longest the first pane opening waits for the deck Claude's folders complete (openPane). */
 const DEAL_WAIT_MS = 300
 
-// On the desktop the card stock and the inks printed on it are the draft's, the same in both themes: names, words and
-// buttons are Text in those inks with a blank press target laid over them (`hit` below), since a desktop Button inks
-// its label in the theme's own color. Where the draft darkens a surface in dark mode (the kraft box, the manila
-// dividers, the tray) the color is a film laid over one of the theme's surfaces: one film reads as the draft's light
-// color on the light theme and close to its dark color on the dark one (docs/cards/DECISIONS.md, Colors). The card stock
-// stays the draft's light cream: a film needs a box of its own under every card, which a big deck has no room for.
+// Desktop card stock and inks are the draft's, the same in both themes: Text in those inks with a blank press target
+// over it (`hit`), since a desktop Button inks its label in the theme's own color. Where the draft darkens a surface in
+// dark mode the color is a film over a theme surface (DECISIONS.md, Colors). Card stock stays light cream: a film needs
+// a box of its own under every card, which a big deck has no room for.
 const BASE = 'userMessageBackground'
 const FLOOR = 'clawd_background'
 const PAPER = '#fffdf8'
 const FILM = { kraft: '#9e6529c1', manila: '#ebd298e3', tray: '#5a2e001d', ghost: '#905921c3' } as const
 type Film = keyof typeof FILM
-/** The theme's own surface under each film: the tray's is the floor's, the rest the cards'. */
 const UNDER: Record<Film, string> = { kraft: BASE, manila: BASE, tray: FLOOR, ghost: BASE }
-/** The terminal has no films: each surface is one color there, and the paper the theme's own. */
 const SOLID: Record<Film, string> = { kraft: '#b98a57', manila: '#ecd7a3', tray: FLOOR, ghost: '#6f5133' }
 const INK = { text: '#2a241d', muted: '#5b5246', faint: '#6d6457', manila: '#3b2a17', manilaCount: '#5c4728', coral: '#d97757', onCoral: '#2b140a', stamp: '#9a4024', edge: '#d6cdbf', rule: '#3a86c84d', underline: '#d97757bf' }
 const KIND = { skill: '#d97757', agent: '#3a86c8', command: '#2b2925' } as const
 const PRINT: Record<Rarity, string | undefined> = { N: undefined, R: '#8b4a26', SR: '#3e4a57' }
-/** The terminal's paper follows its theme, so there the command stripe and the prints are mid tones. */
 const TERM = { paper: BASE, command: 'inactive', R: '#a85c32', SR: '#66707d', stamp: '#b4532f' }
-/** Blank, about as wide as the type is tall, and never collapsed: a press target's label of them reaches across what it covers. */
+/** Blank, never collapsed: a press target's label of them reaches across what it covers. */
 const REACH = '\u2003'
 const C = { kraft: '#b98a57', ghostText: '#f7ecdf', flagInk: '#2b140a' }
-/** The steps of the shade over a card lifted over the pane, top to bottom: the draft's shadow ink, thin. */
 const SHADE = ['#1e140a0a', '#1e140a12', '#1e140a1f'] as const
-/** The pulled card's lift, under its foot: the draft's contact shadow, then its soft cast, in the same ink. */
 const LIFT = ['#3b2a1738', '#3b2a1712'] as const
 
-/**
- * The folded corner of a rare card: the paper cut along a 45-degree line shows the kraft behind, and the flap lies
- * on the face with its foil back up, copper for R, holographic for SR, in bands parallel to the fold.
- */
 const FOIL = {
   R: ['#93502a', '#bb6c3e', '#e5a57d', '#bb6c3e', '#93502a', '#bb6c3e'],
   SR: ['#7d8997', '#bad4f1', '#f4c9dd', '#c3e8d5', '#f4e1ae', '#e4cdf0', '#7d8997'],
 }
-// the cut corner shows the kraft box behind the card, the dark theme's kraft where the picture follows the theme;
-// a card off the box (`bare`) leaves the corner empty for what is drawn behind it
 const foldSvg = (bands: string[]) => (size: number, bare = false) =>
   `<svg xmlns="http://www.w3.org/2000/svg" width="${size}" height="${size}" viewBox="0 0 16 16"><style>@media (prefers-color-scheme:dark){.c{fill:#7d5224}}</style><defs><linearGradient id="f" x1="0" y1="1" x2="1" y2="0">${bands
     .map((c, i) => `<stop offset="${(i / (bands.length - 1)).toFixed(2)}" stop-color="${c}"/>`)
     .join('')}</linearGradient></defs>${bare ? '' : `<path class="c" d="M0 0H16V16Z" fill="${C.kraft}"/>`}<path d="M0 0L16 16H0Z" fill="url(#f)"/><path d="M0 0L16 16" stroke="#3b2a17" stroke-opacity=".25" stroke-width=".6"/></svg>`
 const FOLD: Record<'R' | 'SR', (size: number, bare?: boolean) => string> = { R: foldSvg(FOIL.R), SR: foldSvg(FOIL.SR) }
-/** The draft's foil as a CSS gradient, which its glint slides across the flap (the draft's `--foil`). */
 const FOIL_CSS = {
   R: 'linear-gradient(45deg,#93502a 0%,#bb6c3e 10%,#f4c6a6 18%,#bb6c3e 27%,#e5a57d 36%,#93502a 46%,#e5a57d 56%,#f4c6a6 64%,#bb6c3e 74%,#e5a57d 84%,#93502a 100%)',
   SR: 'linear-gradient(45deg,#7d8997 0%,#dfe7f0 9%,#f4c9dd 18%,#c3e8d5 27%,#f4e1ae 36%,#bad4f1 45%,#7d8997 53%,#e4cdf0 62%,#c3e8d5 71%,#f4e1ae 80%,#bad4f1 89%,#7d8997 100%)',
 }
-/**
- * The pulled card's flap, catching the light once as the card comes up: the draft's glint (1.1 s, after 0.2 s), its
- * foil sliding across the flap, drawn in an interactive frame so the animation plays. The card's id rides in the
- * source, so each card pulled gets a frame of its own and glints, and a redraw keeps the frame and does not.
- */
+/** The pulled card's flap glints once as it comes up (1.1 s after 0.2 s), in an interactive frame so the animation plays; the card's id rides in the source, so each pulled card gets a frame and glints, a redraw keeps it and does not. */
 const glintSvg = (r: 'R' | 'SR', size: number, id: string) =>
   `<svg xmlns="http://www.w3.org/2000/svg" width="${size}" height="${size}"><style>/*${id.replace(/[^\w:.-]/g, '')}*/` +
   `body::after{content:"";position:absolute;inset:0;clip-path:polygon(0 0,100% 100%,0 100%);` +
@@ -120,13 +84,11 @@ const glintSvg = (r: 'R' | 'SR', size: number, id: string) =>
   `@keyframes g{to{background-position:0 0,100% 0}}` +
   `@media (prefers-reduced-motion:reduce){body::after{animation:none;background-position:0 0,100% 0}}</style></svg>`
 
-/** The pulled card's use-count stamp, as an Svg's picture and size. */
 function stampOf(text: string): { source: string; width: number; height: number } {
   const { svg, w, h } = stamp(text, INK.stamp)
   return { source: svg, width: w, height: h }
 }
 
-/** A strip's small hand-placed offset in columns, the same for a card every time (docs/cards/DESIGN.md, Shapes). */
 function jitter(id: string): [number, number] {
   let h = 0
   for (const ch of id) h = (h * 31 + ch.charCodeAt(0)) >>> 0
@@ -139,11 +101,7 @@ const trayAtom = atom({ plugin: 'coco', key: 'cardsTray' } as const, [] as strin
 const paneAtom = atom({ plugin: 'coco', key: 'cardsPane' } as const, PANE_DEFAULT)
 const cocoAtom = atom({ plugin: 'coco', key: 'cardsCoco' } as const, COCO_DEFAULT)
 
-/**
- * The tray's names as the band shows them. Coco's band answers its first drawing before it reads anything
- * (tools/tests/b1b-first-answer.test.tsx holds that drawing to no host call), so the band's hook reads the names from
- * here instead of $.state, and each change to the tray or the deck asks for the band again.
- */
+/** The tray's names for the band. Coco's band answers its first drawing before it reads anything (tools/tests/b1b-first-answer.test.tsx: no host call), so its hook reads here, not $.state; each tray or deck change asks for the band again. */
 let bandNames: readonly string[] = []
 
 async function syncBand($: EngineInterface): Promise<void> {
@@ -154,39 +112,26 @@ async function syncBand($: EngineInterface): Promise<void> {
   $.ui.invalidate('ui.render')
 }
 
-/** Writes the tray, then brings the band's names up to date. */
 async function setTray($: EngineInterface, change: (tray: string[]) => string[]): Promise<void> {
   await update($, trayAtom, change)
   await syncBand($)
 }
 
-// The module's own memory, which a reload starts over (the atoms above are the host's and stay).
-/** Coco's language as the rest of the plugin resolved it (`zh` is Simplified Chinese), read when it is needed. */
 let cocoLang: () => string = () => 'en'
 const lang = (): Lang => langOf(cocoLang())
-/**
- * Whether the pane is up, so Coco's moves play. A request to draw it says so as well as the mod's own open: the pane
- * can be up without one, after a reload or opened from the desktop, and then Coco's moves never played
- * (docs/cards/DESKTOP.md).
- */
+/** Whether the pane is up. A draw request sets it too: after a reload or a desktop open the pane is up without the mod's own open, and Coco's moves never played. */
 let isPaneOpen = false
-/** The session's folder, whose .claude/skills holds the project's own skills. */
 let cwd = ''
-/** Subagent types offered this session; agent.offer is the only listing of them. */
 const offered = new Map<string, AgentEntry>()
-/** The deals begun (loadCatalog), so a deal that began earlier and ends later does not lay its deck over the newer one. */
+/** Deals begun (loadCatalog): an earlier deal ending later must not lay its deck over a newer one. */
 let deals = 0
-/** Bumped to draw the search field anew, empty (clearing it); otherwise the person's typing stays in it. */
 let searchGen = 0
-/** Whether the last drawing docked a pulled card's sheet at the window's foot (a narrow pane on the desktop). */
 let sheetDocks = false
-/** Coco's pictures once read, and the read that gets them (pictures below). */
 let art: Art | null = null
 let artRead: Promise<Art | null> | null = null
 
-// Buttons and the search field are made once and the same element returned on every redraw: a new element
-// retires the handle the desktop page holds, and the click that focuses the pane redraws it, so a fresh element
-// would lose that first press (docs/cards/DESKTOP.md). Elements a redraw did not use are let go.
+// Buttons and the search field are made once and returned on every redraw: a new element retires the handle the desktop
+// page holds, so a fresh one would lose the first press (the click that focuses the pane redraws it). Unused ones are let go.
 const made = new Map<string, unknown>()
 let usedNow = new Set<string>()
 function once<T>(sig: string, make: () => T): T {
@@ -200,12 +145,10 @@ function once<T>(sig: string, make: () => T): T {
 }
 const noop = () => {}
 
-/** Under the desktop pane's caps (one tree under 262,144 characters, 2,000 nodes, depth 32), with some margin. */
+/** Under the desktop pane's caps (tree under 262,144 characters, 2,000 nodes, depth 32), with margin. */
 const CAPS = { chars: 250000, nodes: 1900, depth: 30 }
-/** What the engine adds to each Button and Input as it sends the tree: `"press":{"plugin":…,"handle":…}`, with room. */
 const HANDLE = 64
 type Node = { type?: string; props?: Record<string, unknown>; children?: unknown }
-/** Whether a drawn tree stays under CAPS: its nodes and depth walked, its characters counted as the desktop gets them. */
 export function fits(tree: unknown): boolean {
   let nodes = 0
   let depth = 0
@@ -223,17 +166,12 @@ export function fits(tree: unknown): boolean {
   return nodes < CAPS.nodes && depth < CAPS.depth && JSON.stringify(tree).length + handles * HANDLE < CAPS.chars
 }
 
-/** Counts drawings, so each one's hair (see `stirred`) differs from the last one's. */
 let stirs = 0
 /**
- * The tree with every Box around a moving picture given a minimum width `hair` columns over its own, a few
- * thousandths, which no one can see. The desktop keeps a moving picture's frame and the boxes around it from one
- * drawing to the next, lays each new box in above the old one it replaces and only then takes the old one out; when
- * the page laid out in between, it took the cards in the window for pushed down, scrolled after them, and stayed
- * there once the old cards were gone. A page follows nothing in a box whose size has just changed, so with the hair
- * different on every drawing the window stays where the person left it (docs/cards/DESKTOP.md). A Box laid in a row with
- * no minimum width of its own is passed over, since any would let it shrink below its content; boxes with no moving
- * picture come back as they were, the same elements.
+ * The tree with every Box around a moving picture given a min width `hair` columns over its own (a few thousandths,
+ * unseen): a page follows nothing in a box whose size just changed, so the window stays where the person left it
+ * instead of chasing the cards (DESKTOP.md). A row Box with no min width of its own is passed over (any would let it
+ * shrink below its content).
  */
 export function stirred(tree: unknown, hair: number): unknown {
   const walk = (x: unknown, inRow: boolean): [unknown, boolean] => {
@@ -262,15 +200,9 @@ export function stirred(tree: unknown, hair: number): unknown {
   return walk(tree, false)[0]
 }
 
-/**
- * Deals the deck: commands and skills from the command list, which of them are skills, and the offered agents. With
- * `withFolders`, also the names in the person's and the project's .claude/skills and their .claude/agents definitions:
- * Claude's own folders, which the cards read only once the person has opened them (promise B8). Until then a user
- * command may be a skill hidden from the model, which only its folder tells apart, so its runs wait (parkRun).
- */
+/** Deals the deck. With `withFolders`, also names from .claude/skills and .claude/agents, read only once the person has opened the cards (promise B8); until then a user command may be a skill hidden from the model, so its runs wait (parkRun). */
 async function loadCatalog($: EngineInterface, withFolders: boolean): Promise<void> {
   const deal = ++deals
-  // a deck already dealt stays drawn while it is dealt again
   if ((await read($, catalogAtom)).status !== 'ready') await update($, catalogAtom, (c): Catalog => ({ ...c, status: 'loading' }))
   try {
     const commands = (await $.command.list()) as unknown as CommandEntry[]
@@ -293,9 +225,8 @@ async function loadCatalog($: EngineInterface, withFolders: boolean): Promise<vo
           for (const entry of await $.fs.list(joinPath(root, '.claude', 'skills'))) skillDirs.add(entry.name)
         } catch {}
       }
-      // The person's own subagents, from their definition files (name and description only), so they are dealt
-      // before the first message; agent.offer, which first fires as that message's tools are composed, replaces them.
-      // A project's file wins over the user's of the same name, as in Claude Code.
+      // Own subagents from their definition files, dealt before the first message; agent.offer replaces them. A project's
+      // file wins over the user's of the same name, as in Claude Code.
       for (const [root, source] of [[home, 'userSettings'], [cwd, 'projectSettings']] as const) {
         if (!root) continue
         try {
@@ -326,37 +257,24 @@ async function savePrefs($: EngineInterface, pane: PaneState): Promise<void> {
   } catch {}
 }
 
-/**
- * Brings an element of the pane into view once the redraw that draws it is in. The pane is one scroller (a Box
- * cannot scroll on its own), so a card pulled deep in a long box would otherwise open its face out of sight.
- */
 function reveal($: EngineInterface, key: string, block: 'start' | 'nearest' | 'center'): void {
   $.clock.after(80, () => void $.ui.scroll({ to: { key }, in: PANE, block }).catch(() => undefined))
 }
 
-/**
- * Moves the pane's focus ring onto element `key`, where the draft moves the focus. It waits out the sheet's steps,
- * since the focus brings an element into view and could scroll the clip a rising sheet is drawn in.
- */
+/** Moves the focus ring onto `key`; waits out the sheet's steps, since focus scrolls into view and could scroll the clip a rising sheet is drawn in. */
 function focusOn($: EngineInterface, key: string): void {
   $.clock.after(RISE[2][0] + 40, () => void $.ui.focus({ requestId: PANE, key }).catch(() => undefined))
 }
 
-/**
- * Coco's pictures (hooks/cards-art.json), read the first time a surface that draws them draws the pane, so a session
- * that never opens it never loads them. Null when the file cannot be read; the pane then draws in words, as on a
- * surface without pictures, until it is opened again.
- */
+/** Coco's pictures, read on first draw by a surface that draws them; null when unreadable, and the pane then draws in words. */
 function pictures($: EngineInterface): Promise<Art | null> {
   artRead ??= $.fs.read(joinPath($.plugin.root, 'hooks', 'cards-art.json')).then(parseArt, () => null).then(a => (art = a))
   return artRead
 }
 
 async function openPane($: EngineInterface): Promise<boolean> {
-  // a read that failed is tried again
   if (art === null) artRead = null
-  // Claude's folders are read now that the person opens the cards (loadCatalog). The pane waits a moment for the deck
-  // they complete, so that a skill hidden from the model does not open among the commands and then move.
+  // the pane waits a moment for the deck Claude's folders complete, so a hidden skill does not open among the commands and then move
   if (!(await read($, catalogAtom)).hasFolders) {
     const dealt = bringsCoco($, () => loadCatalog($, true)).catch(() => undefined)
     let giveUp = () => {}
@@ -364,7 +282,6 @@ async function openPane($: EngineInterface): Promise<boolean> {
     await Promise.race([dealt, new Promise<void>(done => (giveUp = done))])
     timer.cancel()
   }
-  // Coco says the next of their lines each time the pane opens, never the same one twice running
   await savePrefs($, await update($, paneAtom, (p): PaneState => ({ ...p, line: p.line === undefined ? 0 : (((p.line + 1) % 3) as 0 | 1 | 2) })))
   const placed = await $.ui.open({ id: PANE, title: STRINGS[lang()].title })
   isPaneOpen = placed?.isPlaced === true
@@ -373,16 +290,13 @@ async function openPane($: EngineInterface): Promise<boolean> {
   return isPaneOpen
 }
 
-/** Starts a move over Coco at rest, or queues it behind the one playing; timers lay and lift each part. */
 async function playMove($: EngineInterface, move: MoveName): Promise<void> {
-  // no pictures read, nothing to play: the pane has not drawn them
   const moveArt = art?.MOVES[move]
   if (!moveArt) return
   const pane = await read($, paneAtom)
   const now = await $.clock.now()
   let started = false
   const coco = await update($, cocoAtom, c => {
-    // Coco's card stands in the box only; with the book open the move would play out of sight
     const r = ask(c, move, moveArt, now, pane.isMotionOff || !isPaneOpen || pane.view === 'book')
     started = r.started
     return r.coco
@@ -403,7 +317,6 @@ async function playMove($: EngineInterface, move: MoveName): Promise<void> {
   })
 }
 
-/** Counts one real use of card `id`; a rank-up makes Coco cheer. */
 async function countUse($: EngineInterface, id: string): Promise<void> {
   const now = await $.clock.now()
   let rankedUp = false
@@ -419,11 +332,7 @@ async function countUse($: EngineInterface, id: string): Promise<void> {
   if (rankedUp) await playMove($, 'rank')
 }
 
-/**
- * Counts a slash command the person ran, if it is one of the deck's cards. Its hook does not wait for this: Coco's own
- * command.run hook starts work of its own once the command has run (the bag's socks), and a command answers no later
- * with the cards than without them.
- */
+/** Counts a slash command the person ran if it is a card. Its hook does not wait: Coco's command.run hook starts its own work (the bag's socks) and answers no later with the cards than without. */
 async function countCommand($: EngineInterface, command: string): Promise<void> {
   try {
     const { cards, hasFolders } = await read($, catalogAtom)
@@ -434,11 +343,7 @@ async function countCommand($: EngineInterface, command: string): Promise<void> 
   } catch {}
 }
 
-/**
- * Keeps a run of the person's or the project's command `name` while Claude's folders are unread: it may be a skill
- * hidden from the model, which skill.prompt counts. The run waits among the counts under `run:` (none of them a card's)
- * until the deck is dealt with the folders, and goes with the counts into the store meanwhile.
- */
+/** Keeps a run of command `name` while Claude's folders are unread (it may be a skill hidden from the model, which skill.prompt counts): waits among the `run:` counts (none a card's) until the deck is dealt with folders; goes into the store meanwhile. */
 async function parkRun($: EngineInterface, name: string): Promise<void> {
   const now = await $.clock.now()
   const usage = await update($, usageAtom, u => addUse(u, `run:${name}`, now).usage)
@@ -447,7 +352,6 @@ async function parkRun($: EngineInterface, name: string): Promise<void> {
   } catch {}
 }
 
-/** Counts the parked runs (parkRun) of the commands in `cards`, dealt with Claude's folders, and drops the others. */
 async function settleRuns($: EngineInterface, cards: readonly Card[]): Promise<void> {
   if (!Object.keys(await read($, usageAtom)).some(id => id.startsWith('run:'))) return
   let settled: string[] = []
@@ -477,13 +381,11 @@ async function cardById($: EngineInterface, id: string): Promise<Card | undefine
   return (await read($, catalogAtom)).cards.find(c => c.id === id)
 }
 
-/** What a press on one of the pane's elements does, by the element's key. */
 async function onPress($: EngineInterface, key: string): Promise<void> {
   const [kind, arg = ''] = key.split(/:(.*)/s)
   const pane = (fn: (p: PaneState) => PaneState) => update($, paneAtom, fn)
   // a sheet going back down still shows its buttons; a second press on them (a double click) does nothing
   if ((kind === 'take' || kind === 'takeup' || kind === 'type' || kind === 'back') && (await read($, paneAtom)).sinking !== undefined) return
-  /** Puts the pulled card back; a docked sheet goes down in steps, as the draft's slides down, holding its card. */
   const close = async () => {
     const was = await read($, paneAtom)
     const sinks = sheetDocks && !was.isMotionOff && was.pulled !== null
@@ -496,17 +398,14 @@ async function onPress($: EngineInterface, key: string): Promise<void> {
   }
   if (kind === 'card') {
     if ((await read($, paneAtom)).pulled === arg) return close()
-    // a sheet coming up from the window's foot rises in steps; one already up just shows the new card
     const rises = sheetDocks
     const p = await pane(p => ({
       ...p,
       pulled: arg,
       fresh: seen(p.fresh, arg),
       sinking: undefined,
-      // its "+1" comes off in steps, as the draft's fades
       peel: !p.isMotionOff && (p.fresh ?? []).includes(arg) ? { id: arg, step: 0 } : p.peel,
       rise: rises && !p.isMotionOff && p.pulled === null ? RISE[0][1] : p.rise,
-      // on a wide pane every card pulled comes out of the box, as the draft's flies
       fly: !rises && !p.isMotionOff ? FLY[0][1] : undefined,
     }))
     if (p.peel?.id === arg && p.peel.step === 0) {
@@ -519,8 +418,7 @@ async function onPress($: EngineInterface, key: string): Promise<void> {
           void pane(q => (q.fly === undefined || q.pulled !== arg ? q : { ...q, fly: to <= 0 ? undefined : Math.min(q.fly, to) })))
       }
     }
-    // a docked sheet stands in the window by itself; asking for it could scroll the clip it rises in. There the
-    // focus goes to its main button, as the draft's does
+    // a docked sheet stands alone in the window; asking for it could scroll the clip it rises in, so focus goes to its main button
     if (!rises) reveal($, 'face', 'nearest')
     else focusOn($, `${arg.startsWith('command:') ? 'type' : 'takeup'}:${arg}`)
     if (p.rise !== undefined) {
@@ -538,7 +436,6 @@ async function onPress($: EngineInterface, key: string): Promise<void> {
       added = next.length > t.length
       return next
     })
-    // from the sheet the card goes back, and the focus to its slot in the box, as the draft's put-back
     if (kind === 'takeup') {
       await close()
       focusOn($, `card:${arg}`)
@@ -552,13 +449,12 @@ async function onPress($: EngineInterface, key: string): Promise<void> {
   } else if (kind === 'back') {
     const was = (await read($, paneAtom)).pulled
     await close()
-    // back to where the person was in the box, as the draft returns the focus to the card's slot
     if (was) {
       reveal($, `card:${was}`, 'center')
       focusOn($, `card:${was}`)
     }
   } else if (kind === 'jump') {
-    // the group's divider moves up under the tabs and the window stays put (owner's choice, docs/cards/DECISIONS.md)
+    // the group's divider moves up under the tabs and the window stays put (owner's choice, DECISIONS.md)
     await pane(p => ({ ...p, lead: arg }))
   } else if (kind === 'untray') {
     await setTray($, t => t.filter(id => id !== arg))
@@ -573,7 +469,6 @@ async function onPress($: EngineInterface, key: string): Promise<void> {
     const p = await pane(p => ({ ...p, sort: arg as BookSort }))
     await savePrefs($, p)
   } else if (kind === 'motion') {
-    // turned on, the knob slides over in steps; turned off, it goes at once, as every move does with motion off
     const p = await pane(p => ({ ...p, isMotionOff: !p.isMotionOff, knob: p.isMotionOff ? KNOB[0][1] : undefined }))
     if (p.knob !== undefined) {
       for (const [at, to] of KNOB.slice(1)) {
@@ -591,7 +486,6 @@ async function onPress($: EngineInterface, key: string): Promise<void> {
   }
 }
 
-/** Which state picture stands in for Coco at rest, if any, and the line under the bar that goes with it. */
 function stateOf(catalog: Catalog, pane: PaneState, shown: number): StateName | null {
   if (catalog.status === 'loading') return 'shuffle'
   if (catalog.status === 'error') return 'emptybox'
@@ -601,15 +495,11 @@ function stateOf(catalog: Catalog, pane: PaneState, shown: number): StateName | 
   return null
 }
 
-/** Whether the box stands drawn with cards in it, and so Coco's card in its corner (stateOf gives no state). */
 function cocoIn(catalog: Catalog, pane: PaneState): boolean {
   return stateOf(catalog, pane, catalog.cards.filter(c => (pane.kind === 'all' || c.kind === pane.kind) && matches(c, pane.query)).length) === null
 }
 
-/**
- * Runs a change and, when it brings Coco's card back into the drawing, notes that Coco's frame at rest starts its loops
- * over, drawn anew; the moves after it keep in step from there. A drawing may not write, so the handler does it.
- */
+/** Runs a change; when it brings Coco's card back into the drawing, Coco's frame at rest starts over, drawn anew. A drawing may not write, so the handler does it. */
 async function bringsCoco($: EngineInterface, change: () => Promise<unknown>): Promise<void> {
   const was = cocoIn(await read($, catalogAtom), await read($, paneAtom))
   await change()
@@ -618,11 +508,7 @@ async function bringsCoco($: EngineInterface, change: () => Promise<unknown>): P
   await update($, cocoAtom, (c): CocoState => ({ ...c, restSince: now }))
 }
 
-/**
- * Loads the counts and the pane's settings and deals the deck as a session starts. A plugin holds one session.start hook
- * without a matcher, so Coco's calls this once the start has run. Claude's folders wait for the person to open the cards
- * (loadCatalog); a reload deals them again when the deck held them, since the person opened the cards this session.
- */
+/** Loads counts and settings and deals the deck as a session starts (a plugin holds one session.start hook, so Coco's calls this). Folders wait for the person to open the cards; a reload deals them again when the deck held them. */
 export async function cardsStarted($: EngineInterface, sessionCwd: string): Promise<void> {
   cwd = sessionCwd
   try {
@@ -643,34 +529,28 @@ export async function cardsStarted($: EngineInterface, sessionCwd: string): Prom
   void bringsCoco($, () => loadCatalog($, opened))
 }
 
-/** Counts a subagent's card once it was asked for; Coco's agent.spawn hook calls it, being the plugin's only one. */
 export async function cardsSpawned($: EngineInterface, subagentType: string): Promise<void> {
   try {
     await countUse($, `agent:${subagentType}`)
   } catch {}
 }
 
-/** Adds the cards' hooks. `language` gives Coco's language code when asked. */
 export function registerCards(on: On, language: () => string): void {
   cocoLang = language
 
-  // `/coco cards` opens the pane; every other /coco verb goes on to Coco's own. Like Coco's replies, a word about a
-  // pane that could not be placed goes to a toast.
   on('command.run', { command: 'coco' }, async ($, e, next) => {
     if (e.args.trim().toLowerCase().split(/\s+/)[0] !== 'cards') return next(e)
     if (!(await openPane($))) $.ui.toast(STRINGS[lang()].notPlaced, { timeoutMs: 8000 })
     return {}
   })
 
-  // The same pane from its button at the top of Coco's bag, on every page (book.tsx, owner 10-19).
+  // The same pane from the button at the top of Coco's bag (book.tsx, owner 10-19).
   on('ui.press', { element: 'coco:cards:open' }, async ($, e) => {
     if (!(await openPane($))) $.ui.toast(STRINGS[lang()].notPlaced, { timeoutMs: 8000 })
     return { element: e.element }
   })
 
-  // A slash command the person ran at the prompt or through Remote Control counts for its card; a plugin's run does not,
-  // and a skill typed as /name counts at skill.prompt instead. The matcher also keeps this hook apart from Coco's: a
-  // plugin holds one command.run hook without a matcher.
+  // A slash command run at the prompt or through Remote Control counts; a plugin's run does not, and a skill typed as /name counts at skill.prompt. The matcher keeps this hook apart from Coco's (one command.run hook without a matcher).
   on('command.run', { origin: [{ kind: 'composer' }, { kind: 'bridge' }] }, async ($, e, next) => {
     const ran = await next(e)
     void countCommand($, e.command)
@@ -697,8 +577,7 @@ export function registerCards(on: On, language: () => string): void {
     return next(e)
   }).catch(($, e, next) => next(e))
 
-  // The picked cards ride along with a message the person sent themselves, at the prompt or through Remote Control (not
-  // a task's notification or a plugin's message), then go back in the box.
+  // Picked cards ride along only with a message the person sent themselves (prompt or Remote Control), not a task notification or a plugin's message, then return to the box.
   on('prompt.submit', { origin: [{ kind: 'composer' }, { kind: 'bridge' }] }, async ($, e, next) => {
     const tray = await read($, trayAtom)
     if (tray.length === 0) return next(e)
@@ -709,15 +588,13 @@ export function registerCards(on: On, language: () => string): void {
     const result = await next({ ...e, context: [...(e.context ?? []), block] })
     if (!(result as { drop?: unknown } | undefined)?.drop) {
       await setTray($, () => [])
-      // what went along is the model's to read alone, so the person is told which cards it was (owner, 2026-10-15)
+      // the model alone reads what went along, so the person is told which cards (owner, 2026-10-15)
       $.ui.toast(STRINGS[lang()].carried(picked.filter(c => c.kind !== 'command').map(c => c.name)))
     }
     return result
   }).catch(($, e, next) => next(e))
 
-  // The cards in the tray, named in the band above the prompt box until the message goes (owner, 2026-10-15). Coco's
-  // band, and what other mods draw there, stays under this line. With the tray empty the hook reads nothing and passes
-  // the band straight on (see bandNames).
+  // Tray names in the band above the prompt box until the message goes (owner, 2026-10-15); Coco's band and other mods' stay under it. An empty tray reads nothing and passes the band on (bandNames).
   on('ui.render', { component: 'AbovePrompt' }, ($, e, next) => {
     const names = bandNames
     if (e.props.hasSurvey || names.length === 0) return next(e)
@@ -759,16 +636,12 @@ export function registerCards(on: On, language: () => string): void {
     const { Box, Text, Button } = table
     const s = STRINGS[lang()]
     const [catalog, usage, tray, pane, coco] = await Promise.all([read($, catalogAtom), read($, usageAtom), read($, trayAtom), read($, paneAtom), read($, cocoAtom)])
-    // VS Code draws the terminal's pane, in words: owner 10-19, after trying it with pictures, 「vscode和cli纯文字版」
+    // VS Code draws the terminal's pane, in words: owner 10-19, 「vscode和cli纯文字版」
     const flat = e.surface === 'terminal' || e.surface === 'vscode'
-    // the phone places nothing absolutely, so there the desktop's pane is drawn in one flow: its papers and pictures,
-    // each picture standing alone, and real buttons where the desktop lays blank ones over a drawing (owner 10-19:
-    // 「手机尽可能接近windows/mac/linux app客户端体验」)
+    // the phone places nothing absolutely, so the desktop's pane is drawn in one flow (owner 10-19: 「手机尽可能接近windows/mac/linux app客户端体验」)
     const flow = e.surface === 'mobile'
-    // Everywhere but the desktop a pulled card opens under its own strip or pocket, its buttons with it, since nothing
-    // there can stand at the window's foot as the desktop's sheet does (owner 10-19: 「就地展开」)
+    // off the desktop a pulled card opens under its own strip or pocket, buttons with it (owner 10-19: 「就地展开」)
     const inline = e.surface !== 'desktop'
-    // Coco's pictures, where Svg is drawn (the app surfaces only); the terminal and VS Code never read them
     const pics = !flat && 'Svg' in table ? await pictures($) : null
     const now = await $.clock.now()
     const cols = Math.max(24, e.props.bodyColumns)
@@ -785,26 +658,23 @@ export function registerCards(on: On, language: () => string): void {
     const rank = (c: Card) => rarity(usage[c.id], now)
 
     // ---- elements made once ----
-    // The desktop draws a Button as one line of its label in its own native style, ink following the theme, and
-    // draws no children in it (docs/cards/DESKTOP.md); a card's colors and weights therefore sit in Text beside it.
+    // A desktop Button is one line of its label in its native style and draws no children (DESKTOP.md); a card's colors and weights sit in Text beside it.
     const desk = !flat
-    // VS Code has no plain button and fills it in its accent color, so there a plain one is drawn dim, as an outline
+    // VS Code fills a plain button in its accent color, so there a plain one is drawn dim, as an outline
     const button = (key: string, label: string, extra: { variant?: 'primary'; plain?: true; dimColor?: true } = {}) =>
       once(`${e.surface}|b|${key}|${label}|${JSON.stringify(extra)}`, () =>
         Button({ key, label, ...(e.surface === 'vscode' && extra.plain ? { dimColor: true } : extra), onPress: noop }))
     /**
-     * A press target laid over a drawing on the desktop: a plain Button whose label is blank spaces, `reach` columns of
-     * them, then the words a screen reader reads, all past the drawing's right edge, where the drawing (which must be
-     * drawn `overflow="hidden"`) cuts it off. The button fills the drawing's height (a row Box that names its
-     * `alignItems` stretches it; one that does not centers it), a hair in from the edges so the focus ring shows; its
-     * own hover tint shows on it. Drawn last, so it lies over the rest.
+     * Press target over a drawing on the desktop: a plain Button of blank spaces (`reach` columns) then the screen-reader
+     * words, past the drawing's right edge, where the drawing (drawn `overflow="hidden"`) cuts it off. It fills the
+     * drawing's height (a row Box naming `alignItems` stretches it; otherwise it centers), a hair in from the edges so the
+     * focus ring shows. Drawn last, so it lies over the rest.
      */
     const hit = (key: string, label: string, reach: number) => flow ? null : (
       <Box position="absolute" top={0} bottom={0} left={0} width={reach * 2 + label.length * 2 + 8} padding={0.2} alignItems="stretch">
         {button(key, REACH.repeat(Math.ceil(reach * 0.62) + 2) + label, { plain: true })}
       </Box>
     )
-    /** A surface of the draft's: on the desktop the theme's own color under a film of the draft's (see FILM), on the terminal one color. */
     const filmed = (key: string, film: Film, outer: Record<string, unknown>, inner: Record<string, unknown>, kids: unknown) =>
       desk ? (
         <Box key={key} backgroundColor={UNDER[film]} {...outer}>
@@ -814,10 +684,6 @@ export function registerCards(on: On, language: () => string): void {
         <Box key={key} backgroundColor={SOLID[film]} {...outer} {...inner}>{kids as RenderElement}</Box>
       )
     const kindInk = (k: Card['kind']) => (desk || k !== 'command' ? KIND[k] : TERM.command)
-    /**
-     * A button drawn as the draft's: coral for the main action, an outline for the other, the label bold in the card's
-     * ink; on the kraft (`onKraft`) the outline and the label take the box's own ink, the theme's.
-     */
     const pill = (key: string, label: string, primary: boolean, onKraft = false) =>
       flow ? (
         button(key, label, primary || onKraft ? { variant: 'primary' } : { dimColor: true })
@@ -833,7 +699,6 @@ export function registerCards(on: On, language: () => string): void {
       'Input' in table
         ? once(`${e.surface}|q|${searchGen}`, () => table.Input({ key: 'q', placeholder: s.search, value: '', submitLabel: s.find, onInput: noop, onSubmit: noop }))
         : null
-    /** A printed word of the bar: dim at rest, full ink with an ink rule under it when chosen (docs/cards/DESIGN.md). */
     const word = (key: string, label: string, chosen: boolean) =>
       flow ? (
         button(key, label, chosen ? { variant: 'primary' } : { dimColor: true })
@@ -847,11 +712,9 @@ export function registerCards(on: On, language: () => string): void {
       )
 
     // ---- Coco ----
-    // Coco's card stands tilted at the front right of the box, as the draft's; under a state (loading, nothing found,
-    // an empty box) the picture stands in the middle of the box instead, and in the book Coco has a pocket of their own.
-    // Each picture lies on a blank of its size; Coco at rest lies on theirs always, so that frame never restarts while
-    // the pane is open, and a move's parts lie on top (docs/cards/DESKTOP.md). Svg is drawn by the app surfaces only;
-    // where it is but the pictures could not be read, the pane draws as where it is not, in words.
+    // Coco's card tilts at the front right of the box; under a state the picture stands mid-box; the book gives Coco a pocket.
+    // Each picture lies on a blank of its size; Coco at rest always lies on theirs, so that frame never restarts while the
+    // pane is open, and a move's parts lie on top (DESKTOP.md). Without readable pictures the pane draws in words.
     const hasSvg = pics !== null && 'Svg' in table
     const layer = (key: string, source: string) =>
       'Svg' in table ? (
@@ -859,14 +722,12 @@ export function registerCards(on: On, language: () => string): void {
           {table.Svg({ source, alt: s.cocoAlt, width: W, height: H, isInteractive: true })}
         </Box>
       ) : null
-    /** The room a picture of Coco's takes, with nothing on it: where the picture laid from another layer comes to lie. */
     const blank = (key: string) =>
       'Svg' in table && pics ? (
         <Box key={key} flexDirection="column" flexShrink={0}>
           {table.Svg({ source: pics.SPACER, alt: s.cocoAlt, width: W, height: H })}
         </Box>
       ) : null
-    /** A picture of Coco's that stands alone, `pick` of the pictures: a blank holding the room, the picture over it. */
     const still = (key: string, pick: (a: Art) => string) =>
       flow && 'Svg' in table && pics ? (
         <Box key={key} flexDirection="column" flexShrink={0}>
@@ -879,17 +740,13 @@ export function registerCards(on: On, language: () => string): void {
         </Box>
       ) : null
     const turn = pane.line ?? 0
-    // drawn only with the pictures, which say how far the card turns
     const card = cocoCard(s.cocoBox[turn], pics?.TILT ?? 0, W, H)
     const cardRows = Math.ceil(card.h / ROW_PX)
-    // where Coco's card's top stands above the window's foot, in rows: the draft's 14 px clear under its lowest corner,
-    // the shadow running on past the edge
     const standRows = (card.foot + 14) / ROW_PX
     // `keep`: how many of a move's layers to draw, the newest; fewer when the pane would pass the desktop's caps
     const cocoCardOf = (keep: number): RenderElement | null => {
       if (!pics || !('Svg' in table)) return null
       const { Svg } = table
-      // in one flow Coco at rest is drawn into their card, the one picture inside the other
       if (flow) {
         return (
           <Box key="coco" flexDirection="column" flexShrink={0}>
@@ -903,7 +760,6 @@ export function registerCards(on: On, language: () => string): void {
         const part = pics.MOVES[l.move as MoveName].PARTS[l.part]
         return part ? layer(l.key, fill(part.svg, l.mark, l.actMs, l.restAge, loops)) : null
       })
-      // the card is one picture; Coco's upright frame sits on it where the card's frame turns, set in by a blank
       return (
         <Box key="coco" flexDirection="column" flexShrink={0}>
           {Svg({ source: card.svg, alt: `Coco. ${s.cocoBox[turn]}`, width: card.w, height: card.h })}
@@ -919,10 +775,8 @@ export function registerCards(on: On, language: () => string): void {
       )
     }
 
-    // ---- the bar ----
     const kinds = (['all', 'skill', 'agent', 'command'] as const).map(k => {
       const w = word(`kind:${k}`, `${s.kind[k]} ${counts[k]}`, pane.kind === k)
-      // each kind wears its stripe's color as a swatch, so the stripes in the box read at a glance
       return desk && k !== 'all' ? (
         <Box key={`kw-${k}`} flexDirection="row" alignItems="center" columnGap={0.5}>
           <Box key="sw" width={1} height={0.8} backgroundColor={flow && k === 'command' ? TERM.command : KIND[k]} />
@@ -933,9 +787,7 @@ export function registerCards(on: On, language: () => string): void {
       )
     })
     const views = (['box', 'book'] as const).map(v => word(`view:${v}`, s.view[v], pane.view === v))
-    // the draft's switch on the desktop: a track with a knob, the word beside it; a screen reader hears it on or off
     const isMoving = !pane.isMotionOff
-    // how far over the knob is: at the right when motion is on, on its way there while it slides
     const knobAt = pane.knob ?? (isMoving ? 1 : 0)
     const motionWord = s.motionOn.split(/\s*[:：]/)[0] ?? s.motionOn
     // in words nothing moves, so there is no switch (owner 10-19: 「动画开关也没意义了在cli和vscode里」)
@@ -952,8 +804,6 @@ export function registerCards(on: On, language: () => string): void {
     ) : (
       word('motion:', pane.isMotionOff ? s.motionOff : s.motionOn, false)
     )
-    // what a state says, and the button that gets out of it: in the box under Coco's picture on the desktop, as the
-    // draft has it, and under the bar on the terminal
     let said: string | null = null
     let out: RenderElement | null = null
     if (state === 'shuffle') said = s.loading
@@ -961,7 +811,6 @@ export function registerCards(on: On, language: () => string): void {
     else if (state === 'dig') [said, out] = [s.noMatch(pane.query), desk ? pill('clearq:', s.clearSearch, false, true) : button('clearq:', s.clearSearch)]
     else if (state === 'wait') said = catalog.cards.length === 0 ? s.empty : s.emptyKind
     const status = said === null || hasSvg ? null : <Box key="st" flexDirection="column" rowGap={0.5}><Text>{said}</Text>{out}</Box>
-    /** The box under a state: Coco's picture in its middle, what the state says and the way out under it. */
     const stateBox = (name: StateName) =>
       filmed('deck', 'kraft', { flexGrow: 1, minWidth: 0 }, { flexDirection: 'column', alignItems: 'center', rowGap: 1, paddingX: 2, paddingTop: 4, paddingBottom: 4 }, [
         still(`state-${name}`, a => a.STATES[name]),
@@ -979,8 +828,6 @@ export function registerCards(on: On, language: () => string): void {
       </Box>
     )
 
-    // ---- a card's strip in the box, its pocket in the book ----
-    /** The kind stripe painted along a card's top edge: skill a coral bar, subagent a blue double rule, command an ink bar. */
     const topStripe = (k: Card['kind']) =>
       k === 'agent' ? (
         <Box key="k" flexDirection="column" rowGap={0.2}>
@@ -990,17 +837,12 @@ export function registerCards(on: On, language: () => string): void {
       ) : (
         <Box key="k" height={k === 'skill' ? 0.2 : 0.26} backgroundColor={flow && k === 'command' ? TERM.command : KIND[k]} />
       )
-    /** The same stripe down a strip's left edge, on the terminal. */
     const stripe = (k: Card['kind']) => <Text key="k" color={kindInk(k)}>{k === 'agent' ? '‖' : '▌'}</Text>
     const rarityMark = (c: Card) => {
       const r = rank(c)
       return r === 'N' ? null : <Text key="r" bold color={desk && !flow ? PRINT[r] : TERM[r]}>{r}</Text>
     }
-    /** A rare card's top right corner folded down to show its foil, as a picture laid on the corner (docs/cards/DESIGN.md). */
-    /**
-     * A rare card's folded corner. A card in the box shows the box's kraft in the cut; the pulled card (`lifted`) lies
-     * off the box, so its cut shows the pane's floor, and its flap glints as it comes up unless motion is off.
-     */
+    /** A rare card's folded corner: a boxed card shows kraft in the cut, a `lifted` one the pane's floor; the flap glints on rising unless motion is off. */
     const fold = (c: Card, size: number, lifted = false) => {
       const r = rank(c)
       if (!desk || flow || r === 'N' || !('Svg' in table)) return null
@@ -1019,19 +861,13 @@ export function registerCards(on: On, language: () => string): void {
         </Box>
       )
     }
-    // the draft's coral "+1" slip, turned back a little on the desktop (a still picture, since a Box cannot turn)
     const flag = (c: Card) =>
       !(pane.fresh ?? []).includes(c.id) ? null
       : hasSvg ? <Box key="new" flexShrink={0}>{table.Svg({ source: FLAG.svg, alt: '+1', width: FLAG.w, height: FLAG.h })}</Box>
       : <Text key="new" bold color={C.flagInk} backgroundColor={KIND.skill}> +1 </Text>
-    // Ink printed on the card stock: the draft's on the desktop, the theme's on the terminal, whose paper follows it.
     const inkOf = (tone: 'text' | 'muted' | 'faint') => (desk ? INK[tone] : tone === 'text' ? undefined : 'inactive')
     const ink = inkOf
-    // The strip's header as the draft has it: the name, its uses, "in the tray", then the description cut to the
-    // room left, and at the right end the "+1" flag and the printed R or SR, clear of the folded corner.
     const boxCols = wide ? cols - SIDE - 2 : cols
-    // the strips leave the box's right side to Coco's card, as the draft's walls do
-    // in one flow a narrow box has Coco's card over its strips, not beside them
     const beside = !flow || boxCols >= 60
     const stripCols = boxCols - (hasSvg && beside ? COCO_COLS : 0)
     // `lite`: drawn without its press target, which waits out one of Coco's moves when the pane would pass the caps
@@ -1083,8 +919,7 @@ export function registerCards(on: On, language: () => string): void {
         </Box>
       )
     }
-    // the "+1" of a card just pulled, left where it stood on the strip and drawn fainter and a little higher at each
-    // of PEEL's steps, as the draft fades it; laid over the slot, so the box does not move
+    // the "+1" of a card just pulled stays on the strip, fainter and higher at each of PEEL's steps; laid over the slot so the box does not move
     const peelOf = (c: Card) => {
       const at = desk && !flow && hasSvg && pane.peel?.id === c.id ? PEEL[pane.peel.step] : undefined
       if (!at || !('Svg' in table)) return null
@@ -1097,7 +932,6 @@ export function registerCards(on: On, language: () => string): void {
         </Box>
       )
     }
-    // the pulled card's slot stays in the box as a ghost on darkened kraft, so the box never reflows
     const ghost = (c: Card) =>
       filmed(`s-${c.id}`, 'ghost', {}, desk ? { borderStyle: 'single', borderColor: 'inactive', paddingX: 1, paddingY: 0.3 } : { paddingX: 1, paddingY: 0.3 }, [
         <Text key="n" color={desk ? 'text' : C.ghostText}>{c.name}</Text>,
@@ -1113,11 +947,10 @@ export function registerCards(on: On, language: () => string): void {
       </Box>
     )
     /**
-     * Coco's moving pictures lie on a layer of their own over the box or the book, never inside it, so a redraw
-     * makes the box anew in one piece: the desktop keeps a frame and the boxes around it from one drawing to the next
-     * and makes the rest anew (docs/cards/DESKTOP.md). On the desktop that alone did not stop the window being pulled to
-     * the box's end; `stirred` stopped it (owner's desktop, 2026-10-15). On the bench, at the
-     * harshest layout timing tried, the two together held better than `stirred` with the frames inside the box.
+     * Coco's moving pictures lie on a layer of their own over the box or the book, never inside it, so a redraw makes the
+     * box anew in one piece (DESKTOP.md). That alone did not stop the window being pulled to the box's end; `stirred` did
+     * (owner's desktop, 2026-10-15). On the bench at the harshest layout timing tried, both together held better than
+     * `stirred` with the frames inside the box.
      */
     const layered = (key: string, inner: RenderElement, layer: RenderElement | null) =>
       layer ? (
@@ -1131,13 +964,9 @@ export function registerCards(on: On, language: () => string): void {
       for (const c of cards) groups.set(c.group, [...(groups.get(c.group) ?? []), c])
       return groups
     }
-    // `max`: how many cards to draw; the rest are left for search when the tree would pass the desktop's caps
     const boxView = (max: number, lite: boolean, keep: number) => {
       const whole = groupsOf(shown)
-      // the group whose tab was pressed goes first, the rest after it in their order; the tabs keep theirs
       const led = pane.lead && whole.has(pane.lead) ? [...(whole.get(pane.lead) ?? []), ...shown.filter(c => c.group !== pane.lead)] : shown
-      // the draft's row of divider tabs above the box: one per group, manila with the group's name in ink; a press
-      // brings its divider to the top; a narrow box drops the counts
       const counted = boxCols >= 56
       const tabs =
         whole.size < 2 ? null : (
@@ -1159,9 +988,8 @@ export function registerCards(on: On, language: () => string): void {
             )}
           </Box>
         )
-      // Coco's card on a rail down the box's right side: the rail starts where the card would stand at the bottom of
-      // the window and runs to the box's floor; the card stands at its top, and where the rail is shorter than the card
-      // it stands on the floor, never past it (the rail lays it out flex-end, a spacer under it taking the rest)
+      // Coco's card on a rail from the window-bottom place to the box's floor; where the rail is shorter than the card it
+      // stands on the floor, never past it (the rail lays it out flex-end, a spacer under it taking the rest)
       const cocoRail = hasSvg && !flow ? rail('cocorail', cocoTop, { right: 0, width: COCO_COLS }, cocoCardOf(keep)) : null
       const groups = [...groupsOf(led.slice(0, max))].map(([g, cs], i) => (
         <Box key={`g-${g}`} flexDirection="column" rowGap={0.25} paddingRight={hasSvg && !flow ? COCO_COLS : 0}>
@@ -1170,8 +998,6 @@ export function registerCards(on: On, language: () => string): void {
         </Box>
       ))
       const moreLine = shown.length > max ? <Box key="more" marginTop={1}><Text color={desk ? 'text' : '#24180b'}>{s.moreCards(shown.length - max)}</Text></Box> : null
-      // in one flow Coco's card cannot follow the window, so it stands at the box's top right, beside the strips in a
-      // wide box and over them in a narrow one
       const cocoFlow = flow && hasSvg ? cocoCardOf(0) : null
       const deck = filmed('deck', 'kraft', { flexGrow: 1, minWidth: 0 }, { flexDirection: 'column', paddingX: 1, paddingY: 1, minHeight: hasSvg && !flow ? cardRows + 4 : undefined }, (
         !cocoFlow ? [flow ? null : tabs, ...groups, moreLine]
@@ -1183,15 +1009,11 @@ export function registerCards(on: On, language: () => string): void {
           ]
         : [<Box key="cocorow" justifyContent="flex-end" marginBottom={1}>{cocoFlow}</Box>, ...groups, moreLine]
       ))
-      // in one flow the tabs are buttons, which read on the floor and not on the kraft, so they stand over the box
       if (flow && tabs) return <Box key="deckroom" flexDirection="column" flexGrow={1} minWidth={0}>{tabs}{deck}</Box>
       return layered('deckroom', deck, cocoRail)
     }
 
-    // a card in its sleeve, as the draft's binder: the name with R or SR at the right (clear of the fold), the start
-    // of its description, and 用过 N 次 at the bottom right
     const pocket = (c: Card, lite: boolean) => {
-      // in one flow the pocket is the theme's own paper, so the name's button reads on it
       const ink = flow ? (tone: 'text' | 'muted' | 'faint') => (tone === 'text' ? undefined : 'inactive') : inkOf
       const body = (
         <Box key="b" flexDirection="column" paddingX={1} paddingY={0.5} rowGap={0.25}>
@@ -1217,9 +1039,8 @@ export function registerCards(on: On, language: () => string): void {
     const sr = all.filter(c => rank(c) === 'SR').length
     const r = all.filter(c => rank(c) === 'R').length
     const top = [...all].sort(byUses)[0]
-    // Coco's pocket in the binder: their album picture, cut to the top of it as the draft's, the name and their line. The
-    // pocket holds a blank where the picture goes; the picture lies on the layer over the pages (see `layered`), set in
-    // from the first page's corner by the page's padding, then by the pocket's stripe and padding, as the blank is
+    // Coco's pocket: it holds a blank where the picture goes; the picture lies on the layer over the pages (`layered`), set
+    // in by the page's padding, then the pocket's stripe and padding, as the blank is
     const albumPic = (pic: RenderElement | null) => <Box key="pic" height={112 / ROW_PX} overflow="hidden" alignSelf="center">{pic}</Box>
     const cocoPocket = hasSvg ? (
       <Box key="p-coco" flexDirection="column" width={24} backgroundColor={PAPER} overflow="hidden">
@@ -1246,13 +1067,12 @@ export function registerCards(on: On, language: () => string): void {
           <Text key="t" bold color={INK.manila}>{title}</Text>,
           <Text key="n" color={INK.manilaCount}> {n}</Text>,
         ])
-      // a pulled card opens under the page that holds it
       const opened = (cs: Card[]) => (inline && pane.pulled && cs.some(c => c.id === pane.pulled) ? face : null)
       const page = (cs: Card[], first: boolean) =>
         filmed('page', 'kraft', {}, { flexWrap: 'wrap', columnGap: 2, rowGap: 1, paddingX: 2, paddingY: 1 }, [first ? cocoPocket : null, ...cs.map(c => pocket(c, lite))])
       const more = list.length > max ? <Text key="more">{s.moreCards(list.length - max)}</Text> : null
-      // the first page's tab stands above the layer that holds Coco's album picture, so the layer starts at the first
-      // page's top and the picture lies a whole row down from it; the other pages and the rest of the book are under it
+      // the first page's tab stands above the layer holding Coco's album picture, so the layer starts at the first page's top
+      // and the picture lies a whole row down; the other pages and the rest of the book are under it
       const [lead, ...rest] = pages
       return (
         <Box key="book" flexDirection="column" flexGrow={1} minWidth={0} rowGap={1}>
@@ -1284,23 +1104,17 @@ export function registerCards(on: On, language: () => string): void {
     }
 
     // ---- the pulled card and the tray ----
-    // a narrow pane's sheet going back down still holds its card until it is gone
     const pulledId = pane.pulled ?? pane.sinking ?? null
     const pulled = pulledId ? catalog.cards.find(c => c.id === pulledId) : undefined
-    // a narrow pane stacks the face over the box, where the draft hides the empty slot too
-    // the empty place for it, as the draft's dashed outline
     let face: RenderElement | null = wide && !inline ? (
       <Box key="hint" borderStyle="single" justifyContent="center" paddingX={2} paddingY={3} />
     ) : null
     if (pulled) {
       const n = toNext(usage[pulled.id], now)
       const inTray = tray.includes(pulled.id)
-      // on a narrow pane the card's sheet covers the tray, so there the button also puts the card back, as the draft's
-      // does, and the card is seen landing in the tray
       const sheetUp = hasSvg && !flow && !wide && catalog.status === 'ready'
       const take = pulled.kind === 'command' ? pill(`type:${pulled.id}`, s.typeIt, true) : pill(`${sheetUp ? 'takeup' : 'take'}:${pulled.id}`, inTray ? s.untake : s.take, !inTray)
       const lines = [
-        // the name, and at the right the printed R or SR, clear of the folded corner, as the draft's title
         <Box key="h" justifyContent="space-between" columnGap={1} paddingRight={desk && rank(pulled) !== 'N' ? 2 : 0}>
           <Text bold color={ink('text')}>{pulled.name}</Text>
           {rarityMark(pulled)}
@@ -1309,11 +1123,9 @@ export function registerCards(on: On, language: () => string): void {
         <Text key="call" color={ink('muted')}>{pulled.kind === 'agent' ? s.agentCall : `/${pulled.name}`}</Text>,
         <Text key="desc" color={ink(pulled.description ? 'text' : 'faint')}>{pulled.description || s.noDescription}</Text>,
         <Text key="meta" color={ink('muted')}>{s.meta(s.kindOne[pulled.kind], s.group(pulled.group))}</Text>,
-        // how the card climbs, and the use count stamped in red at the right
         <Box key="next" justifyContent="space-between" alignItems="center" columnGap={1} flexWrap="wrap">
           <Text color={ink('muted')}>{n ? s.toNext(n.uses, n.to) : s.top}</Text>
           {hasSvg ? (
-            // the draft's stamp, turned back a little: a still picture, since a Box cannot turn
             <Box key="stamp" flexShrink={0}>{table.Svg({ ...stampOf(s.uses(uses(pulled))), alt: s.uses(uses(pulled)) })}</Box>
           ) : desk ? (
             <Box key="stamp" borderStyle="bold" borderColor={INK.stamp} paddingX={1} paddingY={0}>
@@ -1324,7 +1136,6 @@ export function registerCards(on: On, language: () => string): void {
           )}
         </Box>,
       ]
-      // in one flow the buttons stand under the card, on the theme's floor, where theirs read
       const acts = (
         <Box key="acts" flexWrap="wrap" columnGap={1} rowGap={0.5} marginTop={0.5}>
           {take}
@@ -1349,7 +1160,6 @@ export function registerCards(on: On, language: () => string): void {
       )
     }
     const trayCards = tray.map(id => catalog.cards.find(c => c.id === id)).filter((c): c is Card => !!c)
-    // a slip of the same card stock in the tray: its kind's stripe on top, the name, and a cross; a press puts it back
     const chip = (c: Card) =>
       flow ? (
         <Box key={`c-${c.id}`} flexDirection="column" backgroundColor={BASE}>
@@ -1371,9 +1181,7 @@ export function registerCards(on: On, language: () => string): void {
           <Box key="t" paddingX={0.5}>{button(`untray:${c.id}`, `${c.name} ×`, { plain: true })}</Box>
         </Box>
       )
-    // the tray: a heading with "all back" at its right and the slips in a shallow tray
-    // in words (the terminal, VS Code) the tray shows only once a card is in it (owner 10-19, on
-    // the empty tray's lines: 「纯文字版把这些去掉」)
+    // in words (the terminal, VS Code) the tray shows only once a card is in it (owner 10-19, 「纯文字版把这些去掉」)
     const trayBox = flat && trayCards.length === 0 ? null : (
       <Box key="tray" flexDirection="column" rowGap={0.5}>
         <Box key="hd" justifyContent="space-between" alignItems="center" columnGap={1}>
@@ -1385,13 +1193,11 @@ export function registerCards(on: On, language: () => string): void {
     )
 
     // ---- what stays put while the pane scrolls ----
-    // The pane is one scroller and cannot hold a part still (docs/cards/DESKTOP.md), so on the desktop the parts the draft
-    // pins are laid over the flow at the window's place, which every scroll redraws: the side column sticks to the
-    // top while the box scrolls by, a narrow pane docks the tray at the bottom and pulls a card up into a sheet over
-    // it, and Coco's card stands at the bottom right of the box. Each lies on a rail from where it should stand to
-    // the end of what it belongs to, so it stops there and never makes the pane longer. Rows are counted the
-    // desktop's way: the window shows rows offset to offset + bodyRows; heights here are estimates kept a little
-    // generous, so a part sits a row clear of an edge rather than under it.
+    // The pane is one scroller and cannot hold a part still (DESKTOP.md), so on the desktop the parts the draft pins are
+    // laid over the flow at the window's place, which every scroll redraws. Each lies on a rail from where it should stand
+    // to the end of what it belongs to, so it stops there and never lengthens the pane. Rows are counted the desktop's way
+    // (the window shows offset to offset + bodyRows); heights are estimates kept a little generous, so a part sits a row
+    // clear of an edge rather than under it.
     const { offset, bodyRows } = e.props.scroll ?? { offset: 0, bodyRows: 40 }
     const ready = catalog.status === 'ready'
     const pinned = hasSvg && !flow
@@ -1401,7 +1207,6 @@ export function registerCards(on: On, language: () => string): void {
       return n
     }
     const linesOf = (t: string, width: number) => Math.max(1, Math.ceil(colsOf(t) / Math.max(8, width)))
-    /** Rows of the pulled card's face drawn `width` columns wide. */
     const faceRows = (c: Card, width: number) => {
       const w = width - 4
       const takeLabel = c.kind === 'command' ? s.typeIt : tray.includes(c.id) ? s.untake : s.take
@@ -1411,7 +1216,6 @@ export function registerCards(on: On, language: () => string): void {
       return 0.2 + 0.75 + linesOf(c.name, w - 3) + 0.25 + 0.12 + 0.25 + 1 + 0.25 + linesOf(c.description || s.noDescription, w) + 0.25 +
         linesOf(s.meta(s.kindOne[c.kind], s.group(c.group)), w) + 0.25 + (next > w ? 2.5 : 1.3) + 0.25 + 0.25 + (acts > w ? 4.45 : 2.1) + 0.75 + 0.2
     }
-    /** Rows of the tray drawn `width` columns wide: its heading, the slips packed into rows, and its hint. */
     const trayRows = (width: number) => {
       let rowsN = 1
       let used = 0
@@ -1424,23 +1228,19 @@ export function registerCards(on: On, language: () => string): void {
       return 1 + 0.25 + chips
     }
     const kindsCols = (['all', 'skill', 'agent', 'command'] as const).reduce((n, k) => n + colsOf(`${s.kind[k]} ${counts[k]}`) + 4, 0)
-    /** Rows above the box: the bar's title, search, kinds and views and the gaps between, and the gap under it. */
     const workTop = 1 + 0.5 + SEARCH_ROWS + 0.5 + (kindsCols > cols ? 2.37 : 1.12) + 0.5 + 1.12 + 0.5
     const docked = pinned && !wide && ready
     sheetDocks = docked
-    // half a row more than it needs: the window's place is rounded to a row, so its foot may fall half a row short
     const trayH = docked ? Math.ceil(0.06 + 0.5 + trayRows(cols - 2) + 1) : 0
-    // the face set in the sheet's margins, the shade and the rule over it, and half a row to spare
     const sheetH = docked && pulled ? Math.min(bodyRows - 2, Math.ceil(faceRows(pulled, cols - 4) + 0.3 + 0.06 + 0.75 + 0.5 + 0.5)) : 0
     const risen = pane.isMotionOff ? sheetH : Math.round(sheetH * Math.min(1, pane.rise ?? 1) * 100) / 100
-    // Coco's card stands at the window's foot, above a docked tray; in rows from the box's top
     const cocoTop = Math.max(4, offset + bodyRows - trayH - standRows - workTop)
     const stick = Math.max(0, offset + 1 - workTop)
     const sideRows = (pulled ? faceRows(pulled, SIDE) : 4.2) + 1 + trayRows(SIDE) + 2
 
-    // on the desktop the face is drawn in a place of its own, shifted toward the box while it comes out of it. The
-    // desktop draws offsets on absolute Boxes only, so the shift is a negative margin on a place as wide as the
-    // column, which moves the face and nothing under it; always drawn, so the glint's frame keeps its place
+    // on the desktop the face is drawn in a place of its own, shifted toward the box while it comes out: desktop offsets
+    // exist on absolute Boxes only, so the shift is a negative margin on a place as wide as the column; always drawn, so
+    // the glint's frame keeps its place
     const flight = pinned && wide && pane.pulled ? Math.min(1, pane.fly ?? 0) : 0
     const side = (
       <Box key="side" flexDirection="column" rowGap={1} width={wide ? SIDE : undefined} flexShrink={0}>
@@ -1452,10 +1252,7 @@ export function registerCards(on: On, language: () => string): void {
         {trayBox}
       </Box>
     )
-    /**
-     * A part laid over the flow from row `top` of its parent to the parent's foot, standing at the top of that. An
-     * absolute place is a whole row, so a spacer above the part carries the rest of `top`.
-     */
+    /** A part laid over the flow from row `top` of its parent to the parent's foot. An absolute place is a whole row, so a spacer above the part carries the rest of `top`. */
     const rail = (key: string, top: number, at: Record<string, unknown>, kid: RenderElement | null) => {
       const row = Math.floor(top)
       return (
@@ -1467,7 +1264,6 @@ export function registerCards(on: On, language: () => string): void {
       )
     }
 
-    // where a pulled card opens in the box, the side holds only the tray, and nothing while the tray is not drawn
     const sideShown = !inline || trayBox !== null
     const draw = (max: number, keep: number, lite: boolean) => {
       const main =
@@ -1489,8 +1285,8 @@ export function registerCards(on: On, language: () => string): void {
           </Box>
         )
       }
-      // a docked pane reaches at least the window's foot, so with a short deck the tray still docks there, as the
-      // draft's tray does (margin-top: auto), half a row short of it in case the window's last row is cut
+      // a docked pane reaches at least the window's foot, so a short deck's tray still docks there (the draft's margin-top:
+      // auto), half a row short of it in case the window's last row is cut
       return (
         <Box flexDirection="column" width={cols} rowGap={1} minHeight={docked ? bodyRows - 0.5 : undefined}>
           <Box key="top" flexDirection="row" columnGap={2} flexWrap="wrap">{bar}</Box>
@@ -1532,10 +1328,10 @@ export function registerCards(on: On, language: () => string): void {
         </Box>
       )
     }
-    // The desktop drops a tree past its caps without a word and keeps the old drawing, so a press would seem to do
-    // nothing (docs/cards/DESKTOP.md). Measure before handing it over. Past the guard while Coco moves, the cards' press
-    // targets wait out the move first, then the older of two overlapping parts goes, then the move itself, so Coco
-    // stands at rest; only then are fewer cards drawn, a fifth fewer at a time, the rest left for search.
+    // The desktop drops a tree past its caps without a word and keeps the old drawing, so a press would seem to do nothing.
+    // Measure before handing it over. Past the guard while Coco moves, the cards' press targets wait out the move first,
+    // then the older of two overlapping parts goes, then the move itself; only then are fewer cards drawn, a fifth fewer at
+    // a time, the rest left for search.
     let max = shown.length
     let keep = coco.layers.length
     let lite = false

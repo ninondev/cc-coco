@@ -45,6 +45,7 @@ import { COMPANION_DIR, companionRequestText } from './companion'
 import type { CompanionRequest } from './companion'
 import { fill, overEnglish } from './book-words'
 import { PLUGIN_VERSION } from './plugin-version'
+import { doctorLines, uninstallSteps } from './coco-commands'
 import type { BookWords, Page } from './book-words'
 import { bookCachePercent } from './book-session'
 import { cardDestination, cardName, cardSaveWords, revealCard, saveCard, saveWeekCard } from './card-runtime'
@@ -59,7 +60,7 @@ import { forgetWeekWords, loadWeekWords, weekWord } from './week-words'
 import { weekCardSvg } from './week-card'
 import type { WeekWord } from './week-book'
 import type { CardDestination, CardSaveResult } from './card-runtime'
-import { checkup, readCheckCompanion } from './checkup'
+import { checkup, readCheckCompanion, atLeastVersion, COMPANION_MIN_VERSION } from './checkup'
 import type { CheckRow, CheckSession, CheckCompanion, CheckHealth } from './checkup'
 import { MARKS_DEFAULT, latest, marksFrom } from './latest'
 import type { Marks } from './latest'
@@ -69,6 +70,7 @@ import type { CocoOutfit } from './coco-motion'
 import { PORTRAIT_POSES, bookPortrait } from './book-portrait'
 import { homePath, isWindows, joinPath, presenceFolder } from './d1-paths.js'
 import { currentNotice } from './notice'
+import { readPrivacy, setPrivacy } from './privacy'
 import { guestBook, guestBookReading, loadVisitorData, loadVisitorWords, visitorArtReady, visitorHasWord, visitorWord } from './visitors-art'
 import { readVisits, visitDay, visitorKey, visitorsOn } from './visitors'
 import type { Visit, VisitorKind } from './visitors'
@@ -166,13 +168,14 @@ function morePageEngine($:Engine):Engine {
 
 let m1Runtime: MoreRuntime | undefined
 let m1TalkOpen = false
+let m1TalkApiPending = false
 let m1VoiceCardShown = false
 let m1VoiceAnswered = false
 let m1VoiceAskActive = false
 const m1ScriptFolds = new Set<string>()
 const m1VoiceSizes = new Map<string,number>()
 const m1CheckAfter = new Map<string,string>()
-export function configureM1Book(runtime: MoreRuntime): void { m1Runtime = runtime }
+export function configureM1Book(runtime: MoreRuntime): void { m1Runtime = runtime; m1TalkApiPending = false }
 /** Who pays, and where the key row is drawn: read to draw only; the key program never runs for this. `drawn` is true
  * where who pays is on screen: the More page, or the switches page under Talk. */
 // Who pays is asked of the host once a minute at most (owner 10-19, his presses lagged): the host holds the credential for
@@ -242,6 +245,26 @@ export async function openM1Book($: Engine, page: 'talk'|'him'|'settings',stillC
 async function focusM1Book($:Engine,key:string):Promise<void>{if(!open)return;try{await $.ui.focus({requestId:BOOK_PANE,key})}catch{}}
 async function m1BookFlags($: Engine,more:boolean,talk:boolean):Promise<void>{
   book={...book,more,talk};try{bookPublishFailed=!(await $.state.set(BOOK,book)).isSet}catch{bookPublishFailed=true}
+}
+function talkNeedsApi():boolean{return !!m1Runtime&&m1Runtime.payer()!=='key'&&m1Runtime.snapshot().models?.choices.length===0}
+async function openTalkApi($:Engine):Promise<void>{
+  const runtime=m1Runtime;if(!runtime)return
+  await openM1Book($,'settings',()=>m1Runtime===runtime)
+  if(m1Runtime!==runtime)return
+  m1TalkApiPending=true
+  await runtime.choosePayer(morePageEngine($),'key')
+  runtime.open=true;runtime.reading=0
+  await m1BookFlags($,true,false)
+  await focusM1Book($,'coco:more:key:base')
+  redrawSoon($)
+}
+async function continueTalkApi($:Engine,requestOn=false):Promise<void>{
+  const runtime=m1Runtime,key=runtime?.snapshot().key
+  if(!m1TalkApiPending||!runtime||!runtime.open||key?.payer!=='key'||key.busy||!key.key||key.key.state==='refused')return
+  if(requestOn&&!runtime.isOn('talk'))await runtime.press(morePageEngine($),'coco:more:talk:on')
+  if(runtime!==m1Runtime||!m1TalkApiPending)return
+  if(runtime.isOn('talk')){m1TalkApiPending=false;await openM1Book($,'talk',()=>m1Runtime===runtime)}
+  else if(runtime.asking==='talk')await focusM1Book($,'coco:more:talk:ask:yes')
 }
 function m1Frame(E: Elements[keyof Elements], w: BookWords, surface: string, content: RenderElement): RenderElement {
   const {Box,Button}=E
@@ -645,13 +668,14 @@ async function show($: Engine, page: Page, reading = book.reading,stillCurrent:(
   if(!stillCurrent())return
   if (m1Runtime) { m1Runtime.open = false; m1Runtime.talkHidden() }
   m1TalkOpen = false
+  m1TalkApiPending = false
   if (page !== 'him') roomModule?.forgetRoom()
   if (page !== 'settings' && page !== companionPage()) companionBook.forget()
   if (page !== 'settings') { iconBook.forget(); copiedChecks.clear(); checkWorking.clear(); forgetChecks() }
   if (page !== 'log') weekSave = undefined
   if (page !== 'omen') vibeSave = undefined
   bookGeneration++
-  book = { page, reading, rev: book.rev + 1, languages: page === 'settings' && book.languages === true, ...(page === 'him' && book.visitors !== undefined ? { visitors: book.visitors } : {}) }
+  book = { page, reading, rev: book.rev + 1, languages: page === 'settings' && book.languages === true, ...(page === 'him' && book.visitors !== undefined ? { visitors: book.visitors } : {}), ...(page === 'settings' && book.care ? { care: book.care } : {}) }
   try { bookPublishFailed = !(await $.state.set(BOOK, book)).isSet } catch { bookPublishFailed = true }
   if(!stillCurrent())return
   if (bookPublishFailed) $.ui.invalidate('ui.render')
@@ -793,7 +817,7 @@ async function setMarks($: Engine, marks: Marks): Promise<void> {
   $.ui.invalidate('ui.render') // the transcript's rows draw again, once
 }
 
-export type C3BookSnapshot = Pick<BookData, 'pace' | 'bookmark' | 'neighbours' | 'vibe'>
+export type C3BookSnapshot = Pick<BookData, 'pace' | 'bookmark' | 'neighbours' | 'vibe' | 'todoPileThreshold'>
 let c3Snapshot: C3BookSnapshot = {}
 export function setC3BookSnapshot(snapshot: C3BookSnapshot): void { c3Snapshot = snapshot }
 let d1Snapshot: D1Snapshot | undefined
@@ -831,6 +855,7 @@ async function dataFor($: Engine, held: CocoBook, view: CocoView | undefined): P
     ...c3Snapshot,
     ...(spark ? { spark } : {}),
     ...(shelf ? { shelf } : {}),
+    ...(held.page === 'settings' && held.care ? { care: { first: held.care, ...await readPrivacy($).then(state => state ? { state } : {}, () => ({})) } } : {}),
     cost: held.page === 'offerings' || held.page === 'settings' ? (readCostBook ? await readCostBook(now) : costSnapshot()) : undefined,
     costHow,
     d1:d1Snapshot,
@@ -1054,7 +1079,7 @@ export async function companionIsMac($: Engine, c: CompanionBook): Promise<boole
 export async function companionSnapshot($: Engine, c: CompanionBook): Promise<CompanionSnapshot> {
   const generation = c.generation, revision = companionStatusRevision
   const home = await homeOf($)
-  const version = PLUGIN_VERSION
+  const version = COMPANION_MIN_VERSION
   if (!home) {
     const snapshot = { folder: false, app: false, login: false, info: {}, version }
     if (generation === c.generation) { c.targets = undefined; c.capabilityGeneration = generation }
@@ -1114,7 +1139,7 @@ export function warmCompanion($: Engine, c: CompanionBook, changed: () => void):
 }
 
 export async function companionData($: Engine, c: CompanionBook, desktop: boolean, now: number): Promise<CompanionBookData> {
-  const s = companionEvent ? { ...withCapabilities(companionEvent, c), version: PLUGIN_VERSION } : await companionSnapshot($, c)
+  const s = companionEvent ? { ...withCapabilities(companionEvent, c), version: COMPANION_MIN_VERSION } : await companionSnapshot($, c)
   return companionDataFromSnapshot(c, s, desktop, now)
 }
 
@@ -1147,6 +1172,33 @@ export function companionDataFromSnapshot(c: CompanionBook, s: CompanionSnapshot
     }
   }
   return data
+}
+
+
+// /coco doctor and /coco uninstall as bodies, shared by the verbs and the settings page's
+// care buttons. The key's value never reaches any reply; the installer's record and backups
+// are never touched here (review D-1: they belong to the installer's own Uninstall).
+let uninstallAsked = false
+async function runDoctor($: Engine): Promise<void> {
+  const home = await homeOf($)
+  const installed = home !== undefined && await $.fs.exists(joinPath(home, COMPANION_DIR)).catch(() => false)
+  let engine = 'unresolved'
+  try { engine = (await $.session.version()).version } catch { /* the version call is best effort */ }
+  const lines = await doctorLines($, { pluginVersion: PLUGIN_VERSION, engineVersion: engine, lang: latest.view?.lang ?? 'en', companionInstalled: installed })
+  $.ui.toast(lines.join('\n'), { timeoutMs: 20000 })
+}
+async function runUninstall($: Engine): Promise<void> {
+  const home = await homeOf($)
+  const pet = await petProgramPath()
+  const petFolder = home !== undefined ? (pet !== undefined ? await petDataFolder($, home, await windows($)) : joinPath(home, COMPANION_DIR)) : undefined
+  const petInstalled = petFolder !== undefined && await $.fs.exists(petFolder).catch(() => false)
+  const icon = await iconPlatform($, iconBook)
+  const run = async (argv: readonly string[]) => {
+    const r = await ownCall($, argv, argv[0] === '/bin/sh', gapWord(latest.view?.lang ?? 'en', 'cmd.coco')).catch(() => undefined)
+    return r?.kind === 'ran' ? { stdout: r.stdout, stderr: r.stderr, exitCode: r.exitCode } : undefined
+  }
+  for (const line of await uninstallSteps($, { root: $.plugin.root, pet: pet !== undefined ? { program: pet } : undefined, petInstalled, iconPlatform: icon, run }, latest.view?.lang ?? 'en'))
+    $.ui.toast(line, { timeoutMs: 12000 })
 }
 
 // Auto mode's classifier refuses a call it was not asked for by the model, so a person's own command or
@@ -1222,7 +1274,7 @@ export async function pressCompanion($: Engine, c: CompanionBook, action: Compan
           c.issue = undefined; c.afterTools = false
           c.snapshot = undefined; c.warmGeneration = -1
           if (action === 'trash') { c.removed = true; c.confirmed = false; goal = s => !s.folder || !s.app }
-          else { c.removed = false; await writeCompanionRequest($, c, latest.view ?? view, {}); goal = s => s.folder && s.app && s.info.running === true && s.info.version === s.version }
+          else { c.removed = false; await writeCompanionRequest($, c, latest.view ?? view, {}); goal = s => s.folder && s.app && s.info.running === true && atLeastVersion(s.info.version, s.version) }
         } else {
           c.issue = report === 'no-tools' ? 'tools' : report === 'old-tools' ? 'oldTools' : 'failed'
           c.afterTools = false
@@ -1422,7 +1474,7 @@ async function fixCheck($: Engine, row: CheckRow, view: CocoView, w: BookWords):
     await pressCompanion($, companionBook, row.fix, view, () => redrawSoon($), () => open && book.page === 'settings')
     if(row.fix==='summon'||row.fix==='updateButton'){
       const home=checkHome??await homeOf($),folder=home?joinPath(home,COMPANION_DIR):undefined
-      const found=folder?await boundedHealth(ms=>$.clock.sleep(ms),()=>readCheckCompanion(bookEngine($),folder,true),found=>found.companion.running===true&&(row.fix!=='updateButton'||(found.health.version??found.companion.version)===PLUGIN_VERSION),fixHealthDeadline($)):undefined
+      const found=folder?await boundedHealth(ms=>$.clock.sleep(ms),()=>readCheckCompanion(bookEngine($),folder,true),found=>found.companion.running===true&&(row.fix!=='updateButton'||atLeastVersion(found.health.version??found.companion.version,COMPANION_MIN_VERSION)),fixHealthDeadline($)):undefined
       if(found)checkCompanion=found
       m1CheckAfter.set(row.id,moreWord(found?'check.fixBack':'check.fixGone',view.lang))
     }
@@ -1439,9 +1491,10 @@ export function completeBookClose(event:{id:string;origin:{kind:'plugin'|'person
   if(!his||denied)return false
   open=false
   if(m1Runtime){m1Runtime.open=false;m1Runtime.explanation='';m1Runtime.talkHidden()}
-  m1TalkOpen=false;m1VoiceAskActive=false;m1VoiceAnswered=false
+  m1TalkOpen=false;m1TalkApiPending=false;m1VoiceAskActive=false;m1VoiceAnswered=false
   book={...book,languages:false}
   delete book.visitors
+  delete book.care
   redraw?.cancel()
   redraw=undefined
   forget()
@@ -1576,6 +1629,18 @@ export function registerBook(on: On): void {
     return { element: e.element }
   })
 
+  // The privacy and other-models list: opened from any page's tab row, the settings page or the
+  // prices page, left by its back button.
+  on('ui.press', { element: /^coco:care:(open|models|back|quiet|plain)$/ }, async ($, e) => {
+    const what = e.element.split(':').at(-1)
+    if (what === 'open') book = { ...book, care: 'privacy' }
+    else if (what === 'models') book = { ...book, care: 'models' }
+    else if (what === 'back') delete book.care
+    else if (!await setPrivacy($, what === 'quiet')) $.ui.toast(gapWord(latest.view?.lang ?? 'en', 'privacy.failed'), { timeoutMs: 8000 })
+    await show($, 'settings')
+    return { element: e.element }
+  })
+
   on('ui.press', { element: /^coco:set:lang:/ }, async ($, e, next) => {
     if (e.element === 'coco:set:lang:open') {
       book = { ...book, languages: true }
@@ -1587,14 +1652,30 @@ export function registerBook(on: On): void {
     return pressed
   })
 
+  // Doctor and uninstall as callable bodies: the /coco verbs and the settings page's buttons
+  // share them (review D-4). Uninstall's button asks once; the confirm press runs it.
+  on('ui.press', { element: 'coco:doctor:run' }, async ($, e) => { await runDoctor($); return { element: e.element } })
+  on('ui.press', { element: 'coco:uninstall:run' }, ($, e) => { uninstallAsked = true; redrawSoon($); return { element: e.element } })
+  on('ui.press', { element: 'coco:uninstall:confirm' }, async ($, e) => { uninstallAsked = false; redrawSoon($); await runUninstall($); return { element: e.element } })
   // `/coco` opens the book where it was left; `/coco about|settings|...` at a page;
   // `/coco marks on|replies|off` sets his marks on the engine's rows.
   // Registered before the plugin's other `/coco` hook, so this one sees the command first.
   on('command.run', { command: 'coco' }, async ($, e, next) => {
     const [verb = '', value = ''] = e.args.trim().toLowerCase().split(/\s+/)
+    if(m1Runtime&&verb==='lines'){
+      if(value==='import'){
+        const path=e.args.replace(/^\s*lines\s+import\s*/i,'').replace(/^(["'])(.*)\1$/,'$2')
+        m1Runtime.setLinesImportPath(path)
+        if(path)await m1Runtime.pressLinesImport(morePageEngine($),'preview')
+      }else if(value==='template')await m1Runtime.pressLinesImport(morePageEngine($),'template')
+      else if(value==='on'||value==='off')await m1Runtime.pressLinesImport(morePageEngine($),value)
+      else await m1Runtime.pressLinesImport(morePageEngine($),'open')
+      await openM1Book($,'settings');m1Runtime.open=true;m1Runtime.reading=0;await m1BookFlags($,true,false);redrawSoon($);return{}
+    }
     if(m1Runtime&&verb==='more'){
       await openM1Book($,'settings');m1Runtime.open=true;m1Runtime.reading=0;await m1BookFlags($,true,false);await focusM1Book($,'coco:book:tab:settings');redrawSoon($);return{}
     }
+    if((verb==='talk'||verb==='dm')&&talkNeedsApi()){await openTalkApi($);return{}}
     if(m1Runtime&&verb==='talk'&&m1Runtime.isOn('talk')){const runtime=m1Runtime,token=runtime.operationToken('talk');await openM1Book($,'talk',()=>m1Runtime===runtime&&runtime.operationCurrent('talk',token));return{}}
     if(m1Runtime&&verb==='say'){
       if(m1Runtime.isOn('talk')){const runtime=m1Runtime,token=runtime.operationToken('talk'),now=await $.clock.now();if(m1Runtime!==runtime||!runtime.operationCurrent('talk',token))return{};await runtime.talk(morePageEngine($),e.args.replace(/^\s*say(?:\s+|$)/i,''),now);if(m1Runtime===runtime&&runtime.operationCurrent('talk',token))await openM1Book($,'talk',()=>m1Runtime===runtime&&runtime.operationCurrent('talk',token))}
@@ -1618,6 +1699,9 @@ export function registerBook(on: On): void {
       if(said)$.ui.toast(said,{timeoutMs:8000})
       return{}
     }
+    if(verb==='doctor'){ await runDoctor($); return{} }
+    if(verb==='privacy'||verb==='models'){ book={...book,care:verb}; await openBook($,'settings'); return{} }
+    if(verb==='uninstall'){ await runUninstall($); return{} }
     if (verb === 'warmth' && (value === 'warm' || value === 'clingy')) {
       return next({ ...e, args: e.args.replace(/^(\s*)warmth\b/i, '$1affection') })
     }
@@ -1651,17 +1735,21 @@ export function registerBook(on: On): void {
   })
   on('ui.press', {element:/^coco:more:/}, async ($,e,next)=>{
     if(!m1Runtime)return next(e)
+    if(e.element==='coco:more:talk:connect'||e.element==='coco:more:talk:on'&&talkNeedsApi()){await openTalkApi($);return{element:e.element}}
+    if(e.element==='coco:more:talk:ask:no'||e.element==='coco:more:talk:off'||e.element==='coco:more:payer:pick:session')m1TalkApiPending=false
     if(e.element==='coco:more:open'){await show($,'settings');m1Runtime.open=true;m1Runtime.reading=0;await m1BookFlags($,true,false);await focusM1Book($,'coco:book:tab:settings')}
-    else if(e.element==='coco:more:back'){m1Runtime.open=false;await m1BookFlags($,false,false);await focusM1Book($,'coco:book:tab:settings')}
+    else if(e.element==='coco:more:back'){m1TalkApiPending=false;m1Runtime.open=false;await m1BookFlags($,false,false);await focusM1Book($,'coco:book:tab:settings')}
     else if(e.element==='coco:more:key:add'||e.element==='coco:more:key:replace'){
       // The dialog waits for a person, so the press returns now and the row redraws when it closes.
-      const runtime=m1Runtime;void runtime.addKey(morePageEngine($)).catch(()=>{}).then(()=>{if(m1Runtime===runtime)redrawSoon($)})
+      const runtime=m1Runtime;void runtime.addKey(morePageEngine($)).catch(()=>false).then(async saved=>{if(m1Runtime===runtime){if(saved)await continueTalkApi($,true);else m1TalkApiPending=false;redrawSoon($)}})
+      redrawSoon($);return{element:e.element}
     }
     else if(e.element==='coco:more:key:remove')await m1Runtime.removeKey(morePageEngine($))
     else if(e.element==='coco:more:key:check')await m1Runtime.checkKey(morePageEngine($))
     else if(e.element==='coco:more:key:copy')await m1Runtime.copyAddCommand(morePageEngine($))
     else if(e.element.startsWith('coco:more:payer:pick:'))await m1Runtime.choosePayer(morePageEngine($),e.element.split(':').at(-1)!)
     else if(!await m1Runtime.press(morePageEngine($),e.element))return next(e)
+    await continueTalkApi($)
     redrawSoon($);return {element:e.element}
   })
   on('ui.input',{element:/^coco:more:key:(?:base|model)$/},($,e,next)=>{
@@ -1669,8 +1757,15 @@ export function registerBook(on: On): void {
     m1Runtime.setKeyEndpoint(e.element.endsWith(':base')?'base':'model',e.value)
     redrawSoon($);return{element:e.element,value:e.value}
   })
+  on('ui.input',{element:'coco:more:lines:import:path'},async($,e,next)=>{
+    if(!m1Runtime)return next(e)
+    m1Runtime.setLinesImportPath(e.value)
+    if(e.kind==='submit')await m1Runtime.pressLinesImport(morePageEngine($),'preview')
+    redrawSoon($);return{element:e.element,value:e.value}
+  })
   on('ui.select',{element:'coco:more:payer'},async($,e,next)=>{
     if(!m1Runtime)return next(e)
+    if(e.value==='session')m1TalkApiPending=false
     await m1Runtime.choosePayer(morePageEngine($),e.value);redrawSoon($);return{element:e.element,value:e.value}
   })
   on('ui.select',{element:'coco:more:cap'},async($,e,next)=>{
@@ -1718,12 +1813,14 @@ export function registerBook(on: On): void {
   })
   // The band's DM entry: the thread, wherever the bag was.
   on('ui.press',{element:'coco:dm:open'},async($,e,next)=>{
+    if(talkNeedsApi()){await openTalkApi($);return{element:e.element}}
     if(!m1Runtime?.isOn('talk'))return next(e)
     const runtime=m1Runtime,token=runtime.operationToken('talk')
     await openM1Book($,'talk',()=>m1Runtime===runtime&&runtime.operationCurrent('talk',token))
     return{element:e.element}
   })
   on('ui.press',{element:/^coco:talk:/},async($,e,next)=>{
+    if(e.element==='coco:talk:open'&&talkNeedsApi()){await openTalkApi($);return{element:e.element}}
     if(!m1Runtime?.isOn('talk'))return next(e)
     const runtime=m1Runtime,token=runtime.operationToken('talk')
     if(e.element==='coco:talk:open')await openM1Book($,'talk',()=>m1Runtime===runtime&&runtime.operationCurrent('talk',token))
@@ -1794,6 +1891,9 @@ export function registerBook(on: On): void {
         onBack: () => { forgetPrices(); redrawSoon($) },
         onOlder: () => pricesController?.toggleOlder(),
         onOthers: () => { void pricesController?.openOthers() },
+        // later-11 (ZCode-2): the price details toggle under the about line.
+        onAbout: () => pricesController?.toggleAbout(),
+        modelsLabel: gapWord(view?.lang ?? 'en', 'models.heading'),
       })
     }
     await loadD1Words(bookEngine($),view?.lang??'en')
@@ -1879,6 +1979,7 @@ export function registerBook(on: On): void {
       marks: marks => void setMarks($, marks),
     }
     if (held.page === 'settings' && (e.surface === 'desktop' || e.surface === 'terminal')) {
+      data.uninstallAsked = uninstallAsked
       data.iconSupported = !(await windows($)) && iconBook.visible
       if (data.iconSupported) {
         data.icon = iconBook.data(latest.settings)
@@ -1893,7 +1994,7 @@ export function registerBook(on: On): void {
     }
     if ((held.page === 'settings' || companionHere) && (e.surface === 'desktop' || e.surface === 'terminal' || e.surface === 'vscode')) {
       warmCompanion($, companionBook, () => redrawSoon($))
-      const snapshot = companionEvent ? { ...withCapabilities(companionEvent, companionBook), version: PLUGIN_VERSION } : companionBook.snapshot
+      const snapshot = companionEvent ? { ...withCapabilities(companionEvent, companionBook), version: COMPANION_MIN_VERSION } : companionBook.snapshot
       const pet = companionBook.pet
       if ((companionBook.macReady === true || pet) && snapshot) {
         if (!pet) data.d1NotifyAvailable=snapshot.folder && snapshot.app

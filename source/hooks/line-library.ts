@@ -60,11 +60,19 @@ export function claudieUnsaid(line: { key: string; class: number }): boolean {
   return line.class === 0 && line.key !== 'ambient' || CHATTER.has(line.key)
 }
 
-const WIDE = /[\u1100-\u115f\u2e80-\ua4cf\ua960-\ua97c\uac00-\ud7a3\uf900-\ufaff\ufe30-\ufe4f\uff00-\uff60\uffe0-\uffe6\u{1f300}-\u{1f64f}\u{1f900}-\u{1f9ff}\u{20000}-\u{3fffd}]/u
-const NONE = /[\p{M}\u1160-\u11ff\ud7b0-\ud7ff\u200b-\u200f\u2060\ufeff]/u
+let WIDE: RegExp | undefined
+let NONE: RegExp
+let graphemes: Intl.Segmenter | null | undefined
 export function lineCells(text: string): number {
+  if (/^[\x00-\x7f]*$/.test(text) && !text.includes('\r\n')) return text.length
+  if (WIDE === undefined) {
+    WIDE = new RegExp("^[\\u1100-\\u115f\\u2e80-\\ua4cf\\ua960-\\ua97c\\uac00-\\ud7a3\\uf900-\\ufaff\\ufe30-\\ufe4f\\uff00-\\uff60\\uffe0-\\uffe6\\u{1f300}-\\u{1f64f}\\u{1f900}-\\u{1f9ff}\\u{20000}-\\u{3fffd}]", 'u')
+    NONE = new RegExp("^[\\p{M}\\u1160-\\u11ff\\ud7b0-\\ud7ff\\u200b-\\u200f\\u2060\\ufeff]", 'u')
+  }
+  if (graphemes === undefined) graphemes = typeof Intl.Segmenter === 'function' ? new Intl.Segmenter() : null
   let n = 0
-  for (const ch of text) n += NONE.test(ch) ? 0 : WIDE.test(ch) ? 2 : 1
+  const parts = graphemes ? Array.from(graphemes.segment(text), part => part.segment) : [...text]
+  for (const part of parts) n += NONE.test(part) ? 0 : WIDE.test(part) ? 2 : 1
   return n
 }
 const shown = (line: string): boolean => !/[\u0000-\u001f\u007f]/.test(line)
@@ -109,4 +117,43 @@ export function linesFromText(text: string): LineSet {
     if (key && shown(line)) set[key]!.push(line.replace(/\\n/g, '\n'))
   }
   return set
+}
+
+export const LINE_IMPORT_BYTES = 65536
+export const LINE_IMPORT_PER_GROUP = 30
+export type LineImportRow = { line: number; group?: string; text: string; status: 'accepted' | 'cleaned' | 'wide' | 'limit' | 'occasion' | 'empty' }
+export type LineImportPreview = { lines: LineSet; rows: LineImportRow[]; accepted: number; rejected: number; tooLarge: boolean }
+const IMPORT_CONTROLS = /[\u0000-\u001f\u007f-\u009f\u00ad\u061c\u200b\u200e\u200f\u202a-\u202e\u2060-\u206f\ufeff]/g
+
+export function lineImportPreview(text: string, groups: readonly string[] = LINE_GROUPS): LineImportPreview {
+  const result: LineImportPreview = { lines: {}, rows: [], accepted: 0, rejected: 0, tooLarge: false }
+  let bytes = 0
+  for (const ch of text) {
+    const cp = ch.codePointAt(0)!
+    bytes += cp <= 0x7f ? 1 : cp <= 0x7ff ? 2 : cp <= 0xffff ? 3 : 4
+    if (bytes > LINE_IMPORT_BYTES) { result.tooLarge = true; return result }
+  }
+  const allowed = new Set(groups)
+  let group: string | undefined
+  for (const [index, raw] of text.replace(/^\ufeff/, '').split(/\r?\n/).entries()) {
+    const clean = raw.replace(IMPORT_CONTROLS, '').trim()
+    if (!raw.trim() || clean.startsWith('#')) continue
+    const heading = /^\[(.*)\]$/.exec(clean)
+    if (heading) {
+      group = allowed.has(heading[1]!) ? heading[1]! : undefined
+      if (!group) { result.rows.push({ line: index + 1, text: clean, status: 'occasion' }); result.rejected++ }
+      continue
+    }
+    const line = clean.replace(/\\n/g, '\n')
+    const status = !group ? 'occasion' : !line ? 'empty' : lineCells(line.replace(/\n/g, '')) > LINE_CELLS ? 'wide'
+      : (result.lines[group]?.length ?? 0) >= LINE_IMPORT_PER_GROUP ? 'limit' : clean === raw.trim() ? 'accepted' : 'cleaned'
+    result.rows.push({ line: index + 1, ...(group ? { group } : {}), text: line, status })
+    if (status === 'accepted' || status === 'cleaned') { (result.lines[group!] ??= []).push(line); result.accepted++ }
+    else result.rejected++
+  }
+  return result
+}
+
+export function emptyLinesTemplate(head: string, groups: readonly string[] = LINE_GROUPS): string {
+  return linesText(head, Object.fromEntries(groups.map(group => [group, []])))
 }

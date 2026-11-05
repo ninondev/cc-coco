@@ -6,6 +6,7 @@ import { COST_WORDS_RAW, SHIPPED_PRICES_RAW } from './cost-words-fixture'
 import { C3_WORDS_RAW } from './c3-words-fixture'
 import { MORNING, PERSON, P, RECENT, settleLegacyStart, world } from './world'
 import { WINDOWS_ROOTS } from './test-system'
+import { installM1Words } from './m1-more-data-fixture'
 
 const SHIPPED = JSON.parse(SHIPPED_PRICES_RAW) as ShippedPrices
 const WORDS = JSON.parse(COST_WORDS_RAW) as Record<string, Record<string, string>>
@@ -94,7 +95,7 @@ test('K1 mounted Prices fetches only on opening, uses a default GET, and loads o
   expect(await visible(ui)).not.toContain('gpt-6.1-sol')
   for (let i = 0; i < 3; i++) await ui.redraw()
   expect(await visible(ui)).toContain(costWord('en', 'prices.about'))
-  expect(await ui.find({ type: 'Button', key: 'coco:prices:about' })).toBeUndefined()
+  expect((await ui.find({ type: 'Button', key: 'coco:prices:about' }))?.props.label).toBe(costWord('en', 'prices.aboutShow'))
   expect(await visible(ui)).toContain(costWord('en', 'prices.tier.haiku'))
   await ui.press({ key: 'coco:prices:older' }); await ui.redraw()
   expect(f.requests.length).toBe(1)
@@ -174,4 +175,18 @@ test('K1 mounted Prices pending fetch times out at six seconds without blocking 
   expect(f.w.stored('prices.claude')).toBeUndefined()
   expect(f.requests.length).toBe(1)
   await ui.unmount()
+})
+
+test('K1 mounted Prices leads to the other-models list, and its back button to the settings page', async ($, on) => {
+  installM1Words()
+  const f = fixture(on), ui = await mount($, f)
+  expect(await ui.find({ type: 'Button', key: 'coco:care:models' })).toBeDefined()
+  await ui.press({ key: 'coco:prices:open' }); await settle($, f, ui)
+  await ui.press({ key: 'coco:care:models' }); await settle($, f, ui)
+  expect(await ui.find({ type: 'Button', key: 'coco:prices:back' })).toBeUndefined()
+  expect((await visible(ui)).indexOf('other models')).toBeLessThan((await visible(ui)).indexOf('privacy'))
+  expect(await visible(ui)).not.toContain('Switches on:')
+  await ui.press({ key: 'coco:care:back' }); await settle($, f, ui)
+  expect(await ui.find({ type: 'Button', key: 'coco:care:open' })).toBeDefined()
+  expect(f.requests).toEqual([{ url: PRICE_PAGE_URL, init: undefined }])
 })

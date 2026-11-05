@@ -2,7 +2,7 @@ import {test,expect} from 'claude-code/testing'
 import type {EngineInterface} from 'claude-code'
 import {installM1Words} from './m1-more-data-fixture'
 import {installModelServiceFixture} from './m1-model-service-fixture'
-import {LINE_GROUPS,writtenLinesFrom,claudieUnsaid,installWritten,installEdited,useWritten,lineCells,linesText,linesFromText,libraryLines,shippedLines} from '../hooks/line-library'
+import {LINE_GROUPS,writtenLinesFrom,claudieUnsaid,installWritten,installEdited,useWritten,lineCells,linesText,linesFromText,libraryLines,shippedLines,lineImportPreview,emptyLinesTemplate,LINE_IMPORT_BYTES} from '../hooks/line-library'
 import {initialView,linesFor,greetingFor} from '../hooks/mood'
 import {LINES} from '../hooks/lines'
 import {desktopBand,terminalBand} from '../hooks/band'
@@ -227,4 +227,112 @@ test('The book: Coco\'s shipped lines can be edited with the row off; on, the wr
   expect(await ui.find({type:'Button',key:'coco:more:lines:edit:generated'})).toBeDefined()
   await ui.unmount()
  }finally{for(const key of Object.keys(words))delete MORE_SLOTS[key]}
+})
+
+test('Import previews enforce display, count and byte limits without changing legacy edits',()=>{
+ const preview=lineImportPreview('[start]\n'+['大'.repeat(24),'大'.repeat(25),'a\u0085b\u202ec\u200bd',...Array.from({length:30},(_,i)=>`line ${i}`)].join('\n'))
+ expect(preview.lines.start?.length).toBe(30)
+ expect(preview.lines.start?.slice(0,2)).toEqual(['大'.repeat(24),'abcd'])
+ expect(preview.rows.filter(row=>row.status==='wide').length).toBe(1)
+ expect(preview.rows.filter(row=>row.status==='cleaned').length).toBe(1)
+ expect(preview.rows.filter(row=>row.status==='limit').length).toBe(2)
+ expect(lineImportPreview('大'.repeat(Math.ceil(LINE_IMPORT_BYTES/3))).tooLarge).toBe(true)
+ expect(lineImportPreview('#'+'x'.repeat(LINE_IMPORT_BYTES-1)).tooLarge).toBe(false)
+ expect(lineImportPreview('[unknown]\nhello\n[start]\n\u0085').rejected).toBe(3)
+ expect(linesFromText('[start]\n'+'x'.repeat(200)).start).toEqual(['x'.repeat(200)])
+ const template=emptyLinesTemplate('one line per occasion')
+ expect(Object.keys(linesFromText(template))).toEqual([...LINE_GROUPS])
+ expect(lineImportPreview(template).accepted).toBe(0)
+})
+
+test('Import accepts complete emoji at the display-cell boundary',()=>{
+ const fits='👍🏽'.repeat(24),wide='👍🏽'.repeat(25)
+ expect(lineCells('👍🏽'.repeat(13))).toBe(26)
+ expect(lineCells(fits)).toBe(48)
+ expect(lineCells('a\u0301'.repeat(48))).toBe(48)
+ const preview=lineImportPreview(`[start]\n${fits}\n${wide}`)
+ expect(preview.lines.start).toEqual([fits])
+ expect(preview.rows.map(row=>row.status)).toEqual(['accepted','wide'])
+})
+
+test('Import preserves family emoji and Indic joiners while still removing control and direction marks',()=>{
+ const family='👨\u200d👩\u200d👧\u200d👦',fits=family.repeat(24),wide=family.repeat(25)
+ const joined='क्\u200dषमा',unjoined='क्\u200cषमा'
+ const preview=lineImportPreview(`[start]\n${fits}\n${wide}\n${joined}\n${unjoined}\na\u0085b\u200bc\u200ed\u200fe\u202ef\u2066g`)
+ expect(preview.lines.start).toEqual([fits,joined,unjoined,'abcdefg'])
+ expect(preview.rows.map(row=>row.status)).toEqual(['accepted','wide','accepted','accepted','cleaned'])
+ expect(preview.accepted).toBe(4)
+ expect(preview.rejected).toBe(1)
+ expect(linesFromText(linesText('',preview.lines)).start).toEqual([fits,joined,unjoined,'abcdefg'])
+})
+
+test('Character changes activate their imported lines with generation off and unchanged forms keep the active set',()=>{
+ const r=new MoreRuntime(PROMPTS)
+ r.restore({},[],undefined,AT);r.configure('zh')
+ r.restoreLines({imported:{'dake:zh':{text:'[start]\n大克导入\n',on:true},'maid:zh':{text:'[start]\n女仆导入\n',on:true}}})
+ try{
+  expect(libraryLines('coco','zh','start',false)).toEqual(LINES.zh.start)
+  r.setLinesForm('dake')
+  const active=libraryLines('dake','zh','start',false)
+  expect(active).toEqual(['大克导入'])
+  for(let i=0;i<10;i++)r.setLinesForm('dake')
+  expect(libraryLines('dake','zh','start',false)).toBe(active)
+  r.setLinesForm(undefined)
+  expect(libraryLines('coco','zh','start',false)).toEqual(LINES.zh.start)
+  r.setLinesForm('maid')
+  expect(libraryLines('maid','zh','start',false)).toEqual(['女仆导入'])
+  r.setLinesForm('dake')
+  expect(libraryLines('dake','zh','start',false)).toEqual(['大克导入'])
+ }finally{reset()}
+})
+
+test('Import only applies the reviewed snapshot, persists independently and never sends to a model',async()=>{
+ const f=engine(new Error('must not call a model')),r=new MoreRuntime(PROMPTS,bindings([]))
+ r.restore({lines:true},['lines'],undefined,AT);r.configure('zh');r.restoreLines(undefined)
+ const path='/tmp/my lines.txt',original='[start]\n我的新台词\n'+'x'.repeat(100)
+ f.save(path,original)
+ try{
+  const before=libraryLines('coco','zh','start',false)
+  r.setLinesImportPath(path);expect(await r.pressLinesImport(f.$,'preview')).toBe(true)
+  expect(r.snapshot().lines?.importView?.preview?.accepted).toBe(1)
+  expect(r.snapshot().lines?.importView?.preview?.rejected).toBe(1)
+  expect(libraryLines('coco','zh','start',false)).toEqual(before)
+  await r.chooseLinesLang(f.$,'ja')
+  expect(r.snapshot().lines?.importView?.path).toBe(path)
+  expect(r.snapshot().lines?.importView?.preview).toBeUndefined()
+  expect(await r.pressLinesImport(f.$,'apply')).toBe(false)
+  await r.chooseLinesLang(f.$,'zh');await r.pressLinesImport(f.$,'preview')
+  f.save(path,'[start]\nnot the reviewed text')
+  expect(await r.pressLinesImport(f.$,'apply')).toBe(true)
+  expect(libraryLines('coco','zh','start',false)).toContain('我的新台词')
+  expect(libraryLines('coco','zh','start',false)).not.toContain('not the reviewed text')
+  expect(r.lines(f.$)).toBe(undefined)
+  expect(f.calls.filter(call=>call.name==='model.complete'||call.name==='fs.write')).toEqual([])
+  expect(f.files[path]?.text).toBe('[start]\nnot the reviewed text')
+  const next=new MoreRuntime(PROMPTS,bindings([]));next.restore({},[],undefined,AT);next.configure('zh');next.restoreLines(f.stored['more.lines'])
+  expect(next.snapshot().lines?.imported).toEqual({on:true,count:1})
+  expect(libraryLines('coco','zh','start',false)).toContain('我的新台词')
+  await next.chooseLinesMix(f.$,'only')
+  expect(libraryLines('coco','zh','start',false)).toEqual(['我的新台词'])
+  await next.pressLinesImport(f.$,'off')
+  expect(libraryLines('coco','zh','start',false)).toEqual(LINES.zh.start)
+  next.setLinesImportPath(path);await next.pressLinesImport(f.$,'preview');next.setLinesImportPath('/tmp/another.txt')
+  expect(await next.pressLinesImport(f.$,'apply')).toBe(false)
+ }finally{reset()}
+})
+
+test('Import rejects oversized files before reading and the template preserves existing text',async()=>{
+ const opened:string[]=[],f=engine(new Error('must not send')),r=new MoreRuntime(PROMPTS,bindings(opened))
+ r.restore({},[],undefined,AT);r.configure('zh');r.restoreLines(undefined)
+ f.save('/tmp/large.txt','x'.repeat(LINE_IMPORT_BYTES+1));r.setLinesImportPath('/tmp/large.txt')
+ await r.pressLinesImport(f.$,'preview')
+ expect(r.snapshot().lines?.importView?.error).toBe('size')
+ expect(f.calls.filter(call=>call.name==='fs.read')).toEqual([])
+ const path='/home/fixture/.config/coco/lines/coco-import-zh.txt'
+ f.save(path,'[start]\nmy draft')
+ await r.pressLinesImport(f.$,'template')
+ expect(f.files[path]?.text).toBe('[start]\nmy draft')
+ expect(opened).toEqual([path])
+ expect(f.calls.filter(call=>call.name==='model.complete')).toEqual([])
+ reset()
 })

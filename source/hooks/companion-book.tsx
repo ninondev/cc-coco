@@ -6,6 +6,7 @@ import { fill } from './book-words'
 import { cells } from './band.js'
 import { MAC_SIZES } from './companion-art'
 import type { CompanionSize, CompanionStage } from './companion-art'
+import { olderVersion } from './checkup'
 
 // "Now: value" keeps its no-break spaces only when the whole line fits the width; a longer one may wrap (BOOK F2).
 export function nowFit(text: string, columns: number): string {
@@ -146,7 +147,7 @@ export function companionSection(ui: Elements['desktop'] | Elements['terminal'] 
     {s === 'oldTools' && d.afterTools ? note(w.oldToolsAfter) : null}
     {s === 'absent' && d.removed ? note(w.removed) : null}
     {s === 'corner' ? note(w.followHelp) : s === 'waiting' ? note(w.waitingHelp) : null}
-    {installed && d.version && typeof d.info.version === 'string' && d.info.version !== d.version ? <Box flexDirection="column" marginTop={1} gap={1}>
+    {installed && d.version && olderVersion(d.info.version, d.version) ? <Box flexDirection="column" marginTop={1} gap={1}>
       <Text wrap="wrap">{w.update}</Text>{buttons(button('updateButton', w.updateButton))}{programNotes()}
     </Box> : null}
     {running ? <>

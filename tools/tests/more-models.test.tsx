@@ -3,8 +3,9 @@ import type {EngineInterface} from 'claude-code'
 import {installM1Words} from './m1-more-data-fixture'
 import {installModelServiceFixture} from './m1-model-service-fixture'
 import {MoreRuntime} from '../hooks/more-runtime'
-import {MorePage} from '../hooks/more-book'
-import {moreModels,moreModelFor,moreModelsDirect} from '../hooks/more-models'
+import {MorePage,moreRowDrawn} from '../hooks/more-book'
+import {moreModels,moreModelFor,moreModelsDirect,moreModelIsClaude,moreWorkerName} from '../hooks/more-models'
+import {setWorkerName,workerText} from '../hooks/worker-name'
 import {MORE_SLOTS} from '../hooks/more-words'
 installM1Words()
 installModelServiceFixture()
@@ -56,6 +57,62 @@ test('Another service offers only the models connected there, once each, and pic
  expect(moreModels({base:'https://gw.example.invalid',main:'two words',pinned:{haiku:'bad\u0007id'}}).choices).toEqual([])
 })
 
+test('Another connection follows the conversation\'s model until a pick, even when the address does not show',()=>{
+ // The desktop app's gateway may not show as ANTHROPIC_BASE_URL: the model the conversation runs on still tells.
+ const hidden=moreModels({current:'deepseek-chat'})
+ expect(hidden.own).toBe(true);expect(hidden.current).toBe('deepseek-chat')
+ expect(hidden.choices).toEqual([{value:'deepseek-chat',label:'deepseek-chat'}])
+ for(const row of ['talk','look','lines'] as const)expect(moreModelFor(hidden,row)).toBe('deepseek-chat')
+ expect(moreModelFor({...moreModels({current:'deepseek-chat',custom:'deepseek-reasoner'}),picks:{talk:'deepseek-reasoner'}},'talk')).toBe('deepseek-reasoner')
+ // A pinned family is the same model under its alias, so nothing is listed twice.
+ const pinned=moreModels({...GLM,current:'glm-4.6'})
+ expect(pinned.current).toBe('sonnet');expect(moreModelFor(pinned,'talk')).toBe('sonnet');expect(pinned.choices.length).toBe(2)
+ // A provider's path and the 1M mark leave the name that is shown.
+ const routed=moreModels({base:'http://127.0.0.1:3425',current:'mistral/labs-leanstral-1-5[1m]'})
+ expect(routed.current).toBe('mistral/labs-leanstral-1-5[1m]');expect(moreWorkerName(routed)).toBe('mistral/labs-leanstral-1-5')
+ // Nothing to follow: as before, nothing runs and nothing is guessed.
+ expect(moreModelFor(moreModels({base:'https://gw.example.invalid',current:'default'}),'talk')).toBe(undefined)
+})
+test('Claude\'s own service keeps Haiku, whatever the conversation runs on',()=>{
+ for(const current of ['claude-opus-5-5','opus','claude-sonnet-5-5[1m]','us.anthropic.claude-haiku-5-5-v1:0','default',undefined]){
+  const models=moreModels({current})
+  expect(models.own).toBe(false);expect(moreModelFor(models,'talk')).toBe('haiku');expect(moreWorkerName(models)).toBe(undefined)
+ }
+ expect(moreModelIsClaude('deepseek-claude-free')).toBe(false)
+ expect(moreModelIsClaude('anthropic/claude-sonnet-5-5')).toBe(true)
+})
+test('Words that say who works name the real model; the app, the character and prompts stay',()=>{
+ setWorkerName('glm-5')
+ try{
+  expect(workerText('more.look.help','After Claude edits files')).toBe('After glm-5 edits files')
+  expect(workerText('settings.trim.help','测试和构建的输出先精简再给Claude看')).toBe('测试和构建的输出先精简再给glm-5看')
+  expect(workerText('more.talk.work',"that one's for claude")).toBe("that one's for glm-5")
+  expect(workerText('doctor.versions','Claude Code 2.1.317, Coco 2.0.0')).toBe('Claude Code 2.1.317, Coco 2.0.0')
+  expect(workerText('doctor.engineOld','update it with: claude update.')).toBe('update it with: claude update.')
+  expect(workerText('more.talk.dake.open.first.0',"Hello, I'm Claude.")).toBe("Hello, I'm Claude.")
+  expect(workerText('more.model.talk.persona.dake','You are Claude')).toBe('You are Claude')
+  expect(workerText('more.dialog.title','Coco, not made by Anthropic')).toBe('Coco, not made by Anthropic')
+  expect(workerText('more.look.help','Claudeさま')).toBe('Claudeさま')
+  expect(workerText('privacy.accountHow','turn it off in your Claude account')).toBe('turn it off in your Claude account')
+ }finally{setWorkerName(undefined)}
+ expect(workerText('more.look.help','After Claude edits files')).toBe('After Claude edits files')
+})
+test('The session cap holds nothing on another maker\'s model: the app\'s dollars there are a guess',async()=>{
+ const f=engine(),r=new MoreRuntime({'more.model.talk.persona':'fixture persona'})
+ ;(f.$ as any).session.usage=async()=>({startedAt:AT,context:{window:200000},rateLimits:[],cost:{usd:999}})
+ r.restore({cap:5},['cap'],undefined,AT);r.setModels(moreModels({current:'deepseek-chat'}),undefined)
+ expect(await (r as any).checkCap(f.$,'turn',(r as any).sessionGeneration,(r as any).operationToken('cap'))).toBe(undefined)
+ expect(moreRowDrawn('cap',{snapshot:{...r.snapshot()},surface:'tui',payer:'api'} as any)).toBe(false)
+ expect(moreRowDrawn('cap',{snapshot:{...r.snapshot(),models:moreModels({current:'claude-opus-5-5'})},surface:'tui',payer:'api'} as any)).toBe(true)
+})
+test('Talk and the second look run on the conversation\'s model with nothing picked',async()=>{
+ const f=engine(),r=new MoreRuntime({'more.model.talk.persona':'fixture persona'})
+ r.restore({talk:true},['talk'],undefined,AT);r.setModels(moreModels({current:'deepseek-chat'}),undefined)
+ expect(r.isOn('talk')).toBe(true)
+ await r.talk(f.$,'hello there',AT)
+ expect((f.calls.find(call=>call.name==='model.complete')!.args[0] as {model:string}).model).toBe('deepseek-chat')
+ expect(f.stored['more.models']).toBe(undefined)
+})
 test('On another service Talk turns on only after a pick, sends on it, and keeps it for the next session',async()=>{
  const f=engine(),r=new MoreRuntime({'more.model.talk.persona':'fixture persona'})
  r.restore({talk:true},['talk'],undefined,AT);r.setModels(moreModels(GLM),undefined)

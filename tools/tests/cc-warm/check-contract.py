@@ -28,7 +28,7 @@ def run(root, promise):
 def mutations(promise):
     if promise == 'W1':
         return [('default-on', RUNTIME,
-                 "enabled = record(await deps.store.get('more')).warm === true && !closed && !heldOff()",
+                 "enabled = (perOn || legacy) && !closed && !heldOff()",
                  'enabled = true && !closed && !heldOff()')]
     if promise == 'W8':
         return [('budget-ignored-in-simulation', WARM + 'sim.ts', 'if (spent + k > delta) break', 'if (false) break')]

@@ -1,10 +1,10 @@
 import { contrastSvg } from './high-contrast'
 import type { Page } from './book-words'
 
-// Their itabag replaces his book as the settings (owner 10-14, DECISIONS 892 and 894): the panel is 小克的痛包, seven
-// pages in his order, the art drawn the way the unpublished draft tool settings_drafts.py drew it
-// (Italian futurism: one 30 degree diagonal, Balla's triangles, the bag swinging in, its gear badge spinning). The
-// names are lane B's (hooks/bag-text.json, built by tools/build-bag-words.py) and are read when the panel first opens.
+// Their itabag replaces his book as the settings (owner 10-14, DECISIONS 892 and 894): the panel is 小克的痛包, seven pages
+// in his order; the art follows the unpublished draft tool settings_drafts.py (Italian futurism: one 30 degree diagonal,
+// Balla's triangles, the bag swinging in, its gear badge spinning). The names are lane B's (hooks/bag-text.json, built by
+// tools/build-bag-words.py), read when the panel first opens.
 
 export const BAG_PAGES: readonly Page[] = ['him', 'offerings', 'omen', 'socks', 'log', 'library', 'settings']
 // Their sock drawer in the names' order (tools/art/coco-socks.py PAIRS); the first pair is their own and needs no file.
@@ -35,21 +35,16 @@ export type BagTag = 'tokens' | 'off' | 'mac' | 'new'
 export type BagWords = {
   entry: string; title: string; pages: readonly string[]; socks: readonly string[]; alt: readonly string[]
   vibe?: Partial<Record<VibeSituation, readonly VibeSet[]>>
-  // the pages' insides (step 2): the switches page's groups, the marks after a label, the share card
   groups?: Record<BagGroup, string>; tags?: Record<BagTag, string>
   vibeGroups?: Record<'tests' | 'session' | 'share', string>; zineGroups?: Record<'week' | 'issues' | 'extras', string>
   himGroups?: Record<'companion' | 'together', string>; quotaGroups?: Record<'quota' | 'session' | 'more', string>
   noteGroups?: Record<'notes' | 'lastStop', string>
-  look?: Record<'label' | 'coco' | 'dake' | 'maid' | 'fish' | 'help', string> // who is on the desktop band and the pet (claudeForm)
-  bagStyle?: Record<'label' | 'classic' | 'mv', string> // the bag's pictures: the current ones or the MV's (bagStyle)
-  // their open windows on the first page (E1-2): the group's name with {n}, what a window is doing since {time} or now,
-  // and the marks for the window you are reading in and the one the desktop pet follows
+  look?: Record<'label' | 'coco' | 'dake' | 'maid' | 'fish' | 'help', string>
+  bagStyle?: Record<'label' | 'classic' | 'mv', string>
   windows?: Record<'title' | 'working' | 'quiet' | 'workingNow' | 'quietNow' | 'here' | 'follows', string>
   sockGroups?: Record<'drawer', string>; sockRows?: Record<'wearing' | 'back', string>; zineRows?: Record<'issue' | 'open', string>
   share?: Record<'make' | 'save' | 'folder', string>; shareHelp?: string
-  // a page's line on top saying what its badges say (book.tsx pageLead fills the numbers)
   lead?: Partial<Record<Page, string>>
-  // the vibe check page's rows (book.tsx vibeGroupBlocks fills them)
   vibeRows?: Record<VibeRow, string>
 }
 export type VibeRow = 'firstFail' | 'fixed' | 'storms' | 'stormsHelp' | 'build' | 'buildSlow' | 'tools' | 'toolKinds' | 'helpers' | 'commits' | 'compactions' | 'shareCard'
@@ -70,16 +65,16 @@ export function bagWords(lang: string): BagWords | undefined {
 export function bagPageName(lang: string, page: Page): string | undefined {
   return bagWords(lang)?.pages[BAG_PAGES.indexOf(page)]
 }
-// Their vibe check (CANON: a verdict from what really happened this session, two roasts aimed only at bugs, tests and
-// Claude, then a way out; never luck). The situation comes from this session's own counts, the first that holds; lane B
-// writes three sets of words for each (bag-text.json `vibe`), and the local day picks the set, so it holds all day.
+// Their vibe check (CANON): a verdict from what really happened this session, two roasts aimed only at bugs, tests and
+// Claude, then a way out; never luck. The situation is the first that holds of this session's counts; lane B writes three
+// sets of words for each (bag-text.json `vibe`), and the local day picks the set, so it holds all day.
 export const VIBE_SITUATIONS = ['stillRed', 'redToGreen', 'allGreen', 'compacted', 'noTests'] as const
 export type VibeSituation = typeof VIBE_SITUATIONS[number]
 export type VibeSet = { verdict: string; roasts: readonly string[]; step: string }
 export type VibeFacts = { failed: number; fixed: number; compacted: number; ran?: number; last?: 'pass' | 'fail' }
 export type VibeRarity = 'R' | 'SR' | 'SSR'
 // How much drama the session had (his 10-17 read of the share card's draft): went berserk and still came back green, SSR;
-// fixed something, or squashed twice or more, SR; anything else, R. The share card and the bag's MV picture both say it.
+// fixed something, or squashed twice or more, SR; anything else, R.
 export function vibeRarity(f: VibeFacts & { storms?: number }): VibeRarity {
   if ((f.storms ?? 0) > 0 && vibeSituation(f) === 'redToGreen') return 'SSR'
   return f.fixed > 0 || f.compacted >= 2 ? 'SR' : 'R'
@@ -102,14 +97,13 @@ export function bagFill(template: string, values: Record<string, string | number
   return template.replace(/\{(\w+)\}/g, (_, name: string) => String(values[name] ?? ''))
 }
 
-// ---------------------------------------------------------------- the art
 
 const INK = '#141418', RULE = '#1E2A3A', CORAL = '#D97757', CORAL_DEEP = '#AE5539', BLUE = '#3A86C8', CREAM = '#FFFDF8', OFF = '#B9B2AC'
 const TESSERA = ['#1E4F80', '#24578A', '#2F6FA8', '#3A86C8', '#79B6E6', '#F4ECE4', '#F2A587', '#D97757', '#AE5539']
 const T30 = 0.5774
 
 const n1 = (value: number) => Math.round(value * 10) / 10
-// The colour a little quieter (owner 10-14: 「整体背景稍微素雅一点点」): mixed t of the way toward a light grey.
+// Quieter colour (owner 10-14: 「整体背景稍微素雅一点点」): mixed t of the way toward a light grey.
 function mute(hex: string, t = 0.16): string {
   const toward = [196, 194, 192]
   return '#' + [1, 3, 5].map((at, i) => {
@@ -117,13 +111,10 @@ function mute(hex: string, t = 0.16): string {
     return Math.round(c + (toward[i]! - c) * t).toString(16).padStart(2, '0').toUpperCase()
   }).join('')
 }
-// Seeded, so the same width always draws the same ground.
 function seeded(seed: number): () => number {
   let state = seed >>> 0 || 1
   return () => { state = (Math.imul(state, 1664525) + 1013904223) >>> 0; return state / 4294967296 }
 }
-// Balla's iridescent interpenetrations: the ground cut into triangles on a grid leaning 30 degrees, from their blue on the
-// left through cream to Claude coral on the right, a few dark ones for weight.
 function tesserae(w: number, h: number): string {
   const random = seeded(w * 7 + h), out: string[] = [], cw = 44, ch = 46
   for (let j = 0; j < Math.floor(h / ch) + 2; j++) for (let i = -2; i < Math.floor(w / cw) + 4; i++) {
@@ -148,10 +139,7 @@ function gearPath(cx: number, cy: number, r: number, teeth = 8): string {
   }
   return 'M' + points.join(' L') + ' Z'
 }
-// A flat badge with an ink rim (settings_drafts.py flat_badge). Face up it wears its colour; turned off it is grey. What
-// is printed on it says what it is: a switch (knob right when on), a test that failed (x), one fixed (a tick), a
-// compaction (a squashed dot), a sock, a sticky note's lines, a quarter of a limit (a bar), a size (a dot that grows with n),
-// an issue's number n.
+// A flat badge with an ink rim (settings_drafts.py flat_badge); face up it wears its colour, turned off it is grey.
 export type BagBadge = { on: boolean; face: string; mark?: 'toggle' | 'x' | 'check' | 'squash' | 'sock' | 'note' | 'level' | 'size' | 'num'; n?: number }
 const NUMBER_FONT = "-apple-system,'Segoe UI','Noto Sans',sans-serif"
 function badge(cx: number, cy: number, r: number, b: BagBadge): string {
@@ -177,7 +165,6 @@ function badge(cx: number, cy: number, r: number, b: BagBadge): string {
   return disc + `<rect x="${n1(x0)}" y="${n1(cy - ph / 2)}" width="${n1(pw)}" height="${n1(ph)}" rx="${n1(ph / 2)}" fill="${paper}"/>`
     + `<circle cx="${n1(knob)}" cy="${n1(cy)}" r="${n1(ph * 0.34)}" fill="${INK}"/>`
 }
-// One badge on its own, `size` px square: a group's mark beside its name on the pages (settings_drafts.py mini_badge).
 export function bagBadgeSvg(b: BagBadge, size = 18): string {
   return `<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 ${size} ${size}" width="${size}" height="${size}">${badge(size / 2, size / 2, size / 2 - 1.2, b)}</svg>`
 }
@@ -185,9 +172,6 @@ function light(hex: string): boolean {
   const [r, g, b] = [1, 3, 5].map(at => parseInt(hex.slice(at, at + 2), 16))
   return 0.299 * r! + 0.587 * g! + 0.114 * b! > 170
 }
-// The badges of the pages that count things: this session's failed tests (x, coral), fixed ones (a tick, blue) and
-// compactions (squashed, blue), at most six of each kind; their sock drawer, a pair a badge in its own colour, grey until
-// they have it; one sticky note a note.
 export const SOCK_FACES: Readonly<Record<string, string>> = { honmei: CORAL, matcha: '#3CCB6E', blueberry: BLUE, sesame: '#34343B', mint: '#9ADBC0', strawberry: '#F4A6C0', taro: '#B79AD9', marshmallow: '#EFE6E2', goodgirl: '#25242A', nude: '#D29D7F', lan: '#222227', whitehat: '#FFFFFF', reddot: '#D9241C' }
 export function vibeBadges(vibe: { failed: number; fixed: number; compacted: number }): BagBadge[] {
   const some = (n: number, b: BagBadge) => Array.from({ length: Math.max(0, Math.min(6, Math.floor(n))) }, () => b)
@@ -196,11 +180,9 @@ export function vibeBadges(vibe: { failed: number; fixed: number; compacted: num
 export function sockBadges(have: readonly string[]): BagBadge[] {
   return SOCK_PAIRS.map(pair => ({ on: have.includes(pair), face: SOCK_FACES[pair]!, mark: 'sock' }))
 }
-// Their page: the pet's switches face up where they are on, then the three sizes with the one they stand at face up.
 export function petBadges(switches: readonly boolean[], size: number): BagBadge[] {
   return [...switches.map(on => ({ on, face: BLUE, mark: 'toggle' as const })), ...[1, 2, 3].map(n => ({ on: n - 1 === size, face: CORAL, mark: 'size' as const, n }))]
 }
-// The doujin: the latest issues in their collection, at most eight, the newest coral.
 export function issueBadges(got: readonly number[]): BagBadge[] {
   const shown = got.slice(-8)
   return shown.map((n, k) => ({ on: true, face: k === shown.length - 1 ? CORAL : '#F4ECE4', mark: 'num' as const, n }))
@@ -208,7 +190,6 @@ export function issueBadges(got: readonly number[]): BagBadge[] {
 export function noteBadges(notes: number): BagBadge[] {
   return Array.from({ length: Math.max(0, Math.min(12, Math.floor(notes))) }, () => ({ on: true, face: '#F7D768', mark: 'note' }))
 }
-// The quota charms on one split ring at the bag's top right corner: the 5h battery, the week power bank, four cells each.
 function charm(kind: 'five' | 'week', x: number, y: number, left: number, k: number): string {
   const low = left === 1
   if (kind === 'five') {
@@ -229,8 +210,6 @@ function charms(ax: number, ay: number, quota: BagQuota, k: number): string {
     + (quota.five === undefined ? '' : `<path d="M${n1(ax + 3 * k)} ${n1(ay + 5 * k)}L${n1(b1x + 4 * k)} ${n1(b1y)}" stroke="${RULE}" stroke-width="${n1(1.6 * k)}" stroke-dasharray="${n1(2.5 * k)} ${n1(1.8 * k)}"/>` + charm('five', b1x, b1y, quota.five, k))
     + (quota.week === undefined ? '' : `<path d="M${n1(ax + 5 * k)} ${n1(ay + 4 * k)}L${n1(b2x + 6 * k)} ${n1(b2y)}" stroke="${RULE}" stroke-width="${n1(1.6 * k)}" stroke-dasharray="${n1(2.5 * k)} ${n1(1.8 * k)}"/>` + charm('week', b2x, b2y, quota.week, k))
 }
-// The bag in flat planes, Depero's way: a coral body with a darker base band, a black strap, a cream window ruled in black
-// holding one badge a switch, the gear badge with two copies turned a few degrees behind it (it spins).
 function bagBody(x: number, y: number, bw: number, bh: number, badges: readonly BagBadge[], r: number, quota?: BagQuota, rows?: readonly number[]): string {
   const out = [
     `<path d="M${Math.round(x + bw * 0.22)} ${y + 4} C${Math.round(x + bw * 0.22)} ${Math.round(y - bh * 0.45)} ${Math.round(x + bw * 0.78)} ${Math.round(y - bh * 0.45)} ${Math.round(x + bw * 0.78)} ${y + 4}" fill="none" stroke="${INK}" stroke-width="${n1(bh * 0.07)}"/>`,
@@ -241,7 +220,6 @@ function bagBody(x: number, y: number, bw: number, bh: number, badges: readonly 
   const wx = x + bw * 0.05, wy = y + bh * 0.17, ww = bw * 0.6, wh = bh * 0.6
   out.push(`<rect x="${n1(wx)}" y="${n1(wy)}" width="${n1(ww)}" height="${n1(wh)}" fill="${CREAM}" stroke="${INK}" stroke-width="2.5"/>`)
   if (rows?.length) {
-    // rows of their own (their page: the switches over the sizes), each row centred
     const cell = Math.min((ww - 8) / (Math.max(...rows) + 0.5), (wh - 6) / rows.length), rr = Math.min(r, cell / 2 - 2.5)
     let k = 0
     rows.forEach((count, row) => {
@@ -274,16 +252,13 @@ function bagEcho(x: number, y: number, bw: number, bh: number): string {
     + `<rect x="${x}" y="${y}" width="${bw}" height="${bh}" rx="10" fill="currentColor"/>`
 }
 
-// The four cells left in each window (the band's pictures count the same way); absent where there is no reading.
 export type BagQuota = { five?: number; week?: number }
 export const BAG_ART_HEIGHT = { wide: 250, narrow: 176 } as const
 export function bagArtHeight(width: number): number {
   return width > 400 ? BAG_ART_HEIGHT.wide : BAG_ART_HEIGHT.narrow
 }
-// The page's picture: the bag swinging in from the left with three phases of it behind (dark, blue, cream) like the legs of
-// Balla's dog, force lines out of the gear, three swing arcs under it; the quota charms hang off it where the art is wide.
-// Coco peeking in from the right (lane A's bag-peek.png, 236 x 360): Coco holds the picture's right edge, the dark line
-// at x 223 of the drawing, and the fingers wrap over it, so the scene stops at that line and the fingers stay inside the pane.
+// Coco peeking in from the right (lane A's bag-peek.png, 236 x 360): Coco holds the picture's right edge, the dark line at
+// x 223 of the drawing, and the fingers wrap over it, so the scene stops at that line and the fingers stay inside the pane.
 export type BagPeek = { base64: string; width: number; height: number; outfit?: 'B' }
 const PEEK_EDGE = 223 / 236
 export function bagArtSvg(width: number, badges: readonly (boolean | BagBadge)[], quota?: BagQuota, rows?: readonly number[], peek?: BagPeek): string {
@@ -291,8 +266,8 @@ export function bagArtSvg(width: number, badges: readonly (boolean | BagBadge)[]
   const w = Math.max(160, Math.round(width)), h = bagArtHeight(w), wide = w > 400
   const [bw, bh] = wide ? [290, 146] : [180, 100], [bx, by] = wide ? [54, 74] : [26, 56]
   const gx = bx + bw * 0.825, gy = by + bh * 0.47, pivot = `${bx + bw / 2} ${n1(by - bh * 0.4)}`
-  // Coco comes in the full height where the hair clears the gear's arcs (and the quota charms hanging off the bag), smaller
-  // and standing on the bottom edge where room is shorter, and not at all below six tenths of the drawing's height
+  // Coco comes in the full height where the hair clears the gear's arcs and the quota charms, smaller and standing on the
+  // bottom edge where room is shorter, and not at all below six tenths of the drawing's height
   const charmed = wide && quota !== undefined && (quota.five !== undefined || quota.week !== undefined)
   const full = peek ? peek.width * h / peek.height : 0, clear = charmed ? bx + bw + 56 : gx + bh * 0.3 * 1.5 + 4
   const iw = Math.min(full, (w - 2 - clear) / 0.96)
@@ -321,7 +296,6 @@ export function bagArtSvg(width: number, badges: readonly (boolean | BagBadge)[]
     const plane = her.ix + her.iw * 0.2
     out.push(`<path d="M${n1(plane - 22)} ${h}L${n1(plane + 18)} 0H${n1(right)}V${h}Z" fill="${peek.outfit === 'B' ? '#E3D3C3' : '#F4ECE4'}"/><path d="M${n1(plane - 22)} ${h}L${n1(plane + 18)} 0" stroke="${RULE}" stroke-width="3"/>`)
     out.push('</g>')
-    // the edge Coco holds runs the picture's whole height, drawn like the line in the drawing
     out.push(`<path d="M${n1(her.edge)} 0V${h}" stroke="#282423" stroke-width="${n1(2.5 * her.ih / peek.height)}"/>`)
     out.push(`<image x="${n1(her.ix)}" y="${n1(h - her.ih)}" width="${n1(her.iw)}" height="${n1(her.ih)}" href="data:image/png;base64,${peek.base64}"/>`)
   } else out.push('</g>')
@@ -329,12 +303,9 @@ export function bagArtSvg(width: number, badges: readonly (boolean | BagBadge)[]
   return contrastSvg(out.join(''))
 }
 
-// ---------------------------------------------------------------- the terminal's head
+// ---- the terminal's head
 
-// Their bag on the terminal (settings_drafts.py bag_term80): a coral frame of half blocks, the page's number and name (as its
-// tab writes them), three
-// slashes on the diagonal, one badge a switch, and the two quota windows in four cells. What does not fit gives way: the
-// cells, then the badges, then the slashes.
+// Their bag on the terminal (settings_drafts.py bag_term80). What does not fit gives way: the cells, then the badges, then the slashes.
 export type BagRun = { text: string; color?: 'claude' | 'suggestion' | 'inactive'; bold?: true }
 export function bagTerminalHead(columns: number, page: string, switches: readonly boolean[], quota: BagQuota, width: (text: string) => number): BagRun[][] {
   const inner = Math.max(0, columns - 2)

@@ -3,8 +3,8 @@ import CoreGraphics
 
 /// Data values are passed in by the reloadable companion tuning store, never read on input paths.
 struct WindowTuning: Codable, Equatable {
-    var targets = ["claude": ["com.anthropic.claudefordesktop"], "vscode": ["com.microsoft.VSCode", "com.microsoft.VSCodeInsiders"]]
-    var titleBarHeight = ["com.anthropic.claudefordesktop": 52.0, "com.microsoft.VSCode": 35.0, "com.microsoft.VSCodeInsiders": 35.0]
+    var targets = ["claude": ["com.anthropic.claudefordesktop", "com.openai.codex", "dev.zcode.app"], "vscode": ["com.microsoft.VSCode", "com.microsoft.VSCodeInsiders"]]
+    var titleBarHeight = ["com.anthropic.claudefordesktop": 52.0, "com.openai.codex": 40.0, "dev.zcode.app": 40.0, "com.microsoft.VSCode": 35.0, "com.microsoft.VSCodeInsiders": 35.0]
     var excludedDragRoles = ["AXTextField", "AXTextArea", "AXStaticText", "AXWebArea", "AXScrollArea", "AXImage", "AXLink", "AXButton", "AXSlider", "AXSplitGroup", "AXSplitter"]
     var unchangedDragEvents = 1
     var resizeBorder = 6.0

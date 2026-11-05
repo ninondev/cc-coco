@@ -1,7 +1,7 @@
 // Coco's band pictures (10-14): the actions the owner picked, played as one animated SVG each.
-// tools/art/coco-clips.py samples the approved clips into tracks (plugin/assets/coco/band-<outfit>.json);
-// this file only chooses an action, joins it to whatever was showing, and writes the SVG. CSS keyframes
-// only: once drawn, a picture plays by itself, so nothing here runs while Coco is idle.
+// tools/art/coco-clips.py samples the approved clips into tracks (plugin/assets/coco/band-<outfit>.json); this file
+// chooses an action, joins it to whatever was showing, and writes the SVG. CSS keyframes only: once drawn, a picture
+// plays by itself, so nothing here runs while Coco is idle.
 
 export type CocoOutfit = 'A' | 'B'
 export type CocoActionKey =
@@ -14,30 +14,29 @@ export const COCO_ACTIONS: readonly CocoActionKey[] = [
   'out', 'error', 'wild', 'fixed', 'teapot', 'breath', 'nap', 'catch',
 ]
 
-type Track = readonly (readonly number[])[]          // [[t s, value...], ...], linear in between
+type Track = readonly (readonly number[])[]
 type Element = {
   src: string; origin: readonly [number, number]
   clip_local: readonly number[] | null; clip_final: readonly number[] | null
-  a: Track; t: Track; r: Track; s: Track             // opacity, translate x y, rotate deg, scale x y
+  a: Track; t: Track; r: Track; s: Track
 }
 type Part = { seconds: number; elements: readonly Element[] }
 type Action = { entry: { kind: 'sink' | 'hop' | 'cut'; depth: number; h: number }; body: Part; loop?: Part }
 export type CocoData = {
   outfit: CocoOutfit
-  canvas: readonly [number, number]                  // viewBox units (the preview's), headroom included
+  canvas: readonly [number, number]
   floor: readonly [number, number]
-  sink: number                                       // s: the dip before a swap
-  hop: readonly [number, number]                     // s: the crouch, then the rise
+  sink: number
+  hop: readonly [number, number]
   actions: Readonly<Record<string, Action>>
-  images: Readonly<Record<string, string>>           // source id -> PNG, base64
-  // the frames they hold with open eyes: where the eyes sit (viewBox units) and them half shut and shut
+  images: Readonly<Record<string, string>>
   eyes?: Readonly<Record<string, { box: readonly number[]; half: string; closed: string }>>
 }
 
 const installed: Partial<Record<CocoOutfit, CocoData>> = {}
 const complete: Partial<Record<CocoOutfit, boolean>> = {}
-// partial: the resting states bundled for the band's first answer (coco-stills.ts); the whole file
-// (plugin/assets/coco/band-<outfit>.json) replaces them once it is read, and is never replaced back.
+// partial: the resting states bundled for the band's first answer (coco-stills.ts); the whole file replaces them once it
+// is read, and is never replaced back.
 export function installCocoData(data: CocoData, partial = false): void {
   if (!data || (data.outfit !== 'A' && data.outfit !== 'B') || !Array.isArray(data.canvas) || !data.actions || !data.images) throw new Error('Invalid Coco data')
   for (const key of partial ? Object.keys(data.actions) : COCO_ACTIONS) {
@@ -49,9 +48,9 @@ export function installCocoData(data: CocoData, partial = false): void {
   installed[data.outfit] = data
   complete[data.outfit] = !partial
 }
-// The socks Coco wears when they are not the pair drawn in the pictures (10-14, the sock drawer): for each picture, the pixels
-// that pair changes and where they sit (viewBox units), drawn over the picture (tools/art/coco-socks.py and
-// coco-clips.py --socks write assets/coco/socks-<outfit>-<pair>.json). The drawn pair needs nothing.
+// The socks Coco wears when they are not the pair drawn in the pictures (10-14): per picture, the pixels that pair
+// changes and where (viewBox units), drawn over the picture (tools/art/coco-socks.py and coco-clips.py --socks write
+// assets/coco/socks-<outfit>-<pair>.json). The drawn pair needs nothing.
 export type CocoSocks = { outfit: CocoOutfit; pair: string; socks: Readonly<Record<string, { box: readonly number[]; img: string }>> }
 const socksWorn: Partial<Record<CocoOutfit, CocoSocks>> = {}
 export function installCocoSocks(outfit: CocoOutfit, data: CocoSocks | undefined): void {
@@ -65,12 +64,12 @@ export function cocoHas(outfit: CocoOutfit, action: CocoActionKey): boolean { re
 export function cocoCanvas(): readonly [number, number] { return (installed.A ?? installed.B)?.canvas ?? [234, 241] }
 export function cocoWidth(height: number): number { const [w, h] = cocoCanvas(); return height * w / h }
 
-// ---------------------------------------------------------------- which action
+// ---- which action
 
 export type CocoInput = {
   mood: string; pose?: string; touch?: 'poke' | 'pat' | 'burst' | 'wink'; shed?: 'begin' | 'end' | 'skip'
   act?: CocoActionKey; night?: boolean; working: boolean
-  breath?: boolean // the breathing light is on (play.breath): they hold the shut laptop and breathe with it
+  breath?: boolean
 }
 const POSES: Readonly<Record<string, CocoActionKey>> = {
   search: 'search', scroll: 'read', spyglass: 'lookup', plan: 'plan', run: 'run', helper: 'helper', tea: 'coffee',
@@ -81,8 +80,7 @@ const MOODS: Readonly<Record<string, CocoActionKey>> = {
   wild: 'wild', refuse: 'teapot', flustered: 'praised', wave: 'hello', snake: 'peek',
   peek: 'peek', // the name lane C gives 'snake' when the white snake's code goes
 }
-// The 48-cell table of the 《Coco 全清单》 page: a touch first, then an explicit moment, the shell
-// change, a tool pose, then the mood.
+// The 48-cell table of the 《Coco 全清单》 page: a touch first, then an explicit moment, the shell change, a tool pose, then the mood.
 export function cocoAction(input: CocoInput): CocoActionKey {
   if (input.touch === 'burst') return 'hood'
   if (input.touch) return 'petted'
@@ -95,7 +93,6 @@ export function cocoAction(input: CocoInput): CocoActionKey {
   if (input.mood === 'sleep') return input.night ? 'night' : 'nap'
   return MOODS[input.mood] ?? (input.working ? 'think' : 'idle')
 }
-// What Coco settles into after an action played once.
 export function cocoBase(input: Pick<CocoInput, 'mood' | 'working' | 'night' | 'breath'>): CocoActionKey {
   if (input.breath) return 'breath'
   if (input.mood === 'sleep') return input.night ? 'night' : 'nap'
@@ -104,10 +101,9 @@ export function cocoBase(input: Pick<CocoInput, 'mood' | 'working' | 'night' | '
   return 'idle'
 }
 
-// ---------------------------------------------------------------- playing
+// ---- playing
 
-// One picture on the band: an action, the clock it started at, and the drawing it left (joined with a dip).
-// once: played through and then into the base even if the action has a loop of its own (a moment, not a state).
+// One picture on the band: an action, the clock it started at, and the drawing it left. once: played through and then into the base even if the action has a loop of its own.
 export type CocoPlay = { outfit: CocoOutfit; action: CocoActionKey; base: CocoActionKey; at: number; once?: boolean; from?: readonly Element[] }
 export const COCO_BASES: ReadonlySet<CocoActionKey> = new Set<CocoActionKey>(['idle', 'think', 'work', 'wait', 'doze', 'night', 'breath', 'nap'])
 
@@ -146,7 +142,6 @@ function segments(play: CocoPlay): Segment[] {
   return out
 }
 
-// The elements drawn at t seconds into a list of segments, frozen at their values then.
 function drawnAt(list: readonly Segment[], t: number): Element[] {
   let start = 0
   for (const [i, seg] of list.entries()) {
@@ -171,15 +166,13 @@ export function cocoDrawn(play: CocoPlay, now: number): Element[] {
   return drawnAt(segments(play), Math.max(0, now - play.at) / 1000)
 }
 
-// How long an action plays before it holds or hands over to its base.
 export function cocoBodySeconds(outfit: CocoOutfit, action: CocoActionKey): number {
   return installed[outfit]?.actions[action]?.body.seconds ?? 0
 }
 
-// A new play. The same action keeps its clock. An action played once goes on into its base by itself,
-// so the base it was going to coming back keeps that picture (played through, then held); any other
-// state, or a new moment, starts now from whatever was drawn.
-// A moment (act) is played once from the clock it happened at; the same moment again keeps its play.
+// A new play. The same action keeps its clock. An action played once goes on into its base by itself, so the base it was
+// going to coming back keeps that picture; any other state, or a new moment, starts now from whatever was drawn. A
+// moment (act) is played once from the clock it happened at; the same moment again keeps its play.
 export function cocoNext(previous: CocoPlay | undefined, outfit: CocoOutfit, action: CocoActionKey, base: CocoActionKey, now: number, act?: { at: number }): CocoPlay {
   const once = act !== undefined
   if (previous && previous.outfit === outfit && previous.action === action && (once ? previous.once && previous.at === act.at : !previous.once)) return previous.base === base ? previous : { ...previous, base }
@@ -193,8 +186,7 @@ export function cocoNext(previous: CocoPlay | undefined, outfit: CocoOutfit, act
 
 const ease = (u: number) => { const x = Math.max(0, Math.min(1, u)); return x * x * (3 - 2 * x) }
 
-// The dip (or the crouch and rise) on the drawing they leave, before the swap: as the preview's
-// fine_pose does it on the beat before a 'sink' or 'hop' entry.
+// The dip (or crouch and rise) on the drawing they leave, before the swap, as the preview's fine_pose does it.
 function join(from: readonly Element[], entry: Action['entry'], data: CocoData): Part {
   const hop = entry.kind === 'hop'
   const seconds = hop ? data.hop[0] + data.hop[1] : data.sink
@@ -220,7 +212,7 @@ function join(from: readonly Element[], entry: Action['entry'], data: CocoData):
   return { seconds, elements }
 }
 
-// ---------------------------------------------------------------- the SVG
+// ---- the SVG
 
 const n = (v: number, d = 2) => {
   const s = d > 0 ? v.toFixed(d).replace(/\.?0+$/, '') : v.toFixed(0)
@@ -238,9 +230,9 @@ const VALUE = {
 } as const
 const IDENTITY = { a: [1], t: [0, 0], r: [0], s: [1, 1] } as const
 
-// Blinks while Coco holds still, timed like a person's (MOTION.blink in motion.ts: a median of 5 s, most
-// between 2 and 12, now and then a double blink): half shut 33 ms, shut 130 ms, half open 50 ms. One
-// cycle of a minute, the same for every frame, so a blink is only seen on the frame that is drawn.
+// Blinks while Coco holds still, timed like a person's (MOTION.blink in motion.ts: a median of 5 s, most between 2 and
+// 12, now and then a double blink): half shut 33 ms, shut 130 ms, half open 50 ms. One cycle of a minute, the same for
+// every frame, so a blink is only seen on the frame that is drawn.
 const BLINK_CYCLE = 61
 export function cocoBlinkTimes(): number[] {
   let seed = 7, t = 2.2
@@ -257,7 +249,7 @@ export function cocoBlinkTimes(): number[] {
 let blinkFrames: { half: string; closed: string } | undefined
 function blinkKeyframes(): { half: string; closed: string } {
   if (blinkFrames) return blinkFrames
-  // four decimals: one step is 6 ms of the cycle, so the two keys a millisecond apart stay apart
+  // four decimals: one step is 6 ms of the cycle, so keys a millisecond apart stay apart
   const at = (s: number) => n(100 * s / BLINK_CYCLE, 4) + '%'
   const half: string[] = ['0%{opacity:0}'], closed: string[] = ['0%{opacity:0}']
   for (const t of cocoBlinkTimes()) {
@@ -271,14 +263,12 @@ function blinkKeyframes(): { half: string; closed: string } {
 }
 
 let pictureSerial = 0
-// label: what is drawn, data-coco="<outfit> <action>" on the picture (for tests and diagnostics)
 function svgOf(list: readonly Segment[], data: CocoData, height: number, delayMs: number, still: boolean, label: string): string {
   const [W, H] = data.canvas
   // ids and keyframe names are the document's, so two pictures on one page must not share them
   const p = 'c' + (++pictureSerial).toString(36) + '_'
   const head = `<svg style="forced-color-adjust:none" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 ${n(W)} ${n(H)}" width="${n(height * W / H)}" height="${n(height)}" data-coco="${label}">`
   const sources = [...new Set(list.flatMap(s => s.part.elements.map(e => e.src)))]
-  // a drawing left from the other outfit (after the shell change) is found in that outfit's pictures
   const png = (src: string) => data.images[src] ?? installed[data.outfit === 'A' ? 'B' : 'A']?.images[src] ?? ''
   const defs = sources.map((src, i) => `<image id="${p}i${i}" width="${n(W)}" height="${n(H)}" href="data:image/png;base64,${png(src)}"/>`)
   const rules = new Map<string, string>()
@@ -310,7 +300,6 @@ function svgOf(list: readonly Segment[], data: CocoData, height: number, delayMs
       put(style('a', e.a)); put(style('t', e.t))
       if (!looping && !still) outer.push(animation('0%,100%{opacity:0}', 1, start + seg.part.seconds, true))
       let g = `<use href="#${p}i${sources.indexOf(e.src)}"/>`
-      // the pair of socks from their drawer, over the drawn ones, moved with the picture
       const socks = socksOf(e.src)
       if (socks) {
         let id = socked.get(e.src)
@@ -321,7 +310,6 @@ function svgOf(list: readonly Segment[], data: CocoData, height: number, delayMs
         }
         g += `<use href="#${p}s${id}"/>`
       }
-      // their blink, on a frame they hold in a loop, inside the part of the frame that holds their eyes
       const eyes = looping && !still ? eyesOf(e.src) : undefined
       if (eyes && !(e.clip_local && (e.clip_local[1]! > eyes.box[1]! || e.clip_local[3]! < eyes.box[1]! + eyes.box[3]!))) {
         let id = lids.get(e.src)
@@ -351,22 +339,19 @@ function svgOf(list: readonly Segment[], data: CocoData, height: number, delayMs
   return `${head}<defs>${defs.join('')}</defs>${css.length ? `<style>${css.join('')}</style>` : ''}${body.join('')}</svg>`
 }
 
-// The play as an SVG height px tall, synchronised to now. Reduced motion: only the pose, drawn still
-// (the owner's 「开了「减弱动态」只换姿势不动」).
+// The play as an SVG height px tall, synchronised to now. Reduced motion: only the pose, drawn still (owner: 「开了「减弱动态」只换姿势不动」).
 const pictures = new Map<string, string>()
 export function cocoPicture(play: CocoPlay, height: number, now: number, reducedMotion = false): string {
   const key = `${play.outfit}:${play.action}:${play.base}:${play.at}:${play.once ? 1 : 0}:${height}:${reducedMotion ? 1 : 0}:${socksWorn.A?.pair ?? ''}:${socksWorn.B?.pair ?? ''}`
   let svg = pictures.get(key)
   if (svg === undefined) {
-    // built once per play, already as far in as now: the same string again lets a surface keep the
-    // picture it is playing
+    // built once per play, already as far in as now: the same string again lets a surface keep the picture it is playing
     svg = cocoSvg(play, height, now, reducedMotion)
     pictures.set(key, svg)
     while (pictures.size > 16) pictures.delete(pictures.keys().next().value!)
   }
   return svg
 }
-// One still of hers in an outfit: the pose held, or her idle one before that outfit's data has it ('' before even that).
 export function cocoStill(outfit: CocoOutfit, wanted: CocoActionKey, height: number): string {
   const action: CocoActionKey = cocoHas(outfit, wanted) ? wanted : 'idle'
   return cocoHas(outfit, action) ? cocoPicture({ outfit, action, base: action, at: 0 }, height, 0, true) : ''

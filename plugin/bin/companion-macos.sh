@@ -4,15 +4,11 @@
 # Usage: companion-macos.sh install [--login] | start | stop | status | uninstall [--report]
 #
 # What it does
-#   install    Builds the companion from its Swift source (../companion) with swiftc from the Xcode
-#              Command Line Tools (Swift 5.9 or newer, Xcode 15 or later) into ~/Applications/Coco Pet.app, copies the mod's
-#              frames into it (16 desktop pictures, 16 pixel ones) with Coco's clips and Claudie's
-#              cells, signs it for this Mac only (no Apple ID) and starts it. Nothing is downloaded. It rebuilds only when the
-#              source changed, so a permission you gave the app stays valid. The signature is "Coco Pet Local Signing", a
-#              self-signed identity made once in your login keychain, so a rebuilt app keeps the Accessibility permission
-#              too; if it cannot be made, the signature is ad hoc and a rebuild asks again. --login also adds a
-#              LaunchAgent so it starts when you log in (macOS shows a "background item added"
-#              notice).
+#   install    Copies the bundled bin/Coco Pet.app into ~/Applications and starts it.
+#              The package is checked and staged before the installed app is stopped or moved.
+#              An unchanged package keeps the installed app and its permission identity.
+#              --developer-build explicitly builds from source and signs ad hoc instead.
+#              --login adds a LaunchAgent so it starts when you log in.
 #              Settings and the mod's feed stay in ~/Library/Application Support/Coco/;
 #              that folder tells the mod the companion is installed.
 #   start      Starts the installed companion, or brings it back if it is running or hidden.
@@ -58,7 +54,7 @@ usage() {
   /bin/cat <<EOF
 Usage: $PROG install [--login] | start | stop | status | uninstall [--report]
 
-  install       Build from source (swiftc), install into ~/Applications/Coco Pet.app, start
+  install       Install the bundled Coco Pet.app into ~/Applications, then start it
   install --login   The same, and start it at every login (a LaunchAgent)
   start         Start it or bring it back, even while hidden
   stop          Stop it
@@ -68,7 +64,8 @@ Usage: $PROG install [--login] | start | stop | status | uninstall [--report]
   --no-prompt   Accepted for compatibility; does nothing (launch never asks for permission)
   --report      Print result: ok | no-tools | old-tools | failed | not-mac as the last line
 
-  Building needs Swift 5.9 or newer (Xcode 15 Command Line Tools or later).
+  --developer-build   Build from source with Swift 5.9 or newer; use ad hoc signing
+  Normal installation needs the bundled app, not Xcode Command Line Tools.
   Coco's bag has the same controls as buttons. Coco Pet's card offers window following.
   -h, --help    This text
 EOF
@@ -91,6 +88,7 @@ self_dir() {
 HERE=$(self_dir "$0")
 PLUGIN=$(cd "$HERE/.." && pwd -P)
 CONTROL=$HERE/companion-control
+PACKAGED="$HERE/$NAME.app"
 SRC=$PLUGIN/companion
 FRAMES=$PLUGIN/assets/desktop
 PIXELS=$PLUGIN/assets/pixel
@@ -117,6 +115,7 @@ OLD_BIN="$OLD_APP/Contents/MacOS/$EXE"
 
 CMD=
 LOGIN=0
+DEVELOPER_BUILD=0
 while [ $# -gt 0 ]; do
   case $1 in
     install | start | stop | status | uninstall)
@@ -124,6 +123,7 @@ while [ $# -gt 0 ]; do
       CMD=$1
       ;;
     --login) LOGIN=1 ;;
+    --developer-build) DEVELOPER_BUILD=1 ;;
     --no-prompt) : ;;
     --report) REPORT=1 ;;
     -h | --help | help)
@@ -139,11 +139,22 @@ while [ $# -gt 0 ]; do
   shift
 done
 [ -n "$CMD" ] || CMD=status
+[ "$DEVELOPER_BUILD" -eq 0 ] || [ "$CMD" = install ] || die "--developer-build is only for install"
 
 # No build output exists yet, but --report also covers platform and preflight failures.
 STAGE=
+BACKUP=
 cleanup() {
   _exit=$?
+  if [ -n "$BACKUP" ] && [ -e "$BACKUP" ]; then
+    if [ ! -e "$APP" ] && [ ! -L "$APP" ]; then
+      /bin/mv "$BACKUP" "$APP" || warn "could not restore the previous app from $BACKUP"
+    fi
+    if [ -e "$BACKUP" ]; then
+      warn "the previous app is kept at $BACKUP"
+      STAGE=
+    fi
+  fi
   if [ -n "$STAGE" ] && [ -d "$STAGE" ]; then
     /bin/rm -rf "$STAGE"
   fi
@@ -188,37 +199,28 @@ source_hash() {
     for _f in "$SRC/Info.plist" "$SRC"/Sources/*.swift "$FRAMES"/*.png "$PIXELS"/*.png "$ICON" "$PLUGIN/assets/icon/coco-16.png" "$PLUGIN/assets/icon/coco-32.png" "$PLUGIN/assets/icon/build-icns.sh" "$HERE/$PROG"; do
       /usr/bin/shasum -a 256 "$_f" | /usr/bin/cut -d ' ' -f 1
     done
-    for _f in "$PLUGIN/assets/shed"/*.png "$PLUGIN/assets/shed/shed.json" "$PLUGIN/assets/visitors"/*.png "$PLUGIN/assets/visitors/visitors.json" "$COCO"/*.json "$COCO"/*.bin "$CLAUDIE"/*/*.png "$QUOTA_WORDS/quota.json" "$QUOTA_WORDS/languages.json"; do
+    for _f in "$PLUGIN/assets/frame-manifest.json" "$PLUGIN/assets/companion-tuning.json" "$PLUGIN/assets/neighbours.json" "$PLUGIN/assets/patches"/*/*.png "$PLUGIN/assets/shed"/*.png "$PLUGIN/assets/shed/shed.json" "$PLUGIN/assets/visitors"/*.png "$PLUGIN/assets/visitors/visitors.json" "$COCO"/*.json "$COCO"/*.bin "$CLAUDIE"/*/*.png "$QUOTA_WORDS/quota.json" "$QUOTA_WORDS/languages.json"; do
       if [ -f "$_f" ]; then /usr/bin/shasum -a 256 "$_f" | /usr/bin/cut -d ' ' -f 1; fi
     done
   } | /usr/bin/shasum -a 256 | /usr/bin/cut -c 1-16
 }
 
-# macOS ties an Accessibility permission to the app's signature, and an ad hoc one changes with every build (owner's
-# card 10-21: a rebuild should not ask again). So the app is signed with a self-signed identity of this Mac's own, made
-# once in the login keychain (ten years, code signing only, never trusted for anything else). Prints its name, or -
-# (ad hoc) when it is not there and cannot be made.
-sign_identity() {
-  if /usr/bin/security find-identity -p codesigning 2>/dev/null | /usr/bin/grep -qF "\"$SIGN_NAME\""; then
-    printf '%s' "$SIGN_NAME"
-    return 0
-  fi
-  _keys="$STAGE/identity"
-  /bin/mkdir -m 700 "$_keys" || { printf '%s' -; return 0; }
-  /usr/bin/printf '[req]\ndistinguished_name=dn\nx509_extensions=ext\nprompt=no\n[dn]\nCN=%s\n[ext]\nbasicConstraints=critical,CA:false\nkeyUsage=critical,digitalSignature\nextendedKeyUsage=critical,codeSigning\n' "$SIGN_NAME" >"$_keys/cert.cnf"
-  _pass=$(/usr/bin/openssl rand -hex 16 2>/dev/null) || _pass=
-  if [ -n "$_pass" ] &&
-    /usr/bin/openssl req -x509 -newkey rsa:2048 -nodes -keyout "$_keys/key.pem" -out "$_keys/cert.pem" -days 3650 -config "$_keys/cert.cnf" >/dev/null 2>&1 &&
-    /usr/bin/openssl pkcs12 -export -inkey "$_keys/key.pem" -in "$_keys/cert.pem" -name "$SIGN_NAME" -out "$_keys/id.p12" -passout "pass:$_pass" >/dev/null 2>&1 &&
-    /usr/bin/security import "$_keys/id.p12" -P "$_pass" -T /usr/bin/codesign >/dev/null 2>&1; then
-    /bin/rm -rf "$_keys"
-    say "Made the signing identity \"$SIGN_NAME\" in your login keychain; a rebuilt $NAME keeps its Accessibility permission." >&2
-    printf '%s' "$SIGN_NAME"
-    return 0
-  fi
-  /bin/rm -rf "$_keys"
-  warn "could not make a signing identity; signing ad hoc, so a rebuild asks for Accessibility again"
-  printf '%s' -
+# Include relative names and every signed payload byte, independent of where the bundle lives.
+bundle_hash() (
+  cd "$1" || exit 1
+  _files=$(/usr/bin/find -s . -type f -exec /usr/bin/shasum -a 256 {} +) || exit 1
+  printf '%s\n' "$_files" | /usr/bin/shasum -a 256 | /usr/bin/cut -d ' ' -f 1
+)
+
+validate_package() {
+  [ -d "$1" ] && [ ! -L "$1" ] || die "missing bundled app at $1; install the complete macOS package"
+  [ -z "$(/usr/bin/find "$1" -type l -print)" ] || die "the bundled app contains a symbolic link; download the macOS package again"
+  [ -x "$1/Contents/MacOS/$EXE" ] && [ -s "$1/Contents/Resources/build.txt" ] || die "the bundled app is incomplete; download the macOS package again"
+  _id=$(/usr/bin/plutil -extract CFBundleIdentifier raw -o - "$1/Contents/Info.plist") || die "cannot read the bundled app's Info.plist"
+  _exe=$(/usr/bin/plutil -extract CFBundleExecutable raw -o - "$1/Contents/Info.plist") || die "cannot read the bundled app's executable name"
+  _version=$(/usr/bin/plutil -extract CFBundleVersion raw -o - "$1/Contents/Info.plist") || die "cannot read the bundled app's version"
+  [ "$_id" = "$LABEL" ] && [ "$_exe" = "$EXE" ] && [ -n "$_version" ] || die "the bundled app has the wrong identity; download the macOS package again"
+  /usr/bin/codesign --verify --deep --strict "$1" || die "the bundled app's signature is invalid; download the macOS package again"
 }
 
 installed_build() { /bin/cat "$APP/Contents/Resources/build.txt" 2>/dev/null || true; }
@@ -260,11 +262,12 @@ build() {
     [ -f "$_f" ] || die "missing $_f; is the plugin complete?"
   done
   preflight
-  STAGE=$(/usr/bin/mktemp -d "${TMPDIR:-/tmp}/coco-companion.XXXXXX") || die "cannot create a temp folder"
   NEW="$STAGE/$NAME.app"
   /bin/mkdir -p "$NEW/Contents/MacOS" "$NEW/Contents/Resources/frames" "$NEW/Contents/Resources/pixel"
   /usr/bin/sed "s/@VERSION@/$VERSION/g" "$SRC/Info.plist" >"$NEW/Contents/Info.plist"
   /bin/cp "$FRAMES"/*.png "$NEW/Contents/Resources/frames/"
+  /bin/cp "$PLUGIN/assets/frame-manifest.json" "$PLUGIN/assets/companion-tuning.json" "$PLUGIN/assets/neighbours.json" "$NEW/Contents/Resources/"
+  /bin/cp -R "$PLUGIN/assets/patches" "$NEW/Contents/Resources/"
   /bin/cp "$PIXELS"/*.png "$NEW/Contents/Resources/pixel/"
   if [ -d "$PLUGIN/assets/shed" ]; then
     /bin/mkdir -p "$NEW/Contents/Resources/shed"
@@ -306,10 +309,8 @@ build() {
   /usr/bin/xcrun --sdk macosx swiftc -O -swift-version 5 -module-cache-path "$STAGE/cache" \
     -o "$NEW/Contents/MacOS/$EXE" "$SRC"/Sources/*.swift >&2 ||
     die "the build failed (messages above); nothing was installed"
-  _sign=$(sign_identity)
-  /usr/bin/codesign --force --sign "$_sign" --identifier "$LABEL" "$NEW" >/dev/null 2>&1 ||
-    { [ "$_sign" != - ] && /usr/bin/codesign --force --sign - --identifier "$LABEL" "$NEW" >/dev/null 2>&1; } ||
-    die "codesign could not sign the app; nothing was installed"
+  /usr/bin/codesign --force --sign - --identifier "$LABEL" "$NEW" >/dev/null 2>&1 ||
+    die "codesign could not sign the developer app; nothing was installed"
 }
 
 # Home paths are text in XML, and can contain ampersands or other markup characters.
@@ -405,7 +406,9 @@ do_status() {
     _v=$(/usr/bin/plutil -extract CFBundleShortVersionString raw -o - "$APP/Contents/Info.plist" 2>/dev/null || say "?")
     say "Installed:      yes, version $_v, build $(installed_build)"
     say "                $APP"
-    [ "$(installed_build)" = "$(source_hash)" ] || say "                (this plugin's source is newer: run install to rebuild)"
+    if [ -f "$PACKAGED/Contents/Resources/build.txt" ] && [ "$(installed_build)" != "$(/bin/cat "$PACKAGED/Contents/Resources/build.txt")" ]; then
+      say "                (a different bundled build is available: run install to update)"
+    fi
   else
     say "Installed:      no (run: install)"
     say "                $APP"
@@ -447,32 +450,43 @@ do_status() {
 }
 
 do_install() {
-  _hash=$(source_hash)
-  if [ -x "$OLD_APP/Contents/MacOS/$EXE" ] && [ "$(/bin/cat "$OLD_APP/Contents/Resources/build.txt" 2>/dev/null || true)" = "$_hash" ]; then
-    stop_it quiet || die "could not stop the running companion; nothing was moved"
-    "$CONTROL" ensure-dir "$APPS"
-    "$CONTROL" private-dir "$DIR"
-    if [ -e "$APP" ]; then
-      to_trash "$APP" || die "could not move the previous build to the Trash; nothing was moved"
-      say "The previous build went to the Trash."
-    fi
-    /bin/mv "$OLD_APP" "$APP"
-    say "Moved $NAME from its old location to $APP (build $_hash); keeping the same binary and its Accessibility permission."
-  fi
-  if [ -x "$BIN" ] && [ "$(installed_build)" = "$_hash" ]; then
-    say "Already built from this source (build $_hash); keeping it, so an Accessibility permission stays valid."
+  [ ! -L "$APP" ] || die "the installed app path is a symbolic link; nothing was changed"
+  if [ "$DEVELOPER_BUILD" -eq 1 ]; then
+    _hash=$(source_hash)
+    _same=0
+    [ -x "$BIN" ] && [ "$(installed_build)" = "$_hash" ] && _same=1
   else
-    say "Building $NAME $VERSION from source with swiftc (takes a few seconds)..."
-    build "$_hash"
-    stop_it quiet || die "could not stop the running companion; nothing was replaced"
-    "$CONTROL" ensure-dir "$APPS"
-    "$CONTROL" private-dir "$DIR"
-    if [ -e "$APP" ]; then
-      to_trash "$APP" || die "could not move the previous build to the Trash; nothing was replaced"
-      say "The previous build went to the Trash."
+    validate_package "$PACKAGED"
+    _hash=$(bundle_hash "$PACKAGED") || die "cannot read the bundled app; nothing was changed"
+    _same=0
+    if [ -x "$BIN" ] && [ "$(bundle_hash "$APP")" = "$_hash" ]; then _same=1; fi
+  fi
+  "$CONTROL" ensure-dir "$APPS"
+  "$CONTROL" private-dir "$DIR"
+  if [ "$_same" -eq 1 ]; then
+    say "The installed app matches this package; keeping it and its permissions."
+  else
+    STAGE=$(/usr/bin/mktemp -d "$APPS/.coco-companion.XXXXXX") || die "cannot create the installation staging folder"
+    NEW="$STAGE/$NAME.app"
+    if [ "$DEVELOPER_BUILD" -eq 1 ]; then
+      say "Building a developer copy of $NAME $VERSION with swiftc..."
+      build "$_hash"
+    else
+      /usr/bin/ditto "$PACKAGED" "$NEW" || die "cannot stage the bundled app; the installed app is unchanged"
+      validate_package "$NEW"
+      [ "$(bundle_hash "$NEW")" = "$_hash" ] || die "the staged app differs from the package; the installed app is unchanged"
     fi
-    /bin/mv "$NEW" "$APP"
-    say "Installed $APP (build $_hash)."
+    stop_it quiet || die "could not stop the running companion; nothing was replaced"
+    if [ -e "$APP" ]; then
+      BACKUP="$STAGE/previous.app"
+      /bin/mv "$APP" "$BACKUP" || die "cannot stage the previous app; nothing was replaced"
+    fi
+    /bin/mv "$NEW" "$APP" || die "cannot install the staged app; restoring the previous app"
+    if [ -n "$BACKUP" ]; then
+      to_trash "$BACKUP" || die "the new app is installed; the previous app is kept at $BACKUP"
+      BACKUP=
+    fi
+    say "Installed $APP (build $(installed_build))."
   fi
   if [ -e "$OLD_APP" ]; then
     stop_it quiet || die "could not stop the running companion; the app at the old location was not retired"
@@ -481,17 +495,21 @@ do_install() {
   fi
   "$CONTROL" private-dir "$DIR"
   if [ "$LOGIN" -eq 1 ] || [ -f "$AGENT" ]; then
-    agent_loaded && /bin/launchctl bootout "gui/$UIDN/$LABEL" >/dev/null 2>&1 || true
-    write_agent
-    stop_it quiet || true
-    /bin/launchctl bootstrap "gui/$UIDN" "$AGENT" || die "launchctl could not load $AGENT"
-    say "Starts at login: $AGENT"
-    _i=0
-    while [ $_i -lt 30 ] && [ -z "$(running_pid)" ]; do
-      /bin/sleep 0.1
-      _i=$((_i + 1))
-    done
-    wait_state "$(running_pid)"
+    if [ "$_same" -eq 0 ] || [ ! -f "$AGENT" ] || ! agent_loaded; then
+      agent_loaded && /bin/launchctl bootout "gui/$UIDN/$LABEL" >/dev/null 2>&1 || true
+      write_agent
+      stop_it quiet || true
+      /bin/launchctl bootstrap "gui/$UIDN" "$AGENT" || die "launchctl could not load $AGENT"
+      say "Starts at login: $AGENT"
+      _i=0
+      while [ $_i -lt 30 ] && [ -z "$(running_pid)" ]; do
+        /bin/sleep 0.1
+        _i=$((_i + 1))
+      done
+      wait_state "$(running_pid)"
+    elif [ -z "$(running_pid)" ]; then
+      start_it
+    fi
   else
     start_it
   fi

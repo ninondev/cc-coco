@@ -26,9 +26,8 @@ concurrency:
 
 env:
   # Claude Code is installed with Anthropic's native installer pinned to this exact version
-  # (https://code.claude.com/docs/en/setup#install-a-specific-version). 1.0 needs 2.1.299 or later; the
-  # full kit was run on this one. Raise it on purpose.
-  CLAUDE_CODE_VERSION: "2.1.302"
+  # (https://code.claude.com/docs/en/setup#install-a-specific-version). 1.0 needs 2.1.299 or later.
+  CLAUDE_CODE_VERSION: "2.1.317"
   # The pinned version stays put for the whole run.
   DISABLE_AUTOUPDATER: "1"
   # The kit rebuilds two runtime files in its scratch copy with Bun and TypeScript.

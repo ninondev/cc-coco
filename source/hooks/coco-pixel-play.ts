@@ -1,7 +1,7 @@
-// Coco's pixel version in the terminal (DECISIONS 913, 917): her frames as half-block cells, and which frame a
-// moment shows at a given time. coco-pixel.ts holds the frames and the moments (tools/art/coco-pixel-motion.py).
-// A moment's body plays once and settles into its state's loop; the loop only moves when the band may move
-// while she is idle ("闲着也动来动去"), otherwise its first frame is held and nothing runs.
+// Coco's pixel version in the terminal (DECISIONS 913, 917): her frames as half-block cells, and which frame a moment
+// shows at a given time (coco-pixel.ts holds the frames and moments; tools/art/coco-pixel-motion.py). A moment's body
+// plays once and settles into its state's loop; the loop moves only when the band may move while she is idle
+// ("闲着也动来动去"), otherwise its first frame is held and nothing runs.
 import { PIXEL_DARK_OUTLINE, PIXEL_DOOR, PIXEL_FRAMES, PIXEL_H, PIXEL_KEY, PIXEL_MOMENTS, PIXEL_OUTFITS, PIXEL_SOCKS, PIXEL_STILLS, PIXEL_W } from './coco-pixel'
 import type { PixelStep } from './coco-pixel'
 
@@ -11,7 +11,6 @@ export const PIXEL_ROWS = PIXEL_H / 2
 export type PixelOutfit = 'A' | 'B'
 // `short`: the terminal draws blocks from a font whose blocks stop short of the line's top (Terminal.app)
 export type PixelLook = { outfit: PixelOutfit; socks?: string; dark: boolean; colors: 'truecolor' | '256'; short?: boolean }
-// Another sprite's pixels over hers (a visitor): its top-left on her grid, rows of letters ('a' + index), colours.
 export type PixelOverlay = { key: string; x: number; y: number; rows: readonly string[]; rgb: readonly number[] }
 
 const rows = new Map<number, readonly string[]>()
@@ -59,10 +58,10 @@ function colours(look: PixelLook, other: number): Readonly<Record<string, number
   return t
 }
 
-const DEFAULT = 0x01000000 // the terminal's own colour
-const UPPER = 0x2580 // ▀
-const LOWER = 0x2584 // ▄
-const LOWER_FIVE = 0x2585 // ▅
+const DEFAULT = 0x01000000
+const UPPER = 0x2580
+const LOWER = 0x2584
+const LOWER_FIVE = 0x2585
 const SPACE = 0x20
 const ALPHABET = 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789+/'
 function base64(bytes: Uint8Array): string {
@@ -78,17 +77,15 @@ function base64(bytes: Uint8Array): string {
 
 // Two pixels in one cell. Terminal.app draws ▀ and ▄ from its font, and SF Mono's (and Menlo's) blocks stop short of the
 // line's top by about 15%: a ▀ cell showed a strip of the lower pixel above the upper one, so dark outline crept into
-// her hair and face (owner 10-20: 「变得很脏，很多地方变黑方块」). A lower block with the upper pixel as the ground
-// keeps the halves whole; there ▅ splits the line 46 to 54 where ▄ split it 57 to 43 (owner 10-20: 「高度你看着调」),
-// and terminals that draw blocks themselves get the true half, ▄.
+// her hair and face (owner 10-20: 「变得很脏，很多地方变黑方块」). A lower block with the upper pixel as the ground keeps
+// the halves whole; there ▅ splits the line 46 to 54 where ▄ split it 57 to 43 (owner 10-20: 「高度你看着调」), and
+// terminals that draw blocks themselves get the true half, ▄.
 function halfCell(top: number, bottom: number, short = false): readonly number[] {
   if (bottom >= 0) return [short ? LOWER_FIVE : LOWER, bottom, top >= 0 ? top : DEFAULT]
   return top >= 0 ? [UPPER, top, DEFAULT] : [SPACE, DEFAULT, DEFAULT]
 }
 
 const cells = new Map<string, string>()
-// Half-block cells, each [codePoint, foreground, background] as little-endian u32: her frame moved dx pixels,
-// with an overlay drawn over her.
 export function pixelCells(frame: number, other: number, look: PixelLook, overlay?: PixelOverlay, dx = 0): string {
   const id = `${frame}:${other}:${look.outfit}:${look.socks ?? 'honmei'}:${look.dark ? 'd' : 'l'}:${look.colors}:${dx}:${overlay?.key ?? ''}:${look.short ? 's' : ''}`
   const held = cells.get(id)
@@ -117,17 +114,15 @@ export function pixelCells(frame: number, other: number, look: PixelLook, overla
   return out
 }
 
-// Her outfit, her socks and the terminal's ground, for the pictures asked for by name (the book's portrait,
-// the blink and the door); register.tsx sets it before it draws the terminal band.
+// Her outfit, socks and the terminal's ground for pictures asked by name (portrait, blink, door); register.tsx sets it before it draws the terminal band.
 export type PixelWear = { outfit: PixelOutfit; socks?: string; dark: boolean; short?: boolean }
 let wear: PixelWear = { outfit: 'A', dark: true }
 export function setPixelWear(next: PixelWear): void { wear = next }
 export function pixelWear(): PixelWear { return wear }
 
-// ---------------------------------------------------------------- kitty and Ghostty
+// ---- kitty and Ghostty
 
-// The same frame as a PNG for the terminals that show pictures: palette colour, every pixel `scale` pixels
-// square, uncompressed deflate (no zlib here; a frame at 4x is about 7 KB).
+// The same frame as a PNG: palette colour, every pixel `scale` pixels square, uncompressed deflate (no zlib here; a frame at 4x is about 7 KB).
 const CRC = (() => { const t = new Uint32Array(256); for (let n = 0; n < 256; n++) { let c = n; for (let k = 0; k < 8; k++) c = c & 1 ? 0xEDB88320 ^ c >>> 1 : c >>> 1; t[n] = c >>> 0 } return t })()
 function crc32(bytes: Uint8Array): number { let c = 0xFFFFFFFF; for (const b of bytes) c = CRC[(c ^ b) & 255]! ^ c >>> 8; return (c ^ 0xFFFFFFFF) >>> 0 }
 function chunk(kind: string, data: Uint8Array): Uint8Array {
@@ -188,17 +183,14 @@ export function pixelPng(frame: number, other: number, look: PixelLook, overlay?
   return encoded
 }
 
-// One picture per old frame name, for the calls that still ask by name (the book's portrait, a still band).
 export function pixelStill(name: string): number { return PIXEL_STILLS[name] ?? PIXEL_STILLS['idle-reading'] ?? 0 }
 
-// The closed band's door: her sleeping face in one row of eight cells, dimmed by the band.
 export const PIXEL_DOOR_COLUMNS = PIXEL_DOOR[0]!.length
 export function pixelDoorCells(look: PixelLook): string {
   const id = `door:${look.dark ? 'd' : 'l'}:${look.colors}:${look.short ? 's' : ''}`
   const held = cells.get(id)
   if (held) return held
   const t = colours({ ...look, colors: 'truecolor' }, 0)
-  // dim: each colour muted toward neutral grey, still legible on either terminal ground
   const mute = (n: number): number => { const m = [n >> 16, n >> 8 & 255, n & 255].reduce((a, v) => a << 8 | Math.round(v * .55 + 136 * .45), 0); return look.colors === '256' ? xterm(m) : m }
   const px = (x: number, y: number): number => { const c = PIXEL_DOOR[y]?.[x]; return c === undefined || c === '.' ? -1 : t[c] === undefined ? -1 : mute(t[c]!) }
   const view = new DataView(new ArrayBuffer(PIXEL_DOOR_COLUMNS * 12))
@@ -213,10 +205,9 @@ export function pixelDoorCells(look: PixelLook): string {
   return out
 }
 
-// ---------------------------------------------------------------- playing
+// ---- playing
 
-// What the terminal is showing of her: the moment, the state it settles into, when it started and in which
-// outfit it plays (the shell change plays in the one she is taking off).
+// The moment, the state it settles into, when it started and the outfit it plays in (the shell change plays in the one she is taking off).
 export type PixelPlay = { action: string; base: string; at: number; outfit: PixelOutfit; act?: number }
 export function pixelHas(action: string): boolean { return PIXEL_MOMENTS[action] !== undefined }
 // The band's actions of 10-16 that the five pixel sprites have no drawing for, played as the nearest moment.
@@ -229,27 +220,24 @@ export function pixelNext(previous: PixelPlay | undefined, wanted: string, wante
   return { action: key, base: settle, at: now, outfit, ...(act === undefined ? {} : { act }) }
 }
 const total = (steps: readonly PixelStep[]): number => steps.reduce((a, s) => a + s[1], 0)
-// how long the shell change plays after a compaction
 export const PIXEL_SHELL_MS = total(PIXEL_MOMENTS.shell?.body ?? [])
-// The one picture that stands for a moment that may not move: its longest step that is more than her
-// standing still (the sip of the coffee moment, not the plain stand it starts from).
+// The one picture for a moment that may not move: its longest step that is more than her standing still.
 function standIn(steps: readonly PixelStep[]): PixelStep {
   const rest = PIXEL_MOMENTS.idle!.loop[0]![0]
   const own = steps.filter(s => s[0] !== rest)
   return (own.length ? own : steps).reduce((a, s) => s[1] > a[1] ? s : a)
 }
-// A held usage limit: the moment's stand-in, or the state's resting picture, for as long as the limit holds.
 export function pixelHeld(play: PixelPlay): { frame: number; other: number } {
   const m = PIXEL_MOMENTS[play.action] ?? PIXEL_MOMENTS.idle!
   const s = m.body.length ? standIn(m.body) : (m.loop.length ? m.loop : PIXEL_MOMENTS.idle!.loop)[0]!
   return { frame: s[0], other: s[2] }
 }
-// Moments that are her idle life rather than an answer to anything: with "闲着也动来动去" off she is simply in
-// the state they lead to (falling asleep is just being asleep), so a quiet spell costs one drawing.
+// Moments that are her idle life rather than an answer to anything: with "闲着也动来动去" off she is simply in the state
+// they lead to (falling asleep is just being asleep), so a quiet spell costs one drawing.
 const IDLE_LIFE: ReadonlySet<string> = new Set(['doze'])
-// The frame for now: [frame, other outfit], and the ms until it changes (undefined: it holds).
-// moving: the band may move (not reduced motion, not a held usage limit); lively: "闲着也动来动去" is on, so her
-// idle life plays and her resting loop moves, except while she is asleep.
+// The frame for now: [frame, other outfit], and the ms until it changes (undefined: it holds). moving: the band may
+// move (not reduced motion, not a held usage limit); lively: "闲着也动来动去" is on, so her idle life plays and her
+// resting loop moves, except while she is asleep.
 export function pixelStep(play: PixelPlay, now: number, moving: boolean, lively: boolean, asleep = false): { frame: number; other: number; next?: number } {
   const m = PIXEL_MOMENTS[play.action] ?? PIXEL_MOMENTS.idle!
   const body = lively || !IDLE_LIFE.has(play.action) ? m.body : []

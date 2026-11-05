@@ -2,7 +2,7 @@ import type { EngineInterface, ModelUsage, SessionUsage, ConfigValue } from 'cla
 import { MORE_IDS, MORE_ASK, MORE_SERVICE_ROWS, MORE_SERVICE_SLOT, moreValues, moreDay, moreOn, moreRowSupported } from './more-state'
 import type { MoreId, MoreSnapshot, MoreValues, MoreToday, MorePayerChoice, MoreKey, MoreKeyToday, MoreKeyView, MoreModels, MoreModelRow, MoreLines } from './more-state'
 import { moreModelFor } from './more-models'
-import { installWritten, installEdited, useWritten, writtenLinesFrom, shippedLines, linesText, linesFromText, LINE_GROUPS } from './line-library'
+import { installWritten, installEdited, useWritten, writtenLinesFrom, shippedLines, linesText, linesFromText, lineImportPreview, emptyLinesTemplate, LINE_IMPORT_BYTES, LINE_GROUPS } from './line-library'
 import { LANGS } from './words'
 import type { LineCharacter, LineSet, LineMix } from './line-library'
 import { moreWord, moreFill } from './more-words'
@@ -21,43 +21,35 @@ import { runTalkKey, keyMessages, keyFailure, keyFailureText, keyCost, keyPriced
 import type { KeyFailure, KeyHost, KeyPrice, KeyReply, KeyRequest, KeyStore } from './talk-key'
 export type { MorePayerChoice, MoreKey, MoreKeyToday, MoreKeyView } from './more-state'
 export const MISSING_MORE_MODEL_SLOTS=['more.model.talk.persona','more.model.talk.compact','more.model.talk.first','more.model.talk.persona.dake','more.model.talk.persona.maid','more.model.talk.compact.claudie','more.model.talk.first.claudie','more.model.look.prompt','more.model.lines.coco','more.model.lines.dake','more.model.lines.maid'] as const
-// Talk's history (owner, 10-10): compact into his notes once a Send would estimate over the trigger, keeping the
-// newest exchanges that fit TALK_RECENT verbatim; without a compact, keep the newest that fit TALK_HISTORY (about
-// 90,000 since his 10-17 「记录8万改成上下文9万」). The whole request never passes TALK_CAP (TALK-KEY 2). Estimates
-// are the conservative byte count below.
+// Talk's history (owner, 10-10): compact into notes once a Send would estimate over the trigger, keeping the newest
+// exchanges that fit TALK_RECENT verbatim; without a compact, the newest that fit TALK_HISTORY (about 90,000 since owner
+// 10-17 「记录8万改成上下文9万」). The whole request never passes TALK_CAP (TALK-KEY 2). Estimates are the byte count below.
 export const TALK_COMPACT_TRIGGER=95000
 export const TALK_RECENT=20000
 export const TALK_HISTORY=90000
-// A reply has no cap of its own (owner 10-17: 「单条放开」): the request names none, so Claude Code's own default
-// (model.complete's maxTokens, 1,024) holds on the plan, and the key program takes the model's own limit. A plan reply
-// that reaches that default is counted, as the 400 was.
+// No cap of its own on a reply (owner 10-17: 「单条放开」): the plan uses Claude Code's default (model.complete maxTokens,
+// 1,024), the key program the model's own limit. A plan reply that reaches the default is counted, as the 400 was.
 export const TALK_DEFAULT_REPLY_TOKENS=1024
 export const TALK_COMPACT_TOKENS=1000
 export const TALK_NOTES_HEAD='Your notes from earlier in this chat:'
-// Coco and Claudie share one chat (owner 10-21): the other one's replies reach the model under their name, and Coco is
-// told who that is (her persona says it for her).
+// Coco and Claudie share one chat (owner 10-21): the other's replies reach the model under their name.
 export const TALK_SHARED_COCO='You and Claudie (Claude, in her gown or her maid outfit) take turns on the band and share this one chat, so some earlier replies are hers. They are marked [Claudie].'
-// Talk remembers them across sessions (owner 10-17: 「记住最近的聊天」): the newest plain chat, at most this many items and
-// this estimate, and its notes, kept on this computer only; secrets hidden, work and failure lines never kept.
+// Talk remembers across sessions (owner 10-17: 「记住最近的聊天」): the newest plain chat within these limits, kept on
+// this computer only; secrets hidden, work and failure lines never kept.
 export const TALK_MEMORY_ITEMS=24
 export const TALK_MEMORY=6000
 export type TalkMemory={exchanges:{side:'person'|'him';text:string;who?:TalkWho}[];summary?:string}
-// Who wrote one of his messages: Coco when unset, Claudie (gown or maid) once she is worn (owner 10-21).
 export type TalkWho='claudie'
 // A failure line (TALK-KEY 3) is a bubble too: shown in his place, never his voice, never in a prompt.
 export type MoreBubble={side:'person'|'him';text:string;work?:string;failure?:KeyFailure;retry?:string;who?:TalkWho}
 export type MoreModelWords=Partial<Record<typeof MISSING_MORE_MODEL_SLOTS[number],string>>
 type Timer={cancel:()=>void}
-// A written set of lines: 24 groups of three short lines, one JSON object (line-library.ts), well under this.
 export const LINES_WRITE_TOKENS=3000
 // TALK-KEY 2: bytes over-count tokens; the NFKC form covers a normalising tokenizer.
 export const TALK_CAP=100000
-/** The persona is checked at this many bytes or fewer (TALK-KEY 2); a longer one fails closed. 10,000 since the
- * owner's card of 10-14 (lanes/B.md: 「放宽到 1 万字节」); his persona since then is 7,093 bytes. */
+/** Persona byte bound (TALK-KEY 2); a longer one fails closed. 10,000 since owner 10-14 (lanes/B.md: 「放宽到 1 万字节」). */
 export const TALK_PERSONA_LIMIT=10000
-// Her first messages written by the model (dm.ts): one to three short texts, never a long reply.
 export const DM_FIRST_TOKENS=300
-/** Explain sends nothing for text over this many bytes (its prompt and framing fill the rest of the cap). */
 export const EXPLAIN_TEXT_LIMIT=96500
 const utf8=(text:string)=>new TextEncoder().encode(text).length
 export function talkEstimate(...parts:string[]):number{return parts.reduce((sum,part)=>sum+Math.max(utf8(part),utf8(part.normalize('NFKC'))),2000)}
@@ -65,8 +57,8 @@ const textBytes=(text:string)=>Math.max(utf8(text),utf8(text.normalize('NFKC')))
 /** Backticks, a path, a URL or over 160 characters: that one is for Claude. */
 export function talkLooksLikeWork(text:string):boolean{return /`|(?:\/|\\)[\w.-]+|https?:\/\//.test(text)||text.length>160}
 let styleWriteTail:Promise<void>|undefined
-// The engine's outputStyle row offers only the built-in styles (2.1.304: «For custom styles, open /config.») and refuses a
-// plugin's, so that one goes the way `/output-style <style>` sets it; the row read back says whether it took.
+// The engine's outputStyle row offers only the built-in styles (2.1.304) and refuses a plugin's, so that one goes the
+// way `/output-style <style>` sets it; the row read back says whether it took.
 async function setOutputStyle($:EngineInterface,value:ConfigValue):Promise<{deny?:unknown}>{
  const result=await $.config.set({key:'outputStyle',value})
  if(result.deny===undefined||typeof value!=='string')return result
@@ -79,44 +71,28 @@ export type MoreBindings={
  line?:(text:string,kind:'safety'|'note',ms:number)=>void
  dataFolder?:()=>string|undefined
  livelyStopped?:()=>void
- /** Facts for Talk's context line: only enumerated values and numbers (talk-parts.ts). */
  talkFacts?:()=>TalkFacts
- /** The language of what the person wrote, heard on this computer (mood.ts detectLanguage): no model, no request. */
  hearLanguage?:(text:string)=>{lang:string;confidence:number}|undefined
- /** Debug-only diagnostics (no text of the chat). */
  debug?:(step:string,detail?:Record<string,unknown>)=>void
- // Where the key program lives and whether this is the desktop app; undefined where it cannot run.
  keyHost?:()=>Promise<KeyHost|undefined>
- // K1's price row for a Claude model on api.anthropic.com, for the key's Today line.
  keyPrice?:(model:string)=>Promise<KeyPrice|undefined>
- // The line library's folder (~/.config/coco/lines), the system's text editor on one of its files, and a character's
- // name for a file's head.
  linesFolder?:()=>string|undefined
  openFile?:(path:string)=>Promise<boolean>
  characterName?:(character:LineCharacter)=>string
- /** Coco's line as Talk opens, or after ten quiet minutes (`quiet`), lane B's words with its slots filled (talk-openers.ts). */
  opener?:(quiet:boolean)=>string|undefined
- /** The chat to remember for the next session, or undefined to forget it (Talk switched off). */
  remember?:(memory:TalkMemory|undefined)=>void
- /** One of her lines for a DM moment (dm.ts), lane B's talk.open.<moment> words with their slots filled. */
  dmLine?:(moment:OpenerGroup)=>string|undefined
- /** The DM thread's counts changed: store them and redraw the band and the pet. */
  dmChanged?:(state:DmState)=>void
- /** Her messages reached the thread while it was closed: notify, unless the person turned that off. */
  dmArrived?:(texts:string[])=>void
 }
-// No hook is registered by this module. Existing event handlers call the matching method.
-// Every off path returns synchronously before an engine operation, promise or clock read.
+// No hook is registered by this module. Every off path returns synchronously before an engine operation, promise or clock read.
 const moreBoundarySupported=moreRowSupported
-// What the second look's reader is told when it reaches past the changed files (model-facing, never shown).
 export const LOOK_DENY='Only the changed files listed in the request can be read, each by its own path.'
-// The person's language by its English name, the last line of a request whose answer is shown to them (lane B's
-// instructions: «Write in the language named at the end»): the second look's, Claudie's lines, her first DMs.
+// The person's language by its English name, the last line of a request whose answer is shown to them (lane B: «Write in the language named at the end»).
 const MORE_LANGUAGE:Record<string,string>=Object.fromEntries(LANGS.map(lang=>[lang.code,lang.english]))
 // A message is heard by name at the band's own bar (mood.ts HEARING.sure); one with this many letters and no name heard
 // is still words in some language, so his reply follows it rather than an older one.
 const TALK_LANGUAGE_SURE=0.7,TALK_LANGUAGE_LETTERS=6
-// Ends the language line of a reply or a first DM: the actions in brackets go in that language as well.
 const TALK_BRACKETS=', actions in brackets too.'
 function boundedMoreValues(values:MoreValues):MoreValues {const safe={...values};for(const id of MORE_IDS)if(!moreBoundarySupported(id))delete safe[id];return safe}
 // 口语版 keeps the original's exact parts (his card 10-20): a code line or span, a link, or a number of two or more
@@ -132,8 +108,8 @@ export function rewriteKeepsExact(source:string,rewrite:string):boolean{
 }
 export class MoreRuntime {
  values:MoreValues={}
- // «Keep the cache warm» (COST-CACHE 7.1) is main's row, read by its keeper from the same store object; M1 draws no
- // row for it yet (K1b) but keeps it through every save and counts it as a row that is on.
+ // «Keep the cache warm» (COST-CACHE 7.1) is main's row, read from the same store object; M1 draws no row for it yet
+ // (K1b) but keeps it through every save and counts it as a row that is on.
  private keepWarm:boolean|undefined
  agreed:MoreId[]=[]
  today:MoreToday={date:'',rows:{}}
@@ -145,28 +121,20 @@ export class MoreRuntime {
  lang='en'
  screenReader=false
  exchanges:MoreExchange[]=[]
- /** What the Talk tab shows: each of his messages on its own, in the order they appeared (exchanges is the history). */
  talkView:MoreBubble[]=[]
- // The DM thread's own state (dm.ts, owner's cards 10-17 late): unread, her first messages, notifications.
  private dmCounts:DmState=dmInitial()
  private dmWriting=false
- // Where the thread ended after her own last messages: opened while they still end it, Talk adds no opener on top.
  private dmStands=-1
  private talkSummary=''
- // The last plan reply's own count: the bytes estimated for what was sent plus the reply, the tokens the API counted
- // for both, and the notes it went with (talkSize).
  private talkMeasured?:{bytes:number;tokens:number;summary:string}
- // His messages still to come, in order, across replies: one queue so no two ever appear at once (owner, 10-10).
+ // His messages still to come, one queue so no two appear at once (owner, 10-10).
  private pendingParts:{bubble:MoreBubble;quick:boolean}[]=[]
  private lastShownPart=''
  private revealTimer?:Timer
- // The 0.2 s after one of his messages appears, while nothing else of his may.
  private settleTimer?:Timer
  private revealEngine?:EngineInterface
  private talkVisible=true
  private lastTalkAt=0
- // Talk opening up on its own (T5): open since it was last drawn shut; Coco's last opener and how much of the tab stood
- // then; the ten quiet minutes' clock, and whether its line was said since the person last wrote.
  private talkOpen=false
  private openerAt=-Infinity
  private openerSeen=-1
@@ -198,10 +166,8 @@ export class MoreRuntime {
  private lookBusy=false
  private lookUsageSlots=0
  private clearedLookIds=new Set<string>()
- // Every reader spawned as the second look, by id, and the other agents already found not to be one.
  private lookIds=new Set<string>()
  private otherAgents=new Set<string>()
- // The files the reader may open, fixed as it is spawned (a new prompt starts a new list of changes).
  private lookAllowed=new Set<string>()
  lookAgentId?:string
  lookText=''
@@ -213,24 +179,20 @@ export class MoreRuntime {
  private changedPaths=new Set<string>()
  private editInputs:string[]=[]
  private editsCut=false
- // TALK-KEY 3: who pays for Talk and Explain, and the key program's own state. The key itself is never here.
+ // TALK-KEY 3: who pays for Talk and Explain, and the key program's state. The key itself is never here.
  payerChoice:MorePayerChoice='session'
  key?:MoreKey
  keyToday:MoreKeyToday={date:'',n:0,tokens:0,usd:0,day:0}
  keyNoRun=false
  keyNotice?:string
  keyBusy=false
- // The base URL and model the person typed for the next add; unset means Anthropic and claude-haiku-5-5.
  keyBase?:string
  keyModel?:string
  // TALK-KEY 2 self-correction: 2 once a reply's usage was over its estimate.
  estimateFactor=1
- // What Talk and the second look may run on, read once a session from Claude Code's own settings (more-models.ts).
  private models?:MoreModels
- // The line library (owner 10-17, his cards): the form worn; the sets written, by character and language (kept in
- // 'more.lines' as they were written); the one being written and those that failed this session (written again only
- // on Write again); the language picked for them and Coco's mix; and the files as last read (their mtime and lines),
- // where they are and whether the editor opened.
+ // The line library (owner 10-17, his cards): written sets are kept in 'more.lines' as written; the one being written and
+ // those that failed this session are written again only on Write again.
  private linesForm?:'dake'|'maid'
  private linesSets:Record<string,{lines:LineSet;at:number}>={}
  private linesBusy?:string
@@ -240,14 +202,16 @@ export class MoreRuntime {
  private linesSeen:Record<string,number|undefined>={}
  private linesEdits:Record<string,LineSet>={}
  private linesPaths:{shipped?:string;generated?:string}={}
- // The sets whose file the person has opened, by slot: only those are looked at on disk before a line is said.
+ // Sets whose file the person has opened: only those are looked at on disk before a line is said.
  private linesOpened=new Set<string>()
  private linesEditFailed?:'shipped'|'generated'
+ private linesImports:Record<string,{text:string;on:boolean}>={}
+ private linesImport?:NonNullable<MoreLines['importView']>&{slot:string}
+ private linesImportEpoch=0
  constructor(private modelWords:MoreModelWords={},private bindings:MoreBindings={}){}
  snapshot():MoreSnapshot{return{values:boundedMoreValues(this.values),agreed:[...this.agreed],today:structuredClone(this.today),asking:this.asking,focused:this.focused,entryFocused:this.entryFocused,reading:this.reading,open:this.open,lang:this.lang,screenReader:this.screenReader,key:this.keyView(),...(this.models?{models:structuredClone(this.models)}:{}),lines:this.linesView(),dm:{first:this.dmCounts.first,notify:this.dmCounts.notify,model:this.dmModelReady,unread:this.dmCounts.unread}}}
  keyView():MoreKeyView{return{payer:this.payer(),...(this.key?{key:{...this.key}}:{}),...(this.keyToday.date?{today:{...this.keyToday}}:{}),noRun:this.keyNoRun,...(this.keyNotice?{notice:this.keyNotice}:{}),busy:this.keyBusy,...(this.keyBase?{base:this.keyBase}:{}),...(this.keyModel?{model:this.keyModel}:{})}}
  private keyAt():{host?:string;model?:string}{return{...(this.key?.host?{host:this.key.host}:{}),...(this.key?.model?{model:this.key.model}:{})}}
- /** The key pays only when chosen and the program can run here. */
  payer():MorePayerChoice{return this.payerChoice==='key'&&!this.keyNoRun?'key':'session'}
  restoreKey(payer:unknown,key:unknown,today:unknown,factor:unknown,now:number):void{
    this.payerChoice=payer==='key'?'key':'session'
@@ -260,10 +224,9 @@ export class MoreRuntime {
  }
  private over(estimate:number):boolean{return estimate*this.estimateFactor>TALK_CAP}
  // A request's size for the compaction trigger and the cap (his 10-17 card: 「用上一条的实际数校准」). Bytes over-count
- // tokens, Chinese most, so on the plan the last reply's own count (what was sent and what came back, exact in every
- // language) stands for all that came before, and only what is new since is counted in bytes: still never under the
- // real count. Bytes alone for the first message, after notes are written, and on the person's own key, whose
- // program holds its own byte cap before anything is sent.
+ // tokens, Chinese most, so on the plan the last reply's own count stands for all that came before and only what is new
+ // since is counted in bytes: never under the real count. Bytes alone for the first message, after notes are written,
+ // and on the person's own key.
  private talkSize(payer:MorePayerChoice,...parts:string[]):number{
    const bytes=talkEstimate(...parts),m=this.talkMeasured
    return payer!=='key'&&m&&m.summary===this.talkSummary?Math.min(bytes,m.tokens+Math.max(0,bytes-m.bytes)):bytes
@@ -306,8 +269,7 @@ export class MoreRuntime {
    if(!this.isOn('paste')){this.pasteHashes=[];this.pasteKind=undefined}
  }
  warmOn():boolean{return this.keepWarm===true}
- // Keeping the cache warm is switched in the cost runtime, which stores it in 'more' itself; this keeps a later save from
- // dropping it (lane C, 10-14).
+ // Keeping the cache warm is switched in the cost runtime, which stores it in 'more'; this keeps a later save from dropping it (lane C, 10-14).
  noteWarm(on:boolean):void{this.keepWarm=on}
  private persistedValues():MoreValues&{warm?:boolean}{return{...boundedMoreValues(this.values),...(this.selectedCap===undefined?{}:{cap:this.selectedCap}),...(this.keepWarm===undefined?{}:{warm:this.keepWarm})}}
  private changedSnapshot():MoreSnapshot{return{...this.snapshot(),values:this.persistedValues()}}
@@ -337,6 +299,8 @@ export class MoreRuntime {
  }
  scroll(by:number):boolean{if(!this.open)return false;this.reading=Math.max(0,Math.min(15,this.reading+by));return true}
  press($:EngineInterface,key:string):Promise<boolean>|boolean{
+   const imported=key.match(/^coco:more:lines:import:(open|template|preview|apply|cancel|on|off|next|previous)$/)
+   if(imported)return this.pressLinesImport($,imported[1]!)
    if(key==='coco:more:open'){this.open=true;this.reading=0;return true}
    if(key==='coco:more:back'){this.open=false;return true}
    const match=key.match(/^coco:more:([^:]+):(on|off|ask:yes|ask:no|help|pick:\d+|model:\d+|redo|drop|lang:[A-Za-z-]+|mix:(?:only|both)|edit:(?:shipped|generated)|restore:(?:shipped|generated))$/)
@@ -372,8 +336,8 @@ export class MoreRuntime {
    return work
  }
  private w(key:string):string{return moreWord(key,this.lang)}
- // Talk also needs its persona and the second look its instruction (fail closed): without them the row cannot turn on
- // and nothing is routed to it. Each needs a model too, which on the person's own connection they pick first.
+ // Talk needs its persona and the second look its instruction (fail closed): without them the row cannot turn on. Each
+ // needs a model too: on the person's own connection, the conversation's unless they pick.
  private canSend(id:MoreId):boolean{return (!MORE_SERVICE_ROWS.has(id)||!!this.w(MORE_SERVICE_SLOT))&&(id!=='talk'||!!this.modelWords['more.model.talk.persona'])&&(id!=='look'||!!this.modelWords['more.model.look.prompt'])&&(id!=='lines'||!!this.modelWords['more.model.lines.coco']&&!!this.modelWords['more.model.lines.dake']&&!!this.modelWords['more.model.lines.maid'])&&!this.needsModel(id)}
  // Explain runs on Talk's pick (his 10-17 card: 「跟聊天用同一个选择」); the person's own key brings its own model.
  private needsModel(id:MoreId):boolean{
@@ -381,13 +345,11 @@ export class MoreRuntime {
    return (id==='talk'||id==='explain')&&this.payer()!=='key'&&this.modelFor('talk')===undefined
  }
  modelFor(row:MoreModelRow):string|undefined{return moreModelFor(this.models,row)}
- /** The choices for this session, and the picks kept from earlier ones ('more.models'). */
  setModels(models:MoreModels,picks:unknown):void{
    const kept=picks&&typeof picks==='object'?picks as Record<string,unknown>:{}
-   this.models={choices:models.choices.map(choice=>({...choice})),own:models.own,picks:Object.fromEntries((['talk','look','lines'] as const).flatMap(row=>typeof kept[row]==='string'?[[row,kept[row]]]:[]))}
+   this.models={choices:models.choices.map(choice=>({...choice})),own:models.own,...(models.current?{current:models.current}:{}),picks:Object.fromEntries((['talk','look','lines'] as const).flatMap(row=>typeof kept[row]==='string'?[[row,kept[row]]]:[]))}
    this.syncOff()
  }
- /** The person picks the model a row runs on, by its place in the list. */
  async chooseModel($:EngineInterface,row:MoreModelRow,index:number):Promise<boolean>{
    const choice=this.models?.choices[index]
    if(!this.models||!choice)return false
@@ -422,14 +384,15 @@ export class MoreRuntime {
    if(utf8(persona)>TALK_PERSONA_LIMIT)return // TALK-KEY 2 persona lint: never shipped over the bound.
    const generation=this.sessionGeneration,token=this.operationToken('talk')
    this.busy=true;this.busyOwner='talk';this.revealEngine=$
-   // Written while his messages are still coming: he finishes them, quicker, then answers (owner, 10-10).
    for(const item of this.pendingParts)item.quick=true
    return this.answer($,text,persona,now,generation,token,payer).finally(()=>{if(generation===this.sessionGeneration&&this.operationToken('talk')===token){this.busy=false;this.busyOwner=undefined;if(this.isOn('talk'))$.ui.invalidate('ui.render')}})
  }
- /** The language his reply is named (owner 10-21, any language): what the person just wrote, heard clearly; else, when
-  *  it has words in a language not heard by name, theirs; else (too short: «ok», «好») their last message heard in
-  *  this chat; else the band's. Without it a short Chinese line once got Japanese, the persona's examples outweighing it.
-  *  The actions in brackets are named too: a Chinese reply still opened with a Japanese one, copied from older messages. */
+ /**
+  * The language his reply is named (owner 10-21, any language): what the person just wrote, heard clearly; else theirs
+  * if it has words in a language not heard by name; else (too short: «ok», «好») their last message heard in this chat;
+  * else the band's. A short Chinese line once got Japanese, the persona's examples outweighing it; the bracketed actions
+  * are named too, since a Chinese reply still opened with a Japanese one copied from older messages.
+  */
  private replyLanguage(text:string,history:readonly MoreExchange[]):string{
    const named=(said:string)=>{let heard:{lang:string;confidence:number}|undefined;try{heard=this.bindings.hearLanguage?.(said)}catch{};return heard&&heard.confidence>=TALK_LANGUAGE_SURE?MORE_LANGUAGE[heard.lang]:undefined}
    const wordy=(said:string)=>(said.match(/\p{L}/gu)??[]).length>=TALK_LANGUAGE_LETTERS
@@ -454,8 +417,8 @@ export class MoreRuntime {
      this.failLine({side:'him',text:keyFailureText('pasted',undefined,this.lang),failure:'pasted'})
      return
    }
-   // Work goes to Claude by a rule alone (TALK-KEY 2): no model call sorts it. Its 160 characters are under
-   // the design's 2,000, so a long message never reaches a model either.
+   // Work goes to Claude by a rule alone (TALK-KEY 2), no model call; its 160 characters are under the design's 2,000, so a
+   // long message never reaches a model either.
    if(talkLooksLikeWork(text)){
      this.say('person',text);this.lastTalkAt=now
      await this.count($,'talk',undefined,await this.completionAt($,now),1,current())
@@ -475,8 +438,8 @@ export class MoreRuntime {
    const estimate=(part:string)=>talkEstimate(part)-2000
    const prompt=(history:readonly MoreExchange[])=>[this.talkSummary?TALK_NOTES_HEAD+'\n'+this.talkSummary+'\n':'',...history.map(item=>line(item)+'\n'),context?context+'\n':'','person: '+text].join('')
    let history=items
-   // Over the trigger the older exchanges become his notes with one more call on the chat's own payer (on the key,
-   // the compact kind, TALK-KEY K4); the newest stay as they are.
+   // Over the trigger the older exchanges become his notes with one more call on the chat's own payer (on the key, the
+   // compact kind, TALK-KEY K4); the newest stay as they are.
    if(this.talkSize(payer,system,prompt(history))>TALK_COMPACT_TRIGGER){
      const recent=talkHistory(items,line,TALK_RECENT,estimate),older=items.slice(0,items.length-recent.length)
      const instruction=this.talkSlot('compact')
@@ -486,14 +449,15 @@ export class MoreRuntime {
        const notesBlock=this.talkSummary?TALK_NOTES_HEAD+'\n'+this.talkSummary+'\n\n':''
        const summarised=talkHistory(older,line,TALK_CAP-talkEstimate(instruction,notesBlock),estimate)
        const body=[notesBlock,...summarised.map(item=>line(item)+'\n')].join('')
-       // Its tokens count in Today and its usage; it is not one of the person's messages.
        let written=''
        if(payer==='key'){
          const reply=await this.sendKey($,'talk',{kind:'compact',system:instruction,messages:[{role:'user',content:body}],max_tokens:TALK_COMPACT_TOKENS},talkEstimate(instruction,body),now,0)
          if(!current())return
          if(reply.kind==='ok')written=reply.text??''
        }else{
-         const notes=await this.completeRow($,'talk',{model:this.modelFor('talk')??'haiku',system:instruction,prompt:body,maxTokens:TALK_COMPACT_TOKENS})
+         const model=this.modelFor('talk')
+         if(!model)return
+         const notes=await this.completeRow($,'talk',{model,system:instruction,prompt:body,maxTokens:TALK_COMPACT_TOKENS})
          await this.count($,'talk',notes.usage,await this.completionAt($,now),0,current())
          if(!current())return
          if(notes.isAnswered)written=notes.text
@@ -506,7 +470,6 @@ export class MoreRuntime {
          this.bindings.debug?.(`talk compacted: ${count} exchanges into the notes`,{exchanges:count})
        }
      }
-     // No compact (none written, or it failed): the newest whole exchanges that fit the history budget.
      if(!compacted)history=talkHistory(items,line,TALK_HISTORY,estimate)
    }
    while(history.length&&this.over(this.talkSize(payer,system,prompt(history))))history=talkHistory(history,line,history.reduce((n,item)=>n+estimate(line(item)+'\n'),0)-1,estimate)
@@ -517,7 +480,6 @@ export class MoreRuntime {
    }
    const estimated=talkEstimate(system,prompt(history))
    if(payer==='key'){
-     // The same words as the plan's prompt: his notes ride with the persona, the context line with this message.
      const notes=this.talkSummary?TALK_NOTES_HEAD+'\n'+this.talkSummary:''
      const reply=await this.sendKey($,'talk',{system:notes?system+'\n\n'+notes:system,messages:keyMessages(history.map(item=>this.marked(item)),context?context+'\n'+text:text)},estimated,now)
      if(!current())return
@@ -525,8 +487,7 @@ export class MoreRuntime {
      this.his(splitTalkReply(reply.text??'').map(text=>({side:'him' as const,text})),who)
      return
    }
-   // On the model the person picked; on their own connection none is picked for them (owner 10-17), so a fallback from
-   // the key sends nothing until they pick one.
+   // The person's pick, else the row's default; with neither (their own connection names no model) a fallback from the key sends nothing.
    const model=this.modelFor('talk')
    if(!model){this.his([{side:'him',text:moreFill(this.w('talk.failed'),{reason:'model'})}],who);return}
    const result=await this.completeRow($,'talk',{model,system,prompt:prompt(history),effort:'low'})
@@ -538,7 +499,7 @@ export class MoreRuntime {
    if(result.isAnswered)this.his(splitTalkReply(result.text).map(text=>({side:'him' as const,text})),who)
    else this.his([{side:'him',text:moreFill(this.w('talk.failed'),{reason:result.reason})}],who)
  }
- /** A reply that reached its cap is shown as he wrote it; it is counted so we can see how often (lead, 10-10). */
+ /** A reply that reached its cap is shown as written and counted (lead, 10-10). */
  private replyCut(now:number):void{
    const row=this.today.date===moreDay(now)?this.today.rows.talk:undefined
    if(row)row.cut=(row.cut??0)+1
@@ -552,7 +513,6 @@ export class MoreRuntime {
    this.remember()
    if(this.dmCounts.unanswered){this.dmCounts=dmAnswered(this.dmCounts);this.dmSave()}
  }
- /** What Talk keeps for the next session: the newest plain exchanges within the memory's size, secrets hidden. */
  talkMemory():TalkMemory|undefined{
    const hidden=this.w('key.hidden'),plain=this.exchanges.filter(item=>item.work===undefined&&!item.failure).map(item=>({side:item.side,text:hideSecrets(item.text,hidden),...(item.who?{who:item.who}:{})}))
    const kept=talkHistory(plain,item=>`${item.side}: ${item.text}`,TALK_MEMORY,part=>talkEstimate(part)-2000).slice(-TALK_MEMORY_ITEMS)
@@ -560,7 +520,6 @@ export class MoreRuntime {
    return kept.length||summary?{exchanges:kept,...(summary?{summary}:{})}:undefined
  }
  private remember():void{if(this.isOn('talk'))this.bindings.remember?.(this.talkMemory())}
- /** The last session's chat, at the start of this one, while Talk is on and nothing has been said yet. */
  restoreTalk(value:unknown):void{
    if(!this.isOn('talk')||this.exchanges.length||!value||typeof value!=='object')return
    const memory=value as {exchanges?:unknown;summary?:unknown}
@@ -569,10 +528,7 @@ export class MoreRuntime {
    if(typeof memory.summary==='string')this.talkSummary=memory.summary.slice(0,TALK_MEMORY)
    this.trimTalk()
  }
- /**
-  * His reply: one history turn (parts joined by blank lines), each part its own message. The first shows now unless
-  * one of his is still to come or has just appeared; every other waits its pause behind the ones before it.
-  */
+ /** His reply: one history turn, each part its own message. The first shows now unless one of his is still to come or just appeared; every other waits its pause behind the ones before it. */
  private his(parts:MoreBubble[],who:{who?:TalkWho}=this.talkWho()):void{
    if(!parts.length)return
    parts=parts.map(part=>({...part,...who}))
@@ -585,10 +541,9 @@ export class MoreRuntime {
    this.trimTalk()
    if(this.pendingParts.length)this.armReveal();else this.settle()
    this.remember()
-   // A reply that reaches a closed thread is unread, and notified like a message (unless the person turned that off).
    if(!this.talkOpen){this.dmCounts=dmArrived(this.dmCounts,parts.length);this.dmSave();this.bindings.dmArrived?.(parts.map(part=>part.text))}
  }
- /** A failure line in his place (TALK-KEY 3): kept in the history for its retry (prompts skip it), shown in turn. */
+ /** A failure line in his place (TALK-KEY 3): kept in the history for its retry (prompts skip it). */
  private failLine(item:MoreBubble):void{
    this.exchanges.push(item)
    const waiting=this.pendingParts.length>0||this.revealTimer!==undefined||this.settleTimer!==undefined
@@ -617,49 +572,37 @@ export class MoreRuntime {
    const generation=this.sessionGeneration
    this.settleTimer=this.revealEngine.clock.after(TALK_GAP_MIN,()=>{this.settleTimer=undefined;if(generation===this.sessionGeneration)this.armReveal()})
  }
- /** His writing state: a call is running or messages of his are still to come. */
  get talkWriting():boolean{return this.busy&&this.busyOwner==='talk'||this.pendingParts.length>0}
- /** The Talk tab is showing again: messages still to come keep their pacing from here; just opened, she may speak first. */
  talkShown($?:EngineInterface):void{
    this.talkVisible=true;this.armReveal()
    if(this.dmCounts.unread){this.dmCounts=dmSeen(this.dmCounts);this.dmSave()}
    if(this.talkOpen)return
    this.talkOpen=true;this.openerEngine=$
    if(!this.isOn('talk'))return
-   // One line as it opens, unless Coco is mid-reply, or the last opener still stands unanswered from under ten minutes ago
+   // One line as it opens, unless Coco is mid-reply or the last opener still stands unanswered from under ten minutes ago
    // (her own DMs stand until the person writes).
    const now=this.bindings.talkFacts?.().now??this.openerAt
    const standing=this.talkView.length===this.openerSeen&&(now-this.openerAt<OPENER_QUIET_MS||this.dmStands===this.talkView.length)
    if(!this.busy&&!this.pendingParts.length&&!standing)this.opener(false,now)
    this.armQuiet()
  }
- /** Talk closed or the book moved on: nothing is dropped, nothing waits on a clock. */
  talkHidden():void{
    this.talkVisible=false;this.revealTimer?.cancel();this.revealTimer=undefined;this.settleTimer?.cancel();this.settleTimer=undefined
    this.talkOpen=false;this.quietTimer?.cancel();this.quietTimer=undefined
  }
- /** The DM thread's counts (dm.ts): what the person has not seen, and how her first messages and notifications go. */
  dm():DmState{return this.dmCounts}
  restoreDm(value:unknown):void{this.dmCounts=dmState(value)}
- /** Another window's newest counts from the store: her pace and the person's choices are the computer's; what is unread
-  *  belongs to this window's thread. */
+ /** Another window's newest counts: her pace and the person's choices are the computer's; what is unread belongs to this window's thread. */
  shareDm(value:unknown):void{if(value&&typeof value==='object')this.dmCounts={...dmState(value),unread:this.dmCounts.unread}}
  private dmSave():void{this.bindings.dmChanged?.(this.dmCounts)}
- /** The thread was read somewhere else (the pet's DM window). */
  dmRead():void{if(this.dmCounts.unread){this.dmCounts=dmSeen(this.dmCounts);this.dmSave()}}
- /** The person picks where her first messages come from, and whether a new message notifies. */
  setDm(change:{first?:DmFirst;notify?:boolean}):void{
    const next={...this.dmCounts,...(change.first?{first:change.first}:{}),...(change.notify===undefined?{}:{notify:change.notify})}
    if(next.first===this.dmCounts.first&&next.notify===this.dmCounts.notify)return
    this.dmCounts=next;this.dmSave()
  }
- /** Her first messages can be written by the model once lane B's instruction for them is there (fail closed). */
  get dmModelReady():boolean{return !!this.talkSlot('persona')&&!!this.talkSlot('first')}
- /**
-  * She writes first while the thread is closed (dm.ts): about the first moment every rule allows, in one to three
-  * messages written by the model when the person chose that and it answers, else one of her lines. They land in the
-  * thread at once (the pacing is for an open thread), unseen and notified.
-  */
+ /** She writes first while the thread is closed (dm.ts): about the first moment every rule allows. Messages land at once (pacing is for an open thread), unseen and notified. */
  async dmFirst($:EngineInterface,facts:OpenerFacts):Promise<boolean>{
    if(!this.isOn('talk')||this.talkOpen||this.busy||this.dmWriting||this.pendingParts.length)return false
    const moment=dmMoment(this.dmCounts,facts)
@@ -675,7 +618,6 @@ export class MoreRuntime {
      const who=this.talkWho()
      for(const text of texts){this.exchanges.push({side:'him',text,...who});this.talkView.push({side:'him',text,...who})}
      this.trimTalk();this.lastShownPart=texts.at(-1)!
-     // Opening the thread does not add an opener on top of her own messages.
      this.openerAt=facts.now;this.openerSeen=this.dmStands=this.talkView.length
      this.dmCounts=dmWrote(this.dmCounts,moment,facts.now,this.talkOpen?0:texts.length);this.dmSave()
      this.remember()
@@ -683,8 +625,7 @@ export class MoreRuntime {
      return true
    }finally{this.dmWriting=false}
  }
- /** Her first messages written by the model on the chat's payer: lane B's instruction names the moment; the recent
-  *  exchanges, his notes and the context line go with it, as with a reply. Nothing written is nothing sent. */
+ /** Written on the chat's payer; lane B's instruction names the moment. Nothing written is nothing sent. */
  private async dmWritten($:EngineInterface,moment:OpenerGroup,facts:OpenerFacts):Promise<string[]>{
    const persona=this.talkSlot('persona'),cue=this.talkSlot('first')
    if(!persona||!cue||utf8(persona)>TALK_PERSONA_LIMIT)return []
@@ -734,7 +675,6 @@ export class MoreRuntime {
    })
  }
  private trimTalk():void{
-   // Session memory only, bounded: the history the budget can use, and what the tab can show.
    const line=(item:MoreExchange)=>`${item.side}: ${item.text}`
    this.exchanges=talkHistory(this.exchanges,line,TALK_CAP,part=>talkEstimate(part)-2000)
    if(this.talkView.length>200)this.talkView=this.talkView.slice(-200)
@@ -746,7 +686,6 @@ export class MoreRuntime {
  }
  /** Card 1: the person's own press sends that one message on the session's payer; nothing switches by itself. */
  talkFallback($:EngineInterface,index:number,now:number):Promise<void>|undefined{
-   // The index is the tab's (talkView), as for Ask Claude; the line and the message it answered leave both lists.
    const item=this.talkView[index]
    if(!this.isOn('talk')||this.busy||!item?.failure||!item.retry)return
    const text=item.retry
@@ -767,7 +706,6 @@ export class MoreRuntime {
    await $.store.set('more.estimateFactor',{factor:2,estimate,usage:sent})
  }
  private async keyHost():Promise<KeyHost|undefined>{try{return await this.bindings.keyHost?.()}catch{return undefined}}
- /** One send through the key program, counted on the key's own Today line as well as M1's row. */
  private async sendKey($:EngineInterface,id:'talk'|'explain',request:KeyRequest,estimate:number,now:number,messages=1):Promise<KeyReply>{
    const host=await this.keyHost()
    const reply:KeyReply=host?await runTalkKey($,host,['send'],{stdin:JSON.stringify(request)}):{kind:'computer',detail:'noProgram'}
@@ -775,7 +713,6 @@ export class MoreRuntime {
    const at=await this.completionAt($,now)
    if(reply.kind==='invalid'&&this.key&&this.key.state!=='refused'){this.key={...this.key,state:'refused'};await $.store.set('more.key',this.key)}
    if(reply.kind!=='ok')return reply
-   // «saved, not checked yet» becomes «works» after the first good send; host and model follow the record.
    if(this.key&&(this.key.state==='unchecked'||reply.host&&reply.host!==this.key.host||reply.model&&reply.model!==this.key.model)){
      this.key={...this.key,...(this.key.state==='unchecked'?{state:'works' as const}:{}),...(reply.host?{host:reply.host}:{}),...(reply.model?{model:reply.model}:{})};await $.store.set('more.key',this.key)
    }
@@ -789,41 +726,37 @@ export class MoreRuntime {
    await this.checkEstimate($,estimate,usage)
    return reply
  }
- /** The person's payer choice. With no program to run here, only the session's payer is offered. */
  async choosePayer($:EngineInterface,value:string):Promise<void>{
    if(value!=='key'&&value!=='session')return
    this.payerChoice=value==='key'&&!this.keyNoRun?'key':'session'
    await $.store.set('more.payer',this.payerChoice)
    $.ui.invalidate('ui.render')
  }
- /** «Add» and «Replace»: the system's own password dialog, opened by the program; the words come from here. */
- async addKey($:EngineInterface):Promise<void>{
-   if(this.keyBusy)return
-   const host=await this.keyHost();if(!host){this.keyNotice=keyFailureText('computer',undefined,this.lang);return}
+ async addKey($:EngineInterface):Promise<boolean>{
+   if(this.keyBusy)return false
+   const host=await this.keyHost();if(!host){this.keyNotice=keyFailureText('computer',undefined,this.lang);return false}
    this.keyBusy=true;this.keyNotice=undefined;$.ui.invalidate('ui.render')
    try{
      const w=(k:string)=>this.w(k)
      const elsewhere=!!this.keyBase&&!/^https:\/\/api\.anthropic\.com\/?$/i.test(this.keyBase)
      const text=elsewhere?moreFill(w('dialog.textAt'),{host:this.keyBase!.replace(/^https?:\/\//,'').split('/')[0]!}):w('dialog.text')
-     if(!text){this.keyNotice=undefined;return}
+     if(!text){this.keyNotice=undefined;return false}
      const endpoint=[...(this.keyBase?['--base',this.keyBase]:[]),...(this.keyModel?['--model',this.keyModel]:[])]
      const reply=await runTalkKey($,host,['add','--dialog','--title',w('dialog.title'),'--text',text,'--save',w('dialog.save'),'--cancel',w('dialog.cancel'),...endpoint],{timeoutMs:KEY_DIALOG_TIMEOUT})
-     await this.keySaved($,reply)
+     return await this.keySaved($,reply)
    }finally{this.keyBusy=false;$.ui.invalidate('ui.render')}
  }
- private async keySaved($:EngineInterface,reply:KeyReply):Promise<void>{
-   if(reply.kind==='noRun'){this.keyNoRun=true;this.payerChoice='session';await $.store.set('more.payer','session');return}
-   if((reply.kind==='works'||reply.kind==='saved')&&reply.last4){this.key={last4:reply.last4,state:reply.kind==='works'?'works':'unchecked',...(reply.store?{store:reply.store}:{}),...(reply.host?{host:reply.host}:{}),...(reply.model?{model:reply.model}:{})};await $.store.set('more.key',this.key);return}
-   if(reply.kind==='address'){this.keyNotice=this.w('key.address')||undefined;return}
-   if(reply.kind==='cancelled')return
-   if(reply.kind==='invalid'){this.keyNotice=this.keyBase&&!/^https:\/\/api\.anthropic\.com\/?$/i.test(this.keyBase)?moreFill(this.w('key.refusedAt'),{host:this.keyBase.replace(/^https?:\/\//,'').split('/')[0]!})||undefined:this.w('key.refused');return}
-   if(reply.kind==='format'){this.keyNotice=this.w('key.format');return}
+ private async keySaved($:EngineInterface,reply:KeyReply):Promise<boolean>{
+   if(reply.kind==='noRun'){this.keyNoRun=true;this.payerChoice='session';await $.store.set('more.payer','session');return false}
+   if((reply.kind==='works'||reply.kind==='saved')&&reply.last4){this.key={last4:reply.last4,state:reply.kind==='works'?'works':'unchecked',...(reply.store?{store:reply.store}:{}),...(reply.host?{host:reply.host}:{}),...(reply.model?{model:reply.model}:{})};await $.store.set('more.key',this.key);return true}
+   if(reply.kind==='address'){this.keyNotice=this.w('key.address')||undefined;return false}
+   if(reply.kind==='cancelled')return false
+   if(reply.kind==='invalid'){this.keyNotice=this.keyBase&&!/^https:\/\/api\.anthropic\.com\/?$/i.test(this.keyBase)?moreFill(this.w('key.refusedAt'),{host:this.keyBase.replace(/^https?:\/\//,'').split('/')[0]!})||undefined:this.w('key.refused');return false}
+   if(reply.kind==='format'){this.keyNotice=this.w('key.format');return false}
    this.keyNotice=keyFailureText(keyFailure(reply),reply,this.lang,this.keyAt())
+   return false
  }
- /** The base URL and the model typed on the row; they are passed to the next add and checked by the program. */
  setKeyEndpoint(field:'base'|'model',value:string):void{const v=value.trim().slice(0,512)||undefined;if(field==='base')this.keyBase=v;else this.keyModel=v}
- /** The terminal command for no display, with the typed endpoint; empty where this computer has no build of the
-  *  program. Quoted for a POSIX shell. */
  addCommand(host:Pick<KeyHost,'root'|'platform'|'arch'>):string{
    const path=talkKeyPath(host.root,host.platform,host.arch);if(!path)return ''
    const quote=(v:string)=>/^[A-Za-z0-9_./:@+-]+$/.test(v)?v:`'${v.replace(/'/g,`'\\''`)}'`
@@ -849,17 +782,14 @@ export class MoreRuntime {
      const reply=await runTalkKey($,host,['status'])
      if(reply.kind==='noRun'){this.keyNoRun=true;this.payerChoice='session';await $.store.set('more.payer','session');return}
      if((reply.kind==='works'||reply.kind==='saved')&&reply.last4){this.key={last4:reply.last4,state:reply.kind==='works'?'works':'unchecked',...(reply.store?{store:reply.store}:{}),...(reply.host?{host:reply.host}:{}),...(reply.model?{model:reply.model}:{})};await $.store.set('more.key',this.key);return}
-     // The refusal shows as the row's own state, so it needs no notice.
      if(reply.kind==='invalid'){this.key={...this.key,state:'refused'};await $.store.set('more.key',this.key);return}
      this.keyNotice=keyFailureText(keyFailure(reply),reply,this.lang,this.keyAt())
    }finally{this.keyBusy=false;$.ui.invalidate('ui.render')}
  }
- /** With no display, the row offers the one command for the person's own terminal. */
  async copyAddCommand($:EngineInterface):Promise<void>{
    const command=await this.keyCommand();if(!command)return
    await $.ui.copy({text:command})
  }
- /** The same command for drawing the row; the host is read once per session (register.tsx talkKeyHost). */
  async keyCommand():Promise<string>{const host=await this.keyHost();return host?this.addCommand(host):''}
  recordDay(kind:'prompts'|'turns'|'tests'|'helpers'|'awakeHours',now:number,amount=1):void{
    if(!this.isOn('talk'))return
@@ -937,7 +867,9 @@ export class MoreRuntime {
        await this.bindings.openBook?.('him',()=>generation===this.sessionGeneration&&this.operationCurrent('explain',token))
        return
      }
-     const result=await this.completeRow($,'explain',{model:this.modelFor('talk')??'haiku',prompt,maxTokens:400,effort:'low'})
+     const model=this.modelFor('talk')
+     if(!model)return
+     const result=await this.completeRow($,'explain',{model,prompt,maxTokens:400,effort:'low'})
      await this.count($,'explain',result.usage,await this.completionAt($,now),1,generation===this.sessionGeneration&&this.operationCurrent('explain',token))
      await this.checkEstimate($,estimate,result.usage)
      if(generation!==this.sessionGeneration||!this.operationCurrent('explain',token))return
@@ -979,33 +911,29 @@ export class MoreRuntime {
  }
  lookAvailable():boolean{return this.isOn('look')&&this.changedPaths.size>0&&!this.lookAgentId&&!this.lookBusy&&this.lookUsageSlots<16}
  edit(path:string,input:string):void{if(!this.isOn('look'))return;this.changedPaths.add(path);const left=60000-this.editInputs.reduce((n,value)=>n+value.length,0);if(input.length>left)this.editsCut=true;if(left>0)this.editInputs.push(input.slice(0,left))}
- /** The character worn now: Coco, or one of Claudie's forms. */
- setLinesForm(form:'dake'|'maid'|undefined):void{this.linesForm=form}
+ setLinesForm(form:'dake'|'maid'|undefined):void{if(this.linesForm===form)return;this.linesForm=form;this.activateLines()}
  private linesCharacter():LineCharacter{return this.linesForm??'coco'}
- /** Who answers in Talk now: Claudie while one of her forms is worn, else Coco (owner 10-21). */
+ /** Who answers in Talk: Claudie while one of her forms is worn, else Coco (owner 10-21). */
  get talkSpeaker():TalkWho|undefined{return this.linesForm?'claudie':undefined}
  private talkWho():{who?:TalkWho}{return this.linesForm?{who:'claudie'}:{}}
- // Her persona is her form's; her first-message cue and her notes' instruction are one for both forms.
  private talkSlot(slot:'persona'|'first'|'compact'):string|undefined{
    const form=this.linesForm
    return this.modelWords[!form?`more.model.talk.${slot}`:slot==='persona'?`more.model.talk.persona.${form}`:`more.model.talk.${slot}.claudie`]
  }
- /** One of his messages as the one answering now reads it: the other character's carry their name. */
  private marked<T extends {side:'person'|'him';text:string;who?:TalkWho}>(item:T):T{
    return item.side==='him'&&item.who!==this.talkSpeaker?{...item,text:`[${item.who?'Claudie':'Coco'}] ${item.text}`}:item
  }
  private linesLangNow():string{return this.linesLang??this.lang}
  private linesView():MoreLines{
    const character=this.linesCharacter(),lang=this.linesLangNow(),key=`${character}:${lang}`
-   return {character,lang,mix:this.linesMix,state:this.linesBusy===key?'busy':this.linesSets[key]?'ready':this.linesFailed.has(key)?'failed':'none',...(Object.keys(this.linesPaths).length?{paths:{...this.linesPaths}}:{}),...(this.linesEditFailed?{editFailed:this.linesEditFailed}:{})}
+   const imported=this.linesImports[key],dialog=this.linesImport?.slot===key?this.linesImport:undefined
+   return {character,lang,mix:this.linesMix,state:this.linesBusy===key?'busy':this.linesSets[key]?'ready':this.linesFailed.has(key)?'failed':'none',...(Object.keys(this.linesPaths).length?{paths:{...this.linesPaths}}:{}),...(this.linesEditFailed?{editFailed:this.linesEditFailed}:{}),...(imported?{imported:{on:imported.on,count:Object.values(linesFromText(imported.text)).reduce((n,lines)=>n+lines.length,0)}}:{}),...(dialog?{importView:{...dialog}}:{})}
  }
- // What is said: each character's written set in the language picked (as edited, once its file was saved), Coco's
- // shipped lines as edited, the switch and Coco's mix (line-library.ts).
  private activateLines():void{
    const lang=this.linesLangNow()
-   for(const character of ['coco','dake','maid'] as const){const key=`${character}:${lang}`;installWritten(character,this.linesEdits[key]??this.linesSets[key]?.lines)}
+   for(const character of ['coco','dake','maid'] as const){const key=`${character}:${lang}`,imported=this.linesImports[key];installWritten(character,imported?.on?linesFromText(imported.text):this.linesEdits[key]??this.linesSets[key]?.lines)}
    installEdited(this.linesEdits[`shipped:${this.lang}`])
-   useWritten(moreOn(this.values,'lines'),this.linesMix)
+   useWritten(moreOn(this.values,'lines')||this.linesImports[`${this.linesCharacter()}:${lang}`]?.on===true,this.linesMix)
  }
  private linesPath(part:'shipped'|'generated',character:LineCharacter,lang:string):string|undefined{
    const folder=this.bindings.linesFolder?.()
@@ -1015,10 +943,15 @@ export class MoreRuntime {
    return moreFill(this.w('lines.file.head'),{name:this.bindings.characterName?.(character)??character,set:this.w(`lines.${part}`),lang:LANGS.find(l=>l.code===lang)?.native??lang})
  }
  private async publishLines($:EngineInterface):Promise<void>{await this.bindings.changed?.(this.changedSnapshot());$.ui.invalidate('ui.render')}
- /** The sets written in earlier sessions, the language picked for them and Coco's mix ('more.lines'). */
  restoreLines(stored:unknown):void{
    this.linesSets={};this.linesLang=undefined;this.linesMix='both';this.linesOpened=new Set()
-   const data=stored&&typeof stored==='object'?stored as {sets?:unknown;lang?:unknown;mix?:unknown;opened?:unknown}:{}
+   this.linesImports={};this.linesImport=undefined;this.linesImportEpoch++
+   const data=stored&&typeof stored==='object'?stored as {sets?:unknown;lang?:unknown;mix?:unknown;opened?:unknown;imported?:unknown}:{}
+   if(data.imported&&typeof data.imported==='object')for(const [slot,value] of Object.entries(data.imported)){
+     const [character,lang]=slot.split(':'),entry=value as {text?:unknown;on?:unknown}|null
+     if(['coco','dake','maid'].includes(character??'')&&LANGS.some(l=>l.code===lang)&&typeof entry?.text==='string'&&entry.text.length<=LINE_IMPORT_BYTES)
+       this.linesImports[slot]={text:entry.text,on:entry.on===true}
+   }
    if(Array.isArray(data.opened))for(const slot of data.opened){
      const [part,code]=typeof slot==='string'?slot.split(':'):[]
      if(['shipped','coco','dake','maid'].includes(part??'')&&LANGS.some(l=>l.code===code))this.linesOpened.add(slot as string)
@@ -1035,11 +968,57 @@ export class MoreRuntime {
    this.activateLines()
  }
  private async saveLines($:EngineInterface):Promise<void>{
-   await $.store.set('more.lines',{sets:this.linesSets,...(this.linesLang?{lang:this.linesLang}:{}),mix:this.linesMix,...(this.linesOpened.size?{opened:[...this.linesOpened]}:{})})
+   await $.store.set('more.lines',{sets:this.linesSets,...(this.linesLang?{lang:this.linesLang}:{}),mix:this.linesMix,...(this.linesOpened.size?{opened:[...this.linesOpened]}:{}),...(Object.keys(this.linesImports).length?{imported:this.linesImports}:{})})
  }
- /** Before a line is picked: a set's file saved since it was last read is read again (his card: 「下次横条说话就用新的」);
-  * a file that is gone leaves the set as it was. Only files the person has opened are looked at, and only the stat
-  * is asked when nothing changed. */
+ setLinesImportPath(path:string):void{
+   const slot=`${this.linesCharacter()}:${this.linesLangNow()}`
+   this.linesImport={slot,path,page:0};this.linesImportEpoch++
+ }
+ private importGroups():string[]{return [...new Set([...LINE_GROUPS,...(this.linesCharacter()==='coco'?Object.keys(shippedLines(this.linesLangNow())):[])])]}
+ async pressLinesImport($:EngineInterface,action:string):Promise<boolean>{
+   const slot=`${this.linesCharacter()}:${this.linesLangNow()}`
+   if(action==='open'){this.setLinesImportPath('');return true}
+   if(action==='cancel'){this.linesImport=undefined;this.linesImportEpoch++;return true}
+   if(action==='on'||action==='off'){
+     const saved=this.linesImports[slot];if(!saved)return false
+     saved.on=action==='on';this.activateLines();await this.saveLines($);await this.publishLines($);return true
+   }
+   if(action==='template'){
+     const folder=this.bindings.linesFolder?.();if(!folder)return false
+     const path=joinPath(folder,`${this.linesCharacter()}-import-${this.linesLangNow()}.txt`)
+     this.setLinesImportPath(path)
+     try{
+       if(!await $.fs.exists(path))await $.fs.write(path,emptyLinesTemplate(this.w('lines.import.templateHead'),this.importGroups()))
+       await this.bindings.openFile?.(path)
+     }catch{if(this.linesImport?.slot===slot)this.linesImport.error='file'}
+     await this.publishLines($);return true
+   }
+   const dialog=this.linesImport
+   if(!dialog||dialog.slot!==slot)return false
+   if(action==='next'||action==='previous'){
+     dialog.page=Math.max(0,Math.min(Math.ceil((dialog.preview?.rows.length??0)/10)-1,dialog.page+(action==='next'?1:-1)));return true
+   }
+   if(action==='preview'){
+     const epoch=++this.linesImportEpoch,groups=this.importGroups()
+     delete dialog.preview;delete dialog.error;dialog.page=0
+     try{
+       const path=dialog.path.trim(),stat=await $.fs.stat(path)
+       if(stat.kind!=='file')throw new Error('not a regular file')
+       if(stat.size>LINE_IMPORT_BYTES){if(epoch===this.linesImportEpoch)dialog.error='size';return true}
+       const preview=lineImportPreview(await $.fs.read(path),groups)
+       if(epoch!==this.linesImportEpoch||this.linesImport!==dialog)return true
+       if(preview.tooLarge)dialog.error='size';else dialog.preview=preview
+     }catch{if(epoch===this.linesImportEpoch&&this.linesImport===dialog)dialog.error='file'}
+     await this.publishLines($);return true
+   }
+   if(action==='apply'&&dialog.preview?.accepted){
+     this.linesImports[slot]={text:linesText('',dialog.preview.lines),on:true}
+     this.linesImport=undefined;this.linesImportEpoch++
+     this.activateLines();await this.saveLines($);await this.publishLines($);return true
+   }
+   return false
+ }
+ /** Before a line is picked: a set's file saved since last read is read again (his card: 「下次横条说话就用新的」); a gone file leaves the set as it was. Only files the person has opened are looked at, and only stat when nothing changed. */
  async refreshLines($:EngineInterface):Promise<void>{
    const character=this.linesCharacter(),lang=this.linesLangNow(),files:[string,string|undefined][]=[]
    if(character==='coco'&&this.linesOpened.has(`shipped:${this.lang}`))files.push([`shipped:${this.lang}`,this.linesPath('shipped','coco',this.lang)])
@@ -1056,8 +1035,7 @@ export class MoreRuntime {
    }
    if(changed)this.activateLines()
  }
- /** The set's file opened in the system's text editor (his card), written first from what is said now if it is not
-  * there; its place is shown under the row either way. */
+ /** The set's file opened in the system's text editor (his card), written first if it is not there. */
  async editLines($:EngineInterface,part:'shipped'|'generated'):Promise<boolean>{
    const character=this.linesCharacter()
    if(part==='shipped'&&character!=='coco')return false
@@ -1072,8 +1050,7 @@ export class MoreRuntime {
    await this.publishLines($)
    return true
  }
- /** Restore: this set back as it was (his card): the shipped lines as we ship them, a written set as it was written,
-  * and Coco's mix back to both. Its file, when there is one, is written back too. */
+ /** Restore (his card): shipped lines as shipped, a written set as written, Coco's mix back to both; its file, if any, is written back too. */
  async restoreLinesSet($:EngineInterface,part:'shipped'|'generated'):Promise<boolean>{
    const character=this.linesCharacter()
    if(part==='shipped'&&character!=='coco')return false
@@ -1085,7 +1062,6 @@ export class MoreRuntime {
    this.activateLines();await this.saveLines($);await this.publishLines($)
    return true
  }
- /** The written set for this character and language is let go: the character says the shipped lines, or nothing. */
  async dropLines($:EngineInterface):Promise<boolean>{
    const key=`${this.linesCharacter()}:${this.linesLangNow()}`
    if(!this.linesSets[key])return false
@@ -1093,28 +1069,28 @@ export class MoreRuntime {
    this.activateLines();await this.saveLines($);await this.publishLines($)
    return true
  }
- /** The person picks the language their lines are written in; a set not written yet in it is written now. */
  async chooseLinesLang($:EngineInterface,lang:string):Promise<boolean>{
    if(!LANGS.some(l=>l.code===lang))return false
-   this.linesLang=lang;this.activateLines()
+   const importing=this.linesImport?.slot===`${this.linesCharacter()}:${this.linesLangNow()}`?this.linesImport:undefined
+   const imported=this.linesImports[`${this.linesCharacter()}:${this.linesLangNow()}`]?.on
+   this.linesLang=lang
+   if(importing)this.setLinesImportPath(importing.path)
+   this.activateLines()
    await this.saveLines($);await this.save($)
-   await this.lines($)
+   if(!importing&&!imported)await this.lines($)
    return true
  }
- /** Coco says the written lines alone, or mixed with the shipped ones (his 10-17: either, or both). */
  async chooseLinesMix($:EngineInterface,mix:string):Promise<boolean>{
    if(mix!=='only'&&mix!=='both')return false
    this.linesMix=mix;this.activateLines()
    await this.saveLines($);await this.save($)
    return true
  }
- /** The written set for the character worn, in the language picked: written once while the row is on, then kept. */
  lines($:EngineInterface):Promise<void>|undefined{
    const character=this.linesCharacter(),key=`${character}:${this.linesLangNow()}`
-   if(!this.isOn('lines')||this.linesBusy||this.linesSets[key]||this.linesFailed.has(key))return
+   if(!this.isOn('lines')||this.linesImports[key]?.on||this.linesBusy||this.linesSets[key]||this.linesFailed.has(key))return
    return this.writeLines($,character)
  }
- /** Write again: the set for the character worn and this language is written anew. */
  redoLines($:EngineInterface):Promise<boolean>|false{
    if(!this.isOn('lines')||this.linesBusy)return false
    return this.writeLines($,this.linesCharacter()).then(()=>true)
@@ -1133,7 +1109,6 @@ export class MoreRuntime {
      const set=result.isAnswered?writtenLinesFrom(result.text):undefined
      if(!set||!Object.keys(set).length){this.linesFailed.add(key);return}
      this.linesSets[key]={lines:set,at:await this.completionAt($,0)};delete this.linesEdits[key]
-     // A file of the old set is written over with the new one, so what the person opens is what is said.
      const path=this.linesPath('generated',character,lang)
      if(path&&await $.fs.exists(path).catch(()=>false)){await $.fs.write(path,linesText(this.linesHead(character,'generated',lang),set));try{this.linesSeen[key]=(await $.fs.stat(path)).mtimeMs}catch{}}
      this.activateLines();await this.saveLines($)
@@ -1147,18 +1122,15 @@ export class MoreRuntime {
    if(!this.isOn('look')||!this.canSend('look')||this.registeredLook)return
    const prompt=this.modelWords['more.model.look.prompt']
    if(!prompt)return
-   // Read and Grep only, each held to the changed files by lookDeny; the model is the person's pick, sent again with
-   // each spawn so a later pick holds.
+   // Read and Grep only, each held to the changed files by lookDeny; the model is the person's pick, sent again with each spawn so a later pick holds.
    return $.agent.register({name:'second-look',description:this.w('look.help'),prompt,tools:['Read','Grep'],model:this.modelFor('look')!}).then(()=>{this.registeredLook=true})
  }
- /** The second look's reader reads only the changed files (U3): Read of one of them, or Grep with one of them as its
-  * path; every other call it makes is refused. Agents that are not the reader pass untouched. */
+ /** The reader reads only the changed files (U3): Read of one, or Grep with one as its path; every other call is refused. Agents that are not the reader pass untouched. */
  async lookDeny($:EngineInterface,agentId:string|undefined,tool:string,input:Record<string,unknown>):Promise<string|undefined>{
    if(agentId===undefined||!this.registeredLook&&!this.lookIds.size)return
    if(!this.lookIds.has(agentId)){
      if(this.otherAgents.has(agentId))return
      const agent=(await $.agent.list().catch(()=>[])).find(info=>info.id===agentId)
-     // One not listed yet while a look is starting is held as the reader would be.
      if(!agent&&!this.lookBusy)return
      if(agent&&agent.type!=='coco:second-look'){this.otherAgents.add(agentId);while(this.otherAgents.size>256)this.otherAgents.delete(this.otherAgents.values().next().value!);return}
      if(agent)this.lookIds.add(agentId)
@@ -1180,7 +1152,6 @@ export class MoreRuntime {
      if(generation!==this.sessionGeneration||!this.operationCurrent('look',token))return
      // The cut is said, never silent (TALK-KEY 2): a longer diff, or edits past the capture bound.
      const cut=repo?diff.length>60000:this.editsCut
-     // The instruction, then the files the reader may open (one a line), the changes, and the language to write in.
      this.lookAllowed=new Set(this.changedPaths)
      const result=await $.agent.spawn({subagentType:'coco:second-look',description:this.w('look.button'),model:this.modelFor('look'),prompt:instruction+'\n\n'+[...this.changedPaths].join('\n')+'\n\n'+(repo?diff.slice(0,60000):diff)+'\n\nWrite in '+(MORE_LANGUAGE[this.lang]??'English')+'.'})
      if(cut)this.bindings.line?.(this.w('look.cut'),'note',14000)
@@ -1210,6 +1181,7 @@ export class MoreRuntime {
    return this.capHeld
  }
  private async checkCap($:EngineInterface,turnId:string,generation:number,token:number):Promise<{deny:string}|undefined>{
+   if(this.models?.own)return
    const limit=Number(this.values.cap)
    const usage=await $.session.usage()
    if(generation!==this.sessionGeneration||!this.operationCurrent('cap',token)||Number(this.values.cap)!==limit)return

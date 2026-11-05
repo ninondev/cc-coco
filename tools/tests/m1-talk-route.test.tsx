@@ -24,7 +24,7 @@ function fixture(on:Parameters<typeof world>[0],options:{talk:boolean;lang?:stri
 }
 
 const ROUTED={en:'Sent to Coco',zh:'已发给她'} as const
-for(const lang of ['en','zh'] as const)test(`M1 O1 actual «sama,» and «小克,» prompts go to Talk with Talk on, never reaching the session, and say so: ${lang}`,{options:{language:lang,resolvedLanguage:lang}},async($,on)=>{
+for(const lang of ['en','zh'] as const)test(`M1 O1 actual «sama,» and «小克,» prompts go to Talk with Talk on, never reaching the session, and say so: ${lang}`,{options:{language:lang}},async($,on)=>{
  const f=fixture(on,{talk:true,lang});await $.session.start(START);await settleLegacyStart($,f.w)
  for(const text of ['sama, how was the morning','小克，今天怎么样']){
   const result=await $.prompt.submit({text,wait:false,origin:PERSON}) as {drop?:string}

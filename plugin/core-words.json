@@ -89,7 +89,7 @@
       "lang": "i'll talk in english now.",
       "auto": "auto. i'll follow your settings.",
       "unknown": "{value}? i can't speak that one yet. try {codes}.",
-      "usage": "/coco voice off|light|full\nwarmth warm|clingy\nband on|compact|off\nmarks on|replies|off\nlang <code>|auto\nvibe\nabout|usage|log|library|settings"
+      "usage": "/coco models\nprivacy\nvoice off|light|full\nwarmth warm|clingy\nband on|compact|off\nmarks on|replies|off\nlang <code>|auto\nvibe\ncards\ndm\ncompanion\ndoctor\nlines import <path>\nlines template\nlines on|off\nuninstall\nabout|usage|log|library|settings"
     },
     "transcript": {
       "turnTime": "{clock} ({duration})"
@@ -212,7 +212,7 @@
       "lang": "je parle en français maintenant.",
       "auto": "auto. je suis tes réglages.",
       "unknown": "{value} ? celle-là, je ne la parle pas encore. essaie {codes}.",
-      "usage": "/coco voice off|light|full\nwarmth warm|clingy\nband on|compact|off\nmarks on|replies|off\nlang <code>|auto\nvibe\nabout|usage|log|library|settings"
+      "usage": "/coco models\nprivacy\nvoice off|light|full\nwarmth warm|clingy\nband on|compact|off\nmarks on|replies|off\nlang <code>|auto\nvibe\ncards\ndm\ncompanion\ndoctor\nlines import <path>\nlines template\nlines on|off\nuninstall\nabout|usage|log|library|settings"
     },
     "transcript": {
       "turnTime": "{clock} ({duration})"
@@ -335,7 +335,7 @@
       "lang": "Ich rede jetzt Deutsch.",
       "auto": "Auto. Ich richte mich nach deinen Einstellungen.",
       "unknown": "{value}? Die kann ich noch nicht. Versuch {codes}.",
-      "usage": "/coco voice off|light|full\nwarmth warm|clingy\nband on|compact|off\nmarks on|replies|off\nlang <code>|auto\nvibe\nabout|usage|log|library|settings"
+      "usage": "/coco models\nprivacy\nvoice off|light|full\nwarmth warm|clingy\nband on|compact|off\nmarks on|replies|off\nlang <code>|auto\nvibe\ncards\ndm\ncompanion\ndoctor\nlines import <path>\nlines template\nlines on|off\nuninstall\nabout|usage|log|library|settings"
     },
     "transcript": {
       "turnTime": "{clock} ({duration})"
@@ -458,7 +458,7 @@
       "lang": "अब मैं हिंदी में बोलूँगी।",
       "auto": "auto: अब तुम्हारी सेटिंग्स के हिसाब से चलूँगा।",
       "unknown": "{value}? यह भाषा अभी नहीं बोल पाती। इनमें से चुनो: {codes}।",
-      "usage": "/coco voice off|light|full\nwarmth warm|clingy\nband on|compact|off\nmarks on|replies|off\nlang <code>|auto\nvibe\nabout|usage|log|library|settings"
+      "usage": "/coco models\nprivacy\nvoice off|light|full\nwarmth warm|clingy\nband on|compact|off\nmarks on|replies|off\nlang <code>|auto\nvibe\ncards\ndm\ncompanion\ndoctor\nlines import <path>\nlines template\nlines on|off\nuninstall\nabout|usage|log|library|settings"
     },
     "transcript": {
       "turnTime": "{clock} ({duration})"
@@ -581,7 +581,7 @@
       "lang": "sekarang aku ngomong pakai bahasa indonesia.",
       "auto": "auto. aku ikut pengaturanmu.",
       "unknown": "{value}? yang itu belum bisa kupakai. coba {codes}.",
-      "usage": "/coco voice off|light|full\nwarmth warm|clingy\nband on|compact|off\nmarks on|replies|off\nlang <code>|auto\nvibe\nabout|usage|log|library|settings"
+      "usage": "/coco models\nprivacy\nvoice off|light|full\nwarmth warm|clingy\nband on|compact|off\nmarks on|replies|off\nlang <code>|auto\nvibe\ncards\ndm\ncompanion\ndoctor\nlines import <path>\nlines template\nlines on|off\nuninstall\nabout|usage|log|library|settings"
     },
     "transcript": {
       "turnTime": "{clock} ({duration})"
@@ -704,7 +704,7 @@
       "lang": "adesso parlo in italiano.",
       "auto": "auto. seguo le tue impostazioni.",
       "unknown": "{value}? questa non la parlo ancora. prova {codes}.",
-      "usage": "/coco voice off|light|full\nwarmth warm|clingy\nband on|compact|off\nmarks on|replies|off\nlang <code>|auto\nvibe\nabout|usage|log|library|settings"
+      "usage": "/coco models\nprivacy\nvoice off|light|full\nwarmth warm|clingy\nband on|compact|off\nmarks on|replies|off\nlang <code>|auto\nvibe\ncards\ndm\ncompanion\ndoctor\nlines import <path>\nlines template\nlines on|off\nuninstall\nabout|usage|log|library|settings"
     },
     "transcript": {
       "turnTime": "{clock} ({duration})"
@@ -827,7 +827,7 @@
       "lang": "これからは日本語で話すね",
       "auto": "auto。きみの設定に合わせるね",
       "unknown": "{value}?それはまだ話せない。{codes}のどれかにして",
-      "usage": "/coco voice off|light|full\nwarmth warm|clingy\nband on|compact|off\nmarks on|replies|off\nlang <code>|auto\nvibe\nabout|usage|log|library|settings"
+      "usage": "/coco models\nprivacy\nvoice off|light|full\nwarmth warm|clingy\nband on|compact|off\nmarks on|replies|off\nlang <code>|auto\nvibe\ncards\ndm\ncompanion\ndoctor\nlines import <path>\nlines template\nlines on|off\nuninstall\nabout|usage|log|library|settings"
     },
     "transcript": {
       "turnTime": "{clock}({duration})"
@@ -950,7 +950,7 @@
       "lang": "이제 한국어로 말할게.",
       "auto": "auto. 네 설정을 따를게.",
       "unknown": "{value}? 그건 아직 못 해. {codes} 중에서 골라 줘.",
-      "usage": "/coco voice off|light|full\nwarmth warm|clingy\nband on|compact|off\nmarks on|replies|off\nlang <code>|auto\nvibe\nabout|usage|log|library|settings"
+      "usage": "/coco models\nprivacy\nvoice off|light|full\nwarmth warm|clingy\nband on|compact|off\nmarks on|replies|off\nlang <code>|auto\nvibe\ncards\ndm\ncompanion\ndoctor\nlines import <path>\nlines template\nlines on|off\nuninstall\nabout|usage|log|library|settings"
     },
     "transcript": {
       "turnTime": "{clock}({duration})"
@@ -1073,7 +1073,7 @@
       "lang": "agora eu falo em português.",
       "auto": "auto. vou seguir suas configurações.",
       "unknown": "{value}? essa eu ainda não falo. tenta {codes}.",
-      "usage": "/coco voice off|light|full\nwarmth warm|clingy\nband on|compact|off\nmarks on|replies|off\nlang <code>|auto\nvibe\nabout|usage|log|library|settings"
+      "usage": "/coco models\nprivacy\nvoice off|light|full\nwarmth warm|clingy\nband on|compact|off\nmarks on|replies|off\nlang <code>|auto\nvibe\ncards\ndm\ncompanion\ndoctor\nlines import <path>\nlines template\nlines on|off\nuninstall\nabout|usage|log|library|settings"
     },
     "transcript": {
       "turnTime": "{clock} ({duration})"
@@ -1196,7 +1196,7 @@
       "lang": "ahora hablo en español.",
       "auto": "auto. sigo tu configuración.",
       "unknown": "¿{value}? ese todavía no lo hablo. prueba con {codes}.",
-      "usage": "/coco voice off|light|full\nwarmth warm|clingy\nband on|compact|off\nmarks on|replies|off\nlang <code>|auto\nvibe\nabout|usage|log|library|settings"
+      "usage": "/coco models\nprivacy\nvoice off|light|full\nwarmth warm|clingy\nband on|compact|off\nmarks on|replies|off\nlang <code>|auto\nvibe\ncards\ndm\ncompanion\ndoctor\nlines import <path>\nlines template\nlines on|off\nuninstall\nabout|usage|log|library|settings"
     },
     "transcript": {
       "turnTime": "{clock} ({duration})"
@@ -1319,7 +1319,7 @@
       "lang": "ahora hablo en castellano.",
       "auto": "auto. sigo tus ajustes.",
       "unknown": "¿{value}? ese todavía no lo hablo. prueba con {codes}.",
-      "usage": "/coco voice off|light|full\nwarmth warm|clingy\nband on|compact|off\nmarks on|replies|off\nlang <code>|auto\nvibe\nabout|usage|log|library|settings"
+      "usage": "/coco models\nprivacy\nvoice off|light|full\nwarmth warm|clingy\nband on|compact|off\nmarks on|replies|off\nlang <code>|auto\nvibe\ncards\ndm\ncompanion\ndoctor\nlines import <path>\nlines template\nlines on|off\nuninstall\nabout|usage|log|library|settings"
     },
     "transcript": {
       "turnTime": "{clock} ({duration})"
@@ -1442,7 +1442,7 @@
       "lang": "以后我用中文说",
       "auto": "auto,跟着你的设置走",
       "unknown": "{value}?这个我还不会说,试试{codes}",
-      "usage": "/coco voice off|light|full\nwarmth warm|clingy\nband on|compact|off\nmarks on|replies|off\nlang <code>|auto\nvibe\nabout|usage|log|library|settings"
+      "usage": "/coco models\nprivacy\nvoice off|light|full\nwarmth warm|clingy\nband on|compact|off\nmarks on|replies|off\nlang <code>|auto\nvibe\ncards\ndm\ncompanion\ndoctor\nlines import <path>\nlines template\nlines on|off\nuninstall\nabout|usage|log|library|settings"
     },
     "transcript": {
       "turnTime": "{clock}({duration})"
@@ -1565,7 +1565,7 @@
       "lang": "以後我用中文說",
       "auto": "auto,跟著你的設定走",
       "unknown": "{value}?這個我還不會說,試試{codes}",
-      "usage": "/coco voice off|light|full\nwarmth warm|clingy\nband on|compact|off\nmarks on|replies|off\nlang <code>|auto\nvibe\nabout|usage|log|library|settings"
+      "usage": "/coco models\nprivacy\nvoice off|light|full\nwarmth warm|clingy\nband on|compact|off\nmarks on|replies|off\nlang <code>|auto\nvibe\ncards\ndm\ncompanion\ndoctor\nlines import <path>\nlines template\nlines on|off\nuninstall\nabout|usage|log|library|settings"
     },
     "transcript": {
       "turnTime": "{clock}({duration})"

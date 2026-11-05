@@ -11,16 +11,14 @@ function sleepDelay(deadlines: Deadlines, quietAt: number): number {
 }
 const MAX_LINE = 256 * 1024
 
-// His own settings, shared between his sessions and kept in his record, plus the theme, reduced motion, time zone and
-// Coco's outfit the pet and the other sessions follow.
 export const COCO_SETTING_KEYS: ReadonlySet<string> = new Set([
   'band', 'bandBeforeOff', 'workSize', 'voice', 'voiceChosen', 'affection', 'lang', 'language', 'heard', 'marks', 'companionTarget',
   'neighbours', 'guard', 'bookmark', 'notes', 'budget', 'appIcon', 'dockTile', 'appIconChoice', 'appIconBlocked', 'appIconLegacyChecked',
   'appIconRestoreNotice', 'longTask', 'trim', 'breathe', 'stickEnd', 'week', 'visitors', 'waitSound', 'socks', 'socksMode', 'socksEarned',
   'claudeForm', 'bagStyle', 'stick', 'more', 'theme', 'prefersReducedMotion', 'timeZone', 'outfit',
 ])
-// Claude Code's own settings, which went into the shared record whole until 10-18 (env can hold secrets, and they
-// grew his record past its size limit). Records and snapshots lose them on their next read; a key a newer Coco adds stays.
+// Claude Code's own settings went into the shared record whole until 10-18 (env can hold secrets, and they grew his
+// record past its size limit). Records and snapshots lose them on their next read; a key a newer Coco adds stays.
 export const ENGINE_SETTING_KEYS: ReadonlySet<string> = new Set([
   'env', 'permissions', 'hooks', 'model', 'modelSettings', 'enabledPlugins', 'extraKnownMarketplaces', 'pluginConfigs', 'skillOverrides',
   'deniedMcpServers', 'allowedMcpServers', 'enabledMcpjsonServers', 'disabledMcpjsonServers', 'enableAllProjectMcpServers', 'autoMode',
@@ -151,7 +149,6 @@ export function parsePresenceRecord(text: string): PresenceRecord | undefined {
   return { ...snapshot, claims }
 }
 
-/** A program path as an inventory records it: POSIX, or a Windows drive or network path (the pet program's helper). */
 function absoluteProgram(path: string): boolean { return path.startsWith('/') || windowsPath(path) }
 
 export function parseProcessInventory(text: string): Map<number, ProcessIdentity> {
@@ -229,7 +226,6 @@ export function reducePresence(previous: PresenceRecord | undefined, command: st
     const { visitorDue, ...claimMetadata } = metadata ?? {}
     const prior = state.claims[key]
     state.claims[key] = { ...prior, session, owner, pid, birth, busy, hostPid, hostBirth, uid: alive.get(pid)?.uid, executable: alive.get(pid)?.executable, ...claimMetadata }
-    // When this window began working or went quiet, for the list of windows on the bag's first page (E1-2).
     if (!prior || prior.busy !== busy || prior.busySince === undefined) state.claims[key].busySince = now
     if (visitorDue) state.visitors = { ...state.visitors, due: newerDue(state.visitors?.due, visitorDue) }
   }
@@ -288,7 +284,6 @@ export function reducePresence(previous: PresenceRecord | undefined, command: st
   return state
 }
 
-/** One native event follower; short single-process transactions at state transitions. */
 export class SharedPresence {
   private snapshot: PresenceSnapshot | undefined
   private child: HookStream<ProcessSpawnChunk, ProcessSpawnResult> | undefined
@@ -330,8 +325,7 @@ export class SharedPresence {
     if (!windowsPath(this.folder)) this.folder = joinPath(this.folder, 'native-v2')
   }
 
-  /** macOS and Linux run presence.sh; Windows runs the pet program's `presence` verbs (companion-rs/src/presence_helper.rs),
-   *  given here as the script, with the same arguments after the folder. */
+  /** macOS and Linux run presence.sh; Windows runs the pet program's `presence` verbs (companion-rs/src/presence_helper.rs), given here as the script, with the same arguments after the folder. */
   private helper(...args: string[]): string[] {
     return windowsPath(this.folder) ? [this.script, 'presence', this.folder, ...args] : ['/bin/sh', this.script, this.folder, ...args]
   }
@@ -339,7 +333,6 @@ export class SharedPresence {
   get current(): PresenceSnapshot | undefined { return this.snapshot }
   get isRunning(): boolean { return this.active }
   get ownsBusy(): boolean { return this.ownBusy }
-  /** Inspect under the native lock, including from an awaited redraw callback. */
   async readSessions(): Promise<PresenceSession[]> {
     if (!this.active) return []
     let sessions: PresenceSession[] = []
@@ -357,9 +350,7 @@ export class SharedPresence {
   }
   private report(error: unknown): void { try { this.callbacks.error?.(error) } catch { /* presence remains optional */ } }
 
-  /** The first-frame state from one read of snapshot.json and no native start (main's native-v2 contract). A host IO
-   *  that refuses that read (M1's band, which reads the shared snapshot only through the native transaction) leaves the
-   *  state already held. */
+  /** The first-frame state from one read of snapshot.json and no native start (main's native-v2 contract). A host IO that refuses that read (M1's band) leaves the state already held. */
   async peek(): Promise<PresenceSnapshot | undefined> {
     try {
       const state = parsePresence(await this.io.read(joinPath(this.folder, 'snapshot.json')))

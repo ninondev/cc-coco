@@ -1,4 +1,5 @@
 // Generated from the approved more.* author file. Data is read on first use.
+import { workerText } from './worker-name'
 export const MORE_SLOTS: Record<string, Record<string,string>> = {}
 let loaded = false
 let generation = 0
@@ -31,7 +32,7 @@ export function moreName(text: string, lang: string): string {
 }
 export function moreWord(key: string, lang: string): string {
   const slot = MORE_SLOTS[key.startsWith("more.") ? key : `more.${key}`]
-  const text = moreName(slot?.[lang] ?? slot?.en ?? "", lang)
+  const text = workerText(key, moreName(slot?.[lang] ?? slot?.en ?? "", lang))
   return text
 }
 export function moreMissing(lang: string): string[] { return Object.keys(MORE_SLOTS).filter(key => !MORE_SLOTS[key]?.[lang]) }

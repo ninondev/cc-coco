@@ -6,13 +6,19 @@ type MaybePromise<T> = T | Promise<T>
 export interface WarmStore {
   get(key: string): MaybePromise<unknown>
   set(key: string, value: unknown): MaybePromise<unknown>
+  keys?(): MaybePromise<string[]>
 }
 export interface WarmToday { date: string; pauses: number; pings: number; usd: number; saved: number }
+// r11-01: the switch is per conversation. `on` holds one row per session id with the time it
+// was set; a row older than offAllAt was turned off by the «turn all off» control.
+export interface WarmSessions { offAllAt: number; on: Record<string, { on: boolean; at: number }> }
 export interface WarmRuntimeDeps {
   clock: Clock
   fork(prompt: string): Promise<ForkOutcome>
   store: WarmStore
   isNewest(): MaybePromise<boolean>
+  /** This conversation's id; without it the switch keeps its old shared-row behaviour. */
+  sessionId?(): MaybePromise<string>
   readLock(): Promise<LockSignal>
   windowPercent(): MaybePromise<number | null>
   billingKind(): string
@@ -24,6 +30,8 @@ export interface WarmRuntimeDeps {
 export interface WarmRuntime {
   arm(input: ArmInput): Promise<ArmResult>
   setEnabled(enabled: boolean): Promise<void>
+  /** Turn every conversation's switch off, this one included (r11-01's «turn all off»). */
+  allOff(): Promise<void>
   syncEnabled(): Promise<void>
   turnStarted(origin: 'composer' | 'bridge' | 'other'): Promise<PauseSummary | null>
   firstReply(cacheRead: number, explained: boolean): Promise<ReturnVerdict | null>
@@ -32,6 +40,13 @@ export interface WarmRuntime {
   status(): KeeperStatus | null
   disabledReason(): 'notHeld' | null
   flush(): Promise<void>
+  isEnabled(): boolean
+  /** Conversations other than this one whose switch is on, the legacy row's holder included. */
+  othersOn(): number
+  /** Any switch state is known here already, so the one-time question does not open again. */
+  asked(): boolean
+  /** Today's warm accounting across every conversation's day row plus the legacy row. */
+  dayTotals(): Promise<WarmToday & { any: boolean }>
 }
 
 // These holds cover runtimes in this process only. A durable per-billing-kind
@@ -39,7 +54,17 @@ export interface WarmRuntime {
 // claims coordinate newest-prompt ownership; they do not carry this hold.
 const disabledKinds = new Map<string, Set<string>>()
 const inFlight = new Set<string>()
+const SESSIONS_KEY = 'warm.sessions'
 const record = (value: unknown): Record<string, unknown> => value !== null && typeof value === 'object' && !Array.isArray(value) ? value as Record<string, unknown> : {}
+const numberField = (value: unknown): number => typeof value === 'number' && Number.isFinite(value) && value >= 0 ? value : 0
+const sessionsFrom = (value: unknown): WarmSessions => {
+  const raw = record(value), on: WarmSessions['on'] = {}
+  for (const [id, row] of Object.entries(record(raw.on))) {
+    const r = record(row)
+    if (typeof r.on === 'boolean' && typeof r.at === 'number' && Number.isFinite(r.at) && r.at >= 0) on[id] = { on: r.on, at: r.at }
+  }
+  return { offAllAt: numberField(raw.offAllAt), on }
+}
 const localDay = (time: number): string => {
   const d = new Date(time)
   return `${d.getFullYear()}-${String(d.getMonth() + 1).padStart(2, '0')}-${String(d.getDate()).padStart(2, '0')}`
@@ -57,6 +82,9 @@ export function createWarmRuntime(deps: WarmRuntimeDeps): WarmRuntime {
   let generation = 0
   let closed = false
   let lastForkUsage: ForkUsage | undefined
+  let sessions: WarmSessions = { offAllAt: 0, on: {} }
+  let others = 0
+  let switchKnown = false
   type Accounting = { start: number; summary?: PauseSummary; verdict?: ReturnVerdict; latePings: number; lateUsd: number; counted: boolean; appliedSaved: number }
   let activeAccounting: Accounting | undefined
   let pendingForkAccounting: Accounting | undefined
@@ -65,12 +93,23 @@ export function createWarmRuntime(deps: WarmRuntimeDeps): WarmRuntime {
   const accounts = new Map<number, Accounting>()
   let queue: Promise<void> = Promise.resolve()
   const heldOff = (): boolean => disabledKinds.get(machine)?.has(deps.billingKind()) === true
+  const ownId = async (): Promise<string | null> => {
+    if (!deps.sessionId) return null
+    const id = await Promise.resolve(deps.sessionId()).catch(() => null)
+    return typeof id === 'string' && id ? id : null
+  }
   const enqueue = (work: () => Promise<void>): void => {
     queue = queue.then(work).catch(() => { /* Store failure cannot start a fork. */ })
   }
+  // With a session id the day accounting is this conversation's own row, so several kept-warm
+  // conversations never overwrite each other's tally (r11-01); without one, the shared row.
+  const dayKey = async (): Promise<string> => {
+    const id = await ownId()
+    return id === null ? 'warm.today' : 'warm.day.' + id
+  }
   const today = async (): Promise<WarmToday> => {
     const date = localDay(deps.clock.now())
-    const old = record(await deps.store.get('warm.today'))
+    const old = record(await deps.store.get(await dayKey()))
     if (old.date !== date) return { date, pauses: 0, pings: 0, usd: 0, saved: 0 }
     const n = (key: string): number => typeof old[key] === 'number' && Number.isFinite(old[key]) ? old[key] as number : 0
     return { date, pauses: n('pauses'), pings: n('pings'), usd: n('usd'), saved: n('saved') }
@@ -81,10 +120,24 @@ export function createWarmRuntime(deps: WarmRuntimeDeps): WarmRuntime {
     const account = accounts.get(summary.start)
     if (account) { account.summary = summary; if (verdict) account.verdict = verdict }
   }
+  // r11-01: a conversation with its own switch on keeps itself warm without being the newest;
+  // a switch state only in the legacy shared row keeps its old newest-only meaning.
   const refresh = async (): Promise<void> => {
-    enabled = record(await deps.store.get('more')).warm === true && !closed && !heldOff()
+    const more = record(await deps.store.get('more'))
+    sessions = sessionsFrom(await deps.store.get(SESSIONS_KEY))
+    const id = await ownId()
+    const mine = id === null ? undefined : sessions.on[id]
+    const mineKnown = !!mine && mine.at > sessions.offAllAt
+    const perOn = mineKnown && mine.on === true
+    const legacy = more.warm === true && !mineKnown
+    let count = 0
+    for (const [row, entry] of Object.entries(sessions.on)) if (entry.on && entry.at > sessions.offAllAt && row !== id) count++
+    if (legacy) count++
+    others = count
+    switchKnown = typeof more.warm === 'boolean' || Object.keys(sessions.on).length > 0
+    enabled = (perOn || legacy) && !closed && !heldOff()
     if (!enabled) return
-    newest = await deps.isNewest()
+    newest = perOn || await Promise.resolve(deps.isNewest()).catch(() => false)
     // Keep the stop order: no lock command when this session already lost.
     if (!newest) return
     lock = await deps.readLock().catch(() => 'none' as const)
@@ -145,7 +198,7 @@ export function createWarmRuntime(deps: WarmRuntimeDeps): WarmRuntime {
               saved += target - account.appliedSaved; account.appliedSaved = target
               if (!account.counted) { pauseCount++; account.counted = true }
             }
-            await deps.store.set('warm.today', { ...t, pings: t.pings + 1, usd: t.usd + event.usd, pauses: pauseCount, saved })
+            await deps.store.set(await dayKey(), { ...t, pings: t.pings + 1, usd: t.usd + event.usd, pauses: pauseCount, saved })
           })
         } else {
           try { deps.onStop?.(event) } catch { /* Observer failure is isolated. */ }
@@ -173,8 +226,21 @@ export function createWarmRuntime(deps: WarmRuntimeDeps): WarmRuntime {
       return result
     },
     setEnabled: async value => {
+      const id = await ownId()
       const more = record(await deps.store.get('more'))
-      await deps.store.set('more', { ...more, warm: value })
+      if (id === null) {
+        // No session identity here: the switch stays the shared row it always was.
+        await deps.store.set('more', { ...more, warm: value })
+      } else {
+        // Every per-session choice retires the shared row: a stored false is what M1's next save
+        // adopts, and an absent row would let that save write the old value back on (review MC1).
+        if (more.warm !== false) await deps.store.set('more', { ...more, warm: false })
+        sessions = sessionsFrom(await deps.store.get(SESSIONS_KEY))
+        sessions.on[id] = { on: value, at: deps.clock.now() }
+        await deps.store.set(SESSIONS_KEY, sessions)
+        others = Object.entries(sessions.on).filter(([row, entry]) => entry.on && entry.at > sessions.offAllAt && row !== id).length
+        switchKnown = true
+      }
       enabled = value
       if (value) {
         disabledKinds.get(machine)?.delete(deps.billingKind())
@@ -182,8 +248,20 @@ export function createWarmRuntime(deps: WarmRuntimeDeps): WarmRuntime {
         if (keeper?.status().disabled) keeper = null
       } else { generation += 1; keeper?.cancel() }
     },
+    allOff: async () => {
+      const at = deps.clock.now()
+      const more = record(await deps.store.get('more'))
+      if (more.warm !== false) await deps.store.set('more', { ...more, warm: false })
+      await deps.store.set(SESSIONS_KEY, { offAllAt: at, on: {} })
+      sessions = { offAllAt: at, on: {} }
+      others = 0
+      switchKnown = true
+      enabled = false
+      generation += 1
+      keeper?.cancel()
+    },
     syncEnabled: async () => {
-      enabled = record(await deps.store.get('more')).warm === true && !closed && !heldOff()
+      await refresh()
       if (!enabled) { generation += 1; keeper?.cancel() }
     },
     turnStarted: async origin => {
@@ -211,7 +289,7 @@ export function createWarmRuntime(deps: WarmRuntimeDeps): WarmRuntime {
       if (total > 0) {
         const t = await today()
         const saved = verdict.savedUsd - (account?.lateUsd ?? 0)
-        await deps.store.set('warm.today', { ...t, pauses: t.pauses + (account?.counted ? 0 : 1), saved: t.saved + saved - (account?.appliedSaved ?? 0) })
+        await deps.store.set(await dayKey(), { ...t, pauses: t.pauses + (account?.counted ? 0 : 1), saved: t.saved + saved - (account?.appliedSaved ?? 0) })
         if (account) { account.counted = true; account.appliedSaved = saved }
       }
       return account ? { ...verdict, savedUsd: verdict.savedUsd - account.lateUsd } : verdict
@@ -230,6 +308,23 @@ export function createWarmRuntime(deps: WarmRuntimeDeps): WarmRuntime {
     status: () => keeper?.status() ?? null,
     disabledReason: () => heldOff() ? 'notHeld' : null,
     flush: () => queue,
+    isEnabled: () => enabled,
+    othersOn: () => others,
+    asked: () => switchKnown,
+    dayTotals: async () => {
+      const date = localDay(deps.clock.now())
+      const keys = deps.store.keys ? await Promise.resolve(deps.store.keys()).catch(() => [] as string[]) : []
+      const totals: WarmToday = { date, pauses: 0, pings: 0, usd: 0, saved: 0 }
+      let any = false
+      for (const key of [...keys.filter(key => key.startsWith('warm.day.')), 'warm.today']) {
+        const row = record(await deps.store.get(key))
+        if (row.date !== date) continue
+        any = true
+        const n = (field: string): number => typeof row[field] === 'number' && Number.isFinite(row[field]) ? row[field] as number : 0
+        totals.pauses += n('pauses'); totals.pings += n('pings'); totals.usd += n('usd'); totals.saved += n('saved')
+      }
+      return { ...totals, any }
+    },
   }
 }
 

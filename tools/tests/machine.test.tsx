@@ -340,7 +340,7 @@ describe('easter eggs and counters', () => {
   })
 
   test('/coco vibe with the band off opens the page and leaves no toast', {options:{band:'off'}}, async ($, on) => {
-    const w = world(on, { store: { ...RECENT, band: 'off' } })
+    const w = world(on, { store: { ...RECENT, band: 'off', modelsNoted: true } })
     await $.session.start(START); await settleLegacyStart($,w);
     await $.command.run({ command: 'coco', args: 'vibe', origin: PERSON, presentation: P })
     expect(w.toasts.length).toBe(0)
@@ -381,7 +381,7 @@ describe('commands and voice', () => {
   })
 
   test('settings commands answer with a toast and nothing in the transcript', async ($, on) => {
-    const w = world(on, { store: RECENT })
+    const w = world(on, { store: { ...RECENT, modelsNoted: true } })
     await $.session.start(START); await settleLegacyStart($,w);
     const reply = await $.command.run({ command: 'coco', args: 'band compact', origin: PERSON, presentation: P })
     expect(reply.text).toBe(undefined)

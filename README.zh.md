@@ -16,6 +16,10 @@
 
 ## 安装
 
+Mac 可以下载「[Coco 安装器](https://github.com/ninondev/cc-coco/releases/download/v1.1.4514/Coco-Installer-1.1.4514-macos.zip)」，解压后双击打开，再点「安装」。
+
+安装器和桌宠支持 macOS 13 或更高版本，Intel 和 Apple 芯片的 Mac 都能用。
+
 ```bash
 claude plugin marketplace add ninondev/cc-coco
 claude plugin install coco@coco
@@ -84,10 +88,10 @@ VS Code 插件里的横条跟桌面版一样，只是戳一下、摸摸头做成
 
 ## 默认关着的功能
 
-全在痛包的「开关」页里。会花额度的都标了，默认走最便宜的 Haiku，也能自己换模型。
+全在痛包的「开关」页里。会花额度的都标了。用自己接入的服务时，小窗等功能默认跟随当前对话的模型；用 Claude 自家服务时，仍默认用 Haiku，也可以自己换。
 
-- **小窗**：开小窗找她闲聊，用你选的模型回。她有时会自己先开口，也记得上次聊到哪。支持填你自己的 API key 付钱，key 存在系统自带的密码库里（Mac、Linux 走钥匙串，Windows 走凭据管理器；Linux 没装钥匙串时存成仅当前账户可读的文件）。自带 key 在 Windows 和 Linux 上还没真机测过。
-- **台词库**：让模型给小克或大克写一套横条台词，存在本机，自己随时能改，也能一键恢复原样。
+- **小窗**：开小窗找她闲聊，用你选的模型回。她有时会自己先开口，也记得上次聊到哪。支持填你自己的 API key 付钱，key 存在系统自带的密码库里（Mac、Linux 走钥匙串，Windows 走凭据管理器；Linux 没装钥匙串时存成仅当前账户可读的文件）。自带 key 在 Windows 和 Linux 上还没真机测过。小窗没有可用模型时，会带你去「接入 API」；保存 API 密钥并确认费用提示后，就能接着打开小窗。
+- **台词库**：让模型给小克或大克写一套横条台词，存在本机，自己随时能改，也能一键恢复原样。台词库可以导入自己写的文本文件。照着空白模板填好台词，导入后先预览，确认后启用；不合要求的句子会列出原因。导入的台词存在本机，不调用模型，也不花 token；可以单独开关、选择语言。小克的导入台词还可以与自带台词混用。
 - **回复语气**：开：Claude 干完活她顺嘴补一句（每次请求多带一段 338 字符的说明，一般直接走缓存）。全开：Claude 全程用她的口气跟你说话。
 - **简单解释**：一键把 Claude 的上一条回复（或你选中的内容）翻成大白话，不插进主对话里。
 - **二次检查**：Claude 改完文件后，一键叫另一个模型帮忙看一眼改动，挑出值得留心的地方。
@@ -109,15 +113,17 @@ VS Code 插件里的横条跟桌面版一样，只是戳一下、摸摸头做成
 
 ## 语言
 
-支持 13 种语言：简中叫「华文」，繁中叫「國語」，其余跟 Claude 客户端一样。打 `/coco lang auto` 切回自动。
+支持 13 种语言：中文语言选项改为「简体中文」和「繁體中文」。其余跟 Claude 客户端一样。打 `/coco lang auto` 切回自动。
 
 ## 桌宠 Coco Pet
 
 在痛包「小克」页点「安装Coco Pet」，或者打 `/coco companion install`。她会待在 Claude 窗口边上跟着窗口走，表情跟横条里同步；能摸头、能拖着走，有三档大小。
 
-安装过程不下载外部文件、不改 Claude 应用本体，装好的桌宠也从不联网。Windows 和 Linux 版我手头没机器，还没在真机上试过。
+Mac 桌宠已随插件打包，并完成签名和苹果公证，安装时不用再装 Xcode 或编译。安装过程不下载外部文件、不改 Claude 应用本体，装好的桌宠也从不联网。Windows 和 Linux 版我手头没机器，还没在真机上试过。
 
 不小心关掉了，去痛包里点一下「叫她回来」就行。
+
+更新插件后，新开一个 Claude Code 会话就会加载新版；桌宠需要更新时，痛包里会提示。
 
 ## 换 Claude 图标
 
@@ -138,13 +144,13 @@ claude plugin uninstall coco@coco && claude plugin marketplace remove coco
 要是已经先把插件删了：想还原图标，在访达里选中 `Claude.app`，打开「文件 › 显示简介」，点左上角的小图标按退格键；想删掉桌宠，右键退出后，把下面这些目录丢进废纸篓（Windows 是回收站）：
 
 - macOS：`~/Applications/Coco Pet.app`、`~/Library/Application Support/Coco`、`~/Library/Application Support/Coco-presence`
-- macOS 上再在终端跑一下 `security delete-identity -c "Coco Pet Local Signing"`，删掉桌宠在登录钥匙串里建的签名证书
+- 卸载时会尝试清理旧版留下的「Coco Pet Local Signing」证书；如果钥匙串里还有残留，再手动删除。
 - Windows：`%LOCALAPPDATA%\Programs\Coco Pet`、`%APPDATA%\Coco`、`%USERPROFILE%\.local\state\coco`
 - Linux：`~/.local/share/coco-pet`、`~/.local/state/coco`、`~/.config/coco-pet`
 
 ## 更新展望
 
-这几样 1.0 还没做，留在后面的版本：
+更多聊天伙伴、等待小游戏和桌宠小彩蛋留在后面的版本；Windows 和 Linux 桌宠仍待真机实测。
 
 - **更多聊天伙伴**：十多位别家模型的角色会来串门，各接各家的 API（用你自己的 key），聊谁横条上就换成谁。她们的故事以后慢慢讲。
 - **等待小游戏**：Claude 干活的时候能顺手玩两把。

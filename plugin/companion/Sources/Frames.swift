@@ -155,15 +155,16 @@ final class Frames {
             remainingBytes -= bytes
             decodes += 1; return picture
         }
+        let activeKinds = Set(Size.allCases.map(Self.kind))
         let pixelOnly = Set((m.pixel_only_frames ?? []).map(\.name))
         for frame in m.runtimeFrames where frame.tool != true {
-            for (kind, base) in [("desktop/",folder),("pixel/",pixelFolder)] {
+            for (kind, base) in [("desktop/",folder),("pixel/",pixelFolder)] where activeKinds.contains(kind) {
                 if kind == "desktop/" && (frame.pixel_only == true || pixelOnly.contains(frame.name)) { continue }
                 if let picture = decode(base.appendingPathComponent(frame.filename)) { next[kind + frame.name] = picture }
             }
         }
         for patch in m.patches ?? [] {
-            for (kind, region) in [("desktop/",patch.desktop),("pixel/",patch.pixel)] {
+            for (kind, region) in [("desktop/",patch.desktop),("pixel/",patch.pixel)] where activeKinds.contains(kind) {
                 if let region, let picture = decode(watch.url.deletingLastPathComponent().appendingPathComponent(region.filename)) { next[kind + "patch:" + patch.name] = picture }
             }
         }
@@ -512,20 +513,18 @@ final class Frames {
         let rows = spans(outHeight, inHeight)
 
         // Rows first (each output row from the source rows it covers), then columns.
-        var tall = [Float](repeating: 0, count: inWidth * outHeight * 4)
-        for (o, parts) in rows.enumerated() {
-            for (row, weight) in parts {
-                let from = row * inWidth * 4
-                let to = o * inWidth * 4
-                for k in 0..<(inWidth * 4) { tall[to + k] += Float(source[from + k]) * weight }
-            }
-        }
+        var tall = [Float](repeating: 0, count: inWidth * 4)
         var out = [UInt8](repeating: 0, count: outWidth * outHeight * 4)
-        for y in 0..<outHeight {
+        for (y, rowParts) in rows.enumerated() {
+            for k in tall.indices { tall[k] = 0 }
+            for (row, weight) in rowParts {
+                let from = row * inWidth * 4
+                for k in tall.indices { tall[k] += Float(source[from + k]) * weight }
+            }
             for (x, parts) in columns.enumerated() {
                 var sum: (Float, Float, Float, Float) = (0, 0, 0, 0)
                 for (column, weight) in parts {
-                    let at = (y * inWidth + column) * 4
+                    let at = column * 4
                     sum.0 += tall[at] * weight
                     sum.1 += tall[at + 1] * weight
                     sum.2 += tall[at + 2] * weight

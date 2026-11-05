@@ -89,7 +89,7 @@ export function MorePayerRows(E: MoreElements, d: MoreBookData): RenderElement[]
 }
 // The model a row runs on (Talk and Explain while the session pays, one pick for both; and the second look): what may be
 // picked, the pick, and whether the person's own connection names no model (the row cannot run) or still waits for
-// their pick (owner 10-17).
+// their pick.
 function moreRowModel(s: MoreSnapshot, id: MoreId): { models?: MoreModels; picked?: string; none: boolean; pickFirst: boolean } {
   const models = s.models && (id === 'look' || id === 'lines' || (id === 'talk' || id === 'explain') && s.key?.payer !== 'key') ? s.models : undefined
   if (!models) return { none: false, pickFirst: false }
@@ -110,7 +110,8 @@ export function MoreRow(E: MoreElements, d: MoreBookData, id: MoreId, tags?: str
   const service=MORE_SERVICE_ROWS.has(id)?w(MORE_SERVICE_SLOT):''
   // A row that cannot run here is drawn, «Off», with one line saying why (U6, owner 10-17)
   const model=moreRowModel(s,id),unavailable=!moreRowAuthored(id,s.lang)||model.none
-  const reason=unavailable?w(model.none?'model.none':'unavailable'):''
+  const connectApi=id==='talk'&&model.none
+  const reason=unavailable&&!connectApi?w(model.none?'model.none':'unavailable'):''
   const on=moreOn(s.values,id)&&!unavailable&&!model.pickFirst,asking=s.asking===id&&!unavailable&&!model.pickFirst
   const help=[w(`${id}.help`),service].filter(Boolean).join('\n')
   const button=id==='plain'?(on?w('plain.stop'):w('plain.use')):(on?w('turnOff'):s.screenReader?moreFill(w('turnOnNamed'),{name:label}):w('turnOn'))
@@ -120,7 +121,7 @@ export function MoreRow(E: MoreElements, d: MoreBookData, id: MoreId, tags?: str
     <Box flexDirection="row" alignItems="center" columnGap={1}>
       <Box flexGrow={1} flexShrink={1} minWidth={0}>{mobile?<Button key={`coco:more:${id}:help`} plain label={label} onPress={()=>{}}/>:<Text bold wrap="wrap">{label}</Text>}</Box>
       {asking?null:on?<Box flexShrink={0}><Text bold>{id==='plain'?w('plain.inUse'):w('on')}</Text></Box>:null}
-      {unavailable?<Box flexShrink={0}><Text color="inactive">{w('cap.off')}</Text></Box>:asking||capButtons||model.pickFirst?null:id==='cap'&&Select?<Select key="coco:more:cap" label={label} options={capChoices(s.lang)} value={String(s.values.cap??0)} onSelect={()=>{}}/>:<Button key={`coco:more:${id}:${on?'off':'on'}`} label={button} onPress={()=>{}}/>}
+      {connectApi?<Button key="coco:more:talk:connect" label={w('key.connect')} onPress={()=>{}}/>:unavailable?<Box flexShrink={0}><Text color="inactive">{w('cap.off')}</Text></Box>:asking||capButtons||model.pickFirst?null:id==='cap'&&Select?<Select key="coco:more:cap" label={label} options={capChoices(s.lang)} value={String(s.values.cap??0)} onSelect={()=>{}}/>:<Button key={`coco:more:${id}:${on?'off':'on'}`} label={button} onPress={()=>{}}/>}
     </Box>
     {tags?<Text color="inactive" wrap="wrap">{tags}</Text>:null}
     <Text color="inactive" wrap="wrap">{w(`${id}.cost`)}</Text>
@@ -131,7 +132,7 @@ export function MoreRow(E: MoreElements, d: MoreBookData, id: MoreId, tags?: str
     {capButtons&&!unavailable&&!asking?<Box flexDirection="row" flexWrap="wrap" columnGap={1}>{capChoices(s.lang).map(choice=><Button key={`coco:more:cap:pick:${choice.value}`} label={choice.label} onPress={()=>{}}/>)}</Box>:null}
     {mobile?(s.focused===id?<Box><Text wrap="wrap">{help}</Text></Box>:null):<Box display={s.focused===id?'flex':'none'} {...(s.focused===id?{}:{hover:{display:'flex' as const,scope:`more:${id}`}})}><Text wrap="wrap">{help}</Text></Box>}
     {on&&id==='talk'&&s.key?.payer==='key'&&moreKeyToday(s.key,s.lang,(d.columns??80)<=NARROW)?<Text color="inactive" wrap="wrap">{moreKeyToday(s.key,s.lang,(d.columns??80)<=NARROW)}</Text>:on&&moreCountText(s,id)?<Text color="inactive" wrap="wrap">{moreCountText(s,id)}</Text>:null}
-    {payer&&id==='talk'&&!unavailable?<Box flexDirection="column" rowGap={0}>{MorePayerRows(E,d)}</Box>:null}
+    {payer&&id==='talk'&&(!unavailable||s.key?.noRun)?<Box flexDirection="column" rowGap={0}>{MorePayerRows(E,d)}</Box>:null}
     {asking?<Box flexDirection="column"><Text wrap="wrap">{[moreFill(w(`${id}.ask`)||(id==='plain'?w('plain.help')+'\n'+w('plain.cost'):''),{n:numberText(d.usage?.context.tokens??0,s.lang)}),service].filter(Boolean).join('\n')}</Text><Box flexDirection="row" columnGap={1}><Button key={`coco:more:${id}:ask:no`} label={w('ask.no')} onPress={()=>{}}/><Button key={`coco:more:${id}:ask:yes`} variant="primary" label={w('ask.yes')} onPress={()=>{}}/></Box></Box>:null}
   </Box>
 }
@@ -150,6 +151,23 @@ function MoreLinesState(E: MoreElements, d: MoreBookData, on: boolean): RenderEl
     :<Select key={`coco:more:lines:${key}`} {...(label?{label}:{})} options={options} value={value} onSelect={()=>{}}/>
   const rows:RenderElement[]=[]
   if(v.character==='coco')rows.push(<Box key="coco:more:lines:shipped" flexDirection="column"><Box flexDirection="row" flexWrap="wrap" columnGap={1}>{w('lines.shipped')?<Text>{w('lines.shipped')}</Text>:null}{button('edit:shipped',w('lines.edit'))}{button('restore:shipped',w('lines.restore'))}</Box>{place('shipped')}</Box>)
+  const Input='Input' in E?E.Input:undefined, dialog=v.importView, preview=dialog?.preview
+  rows.push(<Box key="coco:more:lines:imported" flexDirection="column" rowGap={1}>
+    <Box flexDirection="row" flexWrap="wrap" columnGap={1}>{button('import:open',w('lines.import.open'))}{button('import:template',w('lines.import.template'))}</Box>
+    {v.imported?<Box flexDirection="row" flexWrap="wrap" columnGap={1}><Text wrap="wrap">{moreFill(w(v.imported.on?'lines.import.active':'lines.import.inactive'),{n:numberText(v.imported.count,s.lang)})}</Text>{button(v.imported.on?'import:off':'import:on',w(v.imported.on?'turnOff':'turnOn'))}</Box>:null}
+    {dialog?<Box flexDirection="column" rowGap={1}>
+      <Text wrap="wrap">{w('lines.import.path')}</Text>
+      {Input&&!mobile?<Input key="coco:more:lines:import:path" placeholder={w('lines.import.path')} value={dialog.path} onInput={()=>{}} onSubmit={()=>{}}/>:<Text wrap="wrap">/coco lines import {dialog.path||'/path/to/lines.txt'}</Text>}
+      <Box flexDirection="row" flexWrap="wrap" columnGap={1}>{button('import:preview',w('lines.import.preview'))}{button('import:cancel',w('ask.no'))}</Box>
+      {dialog.error?<Text color="error" wrap="wrap">{w(`lines.import.error.${dialog.error}`)}</Text>:null}
+      {preview?<Box flexDirection="column" rowGap={1}>
+        <Text wrap="wrap">{moreFill(w('lines.import.count'),{accepted:numberText(preview.accepted,s.lang),rejected:numberText(preview.rejected,s.lang)})}</Text>
+        {preview.rows.slice(dialog.page*10,dialog.page*10+10).map(row=><Text key={`coco:more:lines:import:row:${row.line}`} wrap="wrap">{moreFill(w('lines.import.row'),{n:numberText(row.line,s.lang),state:w(`lines.import.${row.status}`),text:row.text})}</Text>)}
+        {preview.rows.length>10?<Box flexDirection="row" flexWrap="wrap" columnGap={1}>{dialog.page>0?button('import:previous',w('lines.import.previous')):null}<Text>{numberText(dialog.page+1,s.lang)}/{numberText(Math.ceil(preview.rows.length/10),s.lang)}</Text>{(dialog.page+1)*10<preview.rows.length?button('import:next',w('lines.import.next')):null}</Box>:null}
+        {preview.accepted?button('import:apply',w('lines.import.apply')):null}
+      </Box>:null}
+    </Box>:null}
+  </Box>)
   if(on){
     const state=v.state,line=w(state==='ready'?'lines.done':state==='failed'?'lines.failed':state==='busy'?'lines.writing':'')
     rows.push(<Box key="coco:more:lines:generated" flexDirection="column"><Box flexDirection="row" flexWrap="wrap" columnGap={1}>
@@ -160,8 +178,12 @@ function MoreLinesState(E: MoreElements, d: MoreBookData, on: boolean): RenderEl
       {state==='ready'?button('restore:generated',w('lines.restore')):null}
       {state==='ready'?button('drop',w('lines.drop')):null}
     </Box>{place('generated')}</Box>)
-    const only=w('lines.mix.only'),both=w('lines.mix.both')
+  }
+  if(on||v.imported?.on){
+    const only=w(v.imported?.on?'lines.import.only':'lines.mix.only'),both=w('lines.mix.both')
     if(v.character==='coco'&&only&&both)rows.push(choice('mix',w('lines.mix'),[{value:'only',label:only},{value:'both',label:both}],v.mix))
+  }
+  if(on||dialog||v.imported){
     rows.push(choice('lang',w('lines.lang'),LANGS.map(l=>({value:l.code,label:l.native})),v.lang))
   }
   return rows.length?<Box key="coco:more:lines:state" flexDirection="column">{rows}</Box>:null
@@ -194,7 +216,8 @@ function MoreModelChoice(E: MoreElements, d: MoreBookData, id: MoreId, models: M
   </Box>
 }
 // O7 (Ask before going past) counts dollars, so it is drawn only where the session is not on a plan.
-export function moreRowDrawn(id: MoreId, d: MoreBookData): boolean { return moreRowSupported(id)&&(id!=='cap'||d.payer!=='plan') }
+// The cap reads the app's own dollars, which on another maker's model are a guess at a Claude price: no line to hold at.
+export function moreRowDrawn(id: MoreId, d: MoreBookData): boolean { return moreRowSupported(id)&&(id!=='cap'||d.payer!=='plan'&&!d.snapshot.models?.own) }
 export function MorePage(E: MoreElements,d: MoreBookData): RenderElement {
   const {Box,Text,Button}=E,s=d.snapshot,w=(key:string)=>moreWord(key,s.lang)
   // Who pays for Talk is chosen here, under its row (TALK-KEY 3); the switches page draws the row alone.
@@ -221,7 +244,10 @@ export function MoreTalk(E: MoreElements, d: MoreBookData & {exchanges:MoreExcha
   const key=d.snapshot.key,other=key?.payer==='key'&&(elsewhere(key)||!!key.key?.model&&key.key.model!=='claude-haiku-5-5')
   // The person's own key paying Anthropic's Haiku: lane B's line without the plan's half (more.talk.disclosure.key); the
   // usual line until those words are in.
-  const disclosure=other?moreFill(w('talk.disclosure.other'),{model:key!.key!.model??''}):key?.payer==='key'&&key.key?(w('talk.disclosure.key')||w('talk.disclosure')):w('talk.disclosure')
+  // While the session pays, the line names the model that really writes: all but Claude's own default Haiku.
+  const running=key?.payer==='key'?undefined:moreRowModel(d.snapshot,'talk').picked
+  const named=running&&running!=='haiku'?d.snapshot.models?.choices.find(choice=>choice.value===running)?.label??running:undefined
+  const disclosure=other?moreFill(w('talk.disclosure.other'),{model:key!.key!.model??''}):named?moreFill(w('talk.disclosure.other'),{model:named}):key?.payer==='key'&&key.key?(w('talk.disclosure.key')||w('talk.disclosure')):w('talk.disclosure')
   return <Box flexDirection="column" rowGap={1}><Box flexDirection="column"><Text wrap="wrap">{[disclosure,w(MORE_SERVICE_SLOT)].filter(Boolean).join('\n')}</Text>{d.snapshot.key?<Text bold wrap="wrap">{moreTalkPayer(d.snapshot.key,d.payer,d.snapshot.lang)}</Text>:null}</Box>{d.exchanges.map((item,index)=>item.failure?failure(item,index):<Box key={`coco:talk:message:${index}`} flexDirection="column" alignItems={item.side==='person'?'flex-end':'flex-start'}>{item.side==='him'&&!(his(d.exchanges[index-1])&&d.exchanges[index-1]!.who===item.who)?<Text bold>{nameOf(item.who)}</Text>:null}<Text wrap="wrap">{item.text}</Text>{item.work?<Button key={`coco:talk:askClaude:${index}`} label={w('talk.askClaude')} onPress={()=>{}}/>:null}</Box>)}{d.writing?<Box key="coco:talk:writing" flexDirection="column" alignItems="flex-start">{!(his(d.exchanges[d.exchanges.length-1])&&d.exchanges[d.exchanges.length-1]!.who===d.who)?<Text bold>{nameOf(d.who)}</Text>:null}<Text color="inactive">…</Text></Box>:null}{!w(MORE_SERVICE_SLOT)?null:d.surface==='mobile'||!Input?<Text>{w('talk.phone')}</Text>:<Box flexDirection="column"><Input key="coco:talk:input" placeholder={w('talk.placeholder')} onInput={()=>{}} onSubmit={()=>{}}/>{d.busy?null:<Button key="coco:talk:send" label={w('talk.send')} onPress={()=>{}}/>}</Box>}</Box>
 }
 export function MoreExplanation(E:MoreElements,d:MoreBookData & {text:string}):RenderElement {

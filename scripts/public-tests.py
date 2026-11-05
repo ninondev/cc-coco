@@ -15,7 +15,7 @@ PUBLIC_TOOL_FILES = (
     'native_hook_cpu.py', 'swift_cpu_fixtures.py', 'hooks_source.py',
     'engine_preflight_contract.py', 'fixture_cpu.py', 'startup_batches.py', 'native_budget.py',
     'build-d1-runtime.py', 'd1-runtime-canonical.json', 'd1-runtime-entry.ts', 'cost-units-entry.ts',
-    'build-hooks-graph.py',
+    'build-hooks-graph.py', 'build-companion-macos.py',
 )
 # Folders copied whole (the assembly's TOOLS_DIRS), with the kinds of file each holds.
 PUBLIC_TOOL_DIRS = {
@@ -56,11 +56,19 @@ def main():
     parser.add_argument('source_tools', type=Path)
     parser.add_argument('staged_tools', type=Path)
     parser.add_argument('--word-inputs', required=True, type=Path)
+    parser.add_argument('--retain-excluded', type=Path,
+                        help='move excluded staged checks into a new directory instead of deleting them')
     args = parser.parse_args()
     source = args.source_tools.resolve(strict=True)
     staged = args.staged_tools.resolve(strict=True)
     if source == staged or source in staged.parents:
         raise ValueError('source and staged tools must be separate trees')
+    retained = args.retain_excluded
+    if retained:
+        retained = retained.absolute()
+        if retained.exists() or retained.is_symlink() or source in retained.parents or staged in retained.parents:
+            raise ValueError('--retain-excluded must be a new directory outside source and staged tools')
+        retained.mkdir()
     # Remove checks that need what is not staged, until nothing they need is missing.
     local = {q.stem for q in source.glob('*.py')}
     while True:
@@ -68,7 +76,12 @@ def main():
         if not gone:
             break
         for q in gone:
-            q.unlink()
+            if retained:
+                target = retained/q.relative_to(staged)
+                target.parent.mkdir(parents=True, exist_ok=True)
+                q.rename(target)
+            else:
+                q.unlink()
     left = sorted('tools/tests/' + p.name for p in (source / 'tests').glob('*.py') if not (staged / 'tests' / p.name).exists())
     left += [f for f in LEFT_OUT_TOOLS if not (staged.parent / f).exists()]
     registry = json.loads((source / 'promises.json').read_text(encoding='utf-8'))

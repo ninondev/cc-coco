@@ -41,6 +41,9 @@ export type CostSurfaceSnapshot = {
   }
   sessionUSD?: number
   sessionEstimated?: boolean
+  // This conversation's own usage by kind (later-17): input, output, cache read and cache write
+  // tokens summed over every step this session, main replies and helpers alike.
+  tokens?: { input: number; output: number; cacheRead: number; cacheWrite: number }
   makerEstimate?: { turnUSD?: number; sessionUSD?: number }
   lastTurn?: { usd?: number; estimated?: boolean; window?: { kind: '5h' | '7d'; from: number; to: number } }
   ownCalls?: { count: number; usd: number }
@@ -53,8 +56,20 @@ export type CostSurfaceSnapshot = {
   warmAsking?: true
   // The screen lock cannot be read here, so keeping warm stops after 30 minutes.
   warmNoLock?: true
-  // Today's pauses kept warm, re-reads, their price and what they saved (the warm runtime's 'warm.today').
+  // Today's pauses kept warm, re-reads, their price and what they saved (the warm runtime's per-conversation
+  // day rows plus the legacy one).
   warmToday?: { pauses: number; pings: number; usd: number; saved: number }
+  // Conversations other than this one whose keep-warm switch is on (the legacy row's holder counts as
+  // one); the row's own state is warmEnabled. For the «turn all off» control (r11-01).
+  warmOthersOn?: number
+  // The cost features' switches (r20-14), as the person set them; each is off until turned on.
+  features?: { switchCost?: boolean; pasteBytes?: number; dayCapUsd?: number; costForecast?: boolean; costFolders?: boolean; planConvert?: boolean }
+  // r20-14 item 4: this month's local-ledger spend and its pace projection to the month's end (an estimate).
+  forecast?: { monthUsd: number; projectedUsd: number }
+  // r20-14 item 5: this machine's own spend record by project folder, the three biggest, today and this month.
+  folders?: { name: string; day: number; month: number }[]
+  // r20-14 item 6: on a plan, this conversation's usage at the API price table (an estimate).
+  planConvertUsd?: number
   // Keeping warm turned itself off on this computer: a return found the cache not held (COST-CACHE 4.7). The switch reads
   // off, and its row says why, until they turn it on again.
   warmHeldOff?: 'notHeld'
@@ -131,6 +146,7 @@ export type CocoView = {
   outfit?: 'A' | 'B' // Coco's hoodie: A coral (the usual), B cream; a compaction swaps them (owner 10-14)
   act?: { key: string; at: number } // a moment Coco acts out once (coco-motion.ts), set with its mood
   socks?: string // the pair from her sock drawer (a key of tools/art/coco-socks.py PAIRS); absent: her own (owner 10-14)
+  character?: string // the table's id (plugin/assets/characters.json) of the character on the band and the pets when it is not Coco: dake, maid, fish. Names follow it; claudie below stays for Claudie's own lines and cells
   claudie?: 'dake' | 'maid' // Claude's form on the desktop band and Coco Pet when it is not Coco (DECISIONS 927); the terminal keeps Coco
   costumeDirection?: string // the stage direction a reaction (or the night lamp) gives him, resolved when the band draws
   night?: boolean // the night lamp stands: 23:00 to 04:59 on the person's clock, read when the band draws
@@ -157,6 +173,7 @@ export type CocoBook = {
   more?: boolean
   talk?: boolean
   visitors?: number // His page shows the guest book, this many months back from the newest
+  care?: 'privacy' | 'models' // The settings page shows the privacy and other-models list, this part first
 }
 
 // Coco's skill cards (`/coco cards`, hooks-source/cards): the deck, the uses, the tray, the pane and Coco in it. Plain

@@ -63,6 +63,10 @@ What it does not enforce: that the endpoint is honest. Whoever runs it sees the 
 
 On Linux the file exists only when the last save went there (a keyring save deletes it), so `load` reads it first. When `remove` cannot reach the keyring, it leaves a tombstone in the file, so the old key is not used even after the bus comes back. The folder is created 0700. If it already exists it must belong to the account, and it is tightened to 0700. The limits file is never opened through a symlink. The plugin should run talk-key with the session bus variables (`DBUS_SESSION_BUS_ADDRESS`, `XDG_RUNTIME_DIR`, and `DISPLAY` or `WAYLAND_DISPLAY` for the dialog) passed through.
 
+## Formats
+
+An address ending in a version (`…/v1`, `…/v4`, `…/v1beta`) or in `/openai` is spoken to in the OpenAI format: `POST {base}/chat/completions` and `GET {base}/models`, the key as a bearer token, no `anthropic-version`. Every other address keeps the Anthropic format, so a stored record changes nothing. Only `api.anthropic.com` has a default model; anywhere else `add` needs `--model`.
+
 ## Environment
 
 Our code reads only the proxy pair: `HTTPS_PROXY` and `NO_PROXY`, or their lowercase forms, with the uppercase one winning. The home folder comes from the account database, not `HOME`. Below our code:
@@ -70,7 +74,7 @@ Our code reads only the proxy pair: `HTTPS_PROXY` and `NO_PROXY`, or their lower
 - its resolver reads `RES_OPTIONS`, `LOCALDOMAIN` and `HOSTALIASES`, which is harmless because TLS pins the name;
 - Rust's runtime reads `RUST_BACKTRACE` when it reports a panic.
 
-Nothing reads `SSL_CERT_FILE`, `SSL_CERT_DIR`, `ALL_PROXY`, `HTTP_PROXY` or `ANTHROPIC_API_KEY`. Linux trusts the first system bundle that loads from a fixed list; macOS and Windows ask the OS verifier. Helpers it starts (`secret-tool`, the dialogs) inherit the environment.
+Nothing reads `SSL_CERT_FILE`, `SSL_CERT_DIR`, `ALL_PROXY`, `HTTP_PROXY`, `ANTHROPIC_API_KEY` or `ANTHROPIC_AUTH_TOKEN`. Linux trusts the first system bundle that loads from a fixed list; macOS and Windows ask the OS verifier. Helpers it starts (`secret-tool`, the dialogs) inherit the environment.
 
 On unix the program sets its core-file limit to 0, and on Linux it marks itself non-dumpable, which also blocks same-user ptrace. The key buffers are zeroed after use where that is cheap.
 

@@ -6,7 +6,7 @@ import type { Lang } from '../hooks/words'
 import { world, settleLegacyStart, RECENT } from './world'
 
 const input = (key:string):ConfigDescribeInput => ({key,label:'Original',description:'Original help',isHidden:false,provider:{kind:'plugin',plugin:'coco',tier:'inline'} as any})
-test('B1c only its own two config rows relabel, resolvedLanguage stays hidden in every locale',()=>{
+test('B1c only its own two config rows relabel in every locale',()=>{
  expect(Object.keys(CONFIG_WORDS).sort()).toEqual(Object.keys(WORDS).sort())
  for(const lang of Object.keys(WORDS) as Lang[]) {
   for(const field of ['band','language'] as const) {
@@ -15,7 +15,6 @@ test('B1c only its own two config rows relabel, resolvedLanguage stays hidden in
    expect(e.label).toBe('Original')
    expect(result.description.includes(field==='band'?'compact':'auto')).toBe(true)
   }
-  expect(describeCocoConfig(lang,input('coco.resolvedLanguage'))).toEqual({label:'Original',description:'Original help',isHidden:true})
   expect(describeCocoConfig(lang,input('other.band'))).toEqual({label:'Original',description:'Original help',isHidden:false})
  }
 })
@@ -30,8 +29,6 @@ for(const lang of Object.keys(WORDS) as Lang[])test(`B1c engine describes its ow
  await $.session.start({cwd:'/tmp/b1c-config',surface:'desktop',isInteractive:true});await settleLegacyStart($,w)
  for(const field of ['band','language'] as const)
   expect(await $.config.describe(input(`coco.${field}`))).toEqual({...CONFIG_WORDS[lang][field],isHidden:false})
- const resolved={...input('coco.resolvedLanguage'),label:"Coco's resolved language",description:"Kept by Coco for a fast start. To change Coco's language, use the language row above."}
- expect(await $.config.describe(resolved)).toEqual({label:resolved.label,description:resolved.description,isHidden:true})
 })
 
 test('B1c auto language hydration invalidates cached config labels and exposes the resolved labels',async($,on)=>{

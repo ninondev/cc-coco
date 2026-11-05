@@ -154,7 +154,7 @@ describe('zh and ja book spacing', () => {
   // in the terminal; the desktop marks the chosen button and has no "Now:" line (owner 10-23). From 48 columns
   // a fact is its label in a column and its value beside it, with no colon. Under 48 columns a fact keeps
   // today's inline form, so zh, zh-Hant and ja keep their colon there.
-  for (const {code} of LANGS) test('choice labels carry Now under them in the terminal and not on the desktop; zh and ja facts keep their colon under 48 columns: '+code, { options:{language:'auto',resolvedLanguage:code}, timeoutMs: 60_000 }, async ($, on) => {
+  for (const {code} of LANGS) test('choice labels carry Now under them in the terminal and not on the desktop; zh and ja facts keep their colon under 48 columns: '+code, { options:{language:code}, timeoutMs: 60_000 }, async ($, on) => {
     await loadD1Words(async () => D1_WORDS_TEXT)
     // The Breathing row (PLAY 4.1, main Settings since 10-09) takes its words from c3-text.json, as the plugin does.
     await loadC3Words(async () => C3_WORDS_RAW)

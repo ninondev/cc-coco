@@ -13,15 +13,18 @@ use std::{
     io::Write,
     os::windows::fs::{FileExt, MetadataExt, OpenOptionsExt},
     os::windows::io::AsRawHandle,
-    time::{Duration, Instant},
+    time::{Duration, Instant, SystemTime},
 };
 use windows::{
     core::{HRESULT, HSTRING},
     Win32::{
         Foundation::*,
-        Security::{EqualSid, GetTokenInformation, TokenUser, TOKEN_QUERY, TOKEN_USER},
+        Security::{
+            EqualSid, GetKernelObjectSecurity, GetSecurityDescriptorOwner, GetTokenInformation, TokenUser,
+            OWNER_SECURITY_INFORMATION, PSECURITY_DESCRIPTOR, PSID, TOKEN_QUERY, TOKEN_USER,
+        },
         Storage::FileSystem::*,
-        System::{IO::*, Pipes::*, Threading::*},
+        System::{Pipes::*, Threading::*, IO::*},
     },
 };
 
@@ -37,22 +40,14 @@ pub fn run(verb: Verb) -> u8 {
             requests,
             deadline,
         } => follow(&folder, &token, &requests, deadline),
-        Verb::Transaction {
-            folder,
-            token,
-            remove,
-        } => transaction(&folder, &token, &remove),
+        Verb::Transaction { folder, token, remove } => transaction(&folder, &token, &remove),
         Verb::FifoSend {
             token,
             server,
             nonce,
             text,
         } => fifo_send(&token, server, nonce, &text),
-        Verb::DeadlineWrite {
-            folder,
-            token,
-            line,
-        } => deadline_write(&folder, &token, &line),
+        Verb::DeadlineWrite { folder, token, line } => deadline_write(&folder, &token, &line),
     };
     result.unwrap_or_else(|error| {
         eprintln!("presence: {error}");
@@ -280,9 +275,295 @@ fn parent_folder(path: &str) -> Option<&str> {
     path.rfind(['\\', '/']).map(|n| &path[..n])
 }
 
+// BEGIN portable session lifecycle (also compiled by tests/check_windows_presence_lifecycle.py).
+#[derive(Clone, Copy, Debug, PartialEq, Eq)]
+enum SessionKind {
+    Registration,
+    Marker,
+    Deadline,
+}
+fn session_name(name: &str) -> Option<(SessionKind, &str)> {
+    for (kind, prefix, suffix) in [
+        (SessionKind::Registration, ".presence-registration-", ""),
+        (SessionKind::Marker, ".presence-follow-", ".jsonl"),
+        (SessionKind::Deadline, ".presence-deadline-", ".jsonl"),
+    ] {
+        if let Some(token) = name.strip_prefix(prefix).and_then(|s| s.strip_suffix(suffix)) {
+            if protocol::valid_token(token, 128) {
+                return Some((kind, token));
+            }
+        }
+    }
+    None
+}
+fn session_receipt(bytes: &[u8], token: &str) -> Option<(u32, u64)> {
+    let text = std::str::from_utf8(bytes).ok()?.strip_suffix('\n')?;
+    let fields: Vec<_> = text.split('\t').collect();
+    let digits = |s: &str| !s.is_empty() && s.bytes().all(|b| b.is_ascii_digit());
+    if fields.len() != 6
+        || text.contains(['\r', '\n'])
+        || fields[5] != token
+        || !digits(fields[0])
+        || !digits(fields[1])
+        || fields[3] != "0"
+        || !protocol::listed_executable(fields[4])
+    {
+        return None;
+    }
+    let pid = fields[0].parse::<u32>().ok().filter(|pid| *pid > 0)?;
+    fields[1].parse::<u32>().ok()?;
+    let birth = fields[2].strip_prefix("windows:")?;
+    if !digits(birth) {
+        return None;
+    }
+    Some((pid, birth.parse().ok()?))
+}
+
+// The registration is removed before either companion file. Capture file handles before calling this,
+// so a new session using the same token cannot have its replacement files removed by an old cleanup.
+fn remove_session_files<T>(registration: T, marker: Option<T>, deadline: Option<T>, mut remove: impl FnMut(T) -> bool) {
+    if remove(registration) {
+        for file in [marker, deadline].into_iter().flatten() {
+            remove(file);
+        }
+    }
+}
+
+fn registered_write<R: Eq, W, E>(
+    mut registration: impl FnMut() -> Option<R>,
+    publish: impl FnOnce() -> Result<W, E>,
+    discard: impl FnOnce(W),
+) -> Result<(), E> {
+    let Some(before) = registration() else {
+        return Ok(());
+    };
+    let written = publish()?;
+    if registration().as_ref() != Some(&before) {
+        discard(written);
+    }
+    Ok(())
+}
+// END portable session lifecycle.
+
+struct SessionFile(fs::File);
+impl SessionFile {
+    fn open(path: &str, users: &Users) -> Result<Self, Error> {
+        let file = OpenOptions::new()
+            .access_mode(GENERIC_READ.0 | DELETE.0)
+            .custom_flags(FILE_FLAG_OPEN_REPARSE_POINT.0)
+            .open(path)?;
+        Self::checked(file, users)
+    }
+    fn create(path: &str, users: &Users) -> Result<Self, Error> {
+        let file = OpenOptions::new()
+            .write(true)
+            .access_mode(GENERIC_READ.0 | GENERIC_WRITE.0 | DELETE.0)
+            .create_new(true)
+            .custom_flags(FILE_FLAG_OPEN_REPARSE_POINT.0)
+            .open(path)?;
+        Self::checked(file, users)
+    }
+    fn checked(file: fs::File, users: &Users) -> Result<Self, Error> {
+        let metadata = file.metadata()?;
+        let mut info = BY_HANDLE_FILE_INFORMATION::default();
+        unsafe { GetFileInformationByHandle(HANDLE(file.as_raw_handle()), &mut info)? };
+        if !metadata.is_file()
+            || info.dwFileAttributes & FILE_ATTRIBUTE_REPARSE_POINT.0 != 0
+            || info.nNumberOfLinks != 1
+            || !users.owns(HANDLE(file.as_raw_handle()))
+        {
+            return Err("presence session file must be plain, owned and have one link".into());
+        }
+        Ok(Self(file))
+    }
+    fn id(&self) -> Result<(u32, u64, u64), Error> {
+        let mut info = BY_HANDLE_FILE_INFORMATION::default();
+        unsafe { GetFileInformationByHandle(HANDLE(self.0.as_raw_handle()), &mut info)? };
+        Ok((
+            info.dwVolumeSerialNumber,
+            ((info.nFileIndexHigh as u64) << 32) | info.nFileIndexLow as u64,
+            ((info.ftCreationTime.dwHighDateTime as u64) << 32) | info.ftCreationTime.dwLowDateTime as u64,
+        ))
+    }
+    fn read(&self) -> Option<Vec<u8>> {
+        let size = self.0.metadata().ok()?.len();
+        if size == 0 || size > 8191 {
+            return None;
+        }
+        read_at(&self.0, 0, size as usize).ok()
+    }
+    fn remove(self) -> bool {
+        // Delete this handle's file, never a replacement at its former path.
+        let mut info = BY_HANDLE_FILE_INFORMATION::default();
+        let handle = HANDLE(self.0.as_raw_handle());
+        unsafe {
+            if GetFileInformationByHandle(handle, &mut info).is_err() || info.nNumberOfLinks != 1 {
+                return false;
+            }
+            let disposition = FILE_DISPOSITION_INFO {
+                DeleteFile: true.into(),
+            };
+            SetFileInformationByHandle(
+                handle,
+                FileDispositionInfo,
+                (&disposition as *const FILE_DISPOSITION_INFO).cast(),
+                std::mem::size_of::<FILE_DISPOSITION_INFO>() as u32,
+            )
+            .is_ok()
+        }
+    }
+}
+
+fn session_folder(folder: &str, users: &Users) -> Result<fs::File, Error> {
+    let file = OpenOptions::new()
+        .read(true)
+        .share_mode(FILE_SHARE_READ.0 | FILE_SHARE_WRITE.0)
+        .custom_flags(FILE_FLAG_BACKUP_SEMANTICS.0 | FILE_FLAG_OPEN_REPARSE_POINT.0)
+        .open(folder)?;
+    let metadata = file.metadata()?;
+    if !metadata.is_dir()
+        || metadata.file_attributes() & FILE_ATTRIBUTE_REPARSE_POINT.0 != 0
+        || !users.owns(HANDLE(file.as_raw_handle()))
+    {
+        return Err("presence session folder must be plain and owned".into());
+    }
+    Ok(file)
+}
+
+fn session_gone(pid: u32, birth: u64) -> bool {
+    unsafe {
+        let process = match OpenProcess(PROCESS_QUERY_LIMITED_INFORMATION | PROCESS_SYNCHRONIZE, false, pid) {
+            Ok(process) => Handle(process),
+            Err(error) => return win32(&error, ERROR_INVALID_PARAMETER),
+        };
+        match WaitForSingleObject(process.0, 0) {
+            WAIT_OBJECT_0 => true,
+            WAIT_TIMEOUT => {
+                let (mut created, mut exit, mut kernel, mut user) = (
+                    FILETIME::default(),
+                    FILETIME::default(),
+                    FILETIME::default(),
+                    FILETIME::default(),
+                );
+                GetProcessTimes(process.0, &mut created, &mut exit, &mut kernel, &mut user).is_ok()
+                    && (((created.dwHighDateTime as u64) << 32) | created.dwLowDateTime as u64) != birth
+            }
+            _ => false,
+        }
+    }
+}
+
+fn session_remove(folder: &str, token: &str, registration: SessionFile, users: &Users) {
+    let Ok(id) = registration.id() else {
+        return;
+    };
+    let marker = SessionFile::open(&protocol::follow_marker(folder, token), users).ok();
+    let deadline = SessionFile::open(&protocol::deadline_file(folder, token), users).ok();
+    if SessionFile::open(&protocol::registration_file(folder, token), users)
+        .ok()
+        .and_then(|file| file.id().ok())
+        != Some(id)
+    {
+        return;
+    }
+    remove_session_files(registration, marker, deadline, SessionFile::remove);
+}
+
+fn registration_absent(folder: &str, token: &str) -> bool {
+    fs::symlink_metadata(protocol::registration_file(folder, token))
+        .is_err_and(|error| error.kind() == std::io::ErrorKind::NotFound)
+}
+
+fn sweep(folder: &str, users: &Users) {
+    let Ok(_directory) = session_folder(folder, users) else {
+        return;
+    };
+    let Ok(entries) = fs::read_dir(folder) else {
+        return;
+    };
+    let names: Vec<_> = entries
+        .filter_map(Result::ok)
+        .filter_map(|entry| entry.file_name().into_string().ok())
+        .filter(|name| session_name(name).is_some())
+        .take(4096)
+        .collect();
+    for name in &names {
+        let Some((SessionKind::Registration, token)) = session_name(name) else {
+            continue;
+        };
+        let Ok(registration) = SessionFile::open(&protocol::join(folder, name), users) else {
+            continue;
+        };
+        let Some((pid, birth)) = registration.read().and_then(|bytes| session_receipt(&bytes, token)) else {
+            continue;
+        };
+        if session_gone(pid, birth) {
+            session_remove(folder, token, registration, users);
+        }
+    }
+    for name in &names {
+        let Some((kind, token)) = session_name(name) else {
+            continue;
+        };
+        if kind == SessionKind::Registration || !registration_absent(folder, token) {
+            continue;
+        }
+        let Ok(file) = SessionFile::open(&protocol::join(folder, name), users) else {
+            continue;
+        };
+        let old = file
+            .0
+            .metadata()
+            .ok()
+            .and_then(|m| m.modified().ok())
+            .and_then(|mtime| SystemTime::now().duration_since(mtime).ok())
+            .is_some_and(|age| age >= Duration::from_secs(60));
+        if old && registration_absent(folder, token) {
+            file.remove();
+        }
+    }
+}
+
+struct FollowerFiles<'a> {
+    folder: &'a str,
+    token: &'a str,
+    users: &'a Users,
+    registration: Option<(u32, u64, u64)>,
+    marker: Option<(u32, u64, u64)>,
+}
+impl Drop for FollowerFiles<'_> {
+    fn drop(&mut self) {
+        let Some(id) = self.registration else {
+            return;
+        };
+        let Ok(registration) = SessionFile::open(&protocol::registration_file(self.folder, self.token), self.users)
+        else {
+            return;
+        };
+        if registration.id().ok() != Some(id) {
+            return;
+        }
+        let marker = SessionFile::open(&protocol::follow_marker(self.folder, self.token), self.users)
+            .ok()
+            .filter(|file| self.marker.is_some() && file.id().ok() == self.marker);
+        let deadline = SessionFile::open(&protocol::deadline_file(self.folder, self.token), self.users).ok();
+        if SessionFile::open(&protocol::registration_file(self.folder, self.token), self.users)
+            .ok()
+            .and_then(|file| file.id().ok())
+            != Some(id)
+        {
+            return;
+        }
+        remove_session_files(registration, marker, deadline, SessionFile::remove);
+    }
+}
+
 fn follow(folder: &str, token: &str, requests: &str, deadline_on: bool) -> Result<u8, Error> {
     let host = host()?;
     ensure_folder(folder)?;
+    let users = Users::new()?;
+    let _directory = session_folder(folder, &users)?;
+    sweep(folder, &users);
     let journal = protocol::join(folder, "presence.jsonl");
     let snapshot = protocol::join(folder, "snapshot.json");
     drop(open_plain(&journal, true, true)?);
@@ -292,16 +573,22 @@ fn follow(folder: &str, token: &str, requests: &str, deadline_on: bool) -> Resul
     // The registration says who this follower is; a transaction lists a process under a token only when this file
     // holds exactly what the system says about that process.
     let record = protocol::receipt(host.pid, host.me.parent, &host.me.birth, 0, &host.me.image, token);
-    for (path, text) in [
-        (protocol::registration_file(folder, token), record),
-        (marker.clone(), format!("READY\t{token}\n")),
-    ] {
-        let mut file = OpenOptions::new()
-            .write(true)
-            .create_new(true)
-            .custom_flags(FILE_FLAG_OPEN_REPARSE_POINT.0)
-            .open(path)?;
-        file.write_all(text.as_bytes())?;
+    let mut own = FollowerFiles {
+        folder,
+        token,
+        users: &users,
+        registration: None,
+        marker: None,
+    };
+    {
+        let mut file = SessionFile::create(&protocol::registration_file(folder, token), &users)?;
+        own.registration = Some(file.id()?);
+        file.0.write_all(record.as_bytes())?;
+    }
+    {
+        let mut file = SessionFile::create(&marker, &users)?;
+        own.marker = Some(file.id()?);
+        file.0.write_all(format!("READY\t{token}\n").as_bytes())?;
     }
     let mut watches = vec![notice(folder)?];
     if let Some(parent) = parent_folder(requests).filter(|parent| !requests.is_empty() && *parent != folder) {
@@ -481,7 +768,9 @@ impl Pipe {
             }
         }
         let mut moved = 0;
-        Ok(Some(GetOverlappedResult(self.handle.0, overlapped, &mut moved, true).map(|()| moved)))
+        Ok(Some(
+            GetOverlappedResult(self.handle.0, overlapped, &mut moved, true).map(|()| moved),
+        ))
     }
     fn read_line(&mut self, host: &Identity) -> Result<Option<String>, Error> {
         loop {
@@ -570,6 +859,33 @@ impl Users {
             EqualSid(sid(&self.own), sid(&other)).is_ok()
         }
     }
+    fn owns(&self, file: HANDLE) -> bool {
+        unsafe {
+            let mut length = 0;
+            let _ = GetKernelObjectSecurity(
+                file,
+                OWNER_SECURITY_INFORMATION.0,
+                PSECURITY_DESCRIPTOR::default(),
+                0,
+                &mut length,
+            );
+            if length == 0 || length > 65536 {
+                return false;
+            }
+            let mut descriptor = vec![0u64; (length as usize).div_ceil(8)];
+            let descriptor = PSECURITY_DESCRIPTOR(descriptor.as_mut_ptr().cast());
+            if GetKernelObjectSecurity(file, OWNER_SECURITY_INFORMATION.0, descriptor, length, &mut length).is_err() {
+                return false;
+            }
+            let mut owner = PSID::default();
+            let mut defaulted = BOOL::default();
+            if GetSecurityDescriptorOwner(descriptor, &mut owner, &mut defaulted).is_err() {
+                return false;
+            }
+            let own = (*(self.own.as_ptr().cast::<TOKEN_USER>())).User.Sid;
+            EqualSid(own, owner).is_ok()
+        }
+    }
 }
 
 /// presence-linux.c inventory: one PID line per live process of this user, bound to its token when its
@@ -639,8 +955,14 @@ fn transaction(folder: &str, token: &str, leaving: &str) -> Result<u8, Error> {
         host.pid
     )
     .into_bytes();
-    text.extend(protocol::tagged(&read_small(&snapshot, LIMIT).unwrap_or_default(), "STATE\t"));
-    text.extend(protocol::tagged(&read_small(&journal, LIMIT).unwrap_or_default(), "LOG\t"));
+    text.extend(protocol::tagged(
+        &read_small(&snapshot, LIMIT).unwrap_or_default(),
+        "STATE\t",
+    ));
+    text.extend(protocol::tagged(
+        &read_small(&journal, LIMIT).unwrap_or_default(),
+        "LOG\t",
+    ));
     text.extend_from_slice(b"INSPECT\n");
     out.send(&text)?;
     let Some(pids) = pipe.read_line(&host.host)? else {
@@ -654,7 +976,11 @@ fn transaction(folder: &str, token: &str, leaving: &str) -> Result<u8, Error> {
         return Ok(0);
     };
     if commit != "-" {
-        replace(&snapshot, &protocol::join(&work.0, "snapshot"), format!("{commit}\n").as_bytes())?;
+        replace(
+            &snapshot,
+            &protocol::join(&work.0, "snapshot"),
+            format!("{commit}\n").as_bytes(),
+        )?;
         let file = open_plain(&journal, true, true)?;
         let size = file.metadata()?.len();
         let whole = size == 0 || read_at(&file, size - 1, 1)?.first() == Some(&b'\n');
@@ -674,9 +1000,11 @@ fn transaction(folder: &str, token: &str, leaving: &str) -> Result<u8, Error> {
         }
     }
     if !leaving.is_empty() {
-        remove(&protocol::follow_marker(folder, leaving));
-        remove(&protocol::deadline_file(folder, leaving));
-        remove(&protocol::registration_file(folder, leaving));
+        let _directory = session_folder(folder, &users)?;
+        if let Ok(registration) = SessionFile::open(&protocol::registration_file(folder, leaving), &users) {
+            session_remove(folder, leaving, registration, &users);
+        }
+        sweep(folder, &users);
     }
     drop(locked);
     drop(pipe);
@@ -738,11 +1066,46 @@ fn fifo_send(token: &str, server: u32, nonce: u64, text: &str) -> Result<u8, Err
 }
 
 fn deadline_write(folder: &str, token: &str, line: &str) -> Result<u8, Error> {
-    if !fs::symlink_metadata(folder).is_ok_and(|metadata| metadata.is_dir()) {
-        return Ok(UNAVAILABLE);
-    }
+    let users = Users::new()?;
+    let _directory = session_folder(folder, &users)?;
+    let registration = protocol::registration_file(folder, token);
     let target = protocol::deadline_file(folder, token);
     let stage = format!("{target}.{}-{}.stage", std::process::id(), random());
-    replace(&target, &stage, line.as_bytes())?;
+    registered_write(
+        || {
+            SessionFile::open(&registration, &users)
+                .ok()
+                .and_then(|file| file.id().ok())
+        },
+        || -> Result<SessionFile, Error> {
+            let mut file = SessionFile::create(&stage, &users)?;
+            let result = (|| -> Result<(), Error> {
+                file.0.write_all(line.as_bytes())?;
+                if !fs::symlink_metadata(&target).is_err_and(|error| error.kind() == std::io::ErrorKind::NotFound) {
+                    SessionFile::open(&target, &users)?;
+                }
+                unsafe {
+                    MoveFileExW(
+                        &HSTRING::from(&stage),
+                        &HSTRING::from(&target),
+                        MOVEFILE_REPLACE_EXISTING | MOVEFILE_WRITE_THROUGH,
+                    )?;
+                }
+                Ok(())
+            })();
+            if let Err(error) = result {
+                file.remove();
+                return Err(error);
+            }
+            Ok(file)
+        },
+        |file| {
+            file.remove();
+        },
+    )?;
     Ok(0)
 }
+
+#[cfg(test)]
+#[path = "../../tests/support/windows_presence_lifecycle.rs"]
+mod lifecycle_tests;

@@ -57,8 +57,8 @@ describe('every language is complete', () => {
   test('the client languages and both Chinese scripts, in the band and the words', { timeoutMs: 60_000 }, () => {
     expect(CODES).toEqual([...LANGUAGE_CODES])
     expect(new Set(CODES).size).toBe(CODES.length)
-    expect(LANGS.find(lang => lang.code === 'zh')).toEqual({ code: 'zh', locale: 'zh-SG', native: '华文', english: 'Chinese (Simplified)' })
-    expect(LANGS.find(lang => lang.code === 'zh-Hant')).toEqual({ code: 'zh-Hant', locale: 'zh-TW', native: '國語', english: 'Chinese (Traditional)' })
+    expect(LANGS.find(lang => lang.code === 'zh')).toEqual({ code: 'zh', locale: 'zh-SG', native: '简体中文', english: 'Chinese (Simplified)' })
+    expect(LANGS.find(lang => lang.code === 'zh-Hant')).toEqual({ code: 'zh-Hant', locale: 'zh-TW', native: '繁體中文', english: 'Chinese (Traditional)' })
     for (const lang of CODES) {
       expect(OWN[lang] === undefined).toBe(false)
       expect(WORDS[lang] === undefined).toBe(false)
@@ -286,7 +286,7 @@ describe('hearing the person', () => {
   })
 
   const long = 'kannst du bitte den Fehler in der Funktion beheben und danach auch noch einen Test dafür schreiben, der das prüft?'
-  const desk = { store: RECENT, env: {} } // the desktop: no setting, no locale
+  const desk = { store: { ...RECENT, modelsNoted: true }, env: {} } // the desktop: no setting, no locale
 
   test('an unclear prompt is not enough; two in a row that agree are, and code in between changes nothing', async ($, on) => {
     const w = world(on, desk)

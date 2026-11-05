@@ -4,6 +4,7 @@ import type { ShippedPrices, StoredPrices } from './prices'
 import type { OtherMaker } from './prices/others'
 import type { CostSurfaceSnapshot } from '../../types'
 import { setCostSnapshot } from './state'
+import type { CostFeatureSettings } from './features'
 import type { WarmRuntime } from './warm-runtime'
 import type { ForkOutcome, LockSignal, PauseSummary } from './warm/constants'
 
@@ -109,7 +110,7 @@ export class CostRuntime {
   constructor(private deps: CostDeps) {
     this.otherPrices = deps.shipped.others ?? []
     this.warm = createWarmRuntime({ clock: { now: deps.now, after: deps.after }, store: deps.store,
-      isNewest: deps.isNewest, readLock: deps.readLock, billingKind: () => this.payer.kind,
+      isNewest: deps.isNewest, sessionId: () => deps.sessionId(), readLock: deps.readLock, billingKind: () => this.payer.kind,
       windowPercent: () => Math.max(this.last.limits?.fiveHour?.usedPercent ?? 0, this.last.limits?.sevenDay?.usedPercent ?? 0),
       fork: async prompt => {
         const startedAt = deps.now()
@@ -160,6 +161,39 @@ export class CostRuntime {
   async refreshPrices(): Promise<void> {
     const [claude, others] = await Promise.all([this.deps.store.get('prices.claude'), knownOtherPrices(this.deps.store, this.deps.shipped)])
     this.storedPrices = claude as StoredPrices | null; this.otherPrices = others; this.publish()
+  }
+  // r20-14 item 1: one cache re-creation on another model at its own tier; an estimate.
+  nextOnOtherModel(model: string, tokens: number): number | null {
+    if (!(tokens > 0)) return null
+    const prices = this.prices(model, tokens)
+    return prices ? (tokens * (this.ttl() === '1h' ? prices.write1h : prices.write5m)) / 1e6 : null
+  }
+  // r20-14 item 2: a prompt's input cost on the current model; null when no price applies.
+  inputCostUsd(tokens: number): number | null {
+    const model = this.cache.model
+    if (!model || !(tokens > 0)) return null
+    const prices = this.prices(model, tokens)
+    return prices ? (tokens * prices.input) / 1e6 : null
+  }
+  // The cost features' switches (r20-14); parsed here so the compiled runtime's imports stay units and state.
+  private features: CostFeatureSettings = {}
+  private async readFeatures(): Promise<CostFeatureSettings> {
+    const raw = object(await this.deps.store.get('cost.features')), paste = raw.pasteBytes, cap = raw.dayCapUsd
+    return {
+      ...(raw.switchCost === true ? { switchCost: true } : {}),
+      ...(typeof paste === 'number' && Number.isFinite(paste) && paste > 0 ? { pasteBytes: paste } : {}),
+      ...(typeof cap === 'number' && Number.isFinite(cap) && (cap as number) > 0 ? { dayCapUsd: cap as number } : {}),
+      ...(raw.costForecast === true ? { costForecast: true } : {}),
+      ...(raw.costFolders === true ? { costFolders: true } : {}),
+      ...(raw.planConvert === true ? { planConvert: true } : {}),
+    }
+  }
+  async syncFeatures(): Promise<void> { this.features = await this.readFeatures(); this.publish() }
+  // r20-14 item 3: today's spend across the local ledgers, the offerings page's figure.
+  async todayLedgerUsd(): Promise<number> {
+    const keys = (await this.deps.store.keys()).filter(key => key.startsWith('ledger.'))
+    const ledgers = await Promise.all(keys.map(async key => object(await this.deps.store.get(key)) as CostTypes.DayLedger))
+    return c.ledgerTotals(ledgers, c.localDay(this.deps.now())).today
   }
   measure(value: unknown): void {
     const ttl = this.ttl()
@@ -241,9 +275,11 @@ export class CostRuntime {
     await this.flushLedger()
     await this.recordUsed()
     const prices = this.cache.model ? this.prices(this.cache.model, this.cache.prefix) : null
-    this.readWarm(object(await this.deps.store.get('more')).warm)
+    if (this.warm.asked()) this.warmAsked = true
     await this.warm.arm({ sentAt: this.cache.sentAt ?? this.deps.now(), prefix: prices ? this.cache.prefix : 0, ttl: this.ttl(), prices: prices ?? { input: 0, output: 0, read: 0, write5m: 0, write1h: 0 }, observed: prices !== null && this.cache.observed,
       interactive: this.interactive, cronWithinTtl: this.crons.some(cron => cron.recurring && (fixedCronMs(cron.expression) ?? Infinity) <= c.TTL_MS[this.ttl()]), heldOff: false })
+    // arm refreshes the switch state first, so the snapshot carries this conversation's row.
+    this.warmEnabled = this.warm.isEnabled()
     this.scheduleIndicator(); this.publish()
   }
   async ownCall(model: string, usage: CostTypes.Usage, startedAt: number, fork = false): Promise<void> {
@@ -270,11 +306,13 @@ export class CostRuntime {
     return this.crons.flatMap(cron => { const ms = cron.recurring && !this.loopsTold.has(cron.id) ? fixedCronMs(cron.expression) : null; return ms === null ? [] : [{ id: cron.id, everyMs: ms }] })
   }
   toldLoop(id: string): void { this.loopsTold.add(id) }
-  async setWarm(enabled: boolean): Promise<void> { this.warmEnabled = enabled; this.warmAsked = true; this.warmAsking = false; await this.warm.setEnabled(enabled); this.publish() }
-  async syncWarm(): Promise<void> { this.readWarm(object(await this.deps.store.get('more')).warm); await this.warm.syncEnabled(); this.publish() }
+  async setWarm(enabled: boolean): Promise<void> { this.warmAsked = true; this.warmAsking = false; await this.warm.setEnabled(enabled); this.warmEnabled = this.warm.isEnabled(); this.publish() }
+  // r11-01: every conversation's switch off at once; the other sessions see it on their next
+  // refresh, the same eventual hand-off the shared row always had.
+  async allWarmOff(): Promise<void> { this.warmAsked = true; this.warmAsking = false; await this.warm.allOff(); this.warmEnabled = false; this.publish() }
+  async syncWarm(): Promise<void> { await this.warm.syncEnabled(); this.warmEnabled = this.warm.isEnabled(); if (this.warm.asked()) this.warmAsked = true; this.publish() }
   // The first «on» asks once, with this chat's numbers; «not now» closes the question.
   askWarm(open: boolean): void { this.warmAsking = open && !this.warmEnabled; this.publish() }
-  private readWarm(value: unknown): void { this.warmEnabled = value === true; if (typeof value === 'boolean') this.warmAsked = true }
   async close(): Promise<void> { this.cancelIndicator(); await this.warm.close(); await this.flushLedger() }
   private flushLedger(): Promise<void> {
     const growth = this.ledgerGrowth; this.ledgerGrowth = 0
@@ -309,13 +347,39 @@ export class CostRuntime {
     this.modelsRecordedThrough = through
   }
   async book(): Promise<CostSurfaceSnapshot> {
+    this.features = await this.readFeatures()
     const keys = (await this.deps.store.keys()).filter(key => key.startsWith('ledger.'))
     const ledgers = await Promise.all(keys.map(async key => object(await this.deps.store.get(key)) as CostTypes.DayLedger))
     const totals = c.ledgerTotals(ledgers, c.localDay(this.deps.now()))
     const snapshot = this.snapshot()
     snapshot.ledger = { day: totals.today, week: totals.week, month: totals.month }
-    const today = object(await this.deps.store.get('warm.today')), count = (key: string): number => typeof today[key] === 'number' && Number.isFinite(today[key]) ? today[key] as number : 0
-    if (today.date === c.localDay(this.deps.now()) && (count('pauses') > 0 || count('pings') > 0)) snapshot.warmToday = { pauses: count('pauses'), pings: count('pings'), usd: count('usd'), saved: count('saved') }
+    if (this.features.costForecast && totals.month > 0 && snapshot.billing.kind !== 'unknown' && snapshot.billing.kind !== 'cloud' && !snapshot.billing.organisation && !snapshot.billing.otherMaker) {
+      const now = new Date(this.deps.now())
+      const daysInMonth = new Date(now.getFullYear(), now.getMonth() + 1, 0).getDate()
+      const dayOfMonth = now.getDate()
+      if (dayOfMonth < daysInMonth) snapshot.forecast = { monthUsd: totals.month, projectedUsd: totals.month / dayOfMonth * daysInMonth }
+    }
+    if (this.features.costFolders) {
+      // A compact mirror of cost/features.ts's folderRows (its tested source of truth): the
+      // compiled runtime's value imports stay units and state, so the rows are summed here.
+      const month = this.deps.now(), key = c.localDay(month)
+      const rows: { name: string; day: number; month: number }[] = []
+      for (const row of Object.values(object(await this.deps.store.get('cost.folders')))) {
+        const name = (row as { name?: unknown }).name
+        if (typeof name !== 'string') continue
+        let day = 0, monthTotal = 0
+        for (const [one, value] of Object.entries(object((row as { days?: unknown }).days))) {
+          if (typeof value !== 'number' || !Number.isFinite(value)) continue
+          if (one === key) day += value
+          if (one.slice(0, 7) === key.slice(0, 7)) monthTotal += value
+        }
+        rows.push({ name, day, month: monthTotal })
+      }
+      const top = rows.filter(row => row.day > 0 || row.month > 0).sort((a, b) => b.month - a.month || b.day - a.day || a.name.localeCompare(b.name)).slice(0, 3)
+      if (top.length) snapshot.folders = top
+    }
+    const warm = await this.warm.dayTotals()
+    if (warm.any && (warm.pauses > 0 || warm.pings > 0)) snapshot.warmToday = { pauses: warm.pauses, pings: warm.pings, usd: warm.usd, saved: warm.saved }
     return snapshot
   }
   helperCosts(): Record<string, number> { return Object.fromEntries([...this.helperSums].filter(([id]) => !this.unknownHelpers.has(id))) }
@@ -340,12 +404,21 @@ export class CostRuntime {
       ...(this.warmEnabled && heldOff ? { warmHeldOff: heldOff } : {}),
       ...(this.warmAsked ? { warmAsked: true as const } : {}),
       ...(this.warmAsking ? { warmAsking: true as const } : {}),
+      ...(this.warm.othersOn() > 0 ? { warmOthersOn: this.warm.othersOn() } : {}),
+      ...(Object.keys(this.features).length ? { features: this.features } : {}),
       ...(this.deps.lockUnseen ? { warmNoLock: true as const } : {}),
     }
     if (status?.state === 'armed' && status.pauseStart !== null) snapshot.cache.kept = { since: status.pauseStart, pings: status.rereads, usd: status.spentUsd, stopAt: status.stopsBy ?? now }
     if (this.last.costUsd !== null) snapshot.sessionUSD = this.last.costUsd
+    if (this.modelItems.length) {
+      const kinds = { input: 0, output: 0, cacheRead: 0, cacheWrite: 0 }
+      for (const item of this.modelItems) { kinds.input += item.usage.input; kinds.output += item.usage.output; kinds.cacheRead += item.usage.cacheRead; kinds.cacheWrite += item.usage.cacheWrite }
+      snapshot.tokens = kinds
+    }
     const estimates = this.estimatedModels(this.modelItems)
     const estimatedTotal = estimates ? [...estimates.values()].reduce((sum, usd) => sum + usd, 0) : null
+    // r20-14 item 6: on a plan, this conversation at the API price table, an estimate.
+    if (this.features.planConvert && this.payer.kind === 'plan' && estimatedTotal !== null && estimatedTotal > 0) snapshot.planConvertUsd = estimatedTotal
     if (this.payer.otherMaker && (this.lastMakerTurnUSD !== null || estimatedTotal !== null)) snapshot.makerEstimate = {
       ...(this.lastMakerTurnUSD === null ? {} : { turnUSD: this.lastMakerTurnUSD }),
       ...(estimatedTotal === null ? {} : { sessionUSD: estimatedTotal }),

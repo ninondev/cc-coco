@@ -153,6 +153,9 @@ pub fn model_limit(entry: &[u8]) -> Option<u64> {
 /// takes `limit` (the model's own, read by `send`) up to WHOLE_REPLY_TOKENS, or DEFAULT_TOKENS without one.
 pub fn body(d: Draft, rec: &Record, limit: Option<u64>) -> Result<Vec<u8>, Fail> {
     d.bound(rec)?;
+    if rec.endpoint.speaks_openai() {
+        return Ok(openai_body(d, rec));
+    }
     let mut body = Map::new();
     body.insert("model".into(), json!(rec.model));
     let max_tokens = d.max_tokens.unwrap_or_else(|| limit.map_or(DEFAULT_TOKENS, |n| n.min(WHOLE_REPLY_TOKENS)));
@@ -165,6 +168,24 @@ pub fn body(d: Draft, rec: &Record, limit: Option<u64>) -> Result<Vec<u8>, Fail>
         body.insert("thinking".into(), json!({ "type": "disabled" }));
     }
     Ok(serde_json::to_vec(&Value::Object(body)).expect("serialising a JSON value"))
+}
+
+/// The same request in the OpenAI format: the system text is the first message, and a send naming no cap leaves the
+/// limit to the service. api.openai.com's newer models take only `max_completion_tokens`.
+fn openai_body(d: Draft, rec: &Record) -> Vec<u8> {
+    let mut messages = Vec::with_capacity(d.messages.len() + 1);
+    if let Some(s) = d.system {
+        messages.push(json!({ "role": "system", "content": s }));
+    }
+    messages.extend(d.messages);
+    let mut body = Map::new();
+    body.insert("model".into(), json!(rec.model));
+    if let Some(n) = d.max_tokens {
+        let name = if rec.endpoint.host == "api.openai.com" { "max_completion_tokens" } else { "max_tokens" };
+        body.insert(name.into(), json!(n));
+    }
+    body.insert("messages".into(), Value::Array(messages));
+    serde_json::to_vec(&Value::Object(body)).expect("serialising a JSON value")
 }
 
 fn short(s: &str) -> String {
@@ -197,6 +218,44 @@ pub fn read_reply(body: &[u8]) -> Result<(String, Value), Fail> {
     Ok((text, Value::Object(usage)))
 }
 
+/// Text and usage from a 200 answer in the OpenAI format, with usage under the names the plugin reads. Cached prompt
+/// tokens are part of `prompt_tokens` there and apart from `input_tokens` here.
+pub fn read_openai_reply(body: &[u8]) -> Result<(String, Value), Fail> {
+    let v: Value = serde_json::from_slice(body).map_err(|_| Fail::new(Kind::Other, "reply-json"))?;
+    let choice = v.pointer("/choices/0");
+    let message = choice.and_then(|c| c.get("message"));
+    let filtered = choice.and_then(|c| c.get("finish_reason")).and_then(Value::as_str) == Some("content_filter");
+    if filtered || message.and_then(|m| m.get("refusal")).and_then(Value::as_str).is_some_and(|r| !r.is_empty()) {
+        return Err(Fail::new(Kind::Refusal, "finish_reason"));
+    }
+    let mut text = String::new();
+    match message.and_then(|m| m.get("content")) {
+        Some(Value::String(s)) => text.push_str(s),
+        Some(Value::Array(parts)) => {
+            for p in parts {
+                if p.get("type").and_then(Value::as_str) == Some("text")
+                    && let Some(t) = p.get("text").and_then(Value::as_str) {
+                        text.push_str(t);
+                    }
+            }
+        }
+        _ => {}
+    }
+    let mut usage = Map::new();
+    let count = |path: &str| v.pointer(path).and_then(Value::as_u64);
+    let cached = count("/usage/prompt_tokens_details/cached_tokens").unwrap_or(0);
+    if let Some(n) = count("/usage/prompt_tokens") {
+        usage.insert("input_tokens".into(), json!(n.saturating_sub(cached)));
+    }
+    if let Some(n) = count("/usage/completion_tokens") {
+        usage.insert("output_tokens".into(), json!(n));
+    }
+    if cached > 0 {
+        usage.insert("cache_read_input_tokens".into(), json!(cached));
+    }
+    Ok((text, Value::Object(usage)))
+}
+
 /// Maps an HTTP status to the design's failure lines (TALK-KEY §3 «Failures»).
 pub fn fail_for_status(status: u16, body: &[u8], retry_after: Option<u64>) -> Fail {
     let mut f = match status {
@@ -205,6 +264,8 @@ pub fn fail_for_status(status: u16, body: &[u8], retry_after: Option<u64>) -> Fa
         // Anthropic answers a spent balance with a 400 that says so.
         400 if mentions_credit(body) => Fail::new(Kind::Credit, "status-400-credit"),
         403 | 404 => Fail::new(Kind::Model, "status"),
+        // The OpenAI format answers a spent balance with a 429 that says so.
+        429 if out_of_quota(body) => Fail::new(Kind::Credit, "status-429-quota"),
         429 => {
             let mut f = Fail::new(Kind::Rate, "status");
             f.retry_after = retry_after;
@@ -215,6 +276,12 @@ pub fn fail_for_status(status: u16, body: &[u8], retry_after: Option<u64>) -> Fa
     };
     f.status = Some(status);
     f
+}
+
+fn out_of_quota(body: &[u8]) -> bool {
+    serde_json::from_slice::<Value>(body)
+        .ok()
+        .is_some_and(|v| v.pointer("/error/code").and_then(Value::as_str) == Some("insufficient_quota"))
 }
 
 fn mentions_credit(body: &[u8]) -> bool {
@@ -342,6 +409,38 @@ mod tests {
         let f = body(json!({"messages": [{"role": "user", "content": wide}], "max_tokens": 10})).unwrap_err();
         assert_eq!(f.kind, Kind::Cap);
         assert_eq!(estimate("你好"), 6);
+    }
+
+    #[test]
+    fn the_openai_format_puts_the_system_text_first_and_names_no_cap_of_its_own() {
+        let rec = record("https://api.deepseek.com/v1", "deepseek-chat", "gw-key-12345678");
+        let v = body_for(json!({ "system": "s", "messages": [{ "role": "user", "content": "hi" }] }), &rec).unwrap();
+        assert_eq!(v, json!({ "model": "deepseek-chat", "messages": [{ "role": "system", "content": "s" }, { "role": "user", "content": "hi" }] }));
+        let compact = json!({ "kind": "compact", "max_tokens": 1000, "messages": [{ "role": "user", "content": "hi" }] });
+        assert_eq!(body_for(compact.clone(), &rec).unwrap()["max_tokens"], json!(1000));
+        let openai = record("https://api.openai.com/v1", "gpt-x", "gw-key-12345678");
+        let named = body_for(compact, &openai).unwrap();
+        assert_eq!(named["max_completion_tokens"], json!(1000));
+        assert!(named.get("max_tokens").is_none());
+    }
+
+    #[test]
+    fn reads_the_openai_format() {
+        let (text, usage) = read_openai_reply(br#"{"choices":[{"finish_reason":"stop","message":{"role":"assistant","content":"hello","refusal":null}}],
+            "usage":{"prompt_tokens":100,"completion_tokens":7,"prompt_tokens_details":{"cached_tokens":40}}}"#).unwrap();
+        assert_eq!(text, "hello");
+        assert_eq!(usage, json!({ "input_tokens": 60, "output_tokens": 7, "cache_read_input_tokens": 40 }));
+        let (text, _) = read_openai_reply(br#"{"choices":[{"message":{"content":[{"type":"text","text":"a"},{"type":"image"},{"type":"text","text":"b"}]}}]}"#).unwrap();
+        assert_eq!(text, "ab");
+        for refused in [
+            br#"{"choices":[{"finish_reason":"content_filter","message":{"content":""}}]}"#.as_slice(),
+            br#"{"choices":[{"finish_reason":"stop","message":{"content":null,"refusal":"no"}}]}"#.as_slice(),
+        ] {
+            assert_eq!(read_openai_reply(refused).err().unwrap().kind, Kind::Refusal);
+        }
+        assert_eq!(read_openai_reply(b"nope").err().unwrap().detail, "reply-json");
+        assert_eq!(fail_for_status(429, br#"{"error":{"code":"insufficient_quota"}}"#, None).kind, Kind::Credit);
+        assert_eq!(fail_for_status(429, br#"{"error":{"code":"rate_limit_exceeded"}}"#, None).kind, Kind::Rate);
     }
 
     #[test]

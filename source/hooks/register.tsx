@@ -76,9 +76,11 @@ import type { OpeningKind, SessionSource } from './openings'
 import { loadWeekWords, weekWord } from './week-words'
 import { ModGapsRuntime, GapLimits, WaitSound, detectScreenReader, voiceDecision, textBandMode, hintTail, personBandFocus, compactChapter } from './mod-gaps'
 import { renderTextBand, renderRunMark } from './mod-gaps-render'
-import { gapWord, gapCharacterName, claudieName, loadGapWords } from './mod-gaps-words'
+import { gapWord, gapFill, gapCharacterName, loadGapWords } from './mod-gaps-words'
+import { otherProvider, apiFailureKind, apiFailureLine } from './api-lines'
 import { MoreRuntime, MISSING_MORE_MODEL_SLOTS } from './more-runtime'
-import { moreModels } from './more-models'
+import { moreModels, moreWorkerName } from './more-models'
+import { setWorkerName } from './worker-name'
 import type { TalkFacts } from './talk-parts'
 import type { KeyHost, KeyPlatform, KeyPrice } from './talk-key'
 import { keyArch } from './talk-key'
@@ -91,7 +93,8 @@ import { configureM1Transcript } from './transcript'
 
 import { c3MotionFrame, c3NextMotion, openingFrames, openingLife, openingStart } from './c3-motion'
 import { installCostWords } from './cost/words'
-import { loopColdLine, resumeColdLine, warmReturnLine } from './cost/surfaces'
+import { loopColdLine, resumeColdLine, warmReturnLine, moneyReal, switchCostLine, pasteWarnLine, dayCapLine } from './cost/surfaces'
+import { readCostFeatures, writeCostFeatures, estimateTokens, recordFolderSpend } from './cost/features'
 import { setCostSnapshot } from './cost/state'
 import { CostRuntime, usageTokens } from './cost/runtime.js'
 import { createLockReader } from './cost/units.js'
@@ -113,6 +116,7 @@ import type { PlayState } from '../types'
 import { COCO_ACTIONS, cocoAction, cocoBase, cocoBodySeconds, cocoHas, cocoNext, cocoPicture, cocoReady, cocoSocksWorn, cocoStill, cocoWidth, installCocoData, installCocoSocks } from './coco-motion'
 import type { CocoActionKey, CocoData, CocoInput, CocoOutfit, CocoPlay, CocoSocks } from './coco-motion'
 import { claudieForm, claudieReady, claudieSvg, installClaudie, pngSize } from './claudie'
+import { characterForm, nameFor } from './characters'
 import { claudieUnsaid } from './line-library'
 import type { ClaudieForm } from './claudie'
 import { COCO_RESTING } from './coco-stills'
@@ -137,6 +141,10 @@ const VOICE_SECTION = {
   full: { id: 'coco:voice', text: VOICE.full, scope: 'session' as const },
 }
 
+// The cost features' store adapter (r20-14, ZCode-2), the shape bookEngine gives the book.
+function costFeatureStore($: Engine): { get: (key: string) => Promise<unknown>; set: (key: string, value: unknown) => Promise<unknown> } {
+  return { get: (key: string) => $.store.get(key), set: (key: string, value: unknown) => $.store.set(key, value as never) }
+}
 // Imported data modules receive explicit capabilities, never the hook's special `$`.
 function bookEngine($: Engine): Engine {
   return {
@@ -286,16 +294,16 @@ function talkKeyPrice($:Engine,model:string):Promise<KeyPrice|undefined>{
 }
 // What Talk and the second look may run on: Claude Code's own model settings, which cc-switch and tools like it write
 // (owner 10-17); the base URL is read for its host alone and no key is read.
-async function readMoreModels($:Engine):Promise<[ReturnType<typeof moreModels>,unknown]>{
- const [base,main,haiku,sonnet,opus,haikuName,sonnetName,opusName,smallFast,custom,customName,picks]=await Promise.all([
+async function readMoreModels($:Engine,now?:string):Promise<[ReturnType<typeof moreModels>,unknown]>{
+ const [base,main,haiku,sonnet,opus,haikuName,sonnetName,opusName,smallFast,custom,customName,picks,running]=await Promise.all([
   $.env.get('ANTHROPIC_BASE_URL'),$.env.get('ANTHROPIC_MODEL'),
   $.env.get('ANTHROPIC_DEFAULT_HAIKU_MODEL'),$.env.get('ANTHROPIC_DEFAULT_SONNET_MODEL'),$.env.get('ANTHROPIC_DEFAULT_OPUS_MODEL'),
   $.env.get('ANTHROPIC_DEFAULT_HAIKU_MODEL_NAME'),$.env.get('ANTHROPIC_DEFAULT_SONNET_MODEL_NAME'),$.env.get('ANTHROPIC_DEFAULT_OPUS_MODEL_NAME'),
   $.env.get('ANTHROPIC_SMALL_FAST_MODEL'),$.env.get('ANTHROPIC_CUSTOM_MODEL_OPTION'),$.env.get('ANTHROPIC_CUSTOM_MODEL_OPTION_NAME'),
-  $.store.get('more.models'),
+  $.store.get('more.models'),now??$.session.model(),
  ].map(read=>Promise.resolve(read).catch(()=>undefined)))
  const text=(value:unknown)=>typeof value==='string'?value:undefined
- return [moreModels({base:text(base),main:text(main),pinned:{haiku:text(haiku),sonnet:text(sonnet),opus:text(opus)},names:{haiku:text(haikuName),sonnet:text(sonnetName),opus:text(opusName)},smallFast:text(smallFast),custom:text(custom),customName:text(customName)}),picks]
+ return [moreModels({base:text(base),main:text(main),pinned:{haiku:text(haiku),sonnet:text(sonnet),opus:text(opus)},names:{haiku:text(haikuName),sonnet:text(sonnetName),opus:text(opusName)},smallFast:text(smallFast),custom:text(custom),customName:text(customName),current:text(running)}),picks]
 }
 // The character worn reaches the More runtime's line library, which writes their lines if the row is on and none are
 // kept yet in the language picked.
@@ -363,7 +371,7 @@ async function startM1($:Engine):Promise<void>{
  m1More.restore(values,agreed,today,clockSnapshot);m1More.restoreKey(payer,savedKey,keyToday,estimateFactor,clockSnapshot);m1More.configure(view.lang,screenReader);configureM1Book(m1More)
  const [models,modelPicks]=await readMoreModels($)
  if(!current())return
- m1More.setModels(models,modelPicks)
+ m1More.setModels(models,modelPicks);setWorkerName(moreWorkerName(models))
  if(Object.values(m1More.values).some(value=>value===true||typeof value==='number'&&value>0))await loadMoreWords(()=>$.fs.read(joinPath($.plugin.root,'hooks/more-text.json')))
  if(!current())return
  // last session's chat, once the words that let Talk send are in
@@ -997,9 +1005,9 @@ async function dmConsider($:Engine,lastActiveAt?:number):Promise<void>{
 function dmNotify($:Engine,texts:string[]):void{
   if(!m1More?.dm().notify||view.mood==='sleep'||!texts.length)return
   // Titled as a chat app titles it, «New message from Coco» (his words, via lane B), her words under it.
-  // Claudie's messages are under her name (owner 10-21).
+  // Whoever is worn, Claudie or DeepSeek-chan, messages are under her name (owner 10-21; the table's name for the language).
   const coco=gapCharacterName(view.lang),notice=moreWord('dm.notice',view.lang)||WORDS[view.lang].name
-  const title=view.claudie?notice.split(coco).join(claudieName(view.lang)):notice,body=dmPreview(texts.join(' '))
+  const who=view.character??view.claudie,title=who?notice.split(coco).join(nameFor(who,view.lang)):notice,body=dmPreview(texts.join(' '))
   if(!body)return
   // Answering what the person wrote on the pet: the pet shows it (or notifies, its window closed); Claude Code stays quiet.
   if(clockSnapshot>=dmPetUntil)void background($,'dm.toast',Promise.resolve($.ui.toast(`${title}: ${body}`,{timeoutMs:12000})))
@@ -1025,7 +1033,7 @@ function c3Changed($: Engine): void {
   if(Object.keys(state.rates).length)view.paceRates=state.rates;else delete view.paceRates
   view.paceDetails=state.pace.map(p=>{const t=durationText(Math.max(1,(p.exhaustionAt-clockSnapshot)/1000),view.lang,c3Durations(view.lang),false);return {kind:p.kind,t,wide:fill(c3Word(view.lang,'quota.pace.wide'),{t:'~'+t})??'',narrow:fill(c3Word(view.lang,'quota.pace.narrow'),{t:'~'+t})??''}})
   view.neighbourBusyLabel=c3Word(view.lang,'neighbour.busy')
-  setC3BookSnapshot({pace:state.pace,bookmark:state.bookmark,neighbours:view.neighbourLights,vibe:{...state.tests,...vibeFacts()}})
+  setC3BookSnapshot({todoPileThreshold:state.todoPileThreshold,pace:state.pace,bookmark:state.bookmark,neighbours:view.neighbourLights,vibe:{...state.tests,...vibeFacts()}})
   if((state.tests.failed??0)>openerFailed)openerEvents.red=clockSnapshot
   openerFailed=state.tests.failed??0
   projectLine($)
@@ -1037,7 +1045,7 @@ function runtimeC3($: Engine): C3Runtime {
     process:(argv,options)=>$.process.run(argv,options),now:()=>clockSnapshot,lang:()=>view.lang,
     settings:()=>reminderSettings(),localDay:at=>localDay(at,timeZone),
     windowName:kind=>WORDS[view.lang].quota.kinds[kind]??kind,
-    emit:line=>offerLine($,line.key.startsWith('guard.')?{...line,onShown:()=>{line.onShown?.();void background($,'socks.whitehat',earnSocks($,'whitehat'))}}:line),reaction:event=>c3React($,event),notice:(id,text)=>{if(text!==undefined)void background($,'socks.whitehat',earnSocks($,'whitehat'));return $.ui.notice(id,text)},
+    emit:line=>offerLine($,line.key.startsWith('guard.')?{...line,onShown:()=>{line.onShown?.();void background($,'socks.whitehat',earnSocks($,'whitehat'))}}:line),reaction:event=>c3React($,event),notice:(id,text)=>{if(text!==undefined)void background($,'socks.whitehat',earnSocks($,'whitehat'));return $.ui.notice(id,text)},toast:text=>$.ui.toast(text,{timeoutMs:12000}),visible:()=>c3Visible(),
     readWords:()=>$.fs.read(joinPath($.plugin.root,'hooks/c3-text.json')),workerPath:joinPath($.plugin.root,'hooks/algo-worker.mjs'),
     changed:()=>c3Changed($),diagnostic:code=>diagnose($,code),
   })
@@ -1174,7 +1182,7 @@ function syncNeighbours($:Engine):void {
   if(c3){
     const runtime=c3,lifecycle=lifecycleGeneration
     void background($,'c3.neighbours',(async()=>{await snapshotNow($);if(lifecycle===lifecycleGeneration&&runtime===c3&&view.neighbourLights===neighbours)await runtime.neighbours(neighbours,neighbours?.running===true)})())
-    setC3BookSnapshot({pace:c3.view().pace,bookmark:c3.view().bookmark,neighbours,vibe:{...c3.view().tests,...vibeFacts()}})
+    setC3BookSnapshot({todoPileThreshold:c3.view().todoPileThreshold,pace:c3.view().pace,bookmark:c3.view().bookmark,neighbours,vibe:{...c3.view().tests,...vibeFacts()}})
   }
 }
 function acknowledgeC3($:Engine,drawn:View,tree:RenderElement):void {
@@ -2170,7 +2178,7 @@ let settingsRecordWritable = false
 let settingsRecordLoaded = false
 const legacySettingReads = new Map<string, Promise<unknown>>()
 let legacySettingsImported = false
-let pendingMigrationMirrors: { band?: true; language?: true; resolvedLanguage?: true } | undefined
+let pendingMigrationMirrors: { band?: true; language?: true } | undefined
 let configLabelsLanguage = view.lang
 let engineSettingsRead: Promise<void> | undefined
 let engineThemeRead: Promise<void> | undefined
@@ -2183,7 +2191,25 @@ function optionsView(value: View): View {
   const band = activationOptions.band
   const chosen = langOf(activationOptions.language)
   return desktopLook({ ...value, band: band === 'off' || band === 'compact' || band === 'text' ? band : 'on',
-    lang: chosen ?? langOf(activationOptions.resolvedLanguage) ?? value.lang })
+    lang: chosen ?? value.lang })
+}
+// The resolved language's old home was the userConfig mirror (coco.resolvedLanguage), which every
+// session rewrote for a fast start. The mirror is gone; the settings record carries the language.
+// Only while the record has no language yet does the mirror's leftover value count, ranked above the
+// locale; once the record carries a language the stale mirror is never read again, so a later change
+// of the system language still reaches an auto-language person.
+function mirroredLanguage(engine: Readonly<Record<string, unknown>>): Lang | undefined {
+  const configs = engine.pluginConfigs
+  if (!configs || typeof configs !== 'object' || Array.isArray(configs)) return undefined
+  for (const key of ['coco@coco', 'coco']) {
+    const entry = (configs as Record<string, unknown>)[key]
+    if (!entry || typeof entry !== 'object' || Array.isArray(entry)) continue
+    const options = (entry as { options?: unknown }).options
+    if (!options || typeof options !== 'object' || Array.isArray(options)) continue
+    const lang = langOf((options as Record<string, unknown>).resolvedLanguage)
+    if (lang) return lang
+  }
+  return undefined
 }
 // The desktop band is always the painted one and never shrinks while Claude works (owner 10-19): its two settings are
 // gone, so a pixel band or a smaller one stored by a terminal session or an older build is drawn as the painted one.
@@ -2232,7 +2258,7 @@ function applyHydratedSettings($: Engine): void {
   view.quotaTimeZone=timeZone
   langChosen = langOf(activationOptions.language)
   heard = langOf(storedSettings.heard)
-  const lang = langChosen ?? languageOf(settings.language, heard, ...locale, storedSettings.language, activationOptions.resolvedLanguage)
+  const lang = langChosen ?? languageOf(settings.language, heard, storedSettings.language===undefined?mirroredLanguage(cachedEngineSettings):undefined, ...locale, storedSettings.language)
   lastBand = storedSettings.bandBeforeOff === 'compact' ? 'compact' : view.band === 'compact' ? 'compact' : 'on'
   // The one-time legacy read runs only when the batched activation record is missing.
   view = optionsView({ ...view, lang, workSize: storedSettings.workSize === 'smaller' || storedSettings.workSize === 'same' ? storedSettings.workSize : view.workSize??'same',
@@ -2293,6 +2319,13 @@ function hydrate($: Engine): Promise<void> {
     }
     // Local changes made while the store read was pending take precedence.
     storedSettings={...JSON.parse(serialized),...storedSettings} as PresenceSettings
+    // Fast start (review D-2): an auto-language person's first frame speaks the record's
+    // language as soon as the record lands, without waiting for the engine settings read; the
+    // full languageOf order runs again in applyHydratedSettings once everything is in.
+    if(langChosen===undefined){
+      const early=langOf(storedSettings.language)
+      if(early!==undefined&&early!==view.lang){view.lang=early;view.verb=WORDS[early].spinner[0]??view.verb;refreshConfigLabels($);redraw($,'settings.record.language')}
+    }
     if(storedSettings.voiceChosen!==true){
       const legacy=await $.store.get('voice')
       const decision=voiceDecision(storedSettings,legacy)
@@ -2327,14 +2360,11 @@ function hydrate($: Engine): Promise<void> {
     applyHydratedSettings($)
     iconSettingsHydrated(bookEngine($))
     startupTimings.preferencesMs = Date.now()-began
-    const resolvedLanguage=activationOptions.language==='auto' && activationOptions.resolvedLanguage!==view.lang ? view.lang : undefined
-    if(resolvedLanguage!==undefined)activationOptions={...activationOptions,resolvedLanguage}
     const saved=writeSettingsRecord($)
     void background($,'settings.record',saved)
     if (migratedOptions) pendingMigrationMirrors={...pendingMigrationMirrors,
       ...(migratedOptions.band!==undefined?{band:true as const}:{}),
-      ...(migratedOptions.language!==undefined?{language:true as const}:{}),
-      ...(resolvedLanguage!==undefined?{resolvedLanguage:true as const}:{})}
+      ...(migratedOptions.language!==undefined?{language:true as const}:{})}
     const pendingMirrors=pendingMigrationMirrors
     if (pendingMirrors) void background($,'config.migrate',saved.then(written=>{
       if (written!==true || generation!==lifecycleGeneration) return
@@ -2342,14 +2372,10 @@ function hydrate($: Engine): Promise<void> {
       const mirrors:Promise<unknown>[]=[]
       if(pendingMirrors.band)mirrors.push($.config.set({key:'coco.band',value:activationOptions.band??'on'}))
       if(pendingMirrors.language)mirrors.push($.config.set({key:'coco.language',value:activationOptions.language??'auto'}))
-      if(pendingMirrors.resolvedLanguage)mirrors.push($.config.set({key:'coco.resolvedLanguage',value:activationOptions.resolvedLanguage??view.lang}))
       return Promise.all(mirrors).then(()=>{
         if(generation===lifecycleGeneration && pendingMigrationMirrors===pendingMirrors)pendingMigrationMirrors=undefined
       })
     }))
-    if (resolvedLanguage!==undefined && !pendingMirrors) {
-      void background($,'config.resolvedLanguage',optional($, 'config.resolvedLanguage', () => $.config.set({key:'coco.resolvedLanguage',value:resolvedLanguage}), undefined))
-    }
   }).catch(error => {
     if (generation === preferencesGeneration) preferences = undefined
     caught($, 'preferences', error)
@@ -2669,6 +2695,9 @@ function beginLifecycle($:Engine,source:string):void {
 }
 
 let bootPromise:Promise<void>|undefined,bootGeneration=-1
+// The desktop attaches while the boot still runs; the new lifecycle stops the boot before startM1 and nothing
+// started it again, so the desktop book lost every More row (10-31). Wait for the boot, then start what it skipped.
+async function resumeM1($:Engine):Promise<void>{await bootPromise?.catch(()=>{});if(!m1Ready)await startM1($)}
 function boot($:Engine,surface:string|null):Promise<void>{if(bootGeneration===lifecycleGeneration&&bootPromise)return bootPromise;bootGeneration=lifecycleGeneration;return bootPromise=bootWork($,surface)}
 async function bootWork($: Engine, surface: string | null): Promise<void> {
   const generation=lifecycleGeneration, bootTurn=turnId, serial=sessionSerial
@@ -3401,9 +3430,8 @@ function applySettings($: Engine, values: PresenceSettings): void {
   view.quotaTimeZone=timeZone
   languageChangeLimit($)
   if(values.band==='on'||values.band==='compact'||values.band==='off'||values.band==='text')activationOptions={...activationOptions,band:values.band}
-  const selectedLanguage=values.lang==='auto'?'auto':langOf(values.lang), resolvedLanguage=langOf(values.language)
+  const selectedLanguage=values.lang==='auto'?'auto':langOf(values.lang)
   if(selectedLanguage!==undefined)activationOptions={...activationOptions,language:selectedLanguage}
-  if(resolvedLanguage!==undefined)activationOptions={...activationOptions,resolvedLanguage}
   hydrationRevision++
   view.verb = WORDS[view.lang].spinner[0] ?? view.verb
   refreshConfigLabels($)
@@ -3433,6 +3461,20 @@ let turnBeganAt = 0
 function hostWorking(next: boolean): void { if (next && !working) turnBeganAt = clockSnapshot; working = next }
 let stickLitHere = 0
 let rateLimitStopAt = 0
+let limitModelsHinted: number | undefined
+async function modelsNote($: Engine): Promise<void> {
+  const text = gapWord(view.lang, 'privacy.note')
+  if (!text || await $.store.get('modelsNoted')) return
+  await $.store.set('modelsNoted', true as never)
+  $.ui.toast(text, { timeoutMs: 12000 })
+}
+// Once per limit window, across restarts and other sessions too.
+async function limitModelsNote($: Engine, resetsAt: number | undefined): Promise<void> {
+  const text = gapWord(view.lang, 'limit.models')
+  if (!text || await $.store.get('limitModelsNoted') === resetsAt) return
+  await $.store.set('limitModelsNoted', resetsAt as never)
+  $.ui.toast(text, { timeoutMs: 12000 })
+}
 let limitOutAt = 0
 let carriedFrom: { at: number; window: string } | undefined
 function playView(patch: Partial<PlayState>): void {
@@ -3796,6 +3838,9 @@ function wearPair(value: unknown): void {
 function wearForm(value: unknown): void {
   const form = claudieForm(value)
   if (form) view.claudie = form; else delete view.claudie
+  // The table's character: Claudie's two forms and fish (characters.ts). Only a stored choice puts anyone here.
+  const who = characterForm(value)
+  if (who) view.character = who; else delete view.character
 }
 async function chooseReminder($: Engine, key: string, value: boolean | number | string): Promise<void> {
   const longTaskChoice=key==='longTask',choice=longTaskChoice?++d1ReminderChoice:0,own=d1Epoch
@@ -3884,7 +3929,7 @@ async function chooseLang($: Engine, value: string): Promise<string> {
   hydrationRevision++
   langChosen = picked
   view.lang = picked ?? languageOf(cachedEngineSettings.language, heard, ...locale)
-  activationOptions={...activationOptions,language:picked??'auto',resolvedLanguage:view.lang}
+  activationOptions={...activationOptions,language:picked??'auto'}
   void background($,'settings.record',writeSettingsRecord($,{lang:picked??'auto',language:view.lang}))
   void background($,'config.language',$.config.set({key:'coco.language',value:picked??'auto'}))
   view.verb = WORDS[view.lang].spinner[0] ?? view.verb
@@ -3899,12 +3944,17 @@ async function chooseLang($: Engine, value: string): Promise<string> {
 
 function desktopIdentity($:Engine,e:RenderInput<'AbovePrompt','desktop'|'vscode'|'mobile'>):RenderElement {
   const { Text }=$.ui.resolve(e)
-  return <Text>{(WORDS[view.lang]??WORDS.en).name}</Text>
+  return <Text>{desktopName()}</Text>
+}
+// The name on the desktop band's fallback tiers: Coco's own words for Coco, the table's name for any other character.
+function desktopName():string {
+  const who=view.character??view.claudie
+  return who?nameFor(who,view.lang):(WORDS[view.lang]??WORDS.en).name
 }
 // The desktop band's middle tier, when its full tree could not be built: Coco's idle still and their name (the name
 // alone before any of their data is installed).
 function desktopStillBand($:Engine,e:RenderInput<'AbovePrompt','desktop'|'vscode'|'mobile'>):RenderElement {
-  const { Box, Svg, Text }=$.ui.resolve(e),name=(WORDS[view.lang]??WORDS.en).name,still=view.claudie&&claudieReady(view.claudie)?claudieSvg(view.claudie,'idle',cocoWidth(64),64):cocoStill(view.outfit==='B'?'B':'A','idle',64)
+  const { Box, Svg, Text }=$.ui.resolve(e),name=desktopName(),still=view.claudie&&claudieReady(view.claudie)?claudieSvg(view.claudie,'idle',cocoWidth(64),64):cocoStill(view.outfit==='B'?'B':'A','idle',64)
   return <Box flexDirection="row" alignItems="center">{still?<Svg source={still} width={cocoWidth(64)} height={64} alt={name}/>:null}<Text>{name}</Text></Box>
 }
 function renderDesktop($:Engine,e:RenderInput<'AbovePrompt','desktop'|'vscode'|'mobile'>):RenderElement {
@@ -4054,7 +4104,7 @@ export const register: Register = (on, options) => {
   // The skill cards register before Coco's first hook, so their hooks run outside Coco's own (cards/cards.tsx says why).
   registerCards(on, () => view.lang)
   on('command.describe',{command:'coco'},async($,e,next)=>{await loadGapWords(()=>$.fs.read(joinPath($.plugin.root,'hooks/gaps-text.json')));return {...await next(e),description:gapWord(view.lang,'cmd.coco')}})
-  on('config.describe', { key:/^coco\.(band|language|resolvedLanguage)$/ }, ($,e) => describeCocoConfig(view.lang,e))
+  on('config.describe', { key:/^coco\.(band|language)$/ }, ($,e) => describeCocoConfig(view.lang,e))
   // Observe the press outside the book's handlers, including handlers that consume it.
   on('ui.press', { plugin: 'coco' }, async ($, e, next) => {
     if(e.element==='coco:book:open'&&view.line?.key==='first.hello'){
@@ -4118,6 +4168,14 @@ export const register: Register = (on, options) => {
     setPriceTimer((ms, fire) => { const timer = scheduleAfter($, ms, fire); return () => timer.cancel() })
     return next(e)
   })
+  // r11-01 (ZCode-2): «turn all off» clears every conversation's switch and the legacy row; a reminder only.
+  on('ui.press', { element: 'coco:warm:alloff' }, async ($, e) => {
+    const ready = await ensureCost($)
+    m1More?.noteWarm(false)
+    await ready?.allWarmOff()
+    await push($)
+    return { element: e.element }
+  })
   on('ui.render', { component: 'Pane', requestId: 'coco-book' }, ($, e, next) => oneBagDrawing(`${e.surface}:${e.props.bodyColumns}`, async () => {
     const started = Date.now()
     const held = (await $.state.get({ plugin: 'coco', key: 'book' })).value
@@ -4167,10 +4225,12 @@ export const register: Register = (on, options) => {
           // The command belongs to the session, so an attach in between does not drop it.
           if(!loaded||serial!==sessionSerial)return
           await Promise.all([
-            optional($,'command.register',()=>$.command.register({name:'coco',description:gapWord(view.lang,'cmd.coco'),argumentHint:'[voice|warmth|band|lang|vibe|dm|focus|about|companion|icon|more|say|cards] [value]'}),undefined),
+            optional($,'command.register',()=>$.command.register({name:'coco',description:gapWord(view.lang,'cmd.coco'),argumentHint:'[models|privacy|voice|warmth|band|lang|vibe|dm|focus|about|companion|icon|more|say|cards] [value]'}),undefined),
           ])
         }),
       ])
+      // Once, after the book's language is known: that another model can sit behind her, and where the switch is.
+      if(e.isInteractive&&serial===sessionSerial)await background($,'models.note',modelsNote($))
     })
     startupTimings.sessionStartOwnMs=Date.now()-began
     try { return await next(e) }
@@ -4178,7 +4238,7 @@ export const register: Register = (on, options) => {
   })
 
   on('session.attach', async ($, e, next) => {
-    if(e.surface==='desktop') beginLifecycle($,'attach')
+    if(e.surface==='desktop'){beginLifecycle($,'attach');scheduleAfter($,0,()=>background($,'m1.attach',resumeM1($)))}
     scheduleAfter($,0,()=>background($,'arrive',arrive($)))
     const attached = await next(e)
     scheduleCompanionContext($)
@@ -4328,7 +4388,20 @@ export const register: Register = (on, options) => {
     moodGeneration++;stop('revert');cancelCalming();toolPoses.interrupt();stop('poseHold');stop('celebration');stop('glance');c3ReactionPose=undefined;c3ReactionUntil=0
     view.mood='idle';view.frame=limit.frame as FrameName;view.pose={name:limit.frame==='tea-a'?'tea':'waiting',frame:limit.frame,aside:limit.frame==='tea-a'?c3Word(view.lang,'aside.tea'):WORDS[view.lang].aside.waiting,at}
     offerLine($,limit.request);view.spentWindows=[...gapLimits.out()];spentSocks($);animate($);syncM1Lively($)
+    // A window of Claude's own ran out: the one place the other models are mentioned unasked, once per window.
+    if(limit.out&&limit.resetsAt!==limitModelsHinted){limitModelsHinted=limit.resetsAt;await background($,'limit.models',limitModelsNote($,limit.resetsAt))}
     if(limitStill?.epoch===limit.epoch&&limitStill.frame===limit.frame){pictureSerial++;await push($)}
+   }else if(e.agent_id===undefined){
+    // A key or balance refusal from a provider that is not Anthropic's own endpoint: Coco's own
+    // line, correcting /login where it does not apply (package D; see api-lines.ts for the measured
+    // shapes). One line per failure; the band's other poses are untouched.
+    const base=await $.env.get('ANTHROPIC_BASE_URL').catch(()=>undefined)
+    const kind=otherProvider(base)?apiFailureKind({error:e.error,lastAssistantMessage:e.last_assistant_message}):undefined
+    if(kind){
+     const epoch=gapLimits.epoch
+     offerLine($,apiFailureLine({kind,lang:view.lang,word:(language:string,key:string)=>gapFill(language,key,{}),at,ttl:kind==='api401'?3600000:600000,valid:()=>gapLimits.epoch===epoch}))
+     await setMood($,'error',TIMING.errorFlash)
+    }
    }
    return result
   })
@@ -4441,6 +4514,8 @@ export const register: Register = (on, options) => {
   on('classic.PostModelSwitch',async($,e,next)=>{
    always.model=e.to_model;latest.settings={...latest.settings,m1Always:alwaysSnapshot()};$.ui.invalidate('ui.render')
    const switched=await next(e)
+   // A row with no pick follows the conversation's model, and so do the words that name who does the work.
+   background($,'more.models',readMoreModels($,e.to_model).then(([models,picks])=>{m1More?.setModels(models,picks);setWorkerName(moreWorkerName(models));$.ui.invalidate('ui.render')}))
    // each model has its own compaction window (his 10-18: 400k for most, more for Fable, 100k for Haiku): the box follows the switch
    background($,'gauge',gauge($))
    const ttl=(e as unknown as Record<string,unknown>).cache_ttl
@@ -4666,6 +4741,39 @@ export const register: Register = (on, options) => {
     return verdict
   })
 
+  // Item 3: once a day, when today's ledger spend has passed the person's dollar cap.
+  let dayCapSaid = ''
+  on('turn.complete', { reason: /\S/ }, async ($, e, next) => {
+    const done = await next(e)
+    if (e.agentId !== undefined) return done
+    const settings = await readCostFeatures(costFeatureStore($))
+    const cap = settings.dayCapUsd
+    if (!cap) return done
+    const ready = await ensureCost($)
+    const snapshot = ready?.snapshot()
+    if (!snapshot || !moneyReal(snapshot)) return done
+    const day = localDay(clockSnapshot, timeZone)
+    const usd = await ready.todayLedgerUsd()
+    if (usd >= cap && dayCapSaid !== day + ':' + cap) {
+      dayCapSaid = day + ':' + cap
+      const text = dayCapLine(cap, usd, view.lang, snapshot.billing.kind === 'plan')
+      if (text) offerLine($, { key: 'cost.daycap', text, class: 0, ttl: 14000 })
+    }
+    return done
+  })
+  // Item 5: the folder spend record, one store write per ended main turn; the page reads it back.
+  on('turn.complete', { turnId: /\S/ }, async ($, e, next) => {
+    const done = await next(e)
+    if (e.agentId !== undefined) return done
+    if ((await readCostFeatures(costFeatureStore($))).costFolders !== true) return done
+    const snapshot = (await ensureCost($))?.snapshot()
+    const usd = snapshot?.lastTurn?.usd
+    if (!snapshot || !moneyReal(snapshot) || !usd) return done
+    const folder = presenceMetadata.cwd ?? await $.session.root().catch(() => '')
+    if (!folder) return done
+    await $.store.set('cost.folders', recordFolderSpend(await $.store.get('cost.folders'), folder, localDay(clockSnapshot, timeZone), usd, clockSnapshot) as never)
+    return done
+  })
   on('turn.complete', async ($, e, next) => {
     const serial=c3TurnSerial,own=d1Epoch
     const done = await next(e)
@@ -4884,5 +4992,79 @@ export const register: Register = (on, options) => {
       tell(words.reply.usage)
     }
     return {}
+  })
+
+  // r20-14 (ZCode-2), one marked block per cost feature: off until turned on, reminders only;
+  // the switches live in the store under cost.features, the rows in the book.tsx patch.
+  on('store.set', { key: 'cost.features' }, async ($, e, next) => {
+    const saved = await next(e)
+    if (next.origin.plugin === 'coco' && !('deny' in saved)) await cost?.syncFeatures()
+    return saved
+  })
+
+  // Item 1: after a model switch, one line with the next turn's cost there; the matcher keeps the two hooks distinct.
+  on('classic.PostModelSwitch', { to_model: /\S/ }, async ($, e, next) => {
+    const switched = await next(e)
+    if ((await readCostFeatures(costFeatureStore($))).switchCost !== true) return switched
+    const ready = await ensureCost($), tokens = view.contextTokens
+    const usd = ready && typeof tokens === 'number' ? ready.nextOnOtherModel(e.to_model, tokens) : null
+    const text = typeof tokens === 'number' ? switchCostLine(e.to_model, tokens, usd, view.lang) : ''
+    if (text) offerLine($, { key: 'cost.switch', text, class: 0, ttl: 14000 })
+    return switched
+  })
+  on('ui.press', { element: /^coco:cost:switch:(on|off)$/ }, async ($, e) => {
+    await writeCostFeatures(costFeatureStore($), { switchCost: e.element.endsWith(':on') })
+    await push($)
+    return { element: e.element }
+  })
+
+  // Item 2: a prompt over the person's byte limit; the matcher floor keeps ordinary prompts away.
+  on('prompt.submit', { text: /[\s\S]{2000}/ }, async ($, e, next) => {
+    const submitted = await next(e)
+    if (!PERSON.has(e.origin.kind)) return submitted
+    const settings = await readCostFeatures(costFeatureStore($))
+    const bytes = estimateTokens(e.text)
+    if (!(settings.pasteBytes && bytes >= settings.pasteBytes)) return submitted
+    const ready = await ensureCost($)
+    const text = pasteWarnLine(bytes, ready ? ready.inputCostUsd(bytes) : null, view.lang)
+    if (text) offerLine($, { key: 'cost.paste', text, class: 0, ttl: 14000 })
+    return submitted
+  })
+  on('ui.press', { element: /^coco:cost:paste:(off|10k|30k|100k)$/ }, async ($, e) => {
+    const pick = e.element.split(':')[3]!
+    await writeCostFeatures(costFeatureStore($), { pasteBytes: pick === 'off' ? 0 : Number(pick.slice(0, -1)) * 1000 })
+    await push($)
+    return { element: e.element }
+  })
+
+  on('ui.press', { element: /^coco:cost:daycap:(off|1|5|10|20)$/ }, async ($, e) => {
+    const pick = e.element.split(':')[3]!
+    await writeCostFeatures(costFeatureStore($), { dayCapUsd: pick === 'off' ? 0 : Number(pick) })
+    await push($)
+    return { element: e.element }
+  })
+  on('ui.press', { element: /^coco:cost:forecast:(on|off)$/ }, async ($, e) => {
+    await writeCostFeatures(costFeatureStore($), { costForecast: e.element.endsWith(':on') })
+    await push($)
+    return { element: e.element }
+  })
+  on('ui.press', { element: /^coco:cost:folders:(on|off)$/ }, async ($, e) => {
+    await writeCostFeatures(costFeatureStore($), { costFolders: e.element.endsWith(':on') })
+    await push($)
+    return { element: e.element }
+  })
+  on('ui.press', { element: /^coco:cost:planconvert:(on|off)$/ }, async ($, e) => {
+    await writeCostFeatures(costFeatureStore($), { planConvert: e.element.endsWith(':on') })
+    await push($)
+    return { element: e.element }
+  })
+
+  // later-19 (ZCode-2): the TODO-pile threshold (off/5/10/20), a reminder only.
+  on('ui.press', { element: /^coco:todo:pile:(off|5|10|20)$/ }, async ($, e) => {
+    const pick = e.element.split(':')[3]!
+    await startC3($)
+    await runtimeC3($).setTodoPileThreshold(pick === 'off' ? 0 : Number(pick))
+    await push($)
+    return { element: e.element }
   })
 }

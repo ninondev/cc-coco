@@ -55,7 +55,7 @@ describe('her itabag', () => {
       ['him', 'offerings', 'omen', 'socks', 'log', 'library', 'settings'].map((page, i) => [page, BAG.en!.pages[i], String(i + 1)]))
     // one badge a switch: the settings page's choices, the language picker aside, and the More rows that stand in its
     // groups now (step 2, settings_drafts.py: everything from Settings and More, grouped by what it does)
-    const switches = nodes(tree).filter(n => n.type === 'Button' && /^coco:set:(?!lang:)/.test(String(n.props?.key)) && n.props?.variant === 'primary')
+    const switches = nodes(tree).filter(n => n.type === 'Button' && /^(?:coco:set:(?!lang:)|coco:todo:pile:)/.test(String(n.props?.key)) && n.props?.variant === 'primary')
     const moreRows = nodes(tree).filter(n => /^coco:more:row:/.test(String(n.props?.key)))
     expect(moreRows.length).toBeGreaterThan(0)
     expect(String(art?.props?.alt)).toContain(`of ${switches.length + moreRows.length}`)

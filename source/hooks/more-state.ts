@@ -1,6 +1,7 @@
 import { moreWord, moreFill } from './more-words'
 import { numberText } from './numbers'
 import type { KeyStore } from './talk-key'
+import type { LineImportPreview } from './line-library'
 export const MORE_IDS = ['cap','paste','lively','talk','explain','look','plain','lines'] as const
 export type MoreId = typeof MORE_IDS[number]
 export type MoreValues = Partial<Record<MoreId, boolean | number>>
@@ -16,11 +17,11 @@ export type MoreKeyView = { payer: MorePayerChoice; key?: MoreKey; today?: MoreK
 // a service other than Anthropic's, where nothing is picked for them (owner 10-17).
 export type MoreModelChoice = { value: string; label: string }
 export type MoreModelRow = 'talk' | 'look' | 'lines'
-export type MoreModels = { choices: MoreModelChoice[]; own: boolean; picks?: Partial<Record<MoreModelRow, string>> }
+export type MoreModels = { choices: MoreModelChoice[]; own: boolean; current?: string; picks?: Partial<Record<MoreModelRow, string>> }
 // The line library (owner 10-17): the character worn, the language picked for written lines, Coco's mix, whether the
 // written set for them is there, being written or failed, where the files the person opened are, and which one the
 // editor could not open.
-export type MoreLines = { character: 'coco' | 'dake' | 'maid'; lang: string; mix: 'only' | 'both'; state: 'none' | 'busy' | 'ready' | 'failed'; paths?: { shipped?: string; generated?: string }; editFailed?: 'shipped' | 'generated' }
+export type MoreLines = { character: 'coco' | 'dake' | 'maid'; lang: string; mix: 'only' | 'both'; state: 'none' | 'busy' | 'ready' | 'failed'; paths?: { shipped?: string; generated?: string }; editFailed?: 'shipped' | 'generated'; imported?: { on: boolean; count: number }; importView?: { path: string; page: number; preview?: LineImportPreview; error?: 'file' | 'size' } }
 // The DM thread's choices (dm.ts): where her first messages come from (the model only once lane B's instruction is
 // there), whether a new message notifies, and how many the person has not seen.
 export type MoreDm = { first: 'lines' | 'model'; notify: boolean; model: boolean; unread: number }

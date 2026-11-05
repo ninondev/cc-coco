@@ -12,7 +12,7 @@ export type C3Capabilities={
  get:(key:string)=>Promise<unknown>;set:(key:string,value:unknown)=>Promise<void>;remove:(key:string)=>Promise<void>
  process:(argv:string[],options?:{cwd?:string;stdin?:string;timeoutMs?:number})=>Promise<{exitCode:number;stdout:string;stderr:string;isStdoutTruncated?:boolean}>
  now:()=>number;lang:()=>string;settings:()=>C3Settings;localDay:(at:number)=>string;windowName:(kind:string)=>string
- emit:(line:C3LineRequest)=>'shown'|'queued'|'dropped';reaction:(value:C3Reaction)=>void;notice?:(id:string,text?:string)=>void
+ emit:(line:C3LineRequest)=>'shown'|'queued'|'dropped';reaction:(value:C3Reaction)=>void;notice?:(id:string,text?:string)=>void;toast?:(text:string)=>void;visible?():boolean
  readWords?:()=>Promise<string>;workerPath?:string;executeAlgo?:(request:Record<string,unknown>)=>Promise<any>
  diagnostic?:(code:string)=>void;changed?:()=>void
 }
@@ -25,7 +25,7 @@ type PaceState={hot:Record<string,true>;history?:Record<string,PaceHistory>}
 type Run={kind:'test'|'build';tool:string;key:string}
 type Sample={ms:number;outcome:'pass'|'fail'|'unknown'}
 type GuardHit={kind:string;reason:string;target?:string;branch?:string}
-type ToolState={id:string;name:string;at:number;executionMs?:number;main:boolean;bookmarkEpoch:number;run?:Run;guard?:GuardHit;secret?:{file:string;line:number};commit:boolean;asking:boolean;resolved:boolean;file?:string;todo?:string|null}
+type ToolState={id:string;name:string;at:number;executionMs?:number;main:boolean;bookmarkEpoch:number;run?:Run;guard?:GuardHit;secret?:{file:string;line:number};pushSecret?:{file:string;line:number};commit:boolean;asking:boolean;resolved:boolean;file?:string;todo?:string|null;pileAdd?:number;typoFix?:boolean}
 export type C3Neighbour={id:string;label:string;busy:boolean;partial:boolean;startedAt?:number}
 export type C3Neighbours={v:1;running:boolean;agents:C3Neighbour[]}
 const fill=(template:string,slots:Record<string,string>)=>template.replace(/\{(\w+)\}/g,(hole,key:string)=>slots[key]??hole)
@@ -113,6 +113,10 @@ export function createC3Runtime(cap:C3Capabilities){
  // red, and the last build that did not fail with its usual time where the notes keep a history
  let firstFail:string|undefined,storms=0,lastBuild:{ms:number;usualMs?:number;slow:boolean}|undefined
  let todo:string|null=null,todoAt:{i:number;n:number}|null=null,file:string|undefined,reds=0,lastRunGreen=false,commitGreen=false,chapterSaid=false,chapterOffered=false
+ // later-19: TODO/FIXME markers Claude's edits added; one line past the person's threshold.
+ let todoPile=0,todoPileThreshold=0,todoPileSaid=false
+ // later-18: the secret a passed commit's own scan found, held until a push goes out.
+ let secretSincePush:{file:string;line:number}|undefined
  let currentWindows:Window[]=[],readings:Reading[]=[],hotState:PaceState={hot:{}},pace:{kind:string;exhaustionAt:number}[]=[],rates:Record<string,number>={},previous:Record<string,{percent:number;reset?:number}>=Object.create(null)
  const verdicts=new Map<string,{outcome:'pass'|'fail'|'unknown';kind:'test'|'build';failed?:number}>()
  const commits=new Set<string>()
@@ -122,7 +126,7 @@ export function createC3Runtime(cap:C3Capabilities){
  function rememberOccasion(key:string):void{if(occasions.warned[key])return;occasions={...occasions,warned:{...occasions.warned,[key]:true}};write('occasions',occasions)}
  async function words():Promise<void>{if(cap.readWords)await loadC3Words(cap.readWords)}
  async function ensure():Promise<void>{
-  if(!ready)ready=Promise.all([cap.get('bookmarks'),cap.get('occasions'),cap.get('paceState'),cap.get('runs')]).then(async([b,o,p,r])=>{bookmarks=bookmarksFrom(b);occasions=occasionsFrom(o);hotState=paceStateFrom(p);history=historyFrom(r);if(r!==undefined&&JSON.stringify(r)!==JSON.stringify(history))write('runs',history,true);if(b!==undefined&&JSON.stringify(b)!==JSON.stringify(bookmarks)&&cap.settings().bookmark)write('bookmarks',bookmarks);await flush()})
+  if(!ready)ready=Promise.all([cap.get('bookmarks'),cap.get('occasions'),cap.get('paceState'),cap.get('runs'),cap.get('c3.todoPile')]).then(async([b,o,p,r,pile])=>{bookmarks=bookmarksFrom(b);occasions=occasionsFrom(o);hotState=paceStateFrom(p);history=historyFrom(r);todoPileThreshold=pile===5||pile===10||pile===20?(pile as number):0;if(r!==undefined&&JSON.stringify(r)!==JSON.stringify(history))write('runs',history,true);if(b!==undefined&&JSON.stringify(b)!==JSON.stringify(bookmarks)&&cap.settings().bookmark)write('bookmarks',bookmarks);await flush()})
   await ready
  }
  async function algorithm(request:Record<string,unknown>):Promise<any>{
@@ -177,7 +181,47 @@ export function createC3Runtime(cap:C3Capabilities){
   promptOrdinal++;lastRunGreen=false;commitGreen=false;chapterOffered=false;lastRunOutcome='unknown';recoveredReds=0;cap.changed?.()
   if(isThanks(input.text))cap.reaction({kind:'thanks'})
  }
- function chapterPressed():void{chapterOffered=false;cap.changed?.()}
+ // later-18: a plain git push as a git subcommand, in each shell segment (the guard flags only risky forms).
+function gitPushCommand(command:string):boolean{
+ for(const segment of command.split(/[\n;&|]+/)){
+  const words=segment.trim().split(/\s+/).filter(Boolean)
+  for(let i=0;i<words.length;i++){
+   const word=words[i]!.replace(/^.*[\\/]/,'')
+   if(word==='cd')break
+   if(word!=='git')continue
+   let j=i+1
+   while(j<words.length){
+    const arg=words[j]!
+    if(arg==='-C'||arg==='-c'||arg==='--git-dir'||arg==='--work-tree'){j+=2;continue}
+    if(arg.startsWith('-')){j++;continue}
+    if(arg==='push')return true
+    break
+   }
+   break
+  }
+ }
+ return false
+}
+
+// later-21: same length, at most two letters changed, each inside a word on both sides; zero tokens.
+function typoFix(oldText:unknown,newText:unknown):boolean{
+ if(typeof oldText!=='string'||typeof newText!=='string'||oldText===newText)return false
+ if(oldText.length!==newText.length||oldText.length<4)return false
+ // Letters only: digits, signs and colours are code, not typos.
+ const letter=/\p{L}/u
+ let diffs=0
+ for(let i=0;i<oldText.length;i++)if(oldText[i]!==newText[i]&&++diffs>2)return false
+ if(diffs===0)return false
+ for(let i=0;i<oldText.length;i++){
+  if(oldText[i]===newText[i])continue
+  if(!letter.test(oldText[i]!)||!letter.test(newText[i]!))return false
+  const inside=(text:string)=>i>0&&i+1<text.length&&letter.test(text[i-1]??'')&&letter.test(text[i+1]??'')
+  if(!inside(oldText)||!inside(newText))return false
+ }
+ return true
+}
+
+function chapterPressed():void{chapterOffered=false;cap.changed?.()}
  async function toolStart(input:{id:string;name:string;input:Record<string,unknown>;main?:boolean;cwd?:string;branch?:string;at?:number}):Promise<void>{
   if(input.main===false)return
   const state:ToolState={id:input.id,name:input.name,at:input.at??cap.now(),main:true,bookmarkEpoch,commit:false,asking:false,resolved:false};tools.set(input.id,state)
@@ -186,6 +230,17 @@ export function createC3Runtime(cap:C3Capabilities){
    if(input.name==='TodoWrite'){const list=Array.isArray(values.todos)?values.todos:[];const next=list.find((item:any)=>item?.status==='in_progress'&&typeof item.content==='string') as any;state.todo=next?.content??null;todo=state.todo??null;const done=list.filter((item:any)=>item?.status==='completed').length;todoAt=todo&&list.length>=2?{i:Math.min(done+1,list.length),n:list.length}:null}
    if(['Edit','Write','MultiEdit','NotebookEdit'].includes(input.name)){const path=typeof values.file_path==='string'?values.file_path:typeof values.notebook_path==='string'?values.notebook_path:undefined;if(path)state.file=relativeFile(path,cwd)}
   }
+   // later-19: only markers Claude's edits add here count, from the tool's before/after text; one line past the threshold, then silence.
+  {
+   const markers=(text:unknown):number=>typeof text==='string'?(text.match(/\b(?:TODO|FIXME)\b/g)??[]).length:0
+   let added=0
+   if(input.name==='Edit')added=markers(values.new_string)-markers(values.old_string)
+   else if(input.name==='Write')added=markers(values.content)
+   else if(input.name==='MultiEdit')for(const edit of Array.isArray(values.edits)?values.edits:[]){const row=edit as Record<string,unknown>;added+=markers(row.new_string)-markers(row.old_string)}
+   if(added>0)state.pileAdd=(state.pileAdd??0)+added
+  }
+  // later-21: a one or two letter in-word fix; both it and the pile count only on passed results.
+  if(settings.notes&&cap.settings().notes&&input.name==='Edit'&&typoFix(values.old_string,values.new_string))state.typoFix=true
   if(input.name!=='Bash'||typeof values.command!=='string')return
   const command=values.command
   const [guardResult,run]=await Promise.all([
@@ -197,13 +252,15 @@ export function createC3Runtime(cap:C3Capabilities){
   if(settings.guard&&cap.settings().guard&&guardOwn===guardEpoch&&state.commit){
    try{const staged=await cap.process(['/usr/bin/git','--no-pager','--no-lazy-fetch','-c','core.fsmonitor=false','-c','core.hooksPath=/dev/null','-c','core.pager=cat','-c','diff.external=','diff','--cached','--no-ext-diff','--no-textconv','--ignore-submodules=all','--unified=0'],{cwd:guardResult.commitCwd,timeoutMs:10000});if(own===sessionEpoch&&guardOwn===guardEpoch&&staged.exitCode===0&&!staged.isStdoutTruncated&&cap.settings().guard){const secret=await algorithm({op:'secrets',diff:staged.stdout});if(own===sessionEpoch&&guardOwn===guardEpoch&&cap.settings().guard)state.secret=secret}}catch{cap.diagnostic?.('c3.secret.scan')}
   }
+   // later-18: the reminder rides the commit scan's own finding; no git call runs here.
+  if(settings.guard&&cap.settings().guard&&guardOwn===guardEpoch&&!state.commit&&gitPushCommand(command)&&secretSincePush)state.pushSecret=secretSincePush
  }
  async function permission(id:string,verdict:'ask'|'resolved',notice=false):Promise<void>{
   const state=tools.get(id);if(!state)return
   state.asking=verdict==='ask';if(verdict==='resolved'){cap.notice?.(id,undefined);return}
-  if(!cap.settings().guard||(!state.guard&&!state.secret))return
-  const own=sessionEpoch,guardOwn=guardEpoch;await words();if(own!==sessionEpoch||guardOwn!==guardEpoch||!cap.settings().guard||!state.asking||state.resolved)return;const key=state.guard?guardKey(state.guard):'guard.secret'
-  const slots:Record<string,string>=state.guard?{...(state.guard.target?{target:state.guard.target}:{}),...(state.guard.branch?{branch:state.guard.branch}:{})}:state.secret?{file:state.secret.file,line:numberText(state.secret.line,cap.lang(),false,true)}:{}
+  if(!cap.settings().guard||(!state.guard&&!state.secret&&!state.pushSecret))return
+  const own=sessionEpoch,guardOwn=guardEpoch;await words();if(own!==sessionEpoch||guardOwn!==guardEpoch||!cap.settings().guard||!state.asking||state.resolved)return;const key=state.guard?guardKey(state.guard):state.pushSecret?'guard.secretPush':'guard.secret'
+  const slots:Record<string,string>=state.guard?{...(state.guard.target?{target:state.guard.target}:{}),...(state.guard.branch?{branch:state.guard.branch}:{})}:(state.pushSecret??state.secret)?{file:(state.pushSecret??state.secret)!.file,line:numberText((state.pushSecret??state.secret)!.line,cap.lang(),false,true)}:{}
   for(const name of ['target','branch','file'])if(slots[name]!==undefined)slots[name]=untrustedDisplaySlot(slots[name]!)
   const text=fill(c3Word(cap.lang(),key),slots)
   if(notice)cap.notice?.(id,text)
@@ -215,7 +272,13 @@ export function createC3Runtime(cap:C3Capabilities){
   state.resolved=true;cap.notice?.(input.id,undefined);const now=input.at??cap.now(),passed=input.exitCode===0&&!input.denied
   if(passed&&cap.settings().bookmark&&state.bookmarkEpoch===bookmarkEpoch&&state.file)file=state.file
   if(state.commit&&passed&&!input.interrupted){commitGreen=true;commits.add(input.id);while(commits.size>256)commits.delete(commits.values().next().value!)}
-  if(state.secret&&passed&&!state.asking&&cap.settings().guard){const secret=state.secret;await words();if(own!==sessionEpoch)return;if(guardOwn===guardEpoch&&cap.settings().guard){const ordinal=promptOrdinal;line('guard.secretAfter',3,{file:secret.file,line:numberText(secret.line,cap.lang(),false,true)},{ttl:0,untilPrompt:true,valid:()=>guardOwn===guardEpoch&&cap.settings().guard&&promptOrdinal===ordinal});cap.reaction({kind:'error'})}}
+  if(passed&&!input.interrupted&&state.pileAdd){
+   todoPile+=state.pileAdd
+   if(todoPileThreshold>0&&!todoPileSaid&&todoPile>=todoPileThreshold){todoPileSaid=true;const ordinal=promptOrdinal,n=todoPile;line('todoPile.line',2,{n:numberText(n,cap.lang(),false,true)},{ttl:0,untilPrompt:true,valid:()=>promptOrdinal===ordinal});cap.changed?.()}
+  }
+  if(passed&&!input.interrupted&&state.typoFix&&cap.settings().notes){const ordinal=promptOrdinal;line('typo.fixed',0,{},{ttl:14000,valid:()=>promptOrdinal===ordinal});cap.changed?.()}
+  if(state.secret&&passed&&!state.asking&&cap.settings().guard){const secret=state.secret;await words();if(own!==sessionEpoch)return;if(guardOwn===guardEpoch&&cap.settings().guard){secretSincePush=secret;const ordinal=promptOrdinal,slots={file:secret.file,line:numberText(secret.line,cap.lang(),false,true)};const said=line('guard.secretAfter',3,slots,{ttl:0,untilPrompt:true,valid:()=>guardOwn===guardEpoch&&cap.settings().guard&&promptOrdinal===ordinal});cap.reaction({kind:'error'});if(cap.visible?.())cap.toast?.(said.text)}}
+  if(state.pushSecret&&passed&&!input.interrupted&&!state.asking&&cap.settings().guard){const secret=state.pushSecret;await words();if(own!==sessionEpoch)return;if(guardOwn===guardEpoch&&cap.settings().guard){secretSincePush=undefined;const ordinal=promptOrdinal,slots={file:secret.file,line:numberText(secret.line,cap.lang(),false,true)};for(const name of ['file'])if(slots[name]!==undefined)slots[name]=untrustedDisplaySlot(slots[name]);line('guard.secretPush',3,slots,{ttl:0,untilPrompt:true,valid:()=>guardOwn===guardEpoch&&cap.settings().guard&&promptOrdinal===ordinal});cap.reaction({kind:'error'})}}
   tools.delete(input.id)
   if(!state.run||input.denied||input.interrupted)return
   const operation=historySerial.catch(()=>{}).then(async()=>{
@@ -301,12 +364,13 @@ export function createC3Runtime(cap:C3Capabilities){
  function runFailed(id:string):number|undefined{return verdicts.get(id)?.failed}
  function committed(id:string):boolean{return commits.has(id)}
  function turnStart():void{lastRunOutcome='unknown';recoveredReds=0;lastRunGreen=false;commitGreen=false}
- function view(){return {lastRunOutcome,recoveredReds,pace:cap.settings().notes?pace.slice():[],rates:cap.settings().notes?{...rates}:{},bookmark:cap.settings().bookmark?bookmarks[cwd]:undefined,tests:{failed:failedTests,fixed:fixedTests,ran:ranTests,storms,...(firstFail?{firstFail}:{}),...(lastBuild?{build:{...lastBuild}}:{}),...(lastTest?{last:lastTest}:{})}}}
+ function view(){return {todoPileThreshold,lastRunOutcome,recoveredReds,pace:cap.settings().notes?pace.slice():[],rates:cap.settings().notes?{...rates}:{},bookmark:cap.settings().bookmark?bookmarks[cwd]:undefined,tests:{failed:failedTests,fixed:fixedTests,ran:ranTests,storms,...(firstFail?{firstFail}:{}),...(lastBuild?{build:{...lastBuild}}:{}),...(lastTest?{last:lastTest}:{})}}}
  async function flush():Promise<void>{await serial}
  function reset():void{sessionEpoch++;promptOrdinal++;failedTests=0;fixedTests=0;ranTests=0;lastTest=undefined;firstFail=undefined;storms=0;lastBuild=undefined;todo=null;todoAt=null;file=undefined;reds=0;lastRunGreen=false;commitGreen=false;chapterSaid=false;chapterOffered=false;tools.clear();verdicts.clear();commits.clear();pendingOnce.clear();busySince.clear();doneAt.clear();readings=[];pace=[];hotState={hot:{}};previous=Object.create(null)}
  function onceSaid(key:'shedFirst'|'twoFirst'):boolean{return occasions[key]===true}
  function markOnce(key:'shedFirst'|'twoFirst'):void{if(occasions[key])return;occasions={...occasions,[key]:true};write('occasions',occasions)}
  function recognized(id:string):Run|undefined{return tools.get(id)?.run}
-  return {executionDuration,isRecognized,task,runKind,runFailed,runVerdict,committed,start,prompt,turnStart,toolStart,permission,toolResult,turnComplete,measure,settingsChanged,chapterPressed,neighbours,view,bookSnapshot:view,flush,reset,onceSaid,markOnce,recognized}
+  const setTodoPileThreshold=async(n:number)=>{const next=n===5||n===10||n===20?n:0;if(next!==todoPileThreshold){todoPileThreshold=next;if(next===0)todoPileSaid=false;write('c3.todoPile',next);await flush();cap.changed?.()}}
+ return {executionDuration,isRecognized,task,runKind,runFailed,runVerdict,committed,start,prompt,turnStart,toolStart,permission,toolResult,turnComplete,measure,settingsChanged,chapterPressed,neighbours,view,bookSnapshot:view,flush,reset,onceSaid,markOnce,recognized,setTodoPileThreshold}
 }
 export type C3Runtime=ReturnType<typeof createC3Runtime>

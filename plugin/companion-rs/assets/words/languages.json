@@ -68,13 +68,13 @@
   {
     "code": "zh",
     "locale": "zh-SG",
-    "native": "华文",
+    "native": "简体中文",
     "english": "Chinese (Simplified)"
   },
   {
     "code": "zh-Hant",
     "locale": "zh-TW",
-    "native": "國語",
+    "native": "繁體中文",
     "english": "Chinese (Traditional)"
   }
 ]

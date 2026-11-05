@@ -1,5 +1,4 @@
-// Pure parts of the state machine: timings, which frames each mood shows, how a line is picked,
-// language and local time. Everything that talks to Claude Code is in register.tsx.
+// Pure parts of the state machine; everything that talks to Claude Code is in register.tsx.
 
 import type { FrameName } from './art'
 import { MOTION } from './d1-state.js'
@@ -21,7 +20,6 @@ export const TIMING = {
 
 } as const
 
-// Two-frame loops; with reduced motion only the first frame shows.
 export const LOOPS: Partial<Record<Mood, { frames: readonly [FrameName, FrameName]; every: number }>> = {
   think: { frames: ['think-a', 'think-b'], every: TIMING.think },
   work: { frames: ['work-a', 'work-b'], every: TIMING.work },
@@ -39,9 +37,9 @@ export function cueFor(theme: unknown): string {
   return theme === 'light' || theme === 'light-daltonized' ? '#9E4123' : 'claude'
 }
 
-// 24-bit colour only where the terminal says so: COLORTERM, a terminal known to draw it, and
-// not inside tmux unless COLORTERM says so there too. Otherwise (Terminal.app before macOS 26,
-// tmux, a bare xterm-256color over ssh) the sprite uses colours from the xterm 256 palette.
+// 24-bit colour only where the terminal says so: COLORTERM, a terminal known to draw it, and not inside tmux unless
+// COLORTERM says so there too. Otherwise (Terminal.app before macOS 26, tmux, bare xterm-256color over ssh) the xterm
+// 256 palette.
 export function colorsOf(env: { colorterm: string; term: string; program: string; tmux: boolean; windowsTerminal: boolean }): 'truecolor' | '256' {
   if (/truecolor|24bit/i.test(env.colorterm)) return 'truecolor'
   if (env.tmux) return '256'
@@ -50,21 +48,17 @@ export function colorsOf(env: { colorterm: string; term: string; program: string
   return '256'
 }
 
-// Prompts the person wrote (typed, from a phone, or the desktop app), not notifications or plugins.
 export const PERSON = new Set(['composer', 'bridge', 'sdk'])
-// A test or build run: only these, failing three times in a row, wake the wild soul. A grep that
-// finds nothing (exit 1) is not your code being terrible.
+// Only a test or build run failing three times in a row wakes the wild soul; a grep that finds nothing (exit 1) is not a failure.
 export const TEST_RUN =
   /(^|[\s;&|(/])((npm|pnpm|yarn|bun)\s+(run\s+)?(test|build)\b|npx\s+(jest|vitest|tsc)\b|python3?\s+-m\s+pytest\b|pytest\b|cargo\s+(test|build)\b|go\s+(test|build)\b|make\b|gradlew?\b|mvn\b|jest\b|vitest\b|tsc\b|swift\s+(test|build)\b|xcodebuild\b)/
 export const FORCE_PUSH = /\bpush\b[^\n|;&]*\s(--force(-with-lease)?|-f)\b/
-// Claude starting a plan this turn: a task list or plan mode is where a big job begins (owner 10-14).
+// Claude starting a plan this turn (owner 10-14).
 export const PLAN_TOOL = /^(TodoWrite|TaskCreate|EnterPlanMode|ExitPlanMode)$/
-// A shell that could not find the command it was asked to run (exit 127).
 export const NOT_FOUND = /command not found|: not found$|is not recognized as an internal or external command/m
 
-// The line a finished test or build run calls for (owner 10-14). A build that fails is a small slip and a
-// failing test is a failed test, both only before the third failure in a row wakes the wild soul; green
-// after a red test is fixed; a turn's first test passing is a first-try pass.
+// The line a finished test or build run calls for (owner 10-14): a failed build or test is a small slip, both only before
+// the third failure in a row wakes the wild soul; green after a red test is fixed; a turn's first test passing is a first-try pass.
 export function runMoment(run: { test: boolean; failed: boolean; failures: number; failedBefore: boolean; firstOfTurn: boolean }): 'small_slip' | 'test_fail' | 'fixed' | 'pass_first' | undefined {
   if (run.failed) return run.failures >= 3 ? undefined : run.test ? 'test_fail' : 'small_slip'
   if (!run.test) return undefined
@@ -72,7 +66,6 @@ export function runMoment(run: { test: boolean; failed: boolean; failures: numbe
 }
 export const PRAISE =
   /\b(good job|great job|well done|nice work|you('| a)re (amazing|awesome|the best|a genius)|bravo|bien vu|gut gemacht|super gemacht|ottimo lavoro|ben fatto|buen trabajo|bien hecho|bom trabalho|mandou bem|kerja bagus|mantap)\b|bien joué|très bien fait|做得好|干得好|真棒|太棒了|厉害|すごい|さすが|よくやった|잘했어|잘했네|최고야|शाबाश|बहुत बढ़िया/i
-// The phrase he bites his sleeve at, as Claude says it in each language.
 export const ABSOLUTELY_RIGHT =
   /absolutely right|tout à fait raison|völlig recht|vollkommen recht|perfettamente ragione|toda la razón|toda (a )?razão|benar sekali|sepenuhnya benar|बिल्कुल सही|완전히 맞|전적으로 맞|おっしゃる通り|おっしゃるとおり|完全正确|您说得对|你说得对/i
 
@@ -84,15 +77,14 @@ export function initialView(): View {
   }
 }
 
-// The lines for a key in the view's language, from the line library (line-library.ts): Coco's shipped ones (the clingy
-// set replacing a key where it has one) or as the person edited them, mixed with or replaced by a written set; Claudie
-// and maid Claudie say only a written set of theirs, and nothing without one.
+// Lines for a key in the view's language from the line library (line-library.ts): Coco's shipped ones (the clingy set
+// replacing a key where it has one) or as edited, mixed with or replaced by a written set; Claudie and maid Claudie say
+// only a written set of theirs, nothing without one.
 export function linesFor(view: View, key: string): readonly string[] {
   return libraryLines(view.claudie ?? 'coco', view.lang, key, view.affection === 'clingy')
 }
 
-// A shared event always selects the same existing line. Sleep and wake do not
-// depend on a band's warmth or its recent local line history.
+// A shared event always selects the same existing line; sleep and wake do not depend on a band's warmth or recent line history.
 export function sharedLineFor(view: View, key: 'sleep' | 'wake' | 'idle', event: string): string | null {
   const lines = linesFor(key === 'idle' ? view : { ...view, affection: 'warm' }, key)
   let hash = 2166136261
@@ -100,8 +92,7 @@ export function sharedLineFor(view: View, key: 'sleep' | 'wake' | 'idle', event:
   return lines[hash % lines.length] ?? null
 }
 
-// The companion can speak the same event after the last session has closed.
-// These are references to the existing lines, with no new words or local history.
+// The companion can speak the same event after the last session has closed: references to existing lines, no new words or history.
 type PresenceLines = { sleep: readonly string[]; wake: readonly string[]; idle: readonly string[] }
 const presenceLocales: Partial<Record<Lang, PresenceLines>> = {}
 function presenceLines(lang: Lang): PresenceLines {
@@ -118,13 +109,11 @@ export const PRESENCE_LINES = Object.defineProperties({}, Object.fromEntries(
   LANGS.map(({ code }) => [code, { enumerable: true, get: () => presenceLines(code) }]),
 )) as Record<Lang, PresenceLines>
 
-// Daytime is lunch (11 to 13) and the afternoon (13 to 17), in every language (owner 10-14).
 export function greetingFor(view: View, hour: number): readonly string[] {
   const part = hour >= 5 && hour < 11 ? 'morning' : hour >= 11 && hour < 13 ? 'noon' : hour >= 13 && hour < 17 ? 'afternoon' : hour >= 17 && hour < 22 ? 'evening' : 'night'
   return libraryLines(view.claudie ?? 'coco', view.lang, `greeting.${part}`, false)
 }
 
-// A random line, never the one this key showed last time.
 const lastPick = new Map<string, string>()
 export function pick(key: string, list: readonly string[]): string | undefined {
   if (list.length === 0) return undefined
@@ -139,11 +128,9 @@ export function fill(line: string | undefined, vars: Record<string, string | num
   return line?.replace(/\{(\w+)\}/g, (_, name: string) => String(vars[name] ?? ''))
 }
 
-// One value in any spelling a person or a system gives a language: an ISO code or a locale
-// (fr, fr-FR, fr_FR.UTF-8, fra), an English name or the language's own name. Spanish from Spain
-// (es-ES, es_ES, castellano) is es-ES, any other Spanish es-419; every Portuguese is pt-BR.
-// Chinese scripts follow the setting's script or region. Anything else
-// (C, POSIX, auto, Russian) is undefined.
+// One value in any spelling (ISO code, locale like fr_FR.UTF-8, English or own name). Spanish from Spain (es-ES,
+// castellano) is es-ES, any other Spanish es-419; every Portuguese is pt-BR. Chinese scripts follow the setting's script
+// or region. Anything else (C, POSIX, auto) is undefined.
 const CODES: Record<string, Lang> = {
   en: 'en', eng: 'en', fr: 'fr', fra: 'fr', fre: 'fr', de: 'de', deu: 'de', ger: 'de', hi: 'hi', hin: 'hi',
   id: 'id', in: 'id', ind: 'id', it: 'it', ita: 'it', ja: 'ja', jpn: 'ja', ko: 'ko', kor: 'ko',
@@ -181,8 +168,7 @@ export function langOf(value: unknown): Lang | undefined {
   return undefined
 }
 
-// Claude Code's own language setting first, then LC_ALL, LC_MESSAGES and LANG; English
-// otherwise. A value he cannot read (a language he does not have) passes to the next one.
+// Claude Code's own language setting first, then LC_ALL, LC_MESSAGES and LANG; English otherwise. A value he cannot read passes to the next.
 export function languageOf(...candidates: unknown[]): Lang {
   for (const value of candidates) {
     const lang = langOf(value)
@@ -191,16 +177,14 @@ export function languageOf(...candidates: unknown[]): Lang {
   return 'en'
 }
 
-// The Mac's system language where the desktop app passes no LANG: macOS sets __CF_USER_TEXT_ENCODING
-// ("0x1F6:0x19:0x34", user:encoding:region) at login from the first language in the person's list, and
-// every process inherits it. The codes were measured with CFLocaleGetLanguageRegionEncodingForLocaleIdentifier
-// (10-18): zh-Hans 52 (whatever its region), zh-Hant 53, es-419 and es-MX 86 but es-AR Spain's 8, pt-PT 10.
-// Indonesian has no region code at all, so it is left to what he hears.
+// The Mac's system language where the desktop app passes no LANG: macOS sets __CF_USER_TEXT_ENCODING ("0x1F6:0x19:0x34",
+// user:encoding:region) at login from the person's first language. Codes measured with
+// CFLocaleGetLanguageRegionEncodingForLocaleIdentifier (10-18): zh-Hans 52 (any region), zh-Hant 53, es-419 and es-MX 86
+// but es-AR Spain's 8, pt-PT 10. Indonesian has no region code, so it is left to what he hears.
 const MAC_REGIONS: Readonly<Record<number, Lang>> = {
   0: 'en', 2: 'en', 15: 'en', 52: 'zh', 53: 'zh-Hant', 14: 'ja', 51: 'ko', 1: 'fr', 11: 'fr', 18: 'fr', 98: 'fr',
   3: 'de', 19: 'de', 92: 'de', 8: 'es-ES', 86: 'es-419', 71: 'pt-BR', 10: 'pt-BR', 4: 'it', 36: 'it', 33: 'hi',
 }
-// The encodings that name a script outright, for a region the table does not know.
 const MAC_ENCODINGS: Readonly<Record<number, Lang>> = { 25: 'zh', 2: 'zh-Hant', 1: 'ja', 3: 'ko', 9: 'hi' }
 export function macSystemLanguage(value: unknown): Lang | undefined {
   if (typeof value !== 'string') return undefined
@@ -210,15 +194,13 @@ export function macSystemLanguage(value: unknown): Lang | undefined {
 }
 
 // ---------------------------------------------------------------- hearing the person's language
-//
-// The desktop gives a mod no language setting and no locale, so he also listens to the prompts
-// the person writes: no model, no request, a few regular expressions. Code, URLs and paths are
-// cut out first. A script decides outright when it outweighs the Latin words around it (kana:
-// ja; Hangul: ko; Devanagari: hi; Han without kana: Chinese); Latin prose is scored by small lists of
-// function words. Too little evidence, or a thin lead, gives nothing.
+// The desktop gives a mod no language setting or locale, so he listens to the prompts: no model, no request, a few
+// regular expressions. Code, URLs and paths are cut out first. A script decides outright when it outweighs the Latin
+// words (kana: ja; Hangul: ko; Devanagari: hi; Han without kana: Chinese); Latin prose is scored by function words. Too
+// little evidence, or a thin lead, gives nothing.
 
 export type Heard = { lang: Lang; confidence: number; words: number }
-// One prompt this clear and this long is enough; otherwise two prompts in a row must agree.
+// One prompt this clear and this long is enough; otherwise two in a row must agree.
 // sure: the confidence one prompt needs to switch; brief: the longest desktop prompt heard (characters)
 export const HEARING = { sure: 0.7, brief: 400 } as const
 
@@ -236,13 +218,11 @@ function languageSets(): ReadonlyArray<readonly [string, Set<string>]> {
   }
   return stopSets = Object.entries(STOP).map(([lang, words]) => [lang, new Set(words)] as const)
 }
-// Letters only one of these languages writes.
 const LETTERS: ReadonlyArray<readonly [string, RegExp]> = [['de', /[äöüß]/u], ['es', /ñ/u], ['pt', /[ãõ]/u], ['it', /[ìò]/u], ['fr', /[œîïûô]/u]]
-// Spanish written in Spain: vosotros forms, the pronoun os, and a few words Latin America does not use.
 const SPAIN = /\b(vosotr[oa]s|vuestr[oa]s?|os|habéis|tenéis|sois|estáis|podéis|queréis|hacéis|sabéis|vale|ordenador|ordenadores|móvil|coger|guay|vaya|tío)\b/u
 
-// What he typed, without the notes the host adds around it: the desktop app puts an English
-// <system-reminder> before each prompt in a session with linked sessions (10-18), and with it his Chinese was heard as English.
+// What he typed, without the host's notes: the desktop app puts an English <system-reminder> before each prompt in a
+// session with linked sessions (10-18), and with it his Chinese was heard as English.
 export function typed(text: string): string {
   return text.replace(/<system-reminder>[\s\S]*?(<\/system-reminder>|$)/g, ' ').trim()
 }
@@ -299,10 +279,8 @@ export function detectLanguageNow(text: string, fallbackCandidates: readonly unk
   const kana = (rest.match(/[ぁ-ゟ゠-ヿ]/g) ?? []).length
   const han = (rest.match(/\p{Script=Han}/gu) ?? []).length
   const hangul = (rest.match(/\p{Script=Hangul}/gu) ?? []).length
-  const devanagari = (rest.match(/[ऀ-ॿ]+/g) ?? []).length // words
+  const devanagari = (rest.match(/[ऀ-ॿ]+/g) ?? []).length
   const words = latin.length
-  // A script outweighs the Latin words around it: Han, kana and Hangul count two characters to
-  // a word, Devanagari by its words.
   const scripts: [Lang, number][] = [
     ['ja', kana > 0 ? (kana + han) / 2 : 0],
     ['ko', hangul / 2],
@@ -313,9 +291,8 @@ export function detectLanguageNow(text: string, fallbackCandidates: readonly unk
   if (weight >= 1 && weight >= words / 2) {
     return { lang: lang === 'zh' ? chineseLanguage(rest, fallbackCandidates) : lang, confidence: Math.min(1, weight / (weight + words / 2)), words: Math.ceil(weight) }
   }
-  // Latin prose: each language's function words and its own letters. A word several languages share is split among
-  // them, so "para" or "was" alone decides nothing and a short line in Spanish or German is heard (owner 10-18:
-  // 「打其它语言也要自动切到其它语言」). The lead must be clear.
+  // Latin prose: a word several languages share is split among them, so "para" or "was" alone decides nothing and a short
+  // line in Spanish or German is heard (owner 10-18: 「打其它语言也要自动切到其它语言」). The lead must be clear.
   const parts = latin.flatMap(w => w.split(/['’]/))
   const sets = languageSets(), votes = new Map(sets.map(([name]) => [name, 0]))
   const vote = (name: string, by: number) => votes.set(name, (votes.get(name) ?? 0) + by)

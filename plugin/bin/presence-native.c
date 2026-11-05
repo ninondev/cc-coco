@@ -16,23 +16,35 @@
 #include <pthread.h>
 #include <stdint.h>
 #include <poll.h>
+#include <dirent.h>
 #define LIMIT 262144
+#define ORPHAN_SECONDS 60
 static int queue, lockfd = -1, snapshot_stage_fd = -1, journal_stage_fd = -1, fifo_fd = -1, work_fd = -1;
 #ifdef PRESENCE_SECURITY_FIXTURE
 static ino_t fixture_foreign_inode;
 static const char *fixture_stage_link;
 #endif
 static pid_t host;
-static char work[PATH_MAX], fifo[PATH_MAX], marker[PATH_MAX], registration[PATH_MAX];
+static char work[PATH_MAX], fifo[PATH_MAX], marker[PATH_MAX], registration[PATH_MAX], own_deadline[PATH_MAX];
+/* The identity of the registration and marker files this follower published. Only those files are ever removed by it. */
+static struct { int held; dev_t device; ino_t inode; } own_registration, own_marker;
+static dev_t published_device; static ino_t published_inode;
 static int secure_unlink(const char *name, int directory);
 static int secure_open(const char *name, int flags, int create);
 static int secure_directory(const char *folder, int create);
 static int secure_rename(const char *from, const char *to, int source_fd);
 static int secure_unlink_owned(const char *name, int source_fd, int directory);
 static void write_all(int fd, const char *text, size_t bytes);
+static void unlink_same(const char *name, dev_t device, ino_t inode);
 static void cleanup(void) {
     if (lockfd >= 0) { flock(lockfd, LOCK_UN); futimens(lockfd, NULL); close(lockfd); lockfd = -1; }
-    if (*registration) secure_unlink(registration, 0);
+    /* A follower removes the files it published and no others. The registration goes first: a deadline write that
+       is still on its way refuses once it is gone. */
+    if (own_registration.held) {
+        own_registration.held = 0; unlink_same(registration, own_registration.device, own_registration.inode);
+        if (own_marker.held) { own_marker.held = 0; unlink_same(marker, own_marker.device, own_marker.inode); }
+        if (*own_deadline) secure_unlink(own_deadline, 0);
+    }
     if (*fifo && fifo_fd >= 0) secure_unlink_owned(fifo, fifo_fd, 0);
     if (*work) { char name[PATH_MAX]; snprintf(name, sizeof(name), "%s/snapshot", work); if (snapshot_stage_fd >= 0) secure_unlink_owned(name, snapshot_stage_fd, 0); snprintf(name, sizeof(name), "%s/journal", work); if (journal_stage_fd >= 0) secure_unlink_owned(name, journal_stage_fd, 0); if (work_fd >= 0) secure_unlink_owned(work, work_fd, 1); }
     if (snapshot_stage_fd >= 0) close(snapshot_stage_fd); snapshot_stage_fd = -1;
@@ -113,6 +125,8 @@ static int secure_open(const char *name, int flags, int create) {
     char leaf[PATH_MAX]; int parent = secure_parent(name, leaf); if (parent < 0) return -1;
     int fd = openat(parent, leaf, flags | O_NOFOLLOW | O_NONBLOCK | O_CLOEXEC, 0600);
     if (fd < 0 && errno == ENOENT && create) fd = openat(parent, leaf, flags | O_NOFOLLOW | O_NONBLOCK | O_CLOEXEC | O_CREAT | O_EXCL, 0600);
+    /* Losing the create race to another process means the file now exists: open it. */
+    if (fd < 0 && errno == EEXIST && create) fd = openat(parent, leaf, flags | O_NOFOLLOW | O_NONBLOCK | O_CLOEXEC, 0600);
     struct stat info;
     if (fd >= 0 && (fstat(fd, &info) != 0 || !owned_file(&info))) { close(fd); fd = -1; errno = EPERM; }
     close(parent); return fd;
@@ -149,6 +163,14 @@ static int secure_unlink(const char *name, int directory) {
         result = unlinkat(parent, leaf, directory ? AT_REMOVEDIR : 0);
     close(parent); return result;
 }
+/* Remove a file only if it is still the one that was published: same device and inode, ours, a regular file. */
+static void unlink_same(const char *name, dev_t device, ino_t inode) {
+    char leaf[PATH_MAX]; int parent = secure_parent(name, leaf); if (parent < 0) return;
+    struct stat info;
+    if (fstatat(parent, leaf, &info, AT_SYMLINK_NOFOLLOW) == 0 && S_ISREG(info.st_mode) && info.st_uid == getuid() && info.st_nlink == 1
+        && info.st_dev == device && info.st_ino == inode) unlinkat(parent, leaf, 0);
+    close(parent);
+}
 static void create_folder(const char *folder) { int fd = secure_directory(folder, 1); if (fd < 0) die("presence folder"); close(fd); }
 static int create_file(const char *name) { int fd = secure_open(name, O_RDWR, 1); if (fd < 0) die("presence file"); return fd; }
 static int identity(pid_t pid, struct proc_bsdinfo *info) {
@@ -172,6 +194,118 @@ static int registered(const char *folder, const char *token, pid_t pid, const st
     if (fstat(fd, &file) == 0 && file.st_size > 0 && file.st_size < (off_t)sizeof(present)) count = read(fd, present, sizeof(present));
     close(fd); int bytes = snprintf(expected, sizeof(expected), "%d\t%u\t%s\t%u\t%s\t%s\n", pid, info->pbi_ppid, stamp, info->pbi_uid, executable, token);
     return count == bytes && bytes > 0 && bytes < (int)sizeof(expected) && !memcmp(expected, present, (size_t)bytes);
+}
+/* A session is three small files named by its token. .presence-registration-T is published first and holds the
+   follower's pid, parent, process start identity, uid, program and token; .presence-follow-T.jsonl is its ready
+   marker; .presence-deadline-T.jsonl holds the sleep deadline the plugin writes. They go when the session ends. */
+enum { SESSION_REGISTRATION, SESSION_MARKER, SESSION_DEADLINE };
+enum { PROCESS_GONE, PROCESS_REUSED, PROCESS_LIVE, PROCESS_UNKNOWN };
+static void session_leaf(char leaf[PATH_MAX], int kind, const char *token) {
+    static const char *const head[3] = {".presence-registration-", ".presence-follow-", ".presence-deadline-"};
+    snprintf(leaf, PATH_MAX, "%s%s%s", head[kind], token, kind == SESSION_REGISTRATION ? "" : ".jsonl");
+}
+static int token_character(char c) { return (c >= 'a' && c <= 'z') || (c >= 'A' && c <= 'Z') || (c >= '0' && c <= '9') || c == '_' || c == '-'; }
+/* Which of the three files a directory entry is, and its token; -1 for anything else. */
+static int session_name(const char *name, char token[129]) {
+    static const char *const head[3] = {".presence-registration-", ".presence-follow-", ".presence-deadline-"};
+    size_t whole = strlen(name);
+    for (int kind = 0; kind < 3; kind++) {
+        size_t front = strlen(head[kind]), back = kind == SESSION_REGISTRATION ? 0 : 6;
+        if (whole <= front + back || strncmp(name, head[kind], front) || (back && strcmp(name + whole - back, ".jsonl"))) continue;
+        size_t count = whole - front - back;
+        if (count > 128) return -1;
+        for (size_t n = 0; n < count; n++) if (!token_character(name[front + n])) return -1;
+        memcpy(token, name + front, count); token[count] = 0; return kind;
+    }
+    return -1;
+}
+/* Whether the process a registration names is still that process: the same pid with the same start identity.
+   A pid taken by another process later has another start time, so it never counts as the old one. Only a process
+   that is certainly absent or certainly another one is reported so; anything unclear counts as live. */
+static int session_process(pid_t pid, const char *stamp) {
+    struct proc_bsdinfo info; errno = 0;
+    int size = proc_pidinfo(pid, PROC_PIDTBSDINFO, 0, &info, sizeof(info));
+    if (size == (int)sizeof(info)) {
+        if (info.pbi_status == 5) return PROCESS_GONE;
+        char now[128]; birth(&info, now);
+        return strcmp(now, stamp) ? PROCESS_REUSED : PROCESS_LIVE;
+    }
+    if (errno == ESRCH) return PROCESS_GONE;
+    if (kill(pid, 0) < 0 && errno == ESRCH) return PROCESS_GONE;
+    return PROCESS_UNKNOWN;
+}
+static int all_digits(const char *text) { if (!*text) return 0; for (; *text; text++) if (*text < '0' || *text > '9') return 0; return 1; }
+/* pid, parent, start identity, uid, program and token, tab separated, one line. */
+static int session_receipt(int directory, const char *leaf, const char *token, pid_t *pid, char stamp[128]) {
+    int fd = openat(directory, leaf, O_RDONLY | O_NOFOLLOW | O_NONBLOCK | O_CLOEXEC); if (fd < 0) return 0;
+    struct stat file; char text[8192]; ssize_t count = -1;
+    if (fstat(fd, &file) == 0 && owned_file(&file) && file.st_size > 0 && file.st_size < (off_t)sizeof(text)) count = read(fd, text, sizeof(text) - 1);
+    close(fd); if (count <= 0 || text[count - 1] != '\n') return 0;
+    text[count - 1] = 0;
+    char *field[6]; int fields = 1; field[0] = text;
+    for (char *p = text; *p; p++) {
+        if (*p == '\n') return 0;
+        if (*p == '\t') { if (fields >= 6) return 0; *p = 0; field[fields++] = p + 1; }
+    }
+    if (fields != 6 || !all_digits(field[0]) || !all_digits(field[1]) || !all_digits(field[3]) || !*field[4] || strcmp(field[5], token)) return 0;
+    if (strncmp(field[2], "darwin:", 7) || strlen(field[2]) >= 128 || strlen(field[0]) > 9) return 0;
+    long value = strtol(field[0], NULL, 10); if (value < 1) return 0;
+    *pid = (pid_t)value; strcpy(stamp, field[2]); return 1;
+}
+static void session_remove(int directory, const char *token) {
+    for (int kind = 0; kind < 3; kind++) {
+        char leaf[PATH_MAX]; struct stat info; session_leaf(leaf, kind, token);
+        if (fstatat(directory, leaf, &info, AT_SYMLINK_NOFOLLOW) == 0 && S_ISREG(info.st_mode) && info.st_uid == getuid() && info.st_nlink == 1) unlinkat(directory, leaf, 0);
+    }
+}
+/* Entries of one kind are read into a list first and acted on afterwards, so removing files never disturbs the
+   directory read. A list that fills up is read again after it has been dealt with. */
+#define SWEEP_LIST 512
+static int sweep_list(DIR *entries, int wanted, char names[SWEEP_LIST][192]) {
+    int count = 0; struct dirent *entry; char token[129]; rewinddir(entries);
+    while ((entry = readdir(entries))) {
+        int kind = session_name(entry->d_name, token);
+        if (kind < 0 || (wanted == SESSION_REGISTRATION) != (kind == SESSION_REGISTRATION)) continue;
+        if (count == SWEEP_LIST) return -count;
+        strcpy(names[count++], entry->d_name);
+    }
+    return count;
+}
+/* Remove the files of sessions that are over: the three files of a registration whose process is gone or has
+   been replaced by another one under the same pid, and, a minute after they were last written, a marker or deadline
+   file whose registration is gone. A live session is never touched. With report set it lists what it removed. */
+static void sweep(const char *folder, int report) {
+    int directory = secure_directory(folder, 0); if (directory < 0) return;
+    int again = dup(directory); DIR *entries = again >= 0 ? fdopendir(again) : NULL;
+    if (!entries) { if (again >= 0) close(again); close(directory); return; }
+    static char names[SWEEP_LIST][192]; char token[129];
+    for (int round = 0, removed = 1; round < 8 && removed; round++) {
+        int count = sweep_list(entries, SESSION_REGISTRATION, names), more = count < 0; if (more) count = -count;
+        removed = 0;
+        for (int n = 0; n < count; n++) {
+            pid_t pid; char stamp[128]; session_name(names[n], token);
+            if (!session_receipt(directory, names[n], token, &pid, stamp)) continue;
+            int state = session_process(pid, stamp);
+            if (state != PROCESS_GONE && state != PROCESS_REUSED) continue;
+            session_remove(directory, token); removed = 1;
+            if (report) printf("SWEPT\t%s\t%s\n", token, state == PROCESS_GONE ? "gone" : "reused");
+        }
+        if (!more) break;
+    }
+    for (int round = 0, removed = 1; round < 8 && removed; round++) {
+        int count = sweep_list(entries, SESSION_MARKER, names), more = count < 0; if (more) count = -count;
+        time_t now = time(NULL); removed = 0;
+        for (int n = 0; n < count; n++) {
+            char leaf[PATH_MAX]; struct stat info; session_name(names[n], token); session_leaf(leaf, SESSION_REGISTRATION, token);
+            if (fstatat(directory, leaf, &info, AT_SYMLINK_NOFOLLOW) == 0 || errno != ENOENT) continue;
+            if (fstatat(directory, names[n], &info, AT_SYMLINK_NOFOLLOW) != 0 || !S_ISREG(info.st_mode) || info.st_uid != getuid() || info.st_nlink != 1
+                || now - info.st_mtimespec.tv_sec < ORPHAN_SECONDS) continue;
+            if (unlinkat(directory, names[n], 0) == 0) { removed = 1; if (report) printf("SWEPT\t%s\torphan\n", token); }
+        }
+        if (!more) break;
+    }
+    closedir(entries); close(directory);
+    if (report) fflush(stdout);
 }
 static void inventory(const char *folder, const char *pids) {
     const char *position = pids; int total = 0;
@@ -307,6 +441,7 @@ static void publish_file(const char *target, const char *data, size_t bytes, int
     if (result != 0 && fstatat(parent, temporary, &current, AT_SYMLINK_NOFOLLOW) == 0 && owned_file(&current)
         && current.st_dev == staged.st_dev && current.st_ino == staged.st_ino) unlinkat(parent, temporary, 0);
     close(fd); close(parent); if (result != 0) die("presence publish rename");
+    published_device = staged.st_dev; published_inode = staged.st_ino;
 }
 /* The fallback runs before the lock's parent-watch thread exists. Both cwd
    changes use open descriptors; no path component can redirect FIFO creation. */
@@ -342,7 +477,13 @@ static void transaction(const char *folder, const char *token, const char *remov
         close(previous); write_all(next, commit, incoming - 1); write_all(next, "\n", 1); parent_alive();
         if (secure_rename(compact, journal, next) != 0) die("presence journal commit"); boundary(rotated ? "journal-rotated" : "journal-appended");
     }
-    free(commit); if (*remove) { snprintf(name, sizeof(name), ".presence-follow-%s.jsonl", remove); path(marker, folder, name); secure_unlink(marker, 0); snprintf(name, sizeof(name), ".presence-deadline-%s.jsonl", remove); path(marker, folder, name); secure_unlink(marker, 0); snprintf(name, sizeof(name), ".presence-registration-%s", remove); path(marker, folder, name); secure_unlink(marker, 0); }
+    free(commit);
+    /* A leaving session's registration goes first, so a deadline write still on its way refuses and cannot bring a file back. */
+    if (*remove) {
+        for (int kind = 0; kind < 3; kind++) { char leaf[PATH_MAX]; session_leaf(leaf, kind, remove); path(marker, folder, leaf); secure_unlink(marker, 0); }
+        /* Every session that ends also removes what sessions before it left behind without ending. */
+        sweep(folder, 0);
+    }
     boundary("before-unlock"); cleanup(); boundary("after-unlock"); printf("COMMITTED\n");
 }
 typedef struct { const char *name; int fd; off_t offset; dev_t device; ino_t inode; } Watched;
@@ -486,6 +627,10 @@ static void emit_pid(pid_t pid) {
     write_all(STDOUT_FILENO, digits + offset, sizeof(digits) - offset);
 }
 static void follow(const char *folder, const char *token, const char *requests, const char *marker_arg, const char *deadline_arg) {
+#ifdef PRESENCE_FOLLOW_ONLY
+    /* The follower build installs no handlers in main: it removes its own three files when it is ended or its host is gone. */
+    signal(SIGPIPE, interrupted); signal(SIGTERM, interrupted); signal(SIGINT, interrupted); signal(SIGHUP, interrupted); atexit(cleanup);
+#endif
     // A stalled reader must not prevent consuming the parent's exit event.
     int flags = fcntl(STDOUT_FILENO, F_GETFL); if (flags < 0 || fcntl(STDOUT_FILENO, F_SETFL, flags | O_NONBLOCK) < 0) die("presence output flags");
     // Allocate only the actual path lengths, retaining full PATH_MAX support.
@@ -506,8 +651,13 @@ static void follow(const char *folder, const char *token, const char *requests, 
     if (!metadata(getpid(), &self, executable, stamp)) die("presence registration metadata");
     int bytes = snprintf(receipt, sizeof(receipt), "%d\t%u\t%s\t%u\t%s\t%s\n", getpid(), self.pbi_ppid, stamp, self.pbi_uid, executable, token);
     if (bytes <= 0 || bytes >= (int)sizeof(receipt)) exit(69);
+    sweep(folder, 0);
+    /* Exclusive: a registration that is already there belongs to another process, and this one then removes nothing. */
     publish_file(registration, receipt, (size_t)bytes, 1);
+    own_registration.device = published_device; own_registration.inode = published_inode; own_registration.held = 1;
+    if (*deadline_arg) strcpy(own_deadline, deadline_path);
     publish_file(marker, ready, 7 + length, 1);
+    own_marker.device = published_device; own_marker.inode = published_inode; own_marker.held = 1;
     int own_directory = secure_directory(folder, 0); if (own_directory < 0) die("presence folder"); event(own_directory, EVFILT_VNODE, NOTE_WRITE | NOTE_DELETE | NOTE_RENAME);
     int request_directory = *requests ? watch_directory(requests, -1) : -1;
     write_all(STDOUT_FILENO, "FOLLOW\t", 7);
@@ -552,16 +702,27 @@ static int fifo_send(const char *folder, const char *name, const char *device, c
     }
     close(fd); return 0;
 }
+/* Whether the session's registration is still there: gone once the session has ended. */
+static int session_registered(const char *folder, const char *token) {
+    char leaf[PATH_MAX], name[PATH_MAX]; session_leaf(leaf, SESSION_REGISTRATION, token); path(name, folder, leaf);
+    int fd = secure_open(name, O_RDONLY, 0); if (fd < 0) return 0;
+    close(fd); return 1;
+}
 static int deadline_write(const char *folder, const char *token, const char *line) {
     if (!*token || strlen(token) > 64 || strlen(line) >= 64) return 64;
     for (const char *p = token; *p; p++) if (!((*p >= 'a' && *p <= 'z') || (*p >= 'A' && *p <= 'Z') || (*p >= '0' && *p <= '9') || *p == '_' || *p == '-')) return 64;
     const char *p = line; uint64_t generation, at;
     if (!deadline_integer(&p, &generation) || *p++ != '\t' || !deadline_integer(&p, &at) || *p++ != '\n' || *p) return 64;
+    /* A write that arrives after its session has ended is dropped: it must not bring the file back. */
+    if (!session_registered(folder, token)) return 0;
     char leaf[192], target[PATH_MAX], staged[PATH_MAX];
     snprintf(leaf, sizeof(leaf), ".presence-deadline-%s.jsonl", token); path(target, folder, leaf);
     snprintf(leaf, sizeof(leaf), ".presence-deadline-stage-%d", getpid()); path(staged, folder, leaf);
     int fd = secure_open(staged, O_WRONLY | O_CREAT | O_EXCL, 0); if (fd < 0) return 69;
-    write_all(fd, line, strlen(line)); int result = secure_rename(staged, target, fd); secure_unlink_owned(staged, fd, 0); close(fd); return result == 0 ? 0 : 69;
+    write_all(fd, line, strlen(line)); int result = secure_rename(staged, target, fd); secure_unlink_owned(staged, fd, 0); close(fd);
+    /* The session may have ended between the check and the rename: its registration is removed before its other files. */
+    if (result == 0 && !session_registered(folder, token)) secure_unlink(target, 0);
+    return result == 0 ? 0 : 69;
 }
 static int stats(const char *pids, int tree) {
     pid_t wanted[4096]; int total = 0; const char *position = pids;
@@ -653,6 +814,7 @@ int main(int argc, char **argv) {
 #ifndef PRESENCE_FOLLOW_ONLY
     if (argc == 7 && !strcmp(argv[2], "fifo-send")) return fifo_send(argv[1], argv[3], argv[4], argv[5], argv[6]);
     if (argc == 5 && !strcmp(argv[2], "deadline-write")) return deadline_write(argv[1], argv[3], argv[4]);
+    if (argc == 3 && !strcmp(argv[2], "sweep")) { sweep(argv[1], 1); return 0; }
     if (argc == 5 && !strcmp(argv[2], "watch-companion")) return watch_companion(argv[3], argv[4]);
     if (argc == 3 && !strcmp(argv[1], "stats")) return stats(argv[2], 0);
     if (argc == 3 && !strcmp(argv[1], "stats-tree")) return stats(argv[2], 1);

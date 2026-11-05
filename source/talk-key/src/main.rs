@@ -37,10 +37,10 @@ use deadline::Phase;
 use endpoint::{Endpoint, Record};
 use out::{Fail, Kind, print_fail, print_ok};
 
-/// The save check, which costs no tokens. On api.anthropic.com `GET /v1/models/{model}`; elsewhere
-/// `GET {base}/v1/models`, and a 404 or 405 there keeps the key as «saved, not checked yet».
+/// The save check, which costs no tokens. On api.anthropic.com `GET /v1/models/{model}`; elsewhere the service's list
+/// of models, and a 404 or 405 there keeps the key as «saved, not checked yet».
 fn check(rec: &Record) -> Result<&'static str, Fail> {
-    let path = if rec.endpoint.is_anthropic() { format!("/v1/models/{}", rec.model) } else { "/v1/models".to_string() };
+    let path = if rec.endpoint.is_anthropic() { format!("/v1/models/{}", rec.model) } else { rec.endpoint.models_path().to_string() };
     let reply = http::call(&rec.endpoint, "GET", &path, &rec.key, None)?;
     match reply.status {
         200 => Ok("works"),
@@ -69,7 +69,7 @@ struct AddArgs {
 
 fn add_args(args: &[String]) -> Result<AddArgs, Fail> {
     let usage = || Fail::new(Kind::Other, "usage");
-    let mut a = AddArgs { words: None, base: endpoint::DEFAULT_BASE.into(), model: endpoint::DEFAULT_MODEL.into() };
+    let mut a = AddArgs { words: None, base: endpoint::DEFAULT_BASE.into(), model: String::new() };
     let mut w = input::Words { title: String::new(), text: String::new(), save: String::new(), cancel: String::new() };
     let mut dialog = false;
     let mut it = args.iter();
@@ -106,7 +106,9 @@ fn add_args(args: &[String]) -> Result<AddArgs, Fail> {
 fn add(args: &[String]) -> Result<i32, Fail> {
     let a = add_args(args)?;
     let ep = Endpoint::parse(&a.base)?;
-    endpoint::check_model(&a.model, &ep)?;
+    // Only Anthropic's own address has a model to assume; anywhere else a person names theirs.
+    let model = if a.model.is_empty() && ep.is_anthropic() { endpoint::DEFAULT_MODEL.to_string() } else { a.model };
+    endpoint::check_model(&model, &ep)?;
     if a.words.is_none() {
         input::ensure_terminal()?;
     }
@@ -115,7 +117,7 @@ fn add(args: &[String]) -> Result<i32, Fail> {
         None => input::from_terminal(&ep)?,
         Some(w) => input::from_dialog(w, &ep)?,
     };
-    let rec = Record { key, endpoint: ep, model: a.model };
+    let rec = Record { key, endpoint: ep, model };
     deadline::start("add");
     deadline::enter(Phase::Network);
     let kind = check(&rec)?;
@@ -171,11 +173,11 @@ fn send() -> Result<i32, Fail> {
         None
     };
     let body = request::body(draft, &rec, limit)?;
-    let reply = http::call(&rec.endpoint, "POST", "/v1/messages", &rec.key, Some(&body))?;
+    let reply = http::call(&rec.endpoint, "POST", rec.endpoint.reply_path(), &rec.key, Some(&body))?;
     if reply.status != 200 {
         return Err(request::fail_for_status(reply.status, &reply.body, reply.retry_after));
     }
-    let (text, usage) = request::read_reply(&reply.body)?;
+    let (text, usage) = if rec.endpoint.speaks_openai() { request::read_openai_reply(&reply.body)? } else { request::read_reply(&reply.body)? };
     let mut m = described(&rec, None);
     m.remove("last4");
     m.insert("text".into(), Value::String(text));

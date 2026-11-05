@@ -15,6 +15,8 @@ export interface PricesViewState {
   checkingOthers: boolean
   olderOpen: boolean
   othersOpen: boolean
+  /** later-11: the dropped price details, shown under the about line until pressed away. */
+  aboutOpen: boolean
   changes: PriceChange[]
   chatModel: string | null
   usedRecently: string[]
@@ -60,7 +62,7 @@ export async function knownOtherPrices(store: PriceStore, shipped: ShippedPrices
 export function createPricesController(o: PricesControllerOptions) {
   let state: PricesViewState = {
     table: newestTable(null, o.shipped), shippedAsOf: o.shipped.asOf, checking: false, why: null,
-    others: null, checkingOthers: false, olderOpen: false, othersOpen: false,
+    others: null, checkingOthers: false, olderOpen: false, othersOpen: false, aboutOpen: false,
     changes: [], chatModel: o.chatModel ?? null, usedRecently: [],
   }
   let opened = false, othersFetched = false, generation = 0
@@ -77,7 +79,7 @@ export function createPricesController(o: PricesControllerOptions) {
     if (opened) return
     opened = true; othersFetched = false
     const gen = ++generation
-    apply({ checking: true, why: null, others: null, olderOpen: false, othersOpen: false, changes: [] })
+    apply({ checking: true, why: null, others: null, olderOpen: false, othersOpen: false, aboutOpen: false, changes: [] })
     try {
       const [stored, models, seen] = await Promise.all([o.store.get('prices.claude'), o.store.get('models.used'), o.store.get('prices.seen')])
       if (gen !== generation || !opened) return
@@ -127,6 +129,7 @@ export function createPricesController(o: PricesControllerOptions) {
     state: () => state,
     setChatModel: (chatModel: string | null) => { state = { ...state, chatModel } },
     toggleOlder: () => apply({ olderOpen: !state.olderOpen }),
+    toggleAbout: () => apply({ aboutOpen: !state.aboutOpen }),
     rows: () => arrangeRows(state.table.rows, { chatModel: state.chatModel, usedRecently: state.usedRecently }),
   }
 }

@@ -220,7 +220,7 @@
     },
     "targets": {
       "claude": [
-        "com.anthropic.claudefordesktop"
+        "com.anthropic.claudefordesktop", "com.openai.codex", "dev.zcode.app"
       ],
       "vscode": [
         "com.microsoft.VSCode",
@@ -228,7 +228,7 @@
       ]
     },
     "titleBarHeight": {
-      "com.anthropic.claudefordesktop": 52,
+      "com.anthropic.claudefordesktop": 52, "com.openai.codex": 40, "dev.zcode.app": 40,
       "com.microsoft.VSCode": 35,
       "com.microsoft.VSCodeInsiders": 35
     },

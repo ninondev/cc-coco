@@ -15,6 +15,10 @@ Meet your cutest coding partner. Coco peeks at every bug you hit, and makes sure
 
 ## Install
 
+On a Mac, download the [Coco installer](https://github.com/ninondev/cc-coco/releases/download/v1.1.4514/Coco-Installer-1.1.4514-macos.zip), unzip it, open the app and click 安装 (Install). The installer is in Chinese. It supports Intel and Apple silicon Macs running macOS 13 or later.
+
+You can also install the plugin from a terminal:
+
 ```bash
 claude plugin marketplace add ninondev/cc-coco
 claude plugin install coco@coco
@@ -83,10 +87,10 @@ Skill cards have a pane of their own: press **Skill cards** on the Coco page or 
 
 ## Off by default
 
-All on the Switches page. Anything that uses your plan says so. Switches that call a model use the newest Haiku unless you pick another.
+All on the Switches page. Anything that uses your plan says so. With a service you connect yourself, these features follow the current conversation's model unless you pick another. On Claude's own service, they default to Haiku.
 
-- **DMs.** DM Coco and they answer with the model you pick. Coco sometimes speaks first, and remembers where you left off, across sessions. You can also pay with your own API key, kept in your system's password store (the Keychain on a Mac, Credential Manager on Windows, the keyring on Linux, or a file only your account can open when Linux has no keyring). Your own key hasn't been tried on Windows or Linux yet.
-- **Band lines.** A model writes a set of band lines for Coco or Claudie, kept on this computer. You can edit any set and go back to the original whenever you like.
+- **DMs.** DM Coco and they answer with the model you pick. Coco sometimes speaks first, and remembers where you left off, across sessions. You can also pay with your own API key, kept in your system's password store (the Keychain on a Mac, Credential Manager on Windows, the keyring on Linux, or a file only your account can open when Linux has no keyring). Your own key hasn't been tried on Windows or Linux yet. If no model is available, opening DMs takes you to API setup. Save your API key and confirm the cost to continue.
+- **Band lines.** A model writes a set of band lines for Coco or Claudie, kept on this computer. You can edit any set and go back to the original whenever you like. You can also import a text file using the blank template, preview it and confirm which lines to use. Imported lines stay on this computer and use no model or tokens; they have their own switch and language setting. Coco's imported lines can also mix with the built-in lines.
 - **Coco's voice in replies.** Light: Coco adds a line after Claude finishes. That puts a 338-character instruction on each request, usually served from the prompt cache. Full: Claude talks like Coco the whole way.
 - **Explain simply.** One click turns Claude's last answer, or the text you selected, into plain words. Your conversation stays as it was.
 - **A second look.** After Claude edits files, one click has another model look over the changes and point out anything worth a closer look.
@@ -108,15 +112,17 @@ With Claude Code's screen-reader mode on (the variable or the setting), the band
 
 ## Languages
 
-13 languages. Simplified Chinese is called 华文 and Traditional Chinese 國語; the rest match the Claude app. `/coco lang auto` goes back to automatic.
+13 languages. Simplified Chinese is called 简体中文 and Traditional Chinese 繁體中文; the rest match the Claude app. `/coco lang auto` goes back to automatic.
 
 ## Coco Pet
 
 Press **Install Coco Pet** on the Coco page of the bag, or run `/coco companion install`. Coco stands beside Claude's window and follows it around, with the same face as on the band. You can pat their head, drag them around and pick one of three sizes.
 
-Nothing is downloaded, the Claude app itself is never touched, and the installed program never goes online. I don't have a Windows or Linux computer, so those builds haven't been tried on a real machine yet.
+The Mac pet is included with the plugin, signed with a Developer ID and notarized by Apple, with no Xcode or local compilation needed. It supports Intel and Apple silicon Macs running macOS 13 or later. Nothing is downloaded during pet installation, the Claude app itself is never touched, and the installed program never goes online. I don't have a Windows or Linux computer, so those builds haven't been tried on a real machine yet.
 
 If you quit Coco by accident, press **Bring Coco back** in the bag.
+
+After updating the plugin, start a new Claude Code session to load it. The bag tells you when the pet needs an update too.
 
 ## Change the Claude icon
 
@@ -137,13 +143,13 @@ claude plugin uninstall coco@coco && claude plugin marketplace remove coco
 If the plugin is already gone: to get the original icon back, select Claude.app in Finder, open File › Get Info, click the small icon at the top left and press Delete. To remove Coco Pet, right-click it and quit, then move these to the Trash (the Recycle Bin on Windows):
 
 - macOS: `~/Applications/Coco Pet.app`, `~/Library/Application Support/Coco`, `~/Library/Application Support/Coco-presence`
-- On macOS, also run `security delete-identity -c "Coco Pet Local Signing"` to remove the signing certificate Coco Pet made in your login keychain
+- Uninstalling the Mac pet attempts to remove the old `Coco Pet Local Signing` certificate. If it remains in your login keychain, run `security delete-identity -c "Coco Pet Local Signing"` to remove it
 - Windows: `%LOCALAPPDATA%\Programs\Coco Pet`, `%APPDATA%\Coco`, `%USERPROFILE%\.local\state\coco`
 - Linux: `~/.local/share/coco-pet`, `~/.local/state/coco`, `~/.config/coco-pet`
 
 ## What's next
 
-Not in 1.0; a later version will bring them:
+Planned for later versions:
 
 - **More chat companions.** Ten or more companions from other model makers will come visit, each talking through her own maker's model (with your own key) and taking over the band while you chat. Their stories come later.
 - **A mini-game for the wait.** Something to play while Claude works.

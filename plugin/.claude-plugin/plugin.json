@@ -1,7 +1,7 @@
 {
   "name": "coco",
   "displayName": "Coco",
-  "version": "1.0.1",
+  "version": "1.1.4514",
   "description": "Unofficial fan mod for Claude Code. A small character who lives in the band above your prompt.",
   "author": {
     "name": "ninondev"
@@ -20,7 +20,7 @@
     "band": {
       "type": "string",
       "title": "Coco above the prompt",
-      "description": "on: Coco's band with pictures. compact: one line. off: put away, with a small door to call Coco back.",
+      "description": "on: Coco's band with pictures. compact: one line. off: put away, with a small door to call Coco back.\non：带画的横条；compact：只留一行；off：收起来，留一扇小门叫她回来。",
       "options": [
         "on",
         "compact",
@@ -32,7 +32,7 @@
     "language": {
       "type": "string",
       "title": "Coco's language",
-      "description": "auto: follows Claude Code's language setting, otherwise your system's.",
+      "description": "auto: follows Claude Code's language setting, otherwise your system's.\nauto：跟着 Claude Code 的语言设置，没设就跟系统。",
       "options": [
         "auto",
         "en",
@@ -50,27 +50,6 @@
         "zh-Hant"
       ],
       "default": "auto"
-    },
-    "resolvedLanguage": {
-      "type": "string",
-      "title": "Coco's resolved language",
-      "description": "Kept by Coco for a fast start. To change Coco's language, use the language row above.",
-      "options": [
-        "en",
-        "fr",
-        "de",
-        "hi",
-        "id",
-        "it",
-        "ja",
-        "ko",
-        "pt-BR",
-        "es-419",
-        "es-ES",
-        "zh",
-        "zh-Hant"
-      ],
-      "default": "en"
     }
   },
   "documentationUrl": "https://github.com/ninondev/cc-coco#readme",

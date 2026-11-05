@@ -308,7 +308,7 @@ for (const surface of ['terminal', 'vscode', 'mobile'] as const) for (const cols
   await flat()
 })
 
-test("the pane speaks Coco's language", { options: { language: 'auto', resolvedLanguage: 'en' } }, async ($, on) => {
+test("the pane speaks Coco's language", { options: { language: 'auto' } }, async ($, on) => {
   const w = cardsWorld(on, [], [], COMMANDS, { language: 'Japanese' })
   await $.session.start({ ...START, surface: 'desktop' })
   await settleLegacyStart($, w)

@@ -136,8 +136,17 @@ final class Claude {
     static let bundleID = "com.anthropic.claudefordesktop"
     private var tuning = WindowTuning()
     private(set) var target = CompanionTarget.claude
-    var targetName: String { target == .claude ? "Claude" : "VS Code" }
-    var targetBundleID: String { running?.bundleIdentifier ?? tuning.targets[target.rawValue]?.first ?? Self.bundleID }
+    var targetName: String {
+        switch running?.bundleIdentifier {
+        case "com.openai.codex": return "Codex"
+        case "dev.zcode.app": return "ZCode"
+        default: return target == .claude ? "Claude" : "VS Code"
+        }
+    }
+    var targetBundleID: String { running?.bundleIdentifier ?? firstListed }
+    /// The app the mod's sessions live in. Codex and ZCode only have him standing beside them.
+    var hostBundleID: String { target == .claude ? firstListed : targetBundleID }
+    private var firstListed: String { tuning.targets[target.rawValue]?.first ?? Self.bundleID }
     var found: Bool { running != nil && running?.isTerminated == false }
     func configure(_ tuning: WindowTuning) {
         let bundles = self.tuning.targets[target.rawValue]
@@ -167,6 +176,8 @@ final class Claude {
     private(set) var lastError: String?
     /// The sighting changed, or Claude came to the front (`reorder`: put him back next to its window).
     var changed: (_ reorder: Bool) -> Void = { _ in }
+    /// Any app in the list quit, the one he stands beside or not.
+    var gone: (_ bundleID: String) -> Void = { _ in }
     /// Geometry and actual input timestamps for one live move/resize gesture, in Cocoa points.
     var windowGesture: (WindowDragEvents.Phase, CGRect, TimeInterval) -> Void = { _, _, _ in }
     /// Claude quit.
@@ -258,14 +269,13 @@ final class Claude {
         }
         running = app
         let pid = app.processIdentifier
+        trace.say("claude: attach \(app.bundleIdentifier ?? "?") \(pid)")
         let watch = DispatchSource.makeProcessSource(identifier: pid, eventMask: .exit, queue: .main)
         watch.setEventHandler { [weak self] in
             MainActor.assumeIsolated {
                 guard let self, self.running?.processIdentifier == pid else { return }
                 self.trace.say("claude: process \(pid) exited")
-                self.detach()
-                self.look(full: true, reorder: false)
-                self.quit()
+                self.left()
             }
         }
         watch.resume()
@@ -292,6 +302,7 @@ final class Claude {
 
     @objc private func workspaceEvent(_ note: Notification) {
         let app = note.userInfo?[NSWorkspace.applicationUserInfoKey] as? NSRunningApplication
+        trace.say("claude: event \(note.name.rawValue.replacingOccurrences(of: "NSWorkspace", with: "")) \(app?.bundleIdentifier ?? "-")")
         switch note.name {
         case NSWorkspace.activeSpaceDidChangeNotification:
             pointerFollow.cancelDrag()
@@ -300,16 +311,19 @@ final class Claude {
         case NSWorkspace.didLaunchApplicationNotification:
             if isTarget(app), running == nil || running?.isTerminated == true { attach(app) }
         case NSWorkspace.didTerminateApplicationNotification:
-            guard let app, app.processIdentifier == running?.processIdentifier else { return }
-            detach()
-            look(full: true, reorder: false)
-            quit()
+            guard let app else { return }
+            if let bundle = app.bundleIdentifier { gone(bundle) }
+            if app.processIdentifier == running?.processIdentifier { left() }
+            else if app.bundleIdentifier == hostBundleID { quit() }
         default: // activate, deactivate, hide, unhide
             // macOS does not always announce a permission switched on in System Settings: look again
             // whenever an app comes to the front while it is missing (you come back from Settings).
             if !trusted, allowAX, note.name == NSWorkspace.didActivateApplicationNotification { recheckTrust() }
             guard let app, isTarget(app) else { return }
-            if running == nil || running?.processIdentifier != app.processIdentifier { attach(app); return }
+            // With several apps in the list, the one being left must not pull him back from the one coming forward.
+            let leaving = note.name == NSWorkspace.didDeactivateApplicationNotification || note.name == NSWorkspace.didHideApplicationNotification
+            if running == nil || !leaving && running?.processIdentifier != app.processIdentifier { attach(app); return }
+            guard running?.processIdentifier == app.processIdentifier else { return }
             if note.name == NSWorkspace.didActivateApplicationNotification || note.name == NSWorkspace.didUnhideApplicationNotification {
                 if !pointerFollow.tracking { windowNumber = nil }
             }
@@ -334,6 +348,22 @@ final class Claude {
         trace.say("claude: accessibility \(now ? "allowed" : "not allowed")")
         attach(running ?? find())
         trustMoved()
+    }
+
+    /// The app he stood beside quit. Only the host's going, or the last one's, ends the mod's sessions.
+    private func left() {
+        let app = running
+        detach()
+        let moved = app.map { moveOn(from: $0.processIdentifier) } ?? false
+        if !moved { look(full: true, reorder: false); changed(false) } // with no sighting look says nothing, and the name must go
+        if !moved || app?.bundleIdentifier == hostBundleID { quit() }
+    }
+
+    /// One of the apps in the list quit while another is still open: stand beside that one.
+    private func moveOn(from pid: pid_t) -> Bool {
+        guard let next = find(), !next.isTerminated, next.processIdentifier != pid else { return false }
+        attach(next)
+        return true
     }
 
     private func find() -> NSRunningApplication? {

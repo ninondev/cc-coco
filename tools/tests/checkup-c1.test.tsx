@@ -1,13 +1,13 @@
 import type { EngineInterface } from 'claude-code'
 import { describe, expect, test } from 'claude-code/testing'
-import { checkFolder, checkup, olderVersion, readCheckCompanion, readCheckSessions } from '../hooks/checkup'
+import { checkFolder, checkup, olderVersion, atLeastVersion, COMPANION_MIN_VERSION, readCheckCompanion, readCheckSessions } from '../hooks/checkup'
 import type { CheckInput, CheckWords } from '../hooks/checkup'
 import { LANGS } from '../hooks/words'
 import { BOOK_FILES } from './book-files'
 import { C1_NUMBER_WORDS } from './c1-number-words'
 
 const good: CheckInput = { platform: 'darwin', surface: 'desktop', installed: true,
-  companion: { running: true, accessibility: true, version: '0.2.0' }, health: {}, version: '0.2.0', band: 'on', sessions: [], home: '/tmp/home' }
+  companion: { running: true, accessibility: true, version: COMPANION_MIN_VERSION }, health: {}, version: '0.2.0', band: 'on', sessions: [], home: '/tmp/home' }
 function words(lang: keyof typeof C1_NUMBER_WORDS.durations): CheckWords {
   return { ...JSON.parse(BOOK_FILES[`${lang}.json`]!), check: {
     title: C1_NUMBER_WORDS['check.title'][lang], ok: C1_NUMBER_WORDS['check.ok'][lang], fix: C1_NUMBER_WORDS['check.fix'][lang],
@@ -16,6 +16,10 @@ function words(lang: keyof typeof C1_NUMBER_WORDS.durations): CheckWords {
 }
 
 describe('0.2 9.2 the five check-up rows', () => {
+  test('plugin-only updates keep an unchanged pet current', () => {
+    const result = checkup({ ...good, version: '9.0.0', companion: { ...good.companion, version: '1.1.4514' } }, words('en'))
+    expect(result.rows.some(row => row.id === 'update')).toBe(false)
+  })
   test('all good belongs at the end; absent companion makes no running claim', () => {
     expect(checkup(good, words('en'))).toEqual({ title: 'Check-up', ok: 'All good', placement: 'end', rows: [] })
     expect(checkup({ ...good, installed: false, companion: {} }, words('en')).rows).toEqual([])
@@ -54,6 +58,11 @@ describe('0.2 9.2 the five check-up rows', () => {
     expect(olderVersion('0.2.0-beta.2', '0.2.0-beta.11')).toBe(true)
     expect(olderVersion('0.2.0-beta.1', '0.2.0')).toBe(true)
     expect(olderVersion('unknown', '0.2.0')).toBe(false)
+    expect(atLeastVersion('1.1.4514', '1.1.4514')).toBe(true)
+    expect(atLeastVersion('1.1.4515', '1.1.4514')).toBe(true)
+    expect(atLeastVersion('1.1.4514-beta.1', '1.1.4514')).toBe(false)
+    expect(atLeastVersion('unknown', '1.1.4514')).toBe(false)
+    expect(atLeastVersion(undefined, '1.1.4514')).toBe(false)
     expect(checkFolder('C:\\Users\\Owner\\Work', 'c:\\users\\owner')).toBe('~/Work')
     expect(checkFolder('/tmp/homely/project', '/tmp/home')).toBe('/tmp/homely/project')
   })

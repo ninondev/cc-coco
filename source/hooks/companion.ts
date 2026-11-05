@@ -1,26 +1,17 @@
 import { MOTION } from './d1-state.js'
 import { c3Word } from './c3-words'
 import { d1Word } from './d1-state.js'
-// The companion feed: what Coco is doing now, for the companion app that stands beside the
-// Claude desktop app's window (plugin/companion, macOS only, installed by /coco:companion).
-//
-// register.tsx's push() atomically replaces the feed, and only when two things hold:
-// the record changed (blinks and loop frames do not change it: the companion runs the loop
-// itself), and the companion's folder exists. `install` creates that folder and `uninstall`
-// moves it to the Trash, so nobody without the companion ever gets a file.
-//
-// Where: ~/Library/Application Support/Coco/view.json (the Windows and Linux pet's folder is
-// %APPDATA%\Coco or ~/.config/coco-pet). His settings and this feed
-// share this folder; the app lives in ~/Applications. The mod can write the feed with $.fs.write (any
-// path the user can write) and the companion, a user-level process, can read it. HOME is used
-// rather than Claude Code's config directory, so a session with CLAUDE_CONFIG_DIR set still
-// reaches the same companion.
-//
-// The feed is replaced atomically; defensive readers retain their last valid snapshot on a bad
-// file and read again on the next change. Several sessions share the file; each write carries its
-// session id, its time and whether the session draws on the desktop app. The companion keeps the
-// newest record per session and shows, among desktop sessions when there are any, the newest one
-// that is doing something; idle and sleeping sessions never take him from a busy one.
+// The companion feed: what Coco is doing now, for the companion app beside the Claude desktop app's window
+// (plugin/companion, macOS only, installed by /coco:companion).
+// register.tsx's push() atomically replaces the feed, only when the record changed (blinks and loop frames do not: the
+// companion runs the loop itself) and the companion's folder exists. `install` creates that folder and `uninstall` moves
+// it to the Trash, so nobody without the companion ever gets a file.
+// Where: ~/Library/Application Support/Coco/view.json (the Windows and Linux pet: %APPDATA%\Coco or ~/.config/coco-pet),
+// shared with his settings. HOME, not Claude Code's config directory, so a session with CLAUDE_CONFIG_DIR set reaches
+// the same companion. Defensive readers keep their last valid snapshot on a bad file. Several sessions share the file;
+// each write carries its session id, time and whether it draws on the desktop app. The companion keeps the newest record
+// per session and shows, among desktop sessions when there are any, the newest one doing something; idle and sleeping
+// sessions never take him from a busy one.
 
 import { LOOPS, STILL, linesFor } from './mood'
 import type { EngineInterface } from 'claude-code'
@@ -30,18 +21,17 @@ import type { Lang } from './words'
 import { basename, middleCut } from './tasks'
 import { lineParts } from './line-slot'
 import { displaySlots } from './display-slots'
+import { nameFor } from './characters'
+import { workerText } from './worker-name'
 import type { LineValue } from './line-slot'
 import type { TaskDescription } from './tasks'
 import type { CocoView as View, CompanionActivity } from '../types'
 
-/** The companion's folder on macOS, under HOME. It exists only while the companion is installed. The Windows and
- *  Linux pet keeps its own in each system's usual place (pet-program.ts petDataFolder). */
+/** The companion's folder on macOS, under HOME; it exists only while the companion is installed (the pet's: pet-program.ts petDataFolder). */
 export const COMPANION_DIR = 'Library/Application Support/Coco'
-/** The feed file, under HOME. */
 export const COMPANION_FEED = `${COMPANION_DIR}/view.json`
 
-// Keep a summon in later mood records too: a busy session must not erase the button's press
-// before the companion reads it. This is a time stamp, not a new line or a change of mood.
+// Keep a summon in later mood records: a busy session must not erase the button's press before the companion reads it.
 let lastSummon: number | undefined
 
 export type CompanionRequest = {
@@ -54,15 +44,14 @@ export type CompanionRequest = {
   login?: { on: boolean; at: number }
   capture?: { on: boolean; at: number }
 }
-// Like summons, requests survive later mood writes until the app has read the feed.
+// Likewise requests survive later mood writes until the app has read the feed.
 let lastRequests: Omit<CompanionRequest, 'summon'> = {}
 
 export function clearCompanionLongTaskAuthorization(): void {
   delete lastRequests.longTaskAuthorizationRequest
 }
 
-// The session's folder rides along for the Windows and Linux pet: its New chat starts the terminal version there
-// (companion-rs/src/new_chat.rs).
+// The session's folder rides along for the Windows and Linux pet's New chat (companion-rs/src/new_chat.rs).
 let activity: CompanionActivity & { cwd?: string } = emptyActivity()
 let task: TaskDescription | null = null
 
@@ -70,7 +59,6 @@ function emptyActivity(): CompanionActivity {
   return { project: '', done: null, waitAt: null, reply: null, notice: null, ack: null, channel: false }
 }
 
-/** A fresh session owns its own Activity and book requests. */
 export function companionSession(root: string): void {
   activity = { ...emptyActivity(), project: middleCut(basename(root), 24), ...(root ? { cwd: root } : {}) }
   task = null
@@ -86,9 +74,8 @@ export function companionTask(description: TaskDescription | null): void {
   task = description
 }
 
-// The DM thread for the pet's DM window (dm.ts; owner's card 10-17 late: one thread, read or reply on either): there
-// while Talk is on, with its newest messages as Talk keeps them for the next session (plain, secrets hidden), and lane
-// B's words for the window (more.talk.label, more.talk.placeholder).
+// The DM thread for the pet's DM window (dm.ts; owner's card 10-17 late: one thread, read or reply on either), while Talk
+// is on; lane B's words for the window (more.talk.label, more.talk.placeholder).
 export type CompanionDmLine = { side: 'person' | 'him'; text: string }
 export type CompanionDmWords = { label: string; placeholder: string }
 export const COMPANION_DM_LINES = 20
@@ -107,7 +94,7 @@ export function companionDm(on: boolean, thread?: readonly CompanionDmLine[], wo
   if (notify !== undefined) dmNotify = notify
 }
 
-// The Mac pet's own Dock tile (S21 on the switches page): off unless the person turns it on.
+// The Mac pet's Dock tile (S21 on the switches page): off unless the person turns it on.
 let dockTile = false
 export function companionDock(on: boolean): void {
   dockTile = on
@@ -122,7 +109,6 @@ type Frame = View['frame']
 export type CompanionTarget = 'auto' | 'claude' | 'vscode'
 export type CompanionSurface = 'desktop' | 'vscode' | 'terminal' | 'remote'
 
-/** Event callers refresh this before feed dedupe; no polling or stored client cache. */
 export async function companionFeedContext($: Pick<EngineInterface, 'session'>, key: string): Promise<string> {
   const surfaces = await $.session.surfaces()
   return JSON.stringify({ ...JSON.parse(key), surfaces, desktop: surfaces.includes('desktop') })
@@ -136,38 +122,24 @@ export type CompanionWords = {
 // Nothing going on: such a session never takes the companion from one that is working or waiting.
 const RESTING: ReadonlySet<View['mood']> = new Set(['idle', 'sleep'])
 
-// The companion's own few words, sent with each record in the session's language: the VoiceOver
-// hint on his sprite and his right-click menu (size, hide, put back, quit). A language without
-// its own set gets English.
-// What they do when you touch them on the companion, and what they say then. Each key is a reaction:
-//   pat        one click: a head pat (smug, then they duck into the hood)
-//   flustered  several quick clicks
-//   drag       you pick them up
-//   drop       you put them down (they zip the hoodie back up)
-//   hold       a long press (squished, the laptop too)
-// The lines are the coordinator's pick from a brainstorm the owner asked for: cute, light, playful.
-// Style for these lines only (the owner, 2026-10-02 21:38; the band's own lines keep their style):
-//   - no full stop at the end in any language (no "." "。" "．"); each line ends with one compact
-//     ending: a short kaomoji such as >_< T_T @_@ o.o u_u ^_^ (//ω//) (*´ω`*) (˘ᵕ˘), a single
-//     emoji such as 🌸 🐍 ✨ 📖 💤, or the laugh ww
-//   - a kaomoji stands alone after \n, at most 12 Unicode characters; no space before the break
-//     and no trailing space on the text line; emoji and ww stay on the text line
-//   - within a key every line ends differently, so repeated pats never end the same way twice in
-//     a row (the companion also never follows a line with one that ends the same, brackets aside)
-//   - short, all ages, never guilt or leverage; English lowercase (a kaomoji keeps its own
-//     letters, as in T_T); a space before an inline emoji or ww in English, none in Chinese and Japanese
-//   - kaomoji in half-width or Latin forms (･ not ・, // not 〃, > < not ＞ ＜): full-width ones
-//     fall back to a CJK font and spread the face apart in his label; check new ones render
-//     without tofu boxes in the system serif at 13 pt
-//   - Chinese and Japanese band speech, reactions, menus and card lines use ASCII
-//     commas, question/exclamation marks, colons, semicolons, parentheses and straight quotes;
-//     every ellipsis is three ASCII dots, with no padding inside CJK text
-//   - Japanese keeps only 、 。 「 」 full-width; Chinese keeps sentence-internal 。, 《 》
-//     and the owner's chosen ～; category brackets and stage-direction asterisks use ASCII
-//   - Latin words and numbers touch adjacent Han, hiragana and katakana; preserve kaomoji
-//     line breaks and readable commands and paths
+// The companion's few words, sent with each record in the session's language; a language without its own set gets English.
+// Each key is a reaction to touch: pat (one click), flustered (several quick clicks), drag, drop, hold (long press).
+// Style for these lines only (owner, 2026-10-02 21:38; the band's own lines keep their style):
+//   - no full stop at the end in any language; each line ends with one compact ending: a short kaomoji (>_< T_T o.o ^_^),
+//     a single emoji, or the laugh ww
+//   - a kaomoji stands alone after \n, at most 12 Unicode characters, no space before the break or trailing space;
+//     emoji and ww stay on the text line
+//   - within a key every line ends differently (the companion also never follows a line with one that ends the same)
+//   - short, all ages, never guilt or leverage; English lowercase; a space before an inline emoji or ww in English, none
+//     in Chinese and Japanese
+//   - kaomoji in half-width or Latin forms (･ not ・, // not 〃, > < not ＞ ＜): full-width ones fall back to a CJK font and
+//     spread the face apart; check new ones render without tofu boxes in the system serif at 13 pt
+//   - Chinese and Japanese speech uses ASCII commas, ? ! : ; parentheses and straight quotes; an ellipsis is three ASCII
+//     dots, no padding inside CJK text
+//   - Japanese keeps only 、 。 「 」 full-width; Chinese keeps sentence-internal 。, 《 》 and the owner's chosen ～
+//   - Latin words and numbers touch adjacent Han, hiragana and katakana; preserve kaomoji line breaks and readable commands and paths
 //   - in Chinese he is never called a god (the words tools/tests/language.test.tsx forbids); 小神 is fine
-// An Option-click had its own reaction (Shiori peeking out); his 10-16 card left it until after 1.0, with the easter eggs.
+// An Option-click reaction was left until after 1.0, with the easter eggs (his 10-16 card).
 export type ReactionKey = 'pat' | 'flustered' | 'drag' | 'drop' | 'hold' | 'ride' | 'shaken'
 const COMPANION_REACTIONS_CACHE: Partial<Partial<Record<View['lang'], Record<ReactionKey, readonly string[]>>>> = {}
 const COMPANION_REACTIONS: Partial<Record<View['lang'], Record<ReactionKey, readonly string[]>>> = {
@@ -458,7 +430,6 @@ const COMPANION_CARD_WORDS: Record<View['lang'], Pick<CompanionWords, 'followMen
 
 export type TaskKey = 'thinking' | 'reading' | 'editing' | 'running' | 'searching' | 'web' | 'helper' | 'planning' | 'using' | 'waitingOK' | 'waitingAnswer'
 
-/** The bubble phrases: only placeholders receive a filename, program or short tool name. */
 const TASK_WORDS_CACHE: Partial<Record<View['lang'], Record<TaskKey, string>>> = {}
 export const TASK_WORDS: Record<View['lang'], Record<TaskKey, string>> = {
   get "en"() { return TASK_WORDS_CACHE["en"] ??= {
@@ -993,6 +964,12 @@ const COMPANION_ACTIVITY_WORDS: Record<View['lang'], Pick<CompanionWords, 'activ
   } },
 }
 
+// The input hint names the model really behind the chat (worker-name.ts).
+function petWords(lang: View['lang']): Omit<CompanionWords, 'context'> {
+  const words = COMPANION_WORDS[lang] ?? COMPANION_WORDS.en!
+  return { ...words, placeholder: workerText('companion.placeholder', words.placeholder) }
+}
+
 const COMPANION_WORDS_CACHE: Partial<Record<View['lang'], Omit<CompanionWords, 'context'>>> = {}
 const COMPANION_WORDS: Record<View['lang'], Omit<CompanionWords, 'context'>> = {
   get "en"() { return COMPANION_WORDS_CACHE["en"] ??= {
@@ -1091,7 +1068,6 @@ const COMPANION_WORDS: Record<View['lang'], Omit<CompanionWords, 'context'>> = {
   } },
 }
 
-/** What the companion draws from. `at`, `session` and `desktop` are added when it is written. */
 export type CompanionRecord = CompanionRequest & CompanionActivity & {
   task: string | null
   place?: string
@@ -1102,18 +1078,13 @@ export type CompanionRecord = CompanionRequest & CompanionActivity & {
   affection: View['affection']
   wakeLines: readonly string[]
   mood: View['mood']
-  /** The person's latest request to bring him back, in ms since 1970. */
   summon?: number
-  /** A visitor on him while he dozes, or just leaving; `label` is its accessibility phrase. */
   visitor?: NonNullable<View['visit']>
-  /** The frame at rest: a loop's first frame, the open-eyed frame instead of a blink. */
   frame: Frame
-  /** The mood's two-frame loop and its rate in ms, as the band runs it; null without one. */
   loop: readonly [Frame, Frame] | null
   every: number | null
   motion: typeof MOTION
   rest: boolean
-  /** His line. */
   said: string | null
   pose?: View['pose']
   /** Claude's form when it is not Coco, her hoodie and her socks: the pet reads all three (Feed.swift). */
@@ -1124,7 +1095,6 @@ export type CompanionRecord = CompanionRequest & CompanionActivity & {
   context: number | null
   estimate: boolean
   lang: View['lang']
-  /** For VoiceOver: his name and the stage direction, in the session's language. */
   name: string
   aside: string
   words: CompanionWords & { shedAside: string; helpersAlt: string; ribbonAlt: string }
@@ -1132,13 +1102,9 @@ export type CompanionRecord = CompanionRequest & CompanionActivity & {
   helpers?: View['helpers']
   shed?: View['shed']
   longTask?: View['longTask']
-  /** The DM thread (dm.ts), while Talk is on: her messages the person has not seen, for the pet's unread mark; the newest
-   *  that reached the closed thread, which the pet posts as the system's notification once (by its id) unless the screen
-   *  is locked; and the thread's newest messages for the pet's DM window. */
+  /** The DM thread (dm.ts), while Talk is on: unseen messages (the pet's unread mark), the newest to reach the closed thread (posted once by id as a system notification unless the screen is locked), and the newest messages for the DM window. */
   dm?: { unread: number; notice?: NonNullable<View['dmNotice']>; thread: CompanionDmLine[]; words: CompanionDmWords; notify: boolean }
-  /** The stick of /coco focus while it burns (and for the two seconds it takes to go out), in ms since 1970. */
   stick?: { startedAt: number; endsAt: number }
-  /** His reactions to the mouse on the companion, in the session's language. */
   reactions: Record<ReactionKey, readonly string[]>
 }
 
@@ -1149,7 +1115,6 @@ function restingFrame(view: View): Frame {
   return view.frame
 }
 
-// Reuse the companion's existing accessible action name for the band picture.
 export function companionPatLabel(lang: View['lang']): string {
   return COMPANION_WORDS[lang].pat
 }
@@ -1197,15 +1162,12 @@ export function companionRecord(view: View): CompanionRecord {
     wakeLines: companionWakeLines(view),
     ...activity,
     task: task === null ? null : TASK_WORDS[view.lang][task.key].replace(/\{(file|cmd|tool)\}/g, (_mark, key: 'file' | 'cmd' | 'tool') => task?.[key] ?? ''),
-    // Where the task list is while it runs, in the band's own words («task 3/7»): the pet's task pill ends with it.
     ...(task !== null && view.place?.short ? { place: view.place.short } : {}),
-    // The windows as Claude Code reports them, for the pet's Activity foot: whole percents, so a fraction does not
-    // rewrite the file; a hot window carries the pace the band warned with.
+    // Whole percents, so a fraction does not rewrite the file; a hot window carries the pace the band warned with.
     ...(windows.length ? { quota: { rateLimits: windows.map(w => {
       const pace = view.hotWindows?.includes(w.kind) ? view.paceDetails?.find(p => p.kind === w.kind)?.wide : undefined
       return { kind: w.kind, percentUsed: Math.round(w.percentUsed), ...(w.resetsAt ? { resetsAt: w.resetsAt } : {}), ...(pace ? { pace, hot: true } : {}) }
     }) } } : {}),
-    // The Dock tile on: its menu lists the windows as the band's battery and power bank read them.
     ...(dockTile ? { dock: { quota: quotaBandItems(view.lang as Lang, windows).map(item => item.alt).filter(Boolean) } } : {}),
     mood: view.mood,
     ...(lastSummon === undefined ? {} : { summon: lastSummon }),
@@ -1217,13 +1179,12 @@ export function companionRecord(view: View): CompanionRecord {
     rest: RESTING.has(view.mood),
     said: line?.text ?? view.said,
     ...(pose?{pose}:{}),
-    // Until 10-18 these never reached the pet, so switching to Claudie on the Mac changed nothing there.
     ...(view.claudie?{claudie:view.claudie}:{}),...(view.outfit?{outfit:view.outfit}:{}),...(view.socks?{socks:view.socks}:{}),
     ...(settings.neighbours?{neighbourWords:{busy:c3Word(view.lang,'neighbour.busy'),done:c3Word(view.lang,'neighbour.done')}}:{}),
     context: view.context,
     estimate: view.estimate,
     lang: view.lang,
-    name: view.lang === 'zh' ? '小克' : view.lang === 'ja' ? 'Coco' : view.lang === 'ko' ? '코코' : 'Coco',
+    name: nameFor(view.character ?? view.claudie, view.lang),
     aside: direction,
     ...(view.ribbon ? {ribbon:view.ribbon}:{}),
     ...(view.helpers ? {helpers:view.helpers}:{}),
@@ -1231,8 +1192,8 @@ export function companionRecord(view: View): CompanionRecord {
     ...(view.visit ? {visitor:{id:view.visit.id,kind:view.visit.kind,at:view.visit.at,...(view.visit.leftAt!==undefined?{leftAt:view.visit.leftAt}:{}),...(view.visit.label?{label:view.visit.label}:{})}}:{}),
     ...(view.play?.stick ? {stick:{startedAt:view.play.stick.startedAt,endsAt:view.play.stick.endsAt}}:{}),
     ...(dmOn ? {dm:{unread:view.dm?.unread ?? 0,...(view.dmNotice ? {notice:{...view.dmNotice}} : {}),thread:dmThread.map(line => ({ ...line })),words:{ ...dmWords },notify:dmNotify}} : {}),
-    ...(view.longTask ? {longTask:{...view.longTask,title:view.lang === 'zh' ? '小克' : view.lang === 'ja' ? 'Coco' : view.lang === 'ko' ? '코코' : 'Coco'}}:{}),
-    words: { ...(COMPANION_WORDS[view.lang] ?? COMPANION_WORDS.en!), context: words.context,
+    ...(view.longTask ? {longTask:{...view.longTask,title:nameFor(view.character ?? view.claudie, view.lang)}}:{}),
+    words: { ...petWords(view.lang), context: words.context,
       shedAside:d1Word(view.lang,'aside.shed').replace(/\*/g,''),
       helpersAlt:d1Word(view.lang,'helpers.alt',{n:view.helpersCount??0},view.helpersCount??0),
       ribbonAlt:d1Word(view.lang,'ribbon.alt',{folder}) },
@@ -1277,10 +1238,7 @@ function companionPresence(presence: Record<string, unknown>, rawSaid: string | 
   return projected
 }
 
-/**
- * The record as compact JSON, without time or session: what push() compares with the last one
- * it wrote. Equal keys mean nothing the companion shows has changed, so nothing is written.
- */
+/** The record as compact JSON without time or session: push() compares it with the last written; equal means nothing shown has changed, so nothing is written. */
 export function companionKey(view: View, presence?: Record<string, unknown>): string {
   const raw = companionRecord(view)
   const said = raw.said === null ? null : displaySlots(raw.said, view.line?.slots)
@@ -1297,27 +1255,23 @@ export function companionKey(view: View, presence?: Record<string, unknown>): st
   return JSON.stringify({ ...record, ...(presence ? { presence: companionPresence(presence, raw.said, record.said) } : {}) })
 }
 
-/** The file's whole text for a key from companionKey: version, session, desktop, time, record. */
 export function companionText(key: string, session: string, desktop: boolean, at: number, surfaces?: readonly string[]): string {
   if (surfaces !== undefined) key = JSON.stringify({ ...JSON.parse(key), surfaces })
   const head = `{"v":1,"session":${JSON.stringify(session)},"desktop":${desktop},"at":${Math.round(at)}`
   return key.length > 2 ? `${head},${key.slice(1)}\n` : `${head}}\n`
 }
 
-/** Written once when a session ends, so the companion stops showing it. */
 export function companionEnded(session: string, at: number): string {
   companionTask(null)
   companionActivity({ reply: null, notice: null, waitAt: null, channel: false })
   return `{"v":1,"session":${JSON.stringify(session)},"at":${Math.round(at)},"ended":true,"task":null,"reply":null,"notice":null,"channel":false}\n`
 }
 
-/** A summon uses the current record, with no new line and no mood change. */
 export function companionSummonText(view: View, session: string, desktop: boolean, at: number): string {
   lastSummon = Math.round(at)
   return companionText(companionKey(view), session, desktop, at)
 }
 
-/** A book press carries this session's complete record, including earlier requests. */
 export function companionRequestText(view: View, session: string, desktop: boolean, at: number, request: CompanionRequest): string {
   if (request.summon !== undefined) lastSummon = Math.round(request.summon)
   const { summon: _summon, ...other } = request

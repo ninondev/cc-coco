@@ -115,7 +115,7 @@ scan_payload() {
       \( -name evidence -o -name sheets -o -name previews -o -name preview \
          -o -name target -o -name build -o -name dist -o -name .build \
          -o \( -name types ! -path "$ROOT/plugin/types" \) -o -name tsconfig.json -o -name node_modules \
-         -o -name __pycache__ -o -name '*.app' \
+         -o -name __pycache__ -o \( -name '*.app' ! -path "$ROOT/plugin/bin/Coco Pet.app" \) \
          -o \( -name '*.exe' ! -path "$ROOT/plugin/companion-rs/bin/*" ! -path "$ROOT/plugin/libexec/*" \) \
          -o -name '*.o' -o -name '*.dylib' -o -name '*.so' \
          -o -name '*.log' -o -name '*.tmp' -o -name '*.bak' -o -name '*.swp' \) \

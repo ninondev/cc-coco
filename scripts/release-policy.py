@@ -2,6 +2,7 @@
 """File selection, inventory and byte-budget checks for public assembly."""
 import argparse
 import fnmatch
+import hashlib
 import json
 import os
 import stat
@@ -13,8 +14,10 @@ sys.dont_write_bytecode = True
 
 # Logical bytes of plugin/. The owner approved 64 MiB for 1.0 (DECISIONS line 997); remeasure before raising.
 PLUGIN_BUDGET = 64 * 1024 * 1024
+PET_SLOT = 'bin/Coco Pet.app'
 # The shipped builds, the only executables the tree may carry (the macOS libexec/talk-key is added at release).
 RUNTIME_BINARIES = {
+    PET_SLOT + '/Contents/MacOS/coco-companion',
     'bin/presence-native', 'bin/presence-follow',
     'bin/presence-linux-x86_64', 'bin/presence-linux-aarch64',
     'bin/companion-control', 'bin/coco-state-macos-aarch64', 'bin/coco-state-macos-x86_64',
@@ -51,6 +54,7 @@ PLUGIN_FILES = {
     'assets/icon/build-icns.sh', 'assets/icon/words.sh', 'assets/icon/png-compare.awk',
     'bin/presence.sh', 'bin/presence-native.c', 'bin/presence-linux.c',
     'companion-rs/assets/shed-cuts.json', 'companion-rs/bin/builds.json', 'libexec/builds.json',
+    'libexec/talk-key-build.json',
 }
 # Hook folders: plugin/hooks holds the loaded modules (and m1-compiled), source/hooks their source.
 HOOK_DIRS = {'hooks', 'hooks/algo', 'hooks/cards', 'hooks/cost', 'hooks/cost/core', 'hooks/cost/prices', 'hooks/cost/warm'}
@@ -74,6 +78,8 @@ SOURCE_FILES = {
     'README.md',
     'companion-rs/Cargo.toml', 'companion-rs/Cargo.lock', 'companion-rs/build.rs',
     'companion-rs/tests/generate-motion-fixtures.mjs',
+    'companion-rs/tests/check_windows_presence_lifecycle.py',
+    'companion-rs/tests/support/windows_presence_lifecycle.rs',
     'talk-key/Cargo.toml', 'talk-key/Cargo.lock', 'talk-key/README.md', 'talk-key/ci/release.sh',
 }
 SOURCE_RUST_DIRS = {
@@ -119,6 +125,22 @@ def plugin_allowed(name):
         return True
     if forbidden(name):
         return False
+    if name.startswith(PET_SLOT + '/'):
+        inner = name[len(PET_SLOT) + 1:]
+        if inner in {'Contents/Info.plist', 'Contents/PkgInfo', 'Contents/CodeResources',
+                     'Contents/_CodeSignature/CodeResources'}:
+            return True
+        resources = 'Contents/Resources/'
+        if not inner.startswith(resources):
+            return False
+        resource = Path(inner[len(resources):])
+        if resource.as_posix() in {'AppIcon.icns', 'build.txt', 'build-receipt.json',
+                                  'frame-manifest.json', 'companion-tuning.json', 'neighbours.json'}:
+            return True
+        kinds = {'frames': {'.png'}, 'pixel': {'.png'}, 'patches': {'.png', '.json'},
+                 'shed': {'.png', '.json'}, 'visitors': {'.png', '.json'},
+                 'coco': {'.bin', '.json'}, 'words': {'.json'}, 'claudie': {'.png'}}
+        return len(resource.parts) > 1 and resource.suffix in kinds.get(resource.parts[0], ())
     p = Path(name)
     if name in PLUGIN_FILES:
         return True
@@ -231,7 +253,10 @@ def inventory(root):
             if not (stat.S_ISDIR(s.st_mode) or stat.S_ISREG(s.st_mode)):
                 raise ValueError('non-regular public input: ' + str(p))
             if stat.S_ISREG(s.st_mode):
-                rows.append({'path': p.relative_to(root).as_posix(), 'bytes': s.st_size})
+                with p.open('rb') as stream:
+                    digest = hashlib.file_digest(stream, 'sha256').hexdigest()
+                rows.append({'path': p.relative_to(root).as_posix(), 'bytes': s.st_size,
+                             'sha256': digest, 'mode': stat.S_IMODE(s.st_mode)})
     return rows
 
 
@@ -258,7 +283,8 @@ def check(root):
             dirs[:] = [d for d in dirs if d != '.git']
         for d in dirs:
             p = Path(folder) / d
-            if forbidden(p.relative_to(root).as_posix()):
+            relative = p.relative_to(root).as_posix()
+            if relative != 'plugin/' + PET_SLOT and forbidden(relative):
                 errors.append('excluded directory: ' + str(p.relative_to(root)))
     included_dirs = {'.git'}
     for row in rows:

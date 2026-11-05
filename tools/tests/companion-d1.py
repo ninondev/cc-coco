@@ -1,7 +1,9 @@
 #!/usr/bin/env python3
 import hashlib, json, os, pathlib, re, shutil, subprocess, sys, time
 ROOT=pathlib.Path(__file__).resolve().parents[2]
-OUT=pathlib.Path(os.environ.get('MOE_D1_COMPANION_OUT', str(ROOT/'evidence/d1-native'))); OUT.mkdir(parents=True, exist_ok=True)
+# .resolve(): the fixture's SecureDirectory walks the path with O_NOFOLLOW and refuses symlinked
+# components, and /var and /tmp (the usual TMPDIR prefixes) are symlinks on macOS.
+OUT=pathlib.Path(os.environ.get('MOE_D1_COMPANION_OUT', str(ROOT/'evidence/d1-native'))).resolve(); OUT.mkdir(parents=True, exist_ok=True)
 ENV=dict(os.environ,HOME=str(OUT/'home'),CLAUDE_CONFIG_DIR=str(OUT/'config'))
 (OUT/'home').mkdir(exist_ok=True)
 def receipt(name,value):

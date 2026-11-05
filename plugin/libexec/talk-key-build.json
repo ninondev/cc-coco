@@ -1,0 +1,35 @@
+{
+  "architectures": [
+    "arm64",
+    "x86_64"
+  ],
+  "binarySha256": "c30ec917c5a1d0f1c0a7140d0c3a97c5e83de380ab6f410e535c3efc1879bc65",
+  "bytes": 2637456,
+  "compiler": "rustc 1.97.1 (8bab26f4f 2026-07-14)",
+  "inputs": {
+    "plugin/talk-key/Cargo.lock": "0b3e83768292ca93d14c98137fe3919ea155ecd4cb7ac6c9d56c76b21a4f5b56",
+    "plugin/talk-key/Cargo.toml": "963d25d67ec0785e72909a7e167e487d20b898ab808f29902a4c30bfce2f8d4e",
+    "plugin/talk-key/ci/release.sh": "68052faf212facb4ebc4eddde0b905aa73328b670afc8e6ebfe7d0a4306f89b0",
+    "plugin/talk-key/src/child.rs": "a3b3d09e508f12ced9fa909fada20e82b17fd81ad6799dd82ab5fb88d2e3f4ba",
+    "plugin/talk-key/src/counter.rs": "c5667da3c3aaedac75060518a1d6f76625f7a19109ac4597c794c2eebbc79a69",
+    "plugin/talk-key/src/deadline.rs": "e6d2a6a694f97476f1d05fccab48814ebb69c02d1f946361693734a4ca0ebbbe",
+    "plugin/talk-key/src/endpoint.rs": "382080948ff69eecc0bf8e43f24005f1e12f7604c8fad922b8abfa6128498fed",
+    "plugin/talk-key/src/hooks.rs": "96320bdf4f6492b3a7068c71bb523a25410e503c9e1e5ef33905b5d1388d6541",
+    "plugin/talk-key/src/http.rs": "a25fcb05af4d57fb33b3c59d1149c11aa57fcdfcc498fba090cf54c5472c3374",
+    "plugin/talk-key/src/input.rs": "d5b1de2d7d617f0732eab181b66853a7b973b696834aabe13ee4bf245f64bd2c",
+    "plugin/talk-key/src/main.rs": "8e38fb34ad35782698dac9a894f6cd7c532195c89df7a0b967231918a2daf91a",
+    "plugin/talk-key/src/out.rs": "71b26449cea32cc940d443edefa514886666187368a31e5f3f5aabf9daafdd51",
+    "plugin/talk-key/src/paths.rs": "ee9704a747ee2523e871d042d1d6b86a2340658ea6e6abc3f6f26d97607318ef",
+    "plugin/talk-key/src/request.rs": "2858753d66b45b97d53812d5767620d16bcab8b25b8ecc85b8eb15518759bbf9",
+    "plugin/talk-key/src/secret.rs": "16b432bf8a38ec35d3aeca23f8ad9c88510eed58b5f519d1b23942b3b34c1d41",
+    "plugin/talk-key/src/store/linux.rs": "8cf922481ca26b8c51a63ba9cdd9e14a65324901228e9f68606a85f276167178",
+    "plugin/talk-key/src/store/macos.rs": "cd9267c2ddfffe8446dd132bf8a7e9e4d2594739f5db499e5f583468d806ff0c",
+    "plugin/talk-key/src/store/mod.rs": "2571c187477c78fd8c7507f2553368a8b8da97201683195122c04abe6df26507",
+    "plugin/talk-key/src/store/windows.rs": "a6a17dea3e2d1619b5923d4ab1e9715c168f60853dd580851eaf904acbff3f6b",
+    "plugin/talk-key/src/trust.rs": "d07aad057745133c30cd6ca6b5ad519fc7fd64c62d20304069e328b41ed8dbda"
+  },
+  "minimumMacOS": "13.0",
+  "schema": 1,
+  "sdk": "27.2",
+  "signing": "adhoc"
+}

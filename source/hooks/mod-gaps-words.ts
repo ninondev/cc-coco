@@ -1,4 +1,5 @@
 // Generated from the approved gaps.* author file. Data is read on first use.
+import { workerText } from './worker-name'
 let WORDS: Record<string, Record<string, string | string[]>> = {}
 let loaded = false
 let generation = 0
@@ -24,8 +25,8 @@ export function resetGapWords(): void { WORDS = {}; loaded = false; generation++
 const CLAUDIE_NAMES: Record<string,string> = {zh:'大克','zh-Hant':'大克',ja:'Claudeさま',ko:'클로디',fr:'Claudette',de:'Claudi','es-ES':'Claudita','es-419':'Claudita','pt-BR':'Claudinha',it:'Claudina',hi:'क्लॉडी'}
 export function claudieName(lang: string): string {return CLAUDIE_NAMES[lang]??'Claudie'}
 export function gapCharacterName(lang: string): string {return (lang==='zh'||lang==='zh-Hant')?'小克':lang==='ja'?'Coco':lang==='ko'?'코코':lang==='hi'?'कोको':'Coco'}
-function gapName(lang: string, text: string): string { const name=gapCharacterName(lang);return text.replace(/(^|[^A-Za-z0-9_-])Coco(?=$|[^A-Za-z0-9_-])/gi,(_whole,before:string)=>before+name) }
-export function gapPool(lang: string, key: string): readonly string[] { const value=WORDS[key]?.[lang]??WORDS[key]?.en,pool=Array.isArray(value)?value:typeof value==='string'?[value]:[];return pool.map(text=>gapName(lang,text)) }
+function gapName(lang: string, text: string): string { const name=gapCharacterName(lang);return text.replace(/(^|[^A-Za-z0-9_\/-])Coco(?=$|[^A-Za-z0-9_-])/gi,(_whole,before:string)=>before+name) }
+export function gapPool(lang: string, key: string): readonly string[] { const value=WORDS[key]?.[lang]??WORDS[key]?.en,pool=Array.isArray(value)?value:typeof value==='string'?[value]:[];return pool.map(text=>workerText(key,gapName(lang,text))) }
 export function gapWord(lang: string, key: string): string { return gapPool(lang,key)[0]??'' }
 export function gapFill(lang: string,key: string,values:Record<string,string|number>):string { return gapWord(lang,key).replace(/\{(\w+)\}/g,(hole,name:string)=>values[name]===undefined?hole:String(values[name])) }
 export function missingGapKeys(lang: string): string[] { return Object.keys(WORDS).filter(key=>WORDS[key]?.[lang]===undefined).map(key=>'gaps.'+key) }

@@ -447,11 +447,14 @@ fn exchange(ep: &Endpoint, method: &str, path: &str, key: &Secret, body: Option<
     };
 
     let mut req = Vec::with_capacity(512 + body.map_or(0, <[u8]>::len));
-    req.extend_from_slice(format!("{method} {}{path} HTTP/1.1\r\nHost: {}\r\nx-api-key: ", ep.prefix, ep.authority()).as_bytes());
+    let openai = ep.speaks_openai();
+    let name = if openai { "authorization: Bearer " } else { "x-api-key: " };
+    req.extend_from_slice(format!("{method} {}{path} HTTP/1.1\r\nHost: {}\r\n{name}", ep.prefix, ep.authority()).as_bytes());
     req.extend_from_slice(key.as_bytes());
-    req.extend_from_slice(
-        b"\r\nanthropic-version: 2023-06-01\r\nuser-agent: talk-key/0.1\r\naccept: application/json\r\nconnection: close\r\n",
-    );
+    if !openai {
+        req.extend_from_slice(b"\r\nanthropic-version: 2023-06-01");
+    }
+    req.extend_from_slice(b"\r\nuser-agent: talk-key/0.1\r\naccept: application/json\r\nconnection: close\r\n");
     if let Some(b) = body {
         req.extend_from_slice(format!("content-type: application/json\r\ncontent-length: {}\r\n\r\n", b.len()).as_bytes());
         req.extend_from_slice(b);

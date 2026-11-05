@@ -1,5 +1,29 @@
 import Foundation
 
+/// His name, language and words from the last session that wrote the feed, kept in his folder for when none is writing.
+/// A copy beside the frames is the fallback. None ships with the plugin: a copy is one person's language.
+enum Voice {
+    static var root: URL?
+    static var folder: URL?
+    private static let fields: Set<String> = ["affection", "lang", "motion", "name", "neighbours", "outfit", "reactions", "wakeLines", "words"]
+    private static var written: Data?
+
+    static var object: [String: Any]? {
+        for url in [folder, root].compactMap({ $0?.appendingPathComponent("voice.json") }) {
+            if let data = try? Data(contentsOf: url) { return (try? JSONSerialization.jsonObject(with: data)) as? [String: Any] }
+        }
+        return nil
+    }
+
+    static func keep(_ record: [String: Any]) {
+        let voice = record.filter { fields.contains($0.key) }
+        guard voice["lang"] != nil, let url = folder?.appendingPathComponent("voice.json"),
+              let data = try? JSONSerialization.data(withJSONObject: voice, options: .sortedKeys), data != written else { return }
+        written = data
+        try? data.write(to: url, options: .atomic)
+    }
+}
+
 /// What joins two clauses on one line: the language's own comma (companion-rs ui.rs part_separator).
 enum Clauses {
     /// Between the project and its task on the task pill: lane B's companion.projectTask (companion-rs words/1.0.json).
@@ -351,7 +375,11 @@ struct Record: Equatable {
     ]
 
     /// Before any session has written: reading, quietly.
-    static let resting = Record()
+    static let resting: Record = {
+        guard let voice = Voice.object, var record = Record(voice.merging(["session": "resting", "at": 0.0]) { $1 }) else { return Record() }
+        record.session = ""
+        return record
+    }()
 
     init() {}
 
@@ -530,6 +558,8 @@ struct ActivityRow: Equatable {
 /// Event-driven state with an injected clock. No UI, disk writes or polling live here.
 struct ActivitySessions {
     static let lifetime: Double = 12 * 3_600_000
+    /// The session OwnFeed writes under.
+    static let own = "own"
     var seenAt: Double
     private(set) var claudeFrontmost: Bool
     private(set) var records: [String: Record] = [:]
@@ -609,12 +639,16 @@ struct ActivitySessions {
         return record
     }
 
+    /// His own record stays: it comes from Codex and ZCode, not from the app that quit.
     mutating func forget() {
+        let record = records[Self.own], stamp = newest[Self.own]
         records.removeAll()
         newest.removeAll()
         finishedSeen.removeAll()
         rowSeenAt.removeAll()
         presence = nil
+        records[Self.own] = record
+        newest[Self.own] = stamp
     }
 
     mutating func prune(now: Double) {
@@ -668,7 +702,7 @@ struct ActivitySessions {
 
     /// A newest terminal-only active session deliberately preserves the current app.
     func target(now: Double, previous: String) -> String {
-        let current = live(now: now)
+        let current = live(now: now).filter { $0.session != Self.own || !$0.rest } // a nap moves him nowhere
         if let preference = current.first?.companionTarget, preference != "auto" { return preference }
         let active = current.first { !$0.rest && now - $0.at < 30 * 60_000 }
         guard let newest = active ?? current.first else { return previous }
@@ -695,6 +729,8 @@ final class Feed {
     var woke: (Presence) -> Void = { _ in }
     var targetChanged: (String) -> Void = { _ in }
     private(set) var targetApp = "claude"
+    /// The app he stands beside now, for "back to {app}".
+    var appName = "Claude" { didSet { if appName != oldValue { choose() } } }
     private var lastWake: Presence?
 
     /// The caller draws its first response before calling this; all disk/locking work is deferred.
@@ -726,7 +762,7 @@ final class Feed {
     var rows: [ActivityRow] {
         activity.rows(now: now).map { row in
             var copy = row
-            copy.record = row.record.namingApp(targetApp == "vscode" ? "VS Code" : "Claude")
+            copy.record = row.record.namingApp(targetApp == "vscode" ? "VS Code" : appName)
             return copy
         }
     }
@@ -795,8 +831,7 @@ final class Feed {
     func forget() {
         activity.forget()
         if let presence = presenceObserver?.current { activity.receivePresence(presence) }
-        lastData = nil
-        choose()
+        choose() // lastData stays: the file still holds the last record, and reading it again would bring the session back
     }
 
     private func watchFolder() {
@@ -860,6 +895,7 @@ final class Feed {
             if !record.wakeLines.isEmpty {
                 presenceObserver?.recipes(["affection": record.affection, "wakeLines": [record.lang: record.wakeLines]])
             }
+            Voice.keep(object)
             accepted = record
             summon = record.summon
             requests.merge(record.requests)
@@ -878,11 +914,18 @@ final class Feed {
         }
     }
 
+    /// A record of his own (OwnFeed), for when no Claude Code session is writing the file.
+    func own(_ object: [String: Any]) {
+        guard let record = Record(object), activity.receive(record, now: now) else { return }
+        trace.say("feed: own \(record.mood) \(record.frame) has-line=\(record.said != nil)")
+        choose()
+    }
+
     private func choose() {
         guard !starting else { return }
         let target = activity.target(now: now, previous: targetApp)
         if target != targetApp { targetApp = target; targetChanged(target) }
-        let pick = activity.shown(now: now, target: targetApp).namingApp(targetApp == "vscode" ? "VS Code" : "Claude")
+        let pick = activity.shown(now: now, target: targetApp).namingApp(targetApp == "vscode" ? "VS Code" : appName)
         if pick != shown {
             shown = pick
             trace.say("feed: showing \(pick.session.isEmpty ? "nobody" : pick.session) (\(pick.mood)) of \(liveSessions.count) session(s)")

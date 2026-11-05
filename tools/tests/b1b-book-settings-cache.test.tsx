@@ -12,15 +12,16 @@ test('repeated book settings drawings use the activation record without store re
   expect(reads.filter(key=>['band','bandBeforeOff','voice','affection','workSize','lang','heard','marks','companionTarget','neighbours'].includes(key))).toEqual([])
 })
 
-test('auto language mirrors its resolved option once across later attachments',{options:{language:'auto',resolvedLanguage:'en'}},async($,on)=>{
+test('auto language settles once and never writes the old resolvedLanguage mirror',{options:{language:'auto'}},async($,on)=>{
   const mirrors:unknown[]=[]
   on('config.*',($,e,next)=>{if(next.is('config.set',e)&&e.key==='coco.resolvedLanguage')mirrors.push(e.value);return next(e)})
   const w=world(on,{store:RECENT,settings:{language:'Japanese'}})
   await $.session.start({cwd:'/tmp/b1b-auto-language',surface:'desktop',isInteractive:true});await settleLegacyStart($,w)
-  expect(mirrors).toEqual(['ja'])
+  expect(w.view().lang).toBe('ja')
   await $.session.attach({clientId:'one',surface:'desktop'});await settleLegacyStart($,w)
   await $.session.attach({clientId:'two',surface:'desktop'});await settleLegacyStart($,w)
-  expect(mirrors).toEqual(['ja'])
+  expect(w.view().lang).toBe('ja')
+  expect(mirrors).toEqual([])
 })
 
 test('missing batched record preserves explicitly chosen legacy voice and restored local preferences',async($,on)=>{
@@ -34,4 +35,16 @@ test('missing batched record preserves explicitly chosen legacy voice and restor
   release();await settleLegacyStart($,w)
   // the desktop band never shrinks while Claude works (owner 10-19), so the restored 'smaller' draws as 'same' there
   expect(w.view().voice).toBe('full');expect(w.view().affection).toBe('clingy');expect(w.view().workSize).toBe('same')
+})
+
+test('a record-less install adopts the old coco.resolvedLanguage mirror once',{options:{band:'on',language:'auto'},timeoutMs:10000},async($,on)=>{
+  const w=world(on,{store:RECENT,settings:{pluginConfigs:{'coco@coco':{options:{resolvedLanguage:'ja'}}}}})
+  await $.session.start({cwd:'/tmp/b1b-mirror-adopt',surface:'desktop',isInteractive:true});await settleLegacyStart($,w)
+  expect(w.view().lang).toBe('ja')
+})
+
+test('the old mirror is not read once the record has a language, so a new system language still wins (lead fix)',{options:{band:'on',language:'auto'},timeoutMs:10000},async($,on)=>{
+  const w=world(on,{store:{...RECENT,bandSettings:{language:'ja'}},settings:{pluginConfigs:{'coco@coco':{options:{resolvedLanguage:'ja'}}}},env:{LANG:'de_DE.UTF-8',TERM:'xterm-256color'}})
+  await $.session.start({cwd:'/tmp/b1b-mirror-stale',surface:'desktop',isInteractive:true});await settleLegacyStart($,w)
+  expect(w.view().lang).toBe('de')
 })

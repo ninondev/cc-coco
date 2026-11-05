@@ -364,6 +364,7 @@ export function normalizeDesktopView(input: unknown, defaults: View, frameNames:
   if(data.outfit==='A'||data.outfit==='B')view.outfit=data.outfit;else delete view.outfit
   if(typeof data.socks==='string'&&/^[a-z]{2,24}$/.test(data.socks))view.socks=data.socks;else delete view.socks
   if(data.claudie==='dake'||data.claudie==='maid')view.claudie=data.claudie;else delete view.claudie
+  if(typeof data.character==='string'&&/^[a-z0-9-]{1,24}$/.test(data.character))view.character=data.character;else delete view.character
   const act=normalizeDesktopSettings(data.act)
   if(typeof act.key==='string'&&/^[a-z]{2,10}$/.test(act.key)&&finite(act.at))view.act={key:act.key,at:act.at as number};else delete view.act
   const play=normalizeDesktopSettings(data.play),playOut: NonNullable<View['play']> = {}

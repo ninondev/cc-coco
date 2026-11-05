@@ -87,6 +87,22 @@ impl Endpoint {
         self.https && self.host == ANTHROPIC && self.port == 443 && self.prefix.is_empty()
     }
 
+    /// An address ending in a version (`…/v1`, `…/v4`, `…/v1beta`) or in `/openai` is the one an OpenAI-format service
+    /// gives: its paths follow directly and the key goes as a bearer token (owner 11-04). Every other address keeps the
+    /// Anthropic format, so nothing stored before changes.
+    pub fn speaks_openai(&self) -> bool {
+        let last = self.prefix.rsplit('/').next().unwrap_or("");
+        last == "openai" || last.strip_prefix('v').is_some_and(|rest| rest.starts_with(|c: char| c.is_ascii_digit()))
+    }
+
+    pub fn reply_path(&self) -> &'static str {
+        if self.speaks_openai() { "/chat/completions" } else { "/v1/messages" }
+    }
+
+    pub fn models_path(&self) -> &'static str {
+        if self.speaks_openai() { "/models" } else { "/v1/models" }
+    }
+
     /// The Host header and the CONNECT target.
     pub fn authority(&self) -> String {
         let host = if self.host.contains(':') { format!("[{}]", self.host) } else { self.host.clone() };
@@ -195,6 +211,35 @@ mod tests {
         assert_eq!((g.authority().as_str(), g.prefix.as_str()), ("gateway.example.com:8443", "/anthropic"));
         assert!(!Endpoint::parse("https://api.anthropic.com:8443").unwrap().is_anthropic());
         assert!(!Endpoint::parse("https://api.anthropic.com/proxy").unwrap().is_anthropic());
+    }
+
+    #[test]
+    fn the_format_follows_the_address() {
+        for openai in [
+            "https://api.openai.com/v1",
+            "https://api.deepseek.com/v1/",
+            "https://open.bigmodel.cn/api/paas/v4",
+            "https://generativelanguage.googleapis.com/v1beta/openai",
+            "https://dashscope.aliyuncs.com/compatible-mode/v1",
+            "http://localhost:11434/v1",
+        ] {
+            let e = Endpoint::parse(openai).unwrap();
+            assert!(e.speaks_openai(), "{openai}");
+            assert_eq!((e.reply_path(), e.models_path()), ("/chat/completions", "/models"));
+        }
+        for anthropic in [
+            DEFAULT_BASE,
+            "https://api.deepseek.com/anthropic",
+            "https://api.z.ai/api/anthropic",
+            "https://openrouter.ai/api",
+            "http://localhost:11434",
+            "http://localhost:4000/v",
+            "https://gateway.example.com/vault",
+        ] {
+            let e = Endpoint::parse(anthropic).unwrap();
+            assert!(!e.speaks_openai(), "{anthropic}");
+            assert_eq!((e.reply_path(), e.models_path()), ("/v1/messages", "/v1/models"));
+        }
     }
 
     #[test]

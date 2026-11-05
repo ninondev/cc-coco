@@ -8,13 +8,11 @@ import { quotaDuration, quotaIncenseAlt, WORDS } from './words'
 import type { Lang } from './words'
 import { playWord } from './play'
 
-// What a screen reader hears for the quota pictures (the name is from the incense days; quotaBandItems uses it).
 export type IncenseAltOptions = { neighbour?: boolean; pace?: readonly { kind: string; t: string }[]; spare?: string; breathing?: boolean; out?: readonly { kind:string;time:string }[] }
 export function incenseAlt(lang: Lang, windows: readonly { kind: string; percentUsed: number }[], options: IncenseAltOptions = {}): string {
   windows=[...windows,...(options.out??[]).filter(spent=>!windows.some(w=>w.kind===spent.kind)).map(spent=>({kind:spent.kind,percentUsed:100}))]
   const base = quotaIncenseAlt(lang, windows)
   if (!base || options.neighbour) return base
-  // Play adds what is drawn beside the figures: a spare stick waiting, smoke breathing.
   const extra = [options.spare === undefined ? '' : playWord(lang, 'alt.incense.spare', { time: options.spare }), options.breathing ? playWord(lang, 'alt.incense.breathing') : ''].filter(Boolean)
   if (!options.pace?.length && !options.out?.length) return extra.length ? [base, ...extra].join('; ') : base
   const fill = (key: string, fallback: string, values: Record<string, string>) => (c3Word(lang, key) || fallback).replace(/\{(\w+)\}/g, (_, name: string) => values[name] ?? '')
@@ -28,13 +26,11 @@ export function incenseAlt(lang: Lang, windows: readonly { kind: string; percent
 }
 
 // ---------------------------------------------------------------- the quota pictures (lane C, 10-14)
-// The owner chose a laptop battery for the 5-hour limit and a power bank for the weekly one, then asked that they
-// follow the real readings exactly (「它和真实的额度状态同步」). Both are 12 art pixels tall and sit on one
-// baseline: the battery is cream with four bars that fill bottom up in sixths, the power bank charcoal with four
-// little lights (lit, half lit, off). A quarter or less left turns what is left coral; a spent window waits under
-// a hand-drawn bolt. Drawn as one rect per run of a colour, two CSS px per art pixel; the outline on the picture's
-// edge lightens on a dark ground the way the pixel family does (battery_live and bank_live in the unpublished
-// drawing tool play_sprites.py are the source these rows are checked against).
+// Owner's choice: a laptop battery for the 5-hour limit, a power bank for the weekly one, following the real readings
+// exactly (「它和真实的额度状态同步」). Both are 12 art pixels tall on one baseline; a quarter or less left turns what is
+// left coral; a spent window waits under a hand-drawn bolt. One rect per run of a colour, two CSS px per art pixel; the
+// outline on the edge lightens on a dark ground (battery_live and bank_live in the unpublished play_sprites.py are the
+// source these rows are checked against).
 const QUOTA_INK: Record<string, string> = {
   O: '#5C2A1E', h: '#FFFDF8', i: '#F4ECE4', s: '#E0D1C6', M: '#F2EEEA', N: '#C9C2BC', Z: '#2E2E35',
   b: '#79B6E6', B: '#3A86C8', c: '#2A6399', r: '#F2A587', R: '#D97757', q: '#AE5539', e: '#A99282', E: '#CBB8AA',
@@ -48,7 +44,6 @@ function boltOver(g: string[][], x0: number, y0: number): void {
   BOLT.forEach((row, j) => [...row].forEach((ch, i) => { if (ch === '#') g[y0 + j]![x0 + i] = row[i + 1] === '#' ? 'Y' : 'y' }))
 }
 
-/** The 5-hour battery's rows, one character a pixel ('.' is clear): left is the percent remaining. */
 export function quotaBatteryRows(left: number, waiting = false): string[] {
   const W = 26, H = 12, g = Array.from({ length: H }, () => Array<string>(W).fill('.'))
   for (let y = 0; y < H; y++) for (let x = 0; x < 24; x++) {
@@ -71,8 +66,7 @@ export function quotaBatteryRows(left: number, waiting = false): string[] {
   return g.map(row => row.join(''))
 }
 
-/** The weekly power bank's rows: lit when its quarter is two thirds there, half lit from a third, and the first
- * light never dark while anything is left. */
+/** Lit when its quarter is two thirds there, half lit from a third; the first light never dark while anything is left. */
 export function quotaBankRows(left: number, waiting = false): string[] {
   const W = 22, H = 12, g = Array.from({ length: H }, () => Array<string>(W).fill('.'))
   for (let y = 0; y < H; y++) for (let x = 0; x < W; x++) {
@@ -94,8 +88,7 @@ export function quotaBankRows(left: number, waiting = false): string[] {
   return g.map(row => row.join(''))
 }
 
-/** Rows as an SVG at `scale` CSS px an art pixel: one rect per run, the outline on the picture's edge in class e. */
-/** One rect per run of a colour; the outline on the picture's edge gets class "e" so it can lighten on a dark ground. */
+/** The outline on the picture's edge gets class "e" so it can lighten on a dark ground. */
 export function pixelRuns(rows: readonly string[], ox = 0, oy = 0, ink: Readonly<Record<string, string>> = QUOTA_INK): string {
   const h = rows.length, w = rows[0]?.length ?? 0
   const at = (x: number, y: number) => (y < 0 || y >= h || x < 0 || x >= w ? '.' : rows[y]![x]!)
@@ -121,9 +114,7 @@ export function quotaPixelSvg(rows: readonly string[], scale = 2): string {
   return contrastSvg(`<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 ${w} ${h}" width="${w * scale}" height="${h * scale}" shape-rendering="crispEdges"><style>${PIXEL_EDGE_STYLE}</style>${pixelRuns(rows)}</svg>`)
 }
 
-/** The pictures' CSS width at two CSS px an art pixel: the battery is 26 art pixels wide, the power bank 22; both 12 high. */
 export const QUOTA_PICTURE_PX: Readonly<Record<'five_hour' | 'seven_day', number>> = { five_hour: 52, seven_day: 44 }
-/** The two pictures for the band from the windows' percent used; a spent window is drawn empty under the bolt. */
 export function quotaPictures(windows: readonly { kind: string; percentUsed: number }[], spent: readonly string[] = []): { five?: string; week?: string } {
   const left = (kind: string) => { const w = windows.find(item => item.kind === kind); return w && hasNumber(w.percentUsed) ? Math.max(0, 100 - w.percentUsed) : undefined }
   const five = spent.includes('five_hour') ? 0 : left('five_hour'), week = spent.includes('seven_day') ? 0 : left('seven_day')
@@ -133,8 +124,7 @@ export function quotaPictures(windows: readonly { kind: string; percentUsed: num
   }
 }
 
-/** The terminal's plain form (owner 10-14: 「终端要改……更直白的5h/week limit之类」): four cells, a filled one for
- * each quarter at least half there, so 62% left reads ▮▮▮▯. */
+/** The terminal's plain form (owner 10-14: 「终端要改……更直白的5h/week limit之类」): four cells, one filled per quarter at least half there, so 62% left reads ▮▮▮▯. */
 export function quotaMeterText(usedPercent: number): string {
   const full = quotaCellsLeft(usedPercent)
   return '▮'.repeat(full) + '▯'.repeat(4 - full)
@@ -145,25 +135,21 @@ export function quotaCellsLeft(usedPercent: number): number {
 }
 
 // ---------------------------------------------------------------- what the readings say comes next (lane C, 10-14)
-// The owner asked that hovering the pictures say the details and what the numbers predict (「鼠标提上去还会真正写详细
-// 内容和详细情况甚至预测算法」). Both forecasts are plain arithmetic on what Claude Code reported: the 5-hour one uses
-// the pace measured over the last 90 minutes when the reminders have one (algo/pace.ts), otherwise this window's own
-// average since it opened; the weekly one uses this week's average (the approved quota page: 「照这周的速度」). A hot
-// window keeps the pace the warning used, so the hover never disagrees with the band.
+// Owner asked that hovering say the details and what the numbers predict (「鼠标提上去还会真正写详细内容和详细情况甚至预测算法」).
+// Both forecasts are plain arithmetic on what Claude Code reported: the 5-hour one uses the pace measured over the last
+// 90 minutes when the reminders have one (algo/pace.ts), else this window's average since it opened; the weekly one uses
+// this week's average (approved quota page: 「照这周的速度」). A hot window keeps the pace the warning used, so the hover
+// never disagrees with the band.
 export const QUOTA_WINDOW_MS: Readonly<Record<string, number>> = { five_hour: 5 * 3_600_000, seven_day: 7 * 86_400_000 }
 const EARLY_MS = 30 * 60_000
 export type QuotaForecast = {
   kind: string
-  /** Percent used now, 0 to 100. */
   used: number
   resetsAt?: number
   /** 'recent': the last 90 minutes; 'window': this window's average since it opened. */
   basis?: 'recent' | 'window'
-  /** Percent used at the reset at this pace, when it lasts until then. */
   reach?: number
-  /** When it runs out at this pace, when that is half an hour or more before the reset. */
   runsOutAt?: number
-  /** What is left spread evenly until the reset: per hour for the 5-hour window, per day for the weekly one. */
   allowance?: { per: 'hour' | 'day'; percent: number }
 }
 export function quotaForecast(window: { kind: string; percentUsed: number; resetsAt?: number | string }, now: number, ratePerHour?: number, hot = false): QuotaForecast | undefined {
@@ -176,8 +162,8 @@ export function quotaForecast(window: { kind: string; percentUsed: number; reset
   const left = 100 - used, unit = window.kind === 'five_hour' ? 3_600_000 : 86_400_000, units = (reset - now) / unit
   if (left > 0 && units >= 1) out.allowance = { per: unit === 3_600_000 ? 'hour' : 'day', percent: Math.round(left / units) }
   if (left <= 0) return out
-  // The recent pace when there is one (the weekly window only while it is hot), else this window's average so far,
-  // asked only once a tenth of the window has passed so a first burst is not stretched over the whole window.
+  // The recent pace when there is one (the weekly window only while hot), else this window's average, asked only once a
+  // tenth of the window has passed so a first burst is not stretched over it.
   const recent = hasNumber(ratePerHour) && ratePerHour > 0 && (window.kind === 'five_hour' || hot) ? ratePerHour : undefined
   const elapsed = now - (reset - length)
   const average = elapsed >= length / 10 && used > 0 ? used / (elapsed / 3_600_000) : undefined
@@ -192,19 +178,14 @@ export function quotaForecast(window: { kind: string; percentUsed: number; reset
   return out
 }
 
-// One window as the band shows it (the approved quota page, 10-14): its short name, then the picture on the desktop or
-// four cells in the terminal. Beside it stands what is left, or, when it matters, when it runs out (coral) or when it
-// comes back (under the bolt). Nothing blinks and nothing sounds.
+// One window as the band shows it (approved quota page, 10-14). Nothing blinks and nothing sounds.
 export type QuotaBandItem = {
   kind: 'five_hour' | 'seven_day'
   label: string
-  /** Percent left, 0 to 100. */
   left: number
   tone: 'calm' | 'low' | 'hot' | 'out'
   meter: string
-  /** The terminal's words after the cells: what is left, or the flag. */
   tail: string
-  /** The desktop's words after the picture; only a hot or spent window has them. */
   flag: string
   picture: string
   alt: string
@@ -241,8 +222,7 @@ export function quotaBandItems(lang: Lang, windows: readonly { kind: string; per
   })
 }
 
-/** The words for one forecast: the pace it rests on and what it comes to, then the even share left. The band's hover
- * takes the compact form (one row holds both windows); the quota page takes the whole sentences. */
+/** The band's hover takes the compact form (one row holds both windows); the quota page the whole sentences. */
 export function quotaForecastText(lang: Lang, forecast: QuotaForecast, now: number, timeZone?: string, compact = false): string {
   const separator = WORDS[lang].quota.separator, parts: string[] = []
   const pct = (value: number) => percentText(Math.round(value), lang)
@@ -259,19 +239,14 @@ export function quotaForecastText(lang: Lang, forecast: QuotaForecast, now: numb
 }
 
 // ---------------------------------------------------------------- where each window went (lane C, 10-15)
-// The trails themselves are kept by quota-trail.ts (register.tsx takes the readings in at start); this draws them.
-/** One window's chart: what was used from its opening until now, and where this pace takes it by the reset. */
+// Trails are kept by quota-trail.ts (register.tsx takes the readings in at start).
 export type QuotaTrend = {
   kind: string
-  /** [ms, percent] readings, the last one now. */
   points: readonly (readonly [number, number])[]
   start: number
   end: number
-  /** Where the median pace ends: at the reset, or at 100% when it runs out first. */
   median?: readonly [number, number]
-  /** The same with the pace a quarter faster: the edge of the band. */
   late?: readonly [number, number]
-  /** The median runs out before the reset (coral). */
   warn: boolean
   resetLabel: string
   crossLabel?: string
@@ -294,8 +269,7 @@ export function quotaTrendFor(trail: QuotaTrail, forecast: QuotaForecast, now: n
   }
   return { kind: forecast.kind, points, start, end: reset, ...(median ? { median, late } : {}), warn: forecast.runsOutAt !== undefined }
 }
-// The chart's colours, checked with the dataviz validator for quota_page.py (light on white, dark on #262422): their blue
-// for what was used, coral when this pace runs out before the reset. Text wears the ink, never the series colours.
+// The chart's colours, checked with the dataviz validator for quota_page.py (light on white, dark on #262422). Text wears the ink, never the series colours.
 const TREND_CSS = '.l{stroke:#3A86C8}.lf{fill:#3A86C8}.w{stroke:#D97757}.wf{fill:#D97757}.h{stroke:#E3DCD5}.m{stroke:#6E625C}.t{fill:#6E625C}.k{fill:#232122}.g{stroke:#FFFFFF}'
   + '@media(prefers-color-scheme:dark){.l{stroke:#4A98DD}.lf{fill:#4A98DD}.w{stroke:#D27149}.wf{fill:#D27149}.h{stroke:#3A3633}.m{stroke:#A99D96}.t{fill:#A99D96}.k{fill:#EFE7E1}.g{stroke:#262422}}'
 const trendCache = new Map<string, string>()

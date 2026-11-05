@@ -358,6 +358,11 @@ test('D9 shipped coco command verbs each have an existing button path', { timeou
     talk: ['him', 'coco:talk:open'], say: ['him', 'coco:talk:send'],
     // the DM thread is Talk's (dm.ts, lane C 10-17): /coco dm opens it, and the same button opens it from her page
     dm: ['him', 'coco:talk:open'],
+    // care at the bottom of the settings page (review D-4); uninstall's first press only asks
+    doctor: ['settings', 'coco:doctor:run'], uninstall: ['settings', 'coco:uninstall:run'],
+    // the page that holds both, from the tab row and the settings page (owner 11-04)
+    models: ['settings', 'coco:care:models'], privacy: ['settings', 'coco:care:open'],
+    lines: ['settings', 'coco:more:lines:import:open'],
   }
   const commandSources = PLUGIN_SOURCES['hooks/register.tsx'] + '\n' + PLUGIN_SOURCES['hooks/pages.tsx']
   const aliases = /const ALIASES[^=]*=\s*\{([^}]+)\}/.exec(PLUGIN_SOURCES['hooks/pages.tsx'] ?? '')?.[1] ?? ''
@@ -400,7 +405,7 @@ test('D9 shipped coco command verbs each have an existing button path', { timeou
     }
     await ui.unmount()
   }
-  expect(paths).toBe(73) // 74 before the desktop band row went (owner 10-19); 78 with the sock drawer's tab (lane C, 10-14); vibe and usage stand for omen, offerings and usage, one verb fewer on the four surfaces (10-16)
+  expect(paths).toBe(93) // Includes line import on all four surfaces.
   expect(omitted).toBe(23) // 22 before the desktop band row went (owner 10-19); 18, and /coco dm on the four surfaces while Talk is off (lane C, 10-17)
   console.log('P1_COMMAND_BUTTON_PATHS ' + paths)
   console.log('P1_COMMAND_BUTTON_ABSENT_COUNT ' + omitted)

@@ -33,7 +33,7 @@ function fixture(on:On,options:{marker?:boolean;throwSubmit?:boolean;shipped?:bo
  on('command.*',($,e,next)=>{if(next.is('command.run',e)&&e.command==='clear')cleared.push(e.command);return next(e)})
  on('model.*',($,e,next)=>{models.push('model');return next(e)})
  on('http.*',($,e,next)=>{models.push('network');return next(e)})
- on('agent.list',()=>({value:[]}));on('session.messages',()=>({value:[]}));on('session.model',()=>({value:'fixture-model'}));on('session.repo',()=>({value:null}));on('session.turns',()=>({value:1}));on('ui.panes',()=>({value:[]}));on('fs.write',()=>({value:undefined}));on('process.run',()=>({value:{exitCode:0,stdout:'{}',stderr:'',isStdoutTruncated:false,isStderrTruncated:false}}))
+ on('agent.list',()=>({value:[]}));on('session.messages',()=>({value:[]}));on('session.model',()=>({value:'claude-fixture'}));on('session.repo',()=>({value:null}));on('session.turns',()=>({value:1}));on('ui.panes',()=>({value:[]}));on('fs.write',()=>({value:undefined}));on('process.run',()=>({value:{exitCode:0,stdout:'{}',stderr:'',isStdoutTruncated:false,isStderrTruncated:false}}))
  return {w,submitted,queued,models,cleared,writes}
 }
 async function start($:Engine,w:ReturnType<typeof world>){await $.session.start(START);await settleLegacyStart($,w)}
@@ -130,7 +130,7 @@ const SHIPPED={
  en:{title:'Letters',marker:'A note from another session:',disclosure:'This sends the note to Claude.'},
  zh:{title:'来信',marker:'来自另一个会话的消息:',disclosure:'这会把消息发给Claude。'},
 } as const
-for(const lang of ['en','zh'] as const)test(`M1 S2 the shipped letter words head the Him book, stand above the pass and lead the passed note: ${lang}`,{options:{language:lang,resolvedLanguage:lang}},async($,on)=>{
+for(const lang of ['en','zh'] as const)test(`M1 S2 the shipped letter words head the Him book, stand above the pass and lead the passed note: ${lang}`,{options:{language:lang}},async($,on)=>{
  const f=fixture(on,{shipped:true,lang});await start($,f.w)
  const result=await receive($);expect(result.consumed).toBe(SHIPPED[lang].title)
  await $.command.run({command:'coco',args:'him',origin:PERSON,presentation:P})

@@ -32,6 +32,8 @@ const planForm = (s: CostSurfaceSnapshot) => plan(s) ? '.plan' : ''
 // price, and the engine's own figure, which is a default-tier guess, is left out.
 const makerEstimated = (s: CostSurfaceSnapshot) => !!s.billing.otherMaker && !s.billing.organisation && (s.billing.kind === 'api' || s.billing.kind === 'gateway')
 const usableMoney = (s: CostSurfaceSnapshot) => s.billing.kind !== 'unknown' && s.billing.kind !== 'cloud' && !s.billing.organisation && !s.billing.otherMaker
+/** Whether dollars on this snapshot are the person's own money (r20-14's cap and conversion gates). */
+export const moneyReal = usableMoney
 export function cacheAlt(s: CostSurfaceSnapshot, lang: string, now: number): string {
   if (s.cache.state === 'kept' && !usableMoney(s)) return costWord(lang, 'cache.narrow.kept')
   const values = { n: numberText(s.cache.state === 'kept' ? s.cache.kept?.pings ?? 0 : Math.max(0, Math.ceil((s.cache.warmUntil - now) / 60_000)), lang), usd: costDollars(s.cache.kept?.usd, lang, true) }
@@ -83,8 +85,54 @@ export function cacheBookLines(s: CostSurfaceSnapshot, lang: string, now: number
   const blocks: CostTextBlock[] = [{ t: 'cup', state: c.state, alt: cacheAlt(s, lang, now), text: line }]
   if (usableMoney(s)) blocks.push({ t: 'para', text: costWord(lang, 'offerings.' + (c.state === 'cold' ? 'nextCold.' : 'next.') + (plan(s) ? 'plan' : 'money'), { tokens: costTokens(c.prefix, lang), warm: costDollars(c.warmUSD, lang, true), cold: costDollars(c.coldUSD, lang, true) }) })
   if (c.state === 'cold' && (c.deltaUSD ?? 0) >= .5) blocks.push({ t: 'para', text: costWord(lang, 'offerings.clearTip') })
+  blocks.push(...tokenKindsBlocks(s, lang))
   return blocks.filter(b => b.text)
 }
+// The four token kinds of this conversation, each with its own figure (later-17). Tokens only, no
+// dollars: the line stands under every billing kind, plan and organisation included.
+export function tokenKindsLine(s: CostSurfaceSnapshot, lang: string): string {
+  const t = s.tokens
+  if (!t) return ''
+  return costWord(lang, 'offerings.tokenKinds', { in: costTokens(t.input, lang), out: costTokens(t.output, lang), read: costTokens(t.cacheRead, lang), write: costTokens(t.cacheWrite, lang) })
+}
+export function tokenKindsBlocks(s: CostSurfaceSnapshot, lang: string): CostTextBlock[] {
+  const text = tokenKindsLine(s, lang)
+  return text ? [{ t: 'para', text }] : []
+}
+
+// r20-14 item 1: the next turn re-creates the cache on the new model; that re-creation alone, at its own tier.
+export function switchCostLine(model: string, tokens: number, usd: number | null, lang: string): string {
+  if (usd === null || !(tokens > 0)) return ''
+  return costWord(lang, 'switchCost.line', { model, tokens: costTokens(tokens, lang), usd: costDollars(usd, lang, true) })
+}
+// r20-14 item 2: byte-based token upper bound at the current model's input price; no price, no line.
+export function pasteWarnLine(tokens: number, usd: number | null, lang: string): string {
+  if (usd === null || !(tokens > 0)) return ''
+  return costWord(lang, 'pasteWarn.line', { tokens: costTokens(tokens, lang), usd: costDollars(usd, lang, true) })
+}
+// r20-14 item 3: the local ledger's day total.
+export function dayCapLine(cap: number, usd: number, lang: string, plan = false): string {
+  if (!(cap > 0) || !(usd >= cap)) return ''
+  return costWord(lang, 'dayCap.line' + (plan ? '.plan' : ''), { cap: costDollars(cap, lang), usd: costDollars(usd, lang) })
+}
+
+// r20-14 item 6: on a plan, this conversation at the API price table, an estimate.
+export function planConvertLine(usd: number | undefined, lang: string): string {
+  if (!(usd! > 0)) return ''
+  return costWord(lang, 'planConvert.line', { usd: costDollars(usd, lang, true) })
+}
+
+// r20-14 item 5: one line per folder, today and this month, from the machine's own record.
+export function folderLine(row: { name: string; day: number; month: number }, lang: string, plan = false): string {
+  return costWord(lang, 'costFolders.line' + (plan ? '.plan' : ''), { name: row.name, day: costDollars(row.day, lang), month: costDollars(row.month, lang) })
+}
+
+// r20-14 item 4: the month forecast, local ledger only.
+export function forecastLine(monthUsd: number, projectedUsd: number, lang: string, plan = false): string {
+  if (!(monthUsd > 0) || !(projectedUsd >= monthUsd)) return ''
+  return costWord(lang, 'costForecast.line' + (plan ? '.plan' : ''), { usd: costDollars(monthUsd, lang), forecast: costDollars(projectedUsd, lang, true) })
+}
+
 // `noted`: the page already put the no-price note beside the session estimate, so the turn estimate does not repeat it.
 export function costBookLines(s: CostSurfaceSnapshot, lang: string, noted = false): string[] {
   const lines = [turnCostLine(s, lang, 'book')]
@@ -94,6 +142,9 @@ export function costBookLines(s: CostSurfaceSnapshot, lang: string, noted = fals
     if ((s.misses?.count ?? 0) > 0) lines.push(costWord(lang, 'offerings.misses' + planForm(s), { n: numberText(s.misses!.count, lang), usd: costDollars(s.misses!.usd, lang, true) }))
   }
   if (s.ledger && usableMoney(s)) lines.push(costWord(lang, 'offerings.ledger.' + (plan(s) ? 'plan' : 'money'), { d: costDollars(s.ledger.day, lang), w: costDollars(s.ledger.week, lang), m: costDollars(s.ledger.month, lang) }))
+  lines.push(forecastLine(s.forecast?.monthUsd ?? 0, s.forecast?.projectedUsd ?? 0, lang, plan(s)))
+  for (const row of s.folders ?? []) lines.push(folderLine(row, lang, plan(s)))
+  lines.push(planConvertLine(s.planConvertUsd, lang))
   return lines.filter(Boolean)
 }
 

@@ -185,8 +185,15 @@ export function world(on: On, w: World = {}) {
   on('state.set', async ($, e, next) => {
     const result = await next(e) // retain native subscription redraws
     const address = e.id === undefined ? e.key : `${e.key}:${e.id}`
-    const version = result.value?.version ?? (cells.get(address)?.version ?? 0) + 1
-    cells.set(address, { value: e.value, version })
+    // Record the value only of a write the host accepted. A refused set (isSet false, for example a
+    // stale ifVersion) must not overwrite the value a landed write left in the same tick; the engine
+    // keeps its cell, so the fixture keeps cells in step instead of dropping one update and counting
+    // another twice. The version the host answers still lands: state.get answers from these cells,
+    // and a retry at any other version would be refused for ever (cards/state.ts update).
+    if ('deny' in result) return result
+    const isSet = result.value?.isSet !== false, held = cells.get(address)
+    const version = result.value?.version ?? (held?.version ?? 0) + (isSet ? 1 : 0)
+    if (isSet || held || version) cells.set(address, { value: isSet ? e.value : held?.value, version })
     return result
   })
   on('settings.read', () => ({ value: { timeZone: 'UTC', ...(w.settings ?? {}) } }))

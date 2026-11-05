@@ -1,6 +1,6 @@
 // Real scratch files/processes. This harness calls the shipping TypeScript reducer.
 import { spawn } from 'node:child_process'
-import { mkdir, readFile, writeFile, appendFile, stat, rename } from 'node:fs/promises'
+import { mkdir, readFile, writeFile, appendFile, stat, rename, open } from 'node:fs/promises'
 import { strict as assert } from 'node:assert'
 import { join } from 'node:path'
 import { cpuMilliseconds, scheduleCpuBudget } from './process-cpu'
@@ -13,6 +13,16 @@ const now = Date.now()
 let serial = 0
 const metrics: any[] = []
 const identitySource = process.platform === 'linux' ? 'native /proc boot ID and start ticks' : 'native libproc metadata and owned registration'
+// macOS wakes a waiting reader for no single blocking write larger than the FIFO holds (8192 bytes), so a long
+// record goes in pieces, as the plugin's own fifo-send helper sends it. (The 24-session test below sends more than
+// 8192 bytes once the plugin folder's path is about 120 characters long: each claim records the helper's path.)
+async function sendFifo(path: string, text: string) {
+  const handle = await open(path, 'w')
+  try {
+    const bytes = Buffer.from(text)
+    for (let at = 0; at < bytes.length; at += 4096) await handle.write(bytes, at, Math.min(4096, bytes.length - at))
+  } finally { await handle.close() }
+}
 function processLines(argv: string[], env = process.env) {
   const child = spawn(argv[0], argv.slice(1), { stdio: ['ignore', 'pipe', 'pipe'], env })
   const lines: string[] = []; let buffer = '', stderr = '', ended = false, wake: (() => void) | undefined
@@ -41,11 +51,11 @@ async function transaction(folder: string, mode: string, session: string, at: nu
       else if (line === 'INSPECT') break
     }
     const pids = [`${reader.pid}:${reader.owner}`, String(reader.hostPid), ...Object.values(previous?.claims ?? {}).flatMap((claim: any) => [`${claim.pid}:${claim.owner}`, ...(claim.hostPid ? [String(claim.hostPid)] : [])])]
-    await writeFile(fifo, [...new Set(pids)].join(',') + '\n')
+    await sendFifo(fifo,[...new Set(pids)].join(',') + '\n')
     for (;;) { const line = await stream.next(); if (line === 'READY') break; inventory += line + '\n' }
     const alive = parseProcessInventory(inventory)
     const result = reducePresence(previous, mode, session, at, busy, reader.pid, alive.get(reader.pid)?.birth ?? '', alive, reader.owner, language, deadlines, reader.hostPid, alive.get(reader.hostPid)?.birth ?? '')
-    await writeFile(fifo, JSON.stringify(result) === JSON.stringify(previous) ? '-\n' : JSON.stringify(result) + '\n')
+    await sendFifo(fifo,JSON.stringify(result) === JSON.stringify(previous) ? '-\n' : JSON.stringify(result) + '\n')
     assert.equal(await stream.next(), 'COMMITTED')
     assert.equal(await stream.exit, 0)
     return result
@@ -334,6 +344,7 @@ test('ready marker follows the old request replay even when the request log exce
 test('same session in independent processes retains remaining busy claim, observer stays claim free, wake reaches real followers', async () => {
   const { folder, reader } = await setup('same-session')
   const a = await follower(folder,'sameA'), b = await follower(folder,'sameB')
+  let live: Awaited<ReturnType<typeof follower>> | undefined
   try {
     await transaction(folder,'bootstrap','same',now,true,a)
     let state = await transaction(folder,'bootstrap','same',now,true,b)
@@ -351,13 +362,17 @@ test('same session in independent processes retains remaining busy claim, observ
     state = await transaction(folder,'bootstrap','new-host',now+840002,true,reader)
     assert.equal((await receive(reader,state.seq)).asleep,false)
     metrics.push({process_identity_source:identitySource,cross_process_file_wake_ms: performance.now()-began,includes_transaction_spawn:true})
-    // Cleanup removes only the normally departing owner's marker. A failed or
-    // killed generation's retained marker must not be erased by another owner.
+    // The departing owner's files go with it. The two followers stopped above are gone, so the same run removes
+    // what they left (on Linux a stopped follower cannot clean up after itself); a follower still running keeps all of its files.
+    const exists = (name: string) => stat(join(folder,name)).then(()=>true,()=>false)
+    live = await follower(folder,'sameC')
+    assert.equal(await exists('.presence-follow-sameC.jsonl'),true)
     const cleanupToken = `${reader.owner}-cleanup`
     await transaction(folder,'leave','new-host',now+840003,false,reader,'en',cleanupToken)
-    assert.equal(await stat(join(folder,`.presence-follow-${reader.owner}.jsonl`)).then(()=>true,()=>false),false)
-    assert.equal(await stat(join(folder,'.presence-follow-sameA.jsonl')).then(()=>true,()=>false),true)
-  } finally { for (const r of [reader,a,b]) r.stop(); await Promise.all([reader.exit,a.exit,b.exit]) }
+    for (const name of [`.presence-follow-${reader.owner}.jsonl`,`.presence-registration-${reader.owner}`,'.presence-follow-sameA.jsonl','.presence-registration-sameA','.presence-follow-sameB.jsonl','.presence-registration-sameB'])
+      assert.equal(await exists(name),false,name)
+    for (const name of ['.presence-follow-sameC.jsonl','.presence-registration-sameC']) assert.equal(await exists(name),true,name)
+  } finally { for (const r of [reader,a,b,...(live ? [live] : [])]) r.stop(); await Promise.all([reader.exit,a.exit,b.exit,...(live ? [live.exit] : [])]) }
 })
 if (process.env.COCO_TEST_TRANSPORT) test('SIGKILL at every lock and commit step never blocks the next writer', async () => {
   const stages = ['before-lock','lock-acquired','owner-written','inspect-wait','commit-wait','temporary-written','snapshot-renamed','journal-appended','journal-rotated','before-unlock','after-unlock']
@@ -374,8 +389,8 @@ if (process.env.COCO_TEST_TRANSPORT) test('SIGKILL at every lock and commit step
       for (;;) {
         const line = await writer.next()
         if (line.startsWith('PRESENCE\t')) fifo=line.split('\t')[2]
-        if (line === 'INSPECT') await writeFile(fifo,`${reader.pid},${reader.hostPid}\n`)
-        if (line === 'READY') await writeFile(fifo,JSON.stringify(state)+'\n')
+        if (line === 'INSPECT') await sendFifo(fifo,`${reader.pid},${reader.hostPid}\n`)
+        if (line === 'READY') await sendFifo(fifo,JSON.stringify(state)+'\n')
         if (line.startsWith(`BOUNDARY\t${stage}\t`)) break
       }
       // Start a live contender before the holder dies, so owner-publication races are covered.
@@ -471,10 +486,10 @@ test('native process birth is independent of opposite date-line time zones',asyn
       const writer=processLines(['/bin/sh',script,folder,'transaction',zone.replace(/[^a-z]/gi,'')],{...process.env,TZ:zone})
       let fifo='',inventory=''
       for(;;){const line=await writer.next();if(line.startsWith('PRESENCE\t'))fifo=line.split('\t')[2];if(line==='INSPECT')break}
-      await writeFile(fifo,`${reader.pid},${reader.hostPid}\n`)
+      await sendFifo(fifo,`${reader.pid},${reader.hostPid}\n`)
       for(;;){const line=await writer.next();if(line==='READY')break;inventory+=line+'\n'}
       identities.push(parseProcessInventory(inventory).get(reader.pid)!.birth)
-      await writeFile(fifo,'-\n');assert.equal(await writer.next(),'COMMITTED');assert.equal(await writer.exit,0)
+      await sendFifo(fifo,'-\n');assert.equal(await writer.next(),'COMMITTED');assert.equal(await writer.exit,0)
     }
     assert.equal(identities[0],identities[1]);assert.match(identities[0],/^(darwin:|linux:)/)
   }finally{reader.stop();await reader.exit}

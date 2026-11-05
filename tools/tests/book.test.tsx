@@ -140,7 +140,7 @@ describe('his book', () => {
     expect(await pageText(ui)).not.toMatch(/Now:/)
     expect((await ui.find({ type: 'Button', key: 'coco:set:lang:auto' }))?.props.variant).toBe('primary')
     expect(await ui.find({ type: 'Button', key: 'coco:set:lang:hi' })).toBeDefined()
-    expect(await ui.find({ type: 'Button', key: 'coco:set:lang:zh', text: '华文' })).toBeDefined()
+    expect(await ui.find({ type: 'Button', key: 'coco:set:lang:zh', text: '简体中文' })).toBeDefined()
     await ui.press({ key: 'coco:set:lang:ja' })
     await ui.redraw()
     expect(w.view().lang).toBe('ja')
@@ -151,7 +151,7 @@ describe('his book', () => {
     expect(w.view().lang).toBe('zh')
     expect((await ui.find({ type: 'Button', key: 'coco:set:lang:zh' }))?.props.variant).toBe('primary')
     const term = await $.ui.mount({ surface: 'terminal', ...PANE })
-    expect(await term.find({ type: 'Text', text: /现在:华文(?![(（])/ })).toBeDefined()
+    expect(await term.find({ type: 'Text', text: /现在:简体中文(?![(（])/ })).toBeDefined()
   })
 
   test('Chinese (Singapore) dates, times and numbers appear in both book surfaces', async ($, on) => {

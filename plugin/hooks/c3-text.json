@@ -2337,5 +2337,119 @@
     "it": "LGTM~ l’ha scritto Claude? decente, per una volta",
     "ko": "LGTM~ Claude가 썼어? 웬일로 쓸 만하네",
     "pt-BR": "LGTM~ foi o Claude que escreveu? decente, pra variar"
+  },
+  "guard.secretPush": {
+    "zh": "这次要推的提交里好像有密钥:{file} 第{line}行,推出去之前看一眼",
+    "zh-Hant": "這次要推的提交裡好像有金鑰:{file} 第{line}行,推出去之前看一眼",
+    "en": "The commits this push would send look like they hold a secret: {file}, line {line}. Check before it goes out",
+    "ja": "このpushで送られるコミットにシークレットが入っている可能性があります: {file}の{line}行目。送信前に確認を",
+    "ko": "이 push로 보낼 커밋에 시크릿이 들어 있는 것 같습니다: {file} {line}번째 줄. 보내기 전에 확인하세요",
+    "fr": "Les commits que ce push enverrait semblent contenir un secret : {file}, ligne {line}. Vérifie avant d’envoyer",
+    "it": "I commit che questo push invierebbe sembrano contenere un segreto: {file}, riga {line}. Controlla prima di inviarlo",
+    "de": "Die Commits, die dieser Push senden würde, enthalten wohl ein Geheimnis: {file}, Zeile {line}. Prüfe es vorher",
+    "es-ES": "Los commits que enviaría este push parecen contener un secreto: {file}, línea {line}. Revísalo antes de enviarlo",
+    "es-419": "Los commits que enviaría este push parecen contener un secreto: {file}, línea {line}. Revísalo antes de enviarlo",
+    "pt-BR": "Os commits que este push enviaria parecem conter um segredo: {file}, linha {line}. Confira antes de enviar",
+    "hi": "इस push से जाने वाले कमिट में सीक्रेट जैसा कुछ है: {file}, पंक्ति {line}। भेजने से पहले देख लें",
+    "id": "Commit yang akan dikirim push ini tampak berisi rahasia: {file}, baris {line}. Periksa sebelum dikirim"
+  },
+  "todoPile.line": {
+    "zh": "这一场里 Claude 自己加的TODO/FIXME已经{n}个了",
+    "zh-Hant": "這一場裡 Claude 自己加的TODO/FIXME已經{n}個了",
+    "en": "Claude has added {n} TODO/FIXME markers in this session",
+    "ja": "このセッションでClaudeが追加したTODO/FIXMEが{n}個になりました",
+    "ko": "이 세션에서 Claude가 추가한 TODO/FIXME가 {n}개입니다",
+    "fr": "Claude a ajouté {n} marqueurs TODO/FIXME dans cette session",
+    "it": "Claude ha aggiunto {n} marcatori TODO/FIXME in questa sessione",
+    "de": "Claude hat in dieser Session {n} TODO/FIXME-Markierungen hinzugefügt",
+    "es-ES": "Claude ha añadido {n} marcadores TODO/FIXME en esta sesión",
+    "es-419": "Claude ha añadido {n} marcadores TODO/FIXME en esta sesión",
+    "pt-BR": "Claude adicionou {n} marcadores TODO/FIXME nesta sessão",
+    "hi": "Claude ने इस सेशन में {n} TODO/FIXME निशान जोड़े हैं",
+    "id": "Claude sudah menambah {n} penanda TODO/FIXME di sesi ini"
+  },
+  "settings.todoPile.label": {
+    "zh": "TODO堆积提醒",
+    "zh-Hant": "TODO堆積提醒",
+    "en": "TODO pile reminder",
+    "ja": "TODO山積みリマインダー",
+    "ko": "TODO 쌓임 알림",
+    "fr": "Rappel d’accumulation de TODO",
+    "it": "Promemoria TODO accumulati",
+    "de": "TODO-Stau-Erinnerung",
+    "es-ES": "Aviso de TODO acumulados",
+    "es-419": "Aviso de TODO acumulados",
+    "pt-BR": "Aviso de TODO acumulados",
+    "hi": "TODO जमाव अनुस्मारक",
+    "id": "Pengingat tumpukan TODO"
+  },
+  "settings.todoPile.help": {
+    "zh": "Claude这一场自己加的TODO/FIXME超过你定的数时说一句,只提醒一次,不扫硬盘",
+    "zh-Hant": "Claude這一場自己加的TODO/FIXME超過你定的數時說一句,只提醒一次,不掃硬碟",
+    "en": "One line once Claude's own edits this session have added more TODO/FIXME markers than a number you set; said once, never scans the disk",
+    "ja": "このセッションでClaude自身の編集が追加したTODO/FIXMEが設定した数を超えたら1回だけ通知します。ディスクは走査しません",
+    "ko": "이 세션에서 Claude 자신의 편집으로 추가된 TODO/FIXME가 정한 수를 넘으면 한 번만 알립니다. 디스크는 훑지 않습니다",
+    "fr": "Une ligne quand les propres éditions de Claude cette session ont ajouté plus de marqueurs TODO/FIXME qu’un nombre que tu fixes ; dite une fois, sans jamais lire le disque",
+    "it": "Una riga quando le modifiche di Claude in questa sessione hanno aggiunto più marcatori TODO/FIXME di un numero che imposti; detta una volta, senza mai leggere il disco",
+    "de": "Eine Zeile, wenn Claudes eigene Bearbeitungen in dieser Session mehr TODO/FIXME-Markierungen hinzugefügt haben, als du festlegst; einmal gesagt, ohne je die Platte zu lesen",
+    "es-ES": "Una línea cuando las propias ediciones de Claude en esta sesión han añadido más marcadores TODO/FIXME que un número que fijas; se dice una vez, sin leer el disco",
+    "es-419": "Una línea cuando las propias ediciones de Claude en esta sesión han añadido más marcadores TODO/FIXME que un número que fijas; se dice una vez, sin leer el disco",
+    "pt-BR": "Uma linha quando as próprias edições do Claude nesta sessão adicionarem mais marcadores TODO/FIXME que um número que você define; dita uma vez, sem ler o disco",
+    "hi": "जब Claude की अपनी इस सेशन की एडिट आपके तय आंकड़े से ज़्यादा TODO/FIXME निशान जोड़ दें तो एक पंक्ति; एक बार, डिस्क स्कैन किए बिना",
+    "id": "Satu baris saat suntingan Claude sendiri di sesi ini menambah penanda TODO/FIXME melebihi angka yang kamu atur; dikatakan sekali, tanpa memindai disk"
+  },
+  "typo.fixed": {
+    "zh": [
+      "就改了一两个字母,干净",
+      "这种小错她自己就揪出来了"
+    ],
+    "zh-Hant": [
+      "就改了一兩個字母,乾淨",
+      "這種小錯她自己就揪出來了"
+    ],
+    "en": [
+      "a one-letter fix, her favourite",
+      "two letters, caught just like that"
+    ],
+    "ja": [
+      "一文字直し、お気に入り",
+      "二文字の見逃し、きっちり直した"
+    ],
+    "ko": [
+      "한 글자 고침, 제일 좋아하는 일",
+      "두 글자도 놓치지 않았다"
+    ],
+    "fr": [
+      "une lettre corrigée, son préféré",
+      "deux lettres, attrapées net"
+    ],
+    "it": [
+      "una lettera sistemata, la sua preferita",
+      "due lettere, prese al volo"
+    ],
+    "de": [
+      "ein Buchstabe, ihr Lieblingsfix",
+      "zwei Buchstaben, erwischt"
+    ],
+    "es-ES": [
+      "una letra corregida, su favorito",
+      "dos letras, cazadas al vuelo"
+    ],
+    "es-419": [
+      "una letra corregida, su favorito",
+      "dos letras, cazadas al vuelo"
+    ],
+    "pt-BR": [
+      "uma letra corrigida, a preferida dela",
+      "duas letras, pescadas na hora"
+    ],
+    "hi": [
+      "एक अक्षर सुधार, उसका पसंदीदा",
+      "दो अक्षर, जैसे ही पकड़े"
+    ],
+    "id": [
+      "satu huruf diperbaiki, favoritnya",
+      "dua huruf, tertangkap juga"
+    ]
   }
 }

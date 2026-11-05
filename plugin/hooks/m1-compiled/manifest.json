@@ -18,6 +18,7 @@
       "hooks/script-argv.ts",
       "hooks/quota.ts",
       "hooks/quota-trail.ts",
+      "hooks/worker-name.ts",
       "hooks/more-words.ts",
       "hooks/paths.ts",
       "hooks/numbers-text.ts",
@@ -88,6 +89,8 @@
       "hooks/companion-art.ts",
       "hooks/card-metrics-lazy.ts",
       "hooks/mod-gaps-words.ts",
+      "hooks/characters.ts",
+      "hooks/characters-data.ts",
       "hooks/settings-migration.ts",
       "hooks/cache-rate.ts",
       "hooks/reminder-settings.ts",
@@ -106,7 +109,12 @@
       "hooks/cost/surfaces.ts",
       "hooks/cost/cup.ts",
       "hooks/cost/words.ts",
-      "hooks/cost/prices-page.tsx"
+      "hooks/cost/prices-page.tsx",
+      "hooks/api-lines.ts",
+      "hooks/coco-commands.ts",
+      "hooks/privacy.ts",
+      "hooks/cost/features.ts",
+      "hooks/format.ts"
     ],
     "presence": [
       "hooks/presence.ts",
@@ -151,12 +159,12 @@
       "sha256": "466266f42a3d0e02d748c8e9f72889ceb172c9ce0fba75d693a5453252cceee4"
     },
     "hooks-source/mood.ts": {
-      "bytes": 25138,
-      "sha256": "717487f00e0397426f14df199d57a83a2eca5ba93445cb7dcd3f7a3b38e01cde"
+      "bytes": 23639,
+      "sha256": "3ed4d6e4b5b50fd4c370ee9406ca39c30eb73be1947860a74a23f29d4536243a"
     },
     "hooks-source/line-library.ts": {
-      "bytes": 6975,
-      "sha256": "e8ac82c34f142f453f5ea7af49a59d3dde2672b1c08d0d6da9e6a5698215c5ea"
+      "bytes": 9629,
+      "sha256": "c8f526d5e7b90c652881f65242fe58dc2b0629f9dd4142647ffba8b4e5065879"
     },
     "hooks-source/head-art.ts": {
       "bytes": 12339,
@@ -175,8 +183,8 @@
       "sha256": "4da72c6767af6ec42f4479649db429da6545b6dfd4d779c6cf8c9da7af13e715"
     },
     "hooks-source/book-text.ts": {
-      "bytes": 217779,
-      "sha256": "74bfd46776b9a2ebded47379c54a8bbe0e69b692ae4ed5fdd8459187f9ec17ff"
+      "bytes": 217782,
+      "sha256": "a96b518a90f2e0a54b80c47ab90a710f1d2eb0e1e0eaf4b90c80e448d8afb111"
     },
     "hooks-source/line-slot.ts": {
       "bytes": 5835,
@@ -195,16 +203,20 @@
       "sha256": "a003049843a79d2d0685177adda07d99251f0e717a87f69d12c93fa5898d4f99"
     },
     "hooks-source/quota.ts": {
-      "bytes": 23173,
-      "sha256": "62705fb560632f11c95bb5f4ef888130d9f9a84fe563488622894665a4383ba3"
+      "bytes": 20828,
+      "sha256": "205948a5c10ad4c01cdb3e832f9aa5269ac2b0c83f09c721714d54d2b37f57a5"
     },
     "hooks-source/quota-trail.ts": {
       "bytes": 4672,
       "sha256": "53de20f3f711d2b33d963e7e9a21d89289470c592aa23b7f9421a55817bbb8fc"
     },
+    "hooks-source/worker-name.ts": {
+      "bytes": 800,
+      "sha256": "19ad893ae139f46f0ca900613ba9d0b5f2e6a4b988215663c59813d1deee9745"
+    },
     "hooks-source/more-words.ts": {
-      "bytes": 2275,
-      "sha256": "da59c36e84404050659be1dd635753da037648373a09888d1df9b58772cc8448"
+      "bytes": 2335,
+      "sha256": "daec7a8b62f5912cbe6114fd08eea180da5ff6f27b71ef5d6eab87613f8af1b8"
     },
     "hooks-source/paths.ts": {
       "bytes": 170,
@@ -219,8 +231,8 @@
       "sha256": "68f8227505ccb2706c860e733647cb901cc39a62e2b74eaae61bccf9dd00277f"
     },
     "hooks-source/plugin-version.ts": {
-      "bytes": 105,
-      "sha256": "38e1c67691c76d5ecb64cbd757750f9e3900d3f8173bd0edc95174f2145ce069"
+      "bytes": 108,
+      "sha256": "45526fa71cc388d774e33ab1520532b959107e0d040b85816b6da628deb13740"
     },
     "hooks-source/high-contrast.ts": {
       "bytes": 1024,
@@ -235,8 +247,8 @@
       "sha256": "c59fca977bb01f83e4cdeecde3ae048100502efe833375ecf4b8992779d22247"
     },
     "hooks-source/coco-motion.ts": {
-      "bytes": 23028,
-      "sha256": "908b925f50e8d0d80fe9933b323dbd23b049192860f5e1c3c725683d33ebccc9"
+      "bytes": 21351,
+      "sha256": "72a62f6026030075586fc06ed969d25ba57ae6dbc041e9b4e85447ffb1cb7a72"
     },
     "hooks-source/coco-stills.ts": {
       "bytes": 64418,
@@ -247,24 +259,24 @@
       "sha256": "b7f26a14914751025151e5be54348861420d08c710c63a26ab36fef6cd7925e0"
     },
     "hooks-source/pages.tsx": {
-      "bytes": 118891,
-      "sha256": "e1f0ec8e747a5c090255b2957bd44c07f65c4cb1b541690aa65aa7a04722c92e"
+      "bytes": 125858,
+      "sha256": "109aa7e2663b080bb5ad0ce601197c1c9e786af6032681ea05e94247cf3118e8"
     },
     "hooks-source/words.ts": {
-      "bytes": 57375,
-      "sha256": "f21ff98add2d780ea944f3b49bdc6b7df909b0d384e7456681d4ea189ae804a3"
+      "bytes": 58924,
+      "sha256": "91515174b22588ee5ce02144eee0f6322676fdaf7cf0906e1b23a043e5a396e2"
     },
     "hooks-source/book.tsx": {
-      "bytes": 90236,
-      "sha256": "33c86da1345d73bfa18429181318a5b1fa44d9da5c74e645ca130a4796b9769b"
+      "bytes": 95090,
+      "sha256": "7221a05cfef7049fda991ee2914c51665da2871033c3519d3395ad71d8d63a47"
     },
     "hooks-source/book-portrait.ts": {
       "bytes": 821,
       "sha256": "825e505901b0ad1cc0f4386327e0dc5e105dd037fb47600d778a26d8d75c3b0a"
     },
     "hooks-source/bag.ts": {
-      "bytes": 29285,
-      "sha256": "77d8980cc48040aaf0cb62208468c7d183cf5c6708b469553753c7992f4eea60"
+      "bytes": 26222,
+      "sha256": "35a5c417180c2a91391fdd7d58a5f349d435c046f4b9a03dbb34db63fd741636"
     },
     "hooks-source/bag-mv.ts": {
       "bytes": 20349,
@@ -295,12 +307,12 @@
       "sha256": "264785393d00822a1526f0c764705ca692488a4454c66afe0a6800a9e3679ee0"
     },
     "hooks-source/c3-words.ts": {
-      "bytes": 9341,
-      "sha256": "58ff1cb876cfad0461948c79bf4d55b7aaf915a9db42d1dec133bb34340af063"
+      "bytes": 10030,
+      "sha256": "6e233e61b3e8615cb062d7ed5b5a54d8acfff2f579775e191106dc57811727b5"
     },
     "hooks-source/config-words.ts": {
-      "bytes": 5452,
-      "sha256": "109e00fbea9dc61c0bf5e19540b66ab178d61cd5907f81da3ee5977b45b51e70"
+      "bytes": 5330,
+      "sha256": "54b3864ce661677c74e60de494e4ace44411b70efead2ea350466fb6ddbfddfa"
     },
     "hooks-source/tool-poses.ts": {
       "bytes": 3740,
@@ -323,8 +335,8 @@
       "sha256": "017f4ad1f5d6f4384152fe41416ea2450ee0a246e0c18f215cd18a7fb1b6e115"
     },
     "hooks-source/voice.ts": {
-      "bytes": 1793,
-      "sha256": "2ef4b25e5b42afbbf37a451c6196c82c120956df03963ad75b8df8b2adc35583"
+      "bytes": 1772,
+      "sha256": "9c10c863472cfe2424e0a76c1557a8120ce7736b02f86bbdc536fb5bb29dc5a7"
     },
     "hooks-source/say-it-plain-runtime.ts": {
       "bytes": 1808,
@@ -363,16 +375,16 @@
       "sha256": "c7e55b4d1261a2dd45c851eb4defa9eeef74c370004c80cc10565b63536805af"
     },
     "hooks-source/cards/cards.tsx": {
-      "bytes": 89172,
-      "sha256": "6f15b0b7d3a351e30ca9f36539f502ff49eec73b0dbfa2fb76f6d25e0a91df91"
+      "bytes": 73257,
+      "sha256": "3bc15ecd9179f33689ecee99efeb8a02451aa5a1733029d5904e4edbdac61cb4"
     },
     "hooks-source/cards/catalog.ts": {
       "bytes": 7045,
       "sha256": "7fd62ef9edb57a7a12984f43391a586ee4d96e341d7297396da1acafe39c4a99"
     },
     "hooks-source/cards/coco.ts": {
-      "bytes": 7947,
-      "sha256": "4681eb8102d57bae66abcc118f06b8b75522eecd8e6b21bc705a7450a89a467d"
+      "bytes": 6677,
+      "sha256": "1260430660b3de2541a1ff70d35d196a03b1576be5543aeb4e3df594113d7153"
     },
     "hooks-source/cards/i18n.ts": {
       "bytes": 38878,
@@ -395,16 +407,16 @@
       "sha256": "ffcf45082e7e97c0e8eacfebebb28bcd449f61a04a6b7e4a10f40f8d7aea92ab"
     },
     "hooks-source/companion.ts": {
-      "bytes": 74896,
-      "sha256": "3a8b139b7d0579dfa26db1c878ba3676a5d0132d9745c2a4c7ec47ce6449a78c"
+      "bytes": 71618,
+      "sha256": "d94f27700d64aba315ce80276696a6d08660ffbd78b4a7120f7aa7d78adeffb0"
     },
     "hooks-source/band.tsx": {
       "bytes": 139503,
       "sha256": "21092f50b3c04c3f0aed7725bf8f3123db94c5fad1b3e31ab8915759918995b3"
     },
     "hooks-source/more-runtime.ts": {
-      "bytes": 91480,
-      "sha256": "cfa293be54e09d8a66b1e500640f264347223a9a45f77e9c6f2e2692b810545b"
+      "bytes": 87361,
+      "sha256": "6967e233cf7740e0580f7c62dd5bdc341ec647211dc4689f097a41e23f43c6c4"
     },
     "hooks-source/talk-parts.ts": {
       "bytes": 7255,
@@ -423,8 +435,8 @@
       "sha256": "bdac3e5e82acfc9e860fdacd0fe9a0de9590a15df54e5106a3c24bbb160acd87"
     },
     "hooks-source/c3-runtime.ts": {
-      "bytes": 31420,
-      "sha256": "9a37efd0f03a1704510a7aea824fccd2b98363dbd5e08b4317116230a0cf6afa"
+      "bytes": 36199,
+      "sha256": "d584c6e67844e5c03476c205643ef09285dc6553f05ad61743299b22990e2589"
     },
     "hooks-source/c3-motion.ts": {
       "bytes": 6204,
@@ -439,8 +451,8 @@
       "sha256": "694661f905b7ce48a2480b920f8625e316bf996ccaa31cdac2f67cc8d47f2de3"
     },
     "hooks-source/coco-pixel-play.ts": {
-      "bytes": 16208,
-      "sha256": "0e8a90a98225c6a3129cf92590c40e85a5bf5fb0acb4f0738607c209d1ed3e06"
+      "bytes": 15116,
+      "sha256": "e6df7487b565cee343305bcb88e429d074b5d37c7b8b68164d94a9311c3e12dd"
     },
     "hooks-source/m1-always.ts": {
       "bytes": 6003,
@@ -463,8 +475,16 @@
       "sha256": "109033e060edf025542e7633e3a90f5a8739873bec97a88f4acc9c50250db37e"
     },
     "hooks-source/mod-gaps-words.ts": {
-      "bytes": 2746,
-      "sha256": "29c7834da95369909492e0e9d65a30c7b6a971e9432f2e5e304e3cddba37c63a"
+      "bytes": 2807,
+      "sha256": "41cba2f9621f4f84d4f09de828d4b2b57832107f860607258fc713b6061d5d9a"
+    },
+    "hooks-source/characters.ts": {
+      "bytes": 5145,
+      "sha256": "696a37226c200d7903999da71687b8ede8067e701f0cedfdae7ae253fdaf7c1c"
+    },
+    "hooks-source/characters-data.ts": {
+      "bytes": 1702,
+      "sha256": "f583a4709aeb86599c2e93c835b5801e0c8e8e8bccfdc658d1fbe9b728537d3f"
     },
     "hooks-source/settings-migration.ts": {
       "bytes": 106,
@@ -515,20 +535,20 @@
       "sha256": "19489eb2822953ecc1cb431b3491ccac23fa60c50721835c35d25cd5b7d5c45a"
     },
     "hooks-source/cost/runtime.js": {
-      "bytes": 13184,
-      "sha256": "47bc59f18089234890ca1975601ea9a0e4d63c2cb3bee8592f088858fbdea9d1"
+      "bytes": 15476,
+      "sha256": "13d444d88df484f922f4e54701cb9e74fb68bcb50e80fa3d685981c9b2430867"
     },
     "hooks-source/cost/units.js": {
-      "bytes": 29496,
-      "sha256": "710b481474cdb8028eb6be0868a7480ce2b49b6587ce4ccdf342321f0c809787"
+      "bytes": 31335,
+      "sha256": "5d93e385159503af1e15fe0161de0f98318dd851f1c6cbd3a4e338e12694cea8"
     },
     "hooks-source/cost/state.ts": {
       "bytes": 285,
       "sha256": "1e59150bba0879d69f9c62872e7cf293e5cea820894ebdde00ce7306256e7116"
     },
     "hooks-source/cost/surfaces.ts": {
-      "bytes": 12998,
-      "sha256": "15e1387b606a815087a7d062b73edd80510f04f2c783e2dce416da7022509c6a"
+      "bytes": 16185,
+      "sha256": "a026b39966ebdc80878e9bb586650502769afa18c446d8a226bf57cb8afe2acc"
     },
     "hooks-source/cost/cup.ts": {
       "bytes": 2448,
@@ -539,16 +559,36 @@
       "sha256": "8fe4f581b9eb1a6fae5c4a9e87cd0be4fd33f34618e16d985be87b398346575b"
     },
     "hooks-source/cost/prices-page.tsx": {
-      "bytes": 6857,
-      "sha256": "43892a4a64d86609e127173f2bd2422b34c3ce80e5e11957c5298caeb297ca05"
+      "bytes": 8110,
+      "sha256": "a98e5a9a04f919f060da458851f043dce2478a6ecd4a1b1a4c6b1f0f4326d900"
+    },
+    "hooks-source/api-lines.ts": {
+      "bytes": 2466,
+      "sha256": "29552a3ae6ba36efeae94b72876511bf7e80431af5f3be059f6ddaf39f10bd0f"
+    },
+    "hooks-source/coco-commands.ts": {
+      "bytes": 7965,
+      "sha256": "89464e3823ef7990a13fd870780517eb0e7bf41ba1940026af4d87160f5e824e"
+    },
+    "hooks-source/privacy.ts": {
+      "bytes": 9113,
+      "sha256": "663f621de5d32bfa5386cf472adb832e790379af1c41c6d343a67d359e7b8210"
+    },
+    "hooks-source/cost/features.ts": {
+      "bytes": 4450,
+      "sha256": "e64fe444a6b76030e614b7f02136b476028456e7f6c00ab1d9ac4dedaf7e020a"
+    },
+    "hooks-source/format.ts": {
+      "bytes": 2571,
+      "sha256": "652591628e8c1409f5e120879cfe7f57a596decf84a2ea1e300709e6b7e151b4"
     },
     "hooks-source/presence.ts": {
-      "bytes": 51046,
-      "sha256": "1d070a5dd501199dd1756ca689eea7afc025b80694bc2ad084fd0da79ffd49d3"
+      "bytes": 50375,
+      "sha256": "8cb8f511993fe0e0e85256866dc96c88e8f68269040455734aee9aaf826ae009"
     },
     "hooks-source/lines.ts": {
-      "bytes": 145135,
-      "sha256": "41010fdc839fa9bc73faf306ff6eeb9f1c9ca2f2a72b48bc10ed91b53d3d6c36"
+      "bytes": 145082,
+      "sha256": "f19fcb14657d882c584e6caed4f9fcdefc5815d6cf7634466b9e0c3a84cb5091"
     },
     "hooks-source/motion.ts": {
       "bytes": 352,
@@ -563,20 +603,20 @@
       "sha256": "a51c9d29e867295af794fdab5ba351db60233beb0425e02686fc4b62cbfd6e63"
     },
     "hooks-source/companion-book.tsx": {
-      "bytes": 11937,
-      "sha256": "2dfcca0d12f3293561b2545493feb21eeb46ed4695af5cb61cc7577d9760cf4c"
+      "bytes": 11951,
+      "sha256": "e9b3ab9e547835a6464ed3f2a6cfd1dd46061f7ffc5b3af9f0a4ed1752c3828a"
     },
     "hooks-source/checkup.ts": {
-      "bytes": 6623,
-      "sha256": "f85df922562e26200a5e9d63642cf77d7902aace942b75444c7679bc50c3f3bd"
+      "bytes": 6997,
+      "sha256": "e8433d881f07595283a4ec818c8eb021209842ca25ef3d887ce2a5c329b83acd"
     },
     "hooks-source/book-band-words.ts": {
       "bytes": 2861,
       "sha256": "d66348c63206983ae22ea814b72179e2d421a78d9271c4c4c15cb8042a7f0933"
     },
     "hooks-source/more-book.tsx": {
-      "bytes": 25798,
-      "sha256": "331c9ed06d4a011f94874425a159f9ca3664ec6d988db34ea0662e3cb476fb13"
+      "bytes": 28802,
+      "sha256": "4c238392c9d110bf2fd491c2ef29ee5727f833c60dc340591b80831529996246"
     },
     "hooks-source/mod-gaps-art.ts": {
       "bytes": 4918,
@@ -595,12 +635,12 @@
       "sha256": "1983406631c87173c303a9d783f8bd4455c7d325b461c51f71fe359bdf52f0fe"
     },
     "hooks-source/more-state.ts": {
-      "bytes": 6492,
-      "sha256": "6079c26064811b4b2ac21e13132aa012b5b1cf845c176c7451319e111397636f"
+      "bytes": 6708,
+      "sha256": "23d8cbeca3052c4d2fb2011bdbb167eaa87d925fcc95a19379c486d77b5f0afc"
     },
     "hooks-source/more-models.ts": {
-      "bytes": 4673,
-      "sha256": "f95074f6f4edc393ddae0e6022960fcc12e13473b256cdb158dfd8f9672f4bf6"
+      "bytes": 6367,
+      "sha256": "03efd46531dcf9cfb143aba8d4cc7319292d03b7bcb76a69f4108fff1221ac46"
     },
     "hooks-source/more-secrets.ts": {
       "bytes": 1757,
@@ -627,8 +667,8 @@
       "sha256": "5d9502e48e5a876a2b542071df53c6a2dd27da441376c8b3a77aa2c196ed06d0"
     },
     "hooks-source/d1-state.js": {
-      "bytes": 67601,
-      "sha256": "7ff7cfd70494eda6adbae2c1a46e243d181474002294613881e3b3457a0f9525"
+      "bytes": 67721,
+      "sha256": "4eea2376c681f67ee78a27d5f34242fd4ec66209fd9353f7d8f9d54c5d8ffb19"
     },
     "hooks-source/d1-paths.js": {
       "bytes": 1902,
@@ -639,20 +679,20 @@
       "sha256": "588b4f8e89493a98a462b06b5c6c35d200debf519491fe47c8c05df8e838ba61"
     },
     "hooks-source/book.js": {
-      "bytes": 44932,
-      "sha256": "b6b0cecb00e3ca53c8654dea2dd75f45fd6b3ebe254d7217aab11c46df5a658d"
+      "bytes": 47552,
+      "sha256": "53c4d2c47a5d20ea02ea324d387cc6bd3078ad5ab4ab0833a54b5780a0ca3cb7"
     },
     "hooks-source/visitors.ts": {
-      "bytes": 18458,
-      "sha256": "65c24133dea64464f2a86b318bce155f3466cb5640f4c299aa9e5aae3a00c9ac"
+      "bytes": 16374,
+      "sha256": "daccec186e0869009a64a415d35207af070eccc793b7cf44978c5a84f9b1b98c"
     },
     "hooks-source/visitors-art.ts": {
-      "bytes": 20751,
-      "sha256": "aece5ce7d5db351ee50fc8880a65343d684fba10f64055bf8e1041f4d27c310e"
+      "bytes": 19215,
+      "sha256": "47efabc5a603760b1a9912798cca5d9efcfd1512655d58ffd3adacb323d15b6d"
     },
     "hooks-source/notice.ts": {
-      "bytes": 30964,
-      "sha256": "d9e0507c6dbd8c6da3e66090b7a6d582f91815a38fe848032d3362109543512d"
+      "bytes": 29886,
+      "sha256": "7ecf20f26fb7604e7c372a139a666d6b97987a31b9fef4ef1eac369305f51312"
     },
     "hooks-source/notice-art.ts": {
       "bytes": 10272,
@@ -663,8 +703,8 @@
       "sha256": "7a7c54b98091c26c776cdf126583846e28e46f3c675d28cc22fe0fb556d8f1aa"
     },
     "hooks-source/register.tsx": {
-      "bytes": 314057,
-      "sha256": "942530bb710a1fb9e88a7f42d20d716a4f8fcbd935b761b339eca8292d7bd521"
+      "bytes": 324238,
+      "sha256": "c892bdc3cd5c4f0d6b83258744ea77115d6cc8e3e0c2dd3d89c49d30cbaf5664"
     },
     "hooks-source/touch-client.ts": {
       "bytes": 1190,
@@ -708,7 +748,7 @@
     },
     "hooks-source/book.d.ts": {
       "bytes": 146,
-      "sha256": "c6b9a13973636ac7f77cdc5b47da36d77663e6a161cb31705c395f91f1c8580f"
+      "sha256": "9033ec78c088dd38166276a0065999e9c6444f516d9adcfba80aea019e485e7a"
     },
     "hooks-source/card-metrics-hi-bold.ts": {
       "bytes": 10812,
@@ -791,24 +831,24 @@
       "sha256": "778a118c49ff8487b6f20f2f22be664d4b16dcec59aeaf0960600508c397f3e3"
     },
     "hooks-source/cost/prices/runtime.ts": {
-      "bytes": 7513,
-      "sha256": "c89563fa63d15d5abfc8bdbc9c0879c636a528a64a0441e91ab971c7f4b5cef6"
+      "bytes": 7726,
+      "sha256": "7648424a2640817e40bce06f880428f36c343ed6d3bdb0fa5c5296a488eb4f71"
     },
     "hooks-source/cost/runtime.d.ts": {
       "bytes": 249,
-      "sha256": "3a53f4222044ccdbb8932949e60bd8f114a8c5e623258b8915cef1a2b7bb1671"
+      "sha256": "9832cb0df78556989406a0dcb576c33745345b4c3ec916c3dd49d817157b1e97"
     },
     "hooks-source/cost/runtime.ts": {
-      "bytes": 22972,
-      "sha256": "c2bd14c328aa6944c9f07abcf4f56f52be0931aa8e5437158650b7ac713366a6"
+      "bytes": 27690,
+      "sha256": "41af620b6d82ffef0c564ad9c3715424ee9abbfff8455ad795f6ace7ea0c6723"
     },
     "hooks-source/cost/units.d.ts": {
       "bytes": 532,
-      "sha256": "a841d84c079ea5e6bcfab91ee8e99301d37ba8c82e577bce0f9d66d1510b2dee"
+      "sha256": "38ee62d887b3d5c540e78affc2ef17127c4886037dd562fd50782670f6de9581"
     },
     "hooks-source/cost/warm-runtime.ts": {
-      "bytes": 11721,
-      "sha256": "ecb7ec6b3020b153b83dc9348845736c94fbc7189c5644603205599e75337260"
+      "bytes": 16752,
+      "sha256": "ff42618e24843133458f4a365cd2a3eb1b6db4b9c744f4cc24fd6a7998d0cf8b"
     },
     "hooks-source/cost/warm/constants.ts": {
       "bytes": 3297,
@@ -904,7 +944,7 @@
     },
     "hooks-source/d1-state.d.ts": {
       "bytes": 4477,
-      "sha256": "cfbc1ea7120c24dca379a7bc45d0c9a3623dc133d1eec3bf13179b048039fe8c"
+      "sha256": "dfacb8edd84403f8032e6cb05f6f7862823ce987a2004459223bf0428b865f47"
     },
     "hooks-source/d1-transcript-pieces.source.ts": {
       "bytes": 712,
@@ -955,8 +995,8 @@
       "sha256": "cb63ec1a00d4864ff08469d4c0c6a4ca6cc827de3749374a6be5bf2cc1a80004"
     },
     "hooks-source/desktop-safe.source.ts": {
-      "bytes": 31354,
-      "sha256": "ab7547aedfa9a19338ef032164533475346371bcb2481654e2f677dcca9b42db"
+      "bytes": 31491,
+      "sha256": "40cf769633995870943c54175f04134f8b583fc3f90a96667be99b45db9743ed"
     },
     "hooks-source/history-key.ts": {
       "bytes": 38,
@@ -1069,36 +1109,36 @@
         "typed": "mood__typed"
       },
       "exportLines": {
-        "cueFor": 38,
-        "colorsOf": 45,
-        "runMoment": 68,
-        "initialView": 79,
-        "linesFor": 90,
-        "sharedLineFor": 96,
-        "greetingFor": 122,
-        "pick": 129,
-        "fill": 138,
-        "langOf": 168,
-        "languageOf": 186,
-        "macSystemLanguage": 205,
-        "typed": 246,
-        "detectLanguage": 290,
-        "detectLanguageNow": 296,
-        "localHour": 337,
-        "localDay": 346,
-        "TIMING": 13,
-        "LOOPS": 25,
-        "STILL": 31,
-        "PERSON": 54,
-        "TEST_RUN": 57,
-        "FORCE_PUSH": 59,
-        "PLAN_TOOL": 61,
-        "NOT_FOUND": 63,
-        "PRAISE": 73,
-        "ABSOLUTELY_RIGHT": 76,
-        "PRESENCE_LINES": 117,
-        "Heard": 220,
-        "HEARING": 223
+        "cueFor": 36,
+        "colorsOf": 43,
+        "runMoment": 62,
+        "initialView": 72,
+        "linesFor": 83,
+        "sharedLineFor": 88,
+        "greetingFor": 112,
+        "pick": 118,
+        "fill": 127,
+        "langOf": 155,
+        "languageOf": 172,
+        "macSystemLanguage": 189,
+        "typed": 226,
+        "detectLanguage": 270,
+        "detectLanguageNow": 276,
+        "localHour": 314,
+        "localDay": 323,
+        "TIMING": 12,
+        "LOOPS": 23,
+        "STILL": 29,
+        "PERSON": 51,
+        "TEST_RUN": 53,
+        "FORCE_PUSH": 55,
+        "PLAN_TOOL": 57,
+        "NOT_FOUND": 58,
+        "PRAISE": 67,
+        "ABSOLUTELY_RIGHT": 69,
+        "PRESENCE_LINES": 108,
+        "Heard": 202,
+        "HEARING": 205
       }
     },
     "hooks-source/line-library.ts": {
@@ -1108,11 +1148,15 @@
         "LINES_PER_GROUP": "line_library__LINES_PER_GROUP",
         "LINE_CELLS": "line_library__LINE_CELLS",
         "LINE_GROUPS": "line_library__LINE_GROUPS",
+        "LINE_IMPORT_BYTES": "line_library__LINE_IMPORT_BYTES",
+        "LINE_IMPORT_PER_GROUP": "line_library__LINE_IMPORT_PER_GROUP",
         "claudieUnsaid": "line_library__claudieUnsaid",
+        "emptyLinesTemplate": "line_library__emptyLinesTemplate",
         "installEdited": "line_library__installEdited",
         "installWritten": "line_library__installWritten",
         "libraryLines": "line_library__libraryLines",
         "lineCells": "line_library__lineCells",
+        "lineImportPreview": "line_library__lineImportPreview",
         "linesFromText": "line_library__linesFromText",
         "linesText": "line_library__linesText",
         "shippedLines": "line_library__shippedLines",
@@ -1126,16 +1170,22 @@
         "useWritten": 45,
         "libraryLines": 48,
         "claudieUnsaid": 59,
-        "lineCells": 65,
-        "writtenLinesFrom": 75,
-        "linesText": 94,
-        "linesFromText": 101,
+        "lineCells": 66,
+        "writtenLinesFrom": 83,
+        "linesText": 102,
+        "linesFromText": 109,
+        "lineImportPreview": 128,
+        "emptyLinesTemplate": 157,
         "LineCharacter": 10,
         "LineSet": 11,
         "LineMix": 12,
         "LINE_GROUPS": 14,
         "LINES_PER_GROUP": 19,
-        "LINE_CELLS": 21
+        "LINE_CELLS": 21,
+        "LINE_IMPORT_BYTES": 122,
+        "LINE_IMPORT_PER_GROUP": 123,
+        "LineImportRow": 124,
+        "LineImportPreview": 125
       }
     },
     "hooks-source/head-art.ts": {
@@ -1318,27 +1368,27 @@
         "quotaTrendSvg": "quota__quotaTrendSvg"
       },
       "exportLines": {
-        "incenseAlt": 13,
-        "quotaBatteryRows": 52,
-        "quotaBankRows": 76,
-        "pixelRuns": 99,
-        "quotaPixelSvg": 119,
-        "quotaPictures": 127,
-        "quotaMeterText": 138,
-        "quotaCellsLeft": 142,
-        "quotaForecast": 169,
-        "quotaBandItems": 229,
-        "quotaForecastText": 246,
-        "quotaTrendFor": 280,
-        "quotaTrendSvg": 302,
-        "IncenseAltOptions": 12,
-        "PIXEL_EDGE_STYLE": 118,
-        "QUOTA_PICTURE_PX": 125,
-        "QUOTA_WINDOW_MS": 153,
-        "QuotaForecast": 155,
-        "QuotaBandItem": 198,
-        "QuotaBandOptions": 212,
-        "QuotaTrend": 264
+        "incenseAlt": 12,
+        "quotaBatteryRows": 47,
+        "quotaBankRows": 70,
+        "pixelRuns": 92,
+        "quotaPixelSvg": 112,
+        "quotaPictures": 118,
+        "quotaMeterText": 128,
+        "quotaCellsLeft": 132,
+        "quotaForecast": 155,
+        "quotaBandItems": 210,
+        "quotaForecastText": 226,
+        "quotaTrendFor": 255,
+        "quotaTrendSvg": 276,
+        "IncenseAltOptions": 11,
+        "PIXEL_EDGE_STYLE": 111,
+        "QUOTA_PICTURE_PX": 117,
+        "QUOTA_WINDOW_MS": 143,
+        "QuotaForecast": 145,
+        "QuotaBandItem": 182,
+        "QuotaBandOptions": 193,
+        "QuotaTrend": 243
       }
     },
     "hooks-source/quota-trail.ts": {
@@ -1361,6 +1411,18 @@
         "QUOTA_TRAIL_SAME_RESET_MS": 11
       }
     },
+    "hooks-source/worker-name.ts": {
+      "publicPath": "hooks/worker-name.ts",
+      "group": "hooks/m1-compiled/motion_stills.js",
+      "aliases": {
+        "setWorkerName": "worker_name__setWorkerName",
+        "workerText": "worker_name__workerText"
+      },
+      "exportLines": {
+        "setWorkerName": 6,
+        "workerText": 10
+      }
+    },
     "hooks-source/more-words.ts": {
       "publicPath": "hooks/more-words.ts",
       "group": "hooks/m1-compiled/motion_stills.js",
@@ -1376,15 +1438,15 @@
         "resetMoreWords": "more_words__resetMoreWords"
       },
       "exportLines": {
-        "installMoreWords": 6,
-        "loadMoreWords": 15,
-        "resetMoreWords": 22,
-        "moreModelWords": 23,
-        "moreName": 28,
-        "moreWord": 32,
-        "moreMissing": 37,
-        "moreFill": 38,
-        "MORE_SLOTS": 2
+        "installMoreWords": 7,
+        "loadMoreWords": 16,
+        "resetMoreWords": 23,
+        "moreModelWords": 24,
+        "moreName": 29,
+        "moreWord": 33,
+        "moreMissing": 38,
+        "moreFill": 39,
+        "MORE_SLOTS": 3
       }
     },
     "hooks-source/paths.ts": {
@@ -1557,30 +1619,30 @@
         "installCocoSocks": "coco_motion__installCocoSocks"
       },
       "exportLines": {
-        "installCocoData": 41,
-        "installCocoSocks": 57,
-        "cocoSocksWorn": 62,
-        "cocoReady": 63,
-        "cocoHas": 64,
-        "cocoCanvas": 65,
-        "cocoWidth": 66,
-        "cocoAction": 86,
-        "cocoBase": 99,
-        "cocoDrawn": 170,
-        "cocoBodySeconds": 175,
-        "cocoNext": 183,
-        "cocoBlinkTimes": 245,
-        "cocoPicture": 357,
-        "cocoStill": 370,
-        "cocoSvg": 374,
+        "installCocoData": 40,
+        "installCocoSocks": 56,
+        "cocoSocksWorn": 61,
+        "cocoReady": 62,
+        "cocoHas": 63,
+        "cocoCanvas": 64,
+        "cocoWidth": 65,
+        "cocoAction": 84,
+        "cocoBase": 96,
+        "cocoDrawn": 165,
+        "cocoBodySeconds": 169,
+        "cocoNext": 176,
+        "cocoBlinkTimes": 237,
+        "cocoPicture": 344,
+        "cocoStill": 355,
+        "cocoSvg": 359,
         "CocoOutfit": 6,
         "CocoActionKey": 7,
         "COCO_ACTIONS": 11,
         "CocoData": 25,
-        "CocoSocks": 55,
-        "CocoInput": 70,
-        "CocoPlay": 111,
-        "COCO_BASES": 112
+        "CocoSocks": 54,
+        "CocoInput": 69,
+        "CocoPlay": 107,
+        "COCO_BASES": 108
       }
     },
     "hooks-source/coco-stills.ts": {
@@ -1665,50 +1727,50 @@
         "writeCompanionRequest": "pages__writeCompanionRequest"
       },
       "exportLines": {
-        "configureM1Book": 175,
-        "restoreM1Book": 206,
-        "openM1Book": 230,
-        "m1VoiceCard": 250,
-        "setCostBookReader": 291,
-        "takeBookPressReport": 296,
-        "takeBookDrawReport": 297,
-        "setPriceTimer": 301,
-        "pricePolicyRefuses": 317,
-        "setIconSettingsWriter": 384,
-        "resetIconSession": 385,
-        "iconFirstDraw": 392,
-        "iconSettingsHydrated": 399,
-        "iconWord": 411,
-        "iconCommand": 415,
-        "iconAutomatic": 442,
-        "setCheckSessionsReader": 539,
-        "setPetProgramReader": 542,
-        "bookMeasured": 544,
-        "bookSettingsChanged": 553,
-        "bookPlayChanged": 559,
-        "companionChanged": 674,
-        "bagOpenInTerminal": 735,
-        "openQuotaPage": 737,
-        "openVibeCheck": 766,
-        "setC3BookSnapshot": 798,
-        "setD1BookSnapshot": 801,
-        "setVisitBookSnapshot": 809,
-        "setD1BookNotificationDenied": 814,
-        "openIconSettings": 902,
-        "runIcon": 919,
-        "companionIsMac": 1047,
-        "companionSnapshot": 1054,
-        "warmCompanion": 1098,
-        "companionData": 1116,
-        "companionDataFromSnapshot": 1121,
-        "ownCall": 1157,
-        "companionRun": 1169,
-        "writeCompanionRequest": 1179,
-        "pressCompanion": 1195,
-        "completeBookClose": 1437,
-        "registerBook": 1451,
-        "BOOK_PANE": 121,
-        "C3BookSnapshot": 796
+        "configureM1Book": 178,
+        "restoreM1Book": 209,
+        "openM1Book": 233,
+        "m1VoiceCard": 273,
+        "setCostBookReader": 314,
+        "takeBookPressReport": 319,
+        "takeBookDrawReport": 320,
+        "setPriceTimer": 324,
+        "pricePolicyRefuses": 340,
+        "setIconSettingsWriter": 407,
+        "resetIconSession": 408,
+        "iconFirstDraw": 415,
+        "iconSettingsHydrated": 422,
+        "iconWord": 434,
+        "iconCommand": 438,
+        "iconAutomatic": 465,
+        "setCheckSessionsReader": 562,
+        "setPetProgramReader": 565,
+        "bookMeasured": 567,
+        "bookSettingsChanged": 576,
+        "bookPlayChanged": 582,
+        "companionChanged": 698,
+        "bagOpenInTerminal": 759,
+        "openQuotaPage": 761,
+        "openVibeCheck": 790,
+        "setC3BookSnapshot": 822,
+        "setD1BookSnapshot": 825,
+        "setVisitBookSnapshot": 833,
+        "setD1BookNotificationDenied": 838,
+        "openIconSettings": 927,
+        "runIcon": 944,
+        "companionIsMac": 1072,
+        "companionSnapshot": 1079,
+        "warmCompanion": 1123,
+        "companionData": 1141,
+        "companionDataFromSnapshot": 1146,
+        "ownCall": 1209,
+        "companionRun": 1221,
+        "writeCompanionRequest": 1231,
+        "pressCompanion": 1247,
+        "completeBookClose": 1489,
+        "registerBook": 1504,
+        "BOOK_PANE": 123,
+        "C3BookSnapshot": 820
       }
     },
     "hooks-source/words.ts": {
@@ -1751,18 +1813,18 @@
         "terminalBook": "book__terminalBook"
       },
       "exportLines": {
-        "bookNumberWords": 194,
-        "moment": 199,
-        "answeredVoiceRow": 207,
-        "pageBlocks": 232,
-        "helperBoard": 697,
-        "desktopBook": 874,
-        "terminalBook": 1082,
-        "NO_ITALIC": 72,
-        "BookData": 79,
-        "GuestBook": 134,
-        "Press": 142,
-        "BookWindow": 215
+        "bookNumberWords": 202,
+        "moment": 207,
+        "answeredVoiceRow": 215,
+        "pageBlocks": 240,
+        "helperBoard": 761,
+        "desktopBook": 938,
+        "terminalBook": 1148,
+        "NO_ITALIC": 76,
+        "BookData": 83,
+        "GuestBook": 142,
+        "Press": 150,
+        "BookWindow": 223
       }
     },
     "hooks-source/book-portrait.ts": {
@@ -1813,23 +1875,23 @@
         "sockMode": 20,
         "socksEarned": 23,
         "socksOpen": 27,
-        "loadBagWords": 57,
-        "bagWords": 67,
-        "bagPageName": 70,
-        "vibeRarity": 83,
-        "vibeSituation": 87,
-        "vibePick": 92,
-        "vibeSet": 98,
-        "bagFill": 101,
-        "bagBadgeSvg": 181,
-        "vibeBadges": 192,
-        "sockBadges": 196,
-        "petBadges": 200,
-        "issueBadges": 204,
-        "noteBadges": 208,
-        "bagArtHeight": 280,
-        "bagArtSvg": 289,
-        "bagTerminalHead": 339,
+        "loadBagWords": 52,
+        "bagWords": 62,
+        "bagPageName": 65,
+        "vibeRarity": 78,
+        "vibeSituation": 82,
+        "vibePick": 87,
+        "vibeSet": 93,
+        "bagFill": 96,
+        "bagBadgeSvg": 168,
+        "vibeBadges": 176,
+        "sockBadges": 180,
+        "petBadges": 183,
+        "issueBadges": 186,
+        "noteBadges": 190,
+        "bagArtHeight": 257,
+        "bagArtSvg": 264,
+        "bagTerminalHead": 310,
         "BAG_PAGES": 9,
         "SOCK_PAIRS": 11,
         "SockPair": 12,
@@ -1837,18 +1899,18 @@
         "BagGroup": 33,
         "BagTag": 34,
         "BagWords": 35,
-        "VibeRow": 55,
-        "VIBE_SITUATIONS": 76,
-        "VibeSituation": 77,
-        "VibeSet": 78,
-        "VibeFacts": 79,
-        "VibeRarity": 80,
-        "BagBadge": 155,
-        "SOCK_FACES": 191,
-        "BagQuota": 278,
-        "BAG_ART_HEIGHT": 279,
-        "BagPeek": 287,
-        "BagRun": 338
+        "VibeRow": 50,
+        "VIBE_SITUATIONS": 71,
+        "VibeSituation": 72,
+        "VibeSet": 73,
+        "VibeFacts": 74,
+        "VibeRarity": 75,
+        "BagBadge": 143,
+        "SOCK_FACES": 175,
+        "BagQuota": 255,
+        "BAG_ART_HEIGHT": 256,
+        "BagPeek": 262,
+        "BagRun": 309
       }
     },
     "hooks-source/bag-mv.ts": {
@@ -2057,10 +2119,10 @@
         "resetC3Words": "c3_words__resetC3Words"
       },
       "exportLines": {
-        "loadC3Words": 11,
-        "c3Word": 22,
-        "c3Durations": 31,
-        "resetC3Words": 35
+        "loadC3Words": 12,
+        "c3Word": 23,
+        "c3Durations": 33,
+        "resetC3Words": 37
       }
     },
     "hooks-source/config-words.ts": {
@@ -2325,11 +2387,11 @@
         "stirred": "cards__stirred"
       },
       "exportLines": {
-        "fits": 209,
-        "stirred": 238,
-        "cardsStarted": 626,
-        "cardsSpawned": 647,
-        "registerCards": 654
+        "fits": 152,
+        "stirred": 176,
+        "cardsStarted": 512,
+        "cardsSpawned": 532,
+        "registerCards": 538
       }
     },
     "hooks-source/cards/catalog.ts": {
@@ -2378,26 +2440,26 @@
         "steps": "coco__steps"
       },
       "exportLines": {
-        "parseArt": 39,
-        "asImage": 66,
-        "fill": 77,
-        "layerOf": 89,
-        "steps": 98,
-        "ask": 114,
-        "apply": 125,
-        "finish": 133,
-        "rested": 140,
-        "LINGER_MS": 10,
-        "QUEUE_MAX": 12,
-        "Part": 14,
-        "MoveArt": 15,
-        "Loops": 16,
-        "MoveName": 19,
-        "StateName": 20,
-        "Art": 28,
-        "layerKey": 86,
-        "Step": 95,
-        "playEnd": 108
+        "parseArt": 31,
+        "asImage": 57,
+        "fill": 65,
+        "layerOf": 76,
+        "steps": 84,
+        "ask": 96,
+        "apply": 107,
+        "finish": 115,
+        "rested": 122,
+        "LINGER_MS": 8,
+        "QUEUE_MAX": 10,
+        "Part": 12,
+        "MoveArt": 13,
+        "Loops": 14,
+        "MoveName": 16,
+        "StateName": 17,
+        "Art": 21,
+        "layerKey": 74,
+        "Step": 81,
+        "playEnd": 93
       }
     },
     "hooks-source/cards/i18n.ts": {
@@ -2533,36 +2595,36 @@
         "companionWakeLines": "companion__companionWakeLines"
       },
       "exportLines": {
-        "clearCompanionLongTaskAuthorization": 60,
-        "companionSession": 74,
-        "companionActivity": 81,
-        "companionTask": 85,
-        "companionDm": 100,
-        "companionDock": 112,
-        "companionSeen": 116,
-        "companionFeedContext": 126,
-        "companionPatLabel": 1153,
-        "companionWakeLines": 1178,
-        "companionRecord": 1184,
-        "companionKey": 1284,
-        "companionText": 1301,
-        "companionEnded": 1308,
-        "companionSummonText": 1315,
-        "companionRequestText": 1321,
-        "COMPANION_DIR": 39,
-        "COMPANION_FEED": 41,
-        "CompanionRequest": 47,
-        "CompanionDmLine": 92,
-        "CompanionDmWords": 93,
-        "COMPANION_DM_LINES": 94,
-        "COMPANION_DM_CHARS": 95,
-        "CompanionTarget": 122,
-        "CompanionSurface": 123,
-        "CompanionWords": 130,
-        "ReactionKey": 171,
-        "TaskKey": 459,
-        "TASK_WORDS": 463,
-        "CompanionRecord": 1095
+        "clearCompanionLongTaskAuthorization": 50,
+        "companionSession": 62,
+        "companionActivity": 69,
+        "companionTask": 73,
+        "companionDm": 87,
+        "companionDock": 99,
+        "companionSeen": 103,
+        "companionFeedContext": 112,
+        "companionPatLabel": 1118,
+        "companionWakeLines": 1143,
+        "companionRecord": 1149,
+        "companionKey": 1242,
+        "companionText": 1258,
+        "companionEnded": 1264,
+        "companionSummonText": 1270,
+        "companionRequestText": 1275,
+        "COMPANION_DIR": 31,
+        "COMPANION_FEED": 32,
+        "CompanionRequest": 37,
+        "CompanionDmLine": 79,
+        "CompanionDmWords": 80,
+        "COMPANION_DM_LINES": 81,
+        "COMPANION_DM_CHARS": 82,
+        "CompanionTarget": 109,
+        "CompanionSurface": 110,
+        "CompanionWords": 116,
+        "ReactionKey": 143,
+        "TaskKey": 431,
+        "TASK_WORDS": 434,
+        "CompanionRecord": 1071
       }
     },
     "hooks-source/band.tsx": {
@@ -2660,35 +2722,35 @@
         "talkLooksLikeWork": "more_runtime__talkLooksLikeWork"
       },
       "exportLines": {
-        "talkEstimate": 63,
-        "talkLooksLikeWork": 66,
-        "rewriteKeepsExact": 124,
+        "talkEstimate": 55,
+        "talkLooksLikeWork": 58,
+        "rewriteKeepsExact": 100,
         "MorePayerChoice": 22,
         "MoreKey": 22,
         "MoreKeyToday": 22,
         "MoreKeyView": 22,
         "MISSING_MORE_MODEL_SLOTS": 23,
-        "TALK_COMPACT_TRIGGER": 28,
-        "TALK_RECENT": 29,
-        "TALK_HISTORY": 30,
-        "TALK_DEFAULT_REPLY_TOKENS": 34,
-        "TALK_COMPACT_TOKENS": 35,
-        "TALK_NOTES_HEAD": 36,
-        "TALK_SHARED_COCO": 39,
-        "TALK_MEMORY_ITEMS": 42,
-        "TALK_MEMORY": 43,
-        "TalkMemory": 44,
-        "TalkWho": 46,
-        "MoreBubble": 48,
-        "MoreModelWords": 49,
-        "LINES_WRITE_TOKENS": 52,
-        "TALK_CAP": 54,
-        "TALK_PERSONA_LIMIT": 57,
-        "DM_FIRST_TOKENS": 59,
-        "EXPLAIN_TEXT_LIMIT": 61,
-        "MoreBindings": 76,
-        "LOOK_DENY": 112,
-        "MoreRuntime": 133
+        "TALK_COMPACT_TRIGGER": 27,
+        "TALK_RECENT": 28,
+        "TALK_HISTORY": 29,
+        "TALK_DEFAULT_REPLY_TOKENS": 32,
+        "TALK_COMPACT_TOKENS": 33,
+        "TALK_NOTES_HEAD": 34,
+        "TALK_SHARED_COCO": 36,
+        "TALK_MEMORY_ITEMS": 39,
+        "TALK_MEMORY": 40,
+        "TalkMemory": 41,
+        "TalkWho": 42,
+        "MoreBubble": 44,
+        "MoreModelWords": 45,
+        "LINES_WRITE_TOKENS": 47,
+        "TALK_CAP": 49,
+        "TALK_PERSONA_LIMIT": 51,
+        "DM_FIRST_TOKENS": 52,
+        "EXPLAIN_TEXT_LIMIT": 53,
+        "MoreBindings": 68,
+        "LOOK_DENY": 90,
+        "MoreRuntime": 109
       }
     },
     "hooks-source/talk-parts.ts": {
@@ -2873,7 +2935,7 @@
         "C3Neighbour": 29,
         "C3Neighbours": 30,
         "scanStagedSecrets": 99,
-        "C3Runtime": 312
+        "C3Runtime": 376
       }
     },
     "hooks-source/c3-motion.ts": {
@@ -2983,26 +3045,26 @@
         "setPixelWear": "coco_pixel_play__setPixelWear"
       },
       "exportLines": {
-        "pixelRows": 18,
-        "pixelCells": 92,
-        "setPixelWear": 124,
-        "pixelWear": 125,
-        "pixelPng": 142,
-        "pixelStill": 192,
-        "pixelDoorCells": 196,
-        "pixelHas": 221,
-        "pixelNext": 224,
-        "pixelHeld": 242,
-        "pixelStep": 253,
+        "pixelRows": 17,
+        "pixelCells": 89,
+        "setPixelWear": 120,
+        "pixelWear": 121,
+        "pixelPng": 137,
+        "pixelStill": 186,
+        "pixelDoorCells": 189,
+        "pixelHas": 212,
+        "pixelNext": 215,
+        "pixelHeld": 230,
+        "pixelStep": 241,
         "PIXEL_COLUMNS": 8,
         "PIXEL_ROWS": 9,
         "PixelOutfit": 11,
         "PixelLook": 13,
-        "PixelOverlay": 15,
-        "PixelWear": 122,
-        "PIXEL_DOOR_COLUMNS": 195,
-        "PixelPlay": 220,
-        "PIXEL_SHELL_MS": 233
+        "PixelOverlay": 14,
+        "PixelWear": 118,
+        "PIXEL_DOOR_COLUMNS": 188,
+        "PixelPlay": 211,
+        "PIXEL_SHELL_MS": 223
       }
     },
     "hooks-source/m1-always.ts": {
@@ -3119,15 +3181,47 @@
         "resetGapWords": "mod_gaps_words__resetGapWords"
       },
       "exportLines": {
-        "installGapWords": 6,
-        "loadGapWords": 15,
-        "resetGapWords": 22,
-        "claudieName": 25,
-        "gapCharacterName": 26,
-        "gapPool": 28,
-        "gapWord": 29,
-        "gapFill": 30,
-        "missingGapKeys": 31
+        "installGapWords": 7,
+        "loadGapWords": 16,
+        "resetGapWords": 23,
+        "claudieName": 26,
+        "gapCharacterName": 27,
+        "gapPool": 29,
+        "gapWord": 30,
+        "gapFill": 31,
+        "missingGapKeys": 32
+      }
+    },
+    "hooks-source/characters.ts": {
+      "publicPath": "hooks/characters.ts",
+      "group": "hooks/m1-compiled/companion.js",
+      "aliases": {
+        "character": "characters__character",
+        "characterForm": "characters__characterForm",
+        "characters": "characters__characters",
+        "installCharacters": "characters__installCharacters",
+        "nameFor": "characters__nameFor",
+        "resetCharacters": "characters__resetCharacters"
+      },
+      "exportLines": {
+        "installCharacters": 60,
+        "resetCharacters": 66,
+        "characters": 68,
+        "character": 69,
+        "nameFor": 72,
+        "characterForm": 78,
+        "CharacterId": 6,
+        "Character": 7
+      }
+    },
+    "hooks-source/characters-data.ts": {
+      "publicPath": "hooks/characters-data.ts",
+      "group": "hooks/m1-compiled/companion.js",
+      "aliases": {
+        "CHARACTER_DATA": "characters_data__CHARACTER_DATA"
+      },
+      "exportLines": {
+        "CHARACTER_DATA": 2
       }
     },
     "hooks-source/settings-migration.ts": {
@@ -3443,10 +3537,19 @@
         "costTime": "surfaces__costTime",
         "costTokens": "surfaces__costTokens",
         "cupShown": "surfaces__cupShown",
+        "dayCapLine": "surfaces__dayCapLine",
+        "folderLine": "surfaces__folderLine",
+        "forecastLine": "surfaces__forecastLine",
         "loopColdLine": "surfaces__loopColdLine",
         "makerSessionUSD": "surfaces__makerSessionUSD",
+        "moneyReal": "surfaces__moneyReal",
+        "pasteWarnLine": "surfaces__pasteWarnLine",
+        "planConvertLine": "surfaces__planConvertLine",
         "rereadEarlyMs": "surfaces__rereadEarlyMs",
         "resumeColdLine": "surfaces__resumeColdLine",
+        "switchCostLine": "surfaces__switchCostLine",
+        "tokenKindsBlocks": "surfaces__tokenKindsBlocks",
+        "tokenKindsLine": "surfaces__tokenKindsLine",
         "turnCostLine": "surfaces__turnCostLine",
         "voiceCacheCost": "surfaces__voiceCacheCost",
         "warmAskLine": "surfaces__warmAskLine",
@@ -3461,25 +3564,34 @@
         "costDollars": 16,
         "costTokens": 22,
         "costTime": 25,
-        "cacheAlt": 35,
-        "turnCostLine": 40,
-        "cacheHover": 56,
-        "cacheTerminal": 71,
-        "cacheBookLines": 76,
-        "costBookLines": 89,
-        "warmReasonKey": 110,
-        "warmAskLine": 118,
-        "warmTodayLine": 130,
-        "warmHeldOffLine": 136,
-        "warmReturnLine": 141,
-        "resumeColdLine": 150,
-        "loopColdLine": 156,
-        "voiceCacheCost": 161,
+        "cacheAlt": 37,
+        "turnCostLine": 42,
+        "cacheHover": 58,
+        "cacheTerminal": 73,
+        "cacheBookLines": 78,
+        "tokenKindsLine": 93,
+        "tokenKindsBlocks": 98,
+        "switchCostLine": 104,
+        "pasteWarnLine": 109,
+        "dayCapLine": 114,
+        "planConvertLine": 120,
+        "folderLine": 126,
+        "forecastLine": 131,
+        "costBookLines": 137,
+        "warmReasonKey": 161,
+        "warmAskLine": 169,
+        "warmTodayLine": 181,
+        "warmHeldOffLine": 187,
+        "warmReturnLine": 192,
+        "resumeColdLine": 201,
+        "loopColdLine": 207,
+        "voiceCacheCost": 212,
         "CostSurfaceSnapshot": 7,
         "CUP_MIN_USD": 9,
-        "CostTextBlock": 75,
-        "WarmReasonKey": 101,
-        "rereadEarlyMs": 127
+        "moneyReal": 36,
+        "CostTextBlock": 77,
+        "WarmReasonKey": 152,
+        "rereadEarlyMs": 178
       }
     },
     "hooks-source/cost/cup.ts": {
@@ -3514,8 +3626,108 @@
         "pricesPage": "prices_page__pricesPage"
       },
       "exportLines": {
-        "pricesPage": 20,
-        "PricesPageOptions": 10
+        "pricesPage": 25,
+        "PricesPageOptions": 11
+      }
+    },
+    "hooks-source/api-lines.ts": {
+      "publicPath": "hooks/api-lines.ts",
+      "group": "hooks/m1-compiled/companion.js",
+      "aliases": {
+        "apiFailureKind": "api_lines__apiFailureKind",
+        "apiFailureLine": "api_lines__apiFailureLine",
+        "baseHost": "api_lines__baseHost",
+        "otherProvider": "api_lines__otherProvider"
+      },
+      "exportLines": {
+        "baseHost": 15,
+        "otherProvider": 26,
+        "apiFailureKind": 33,
+        "apiFailureLine": 42,
+        "ApiFailureKind": 31
+      }
+    },
+    "hooks-source/coco-commands.ts": {
+      "publicPath": "hooks/coco-commands.ts",
+      "group": "hooks/m1-compiled/companion.js",
+      "aliases": {
+        "MIN_ENGINE_VERSION": "coco_commands__MIN_ENGINE_VERSION",
+        "doctorLines": "coco_commands__doctorLines",
+        "keyShapeVerdict": "coco_commands__keyShapeVerdict",
+        "uninstallSteps": "coco_commands__uninstallSteps"
+      },
+      "exportLines": {
+        "keyShapeVerdict": 26,
+        "doctorLines": 33,
+        "uninstallSteps": 100,
+        "DoctorEngine": 19,
+        "CommandEngine": 20,
+        "MIN_ENGINE_VERSION": 23,
+        "UninstallPort": 76
+      }
+    },
+    "hooks-source/privacy.ts": {
+      "publicPath": "hooks/privacy.ts",
+      "group": "hooks/m1-compiled/companion.js",
+      "aliases": {
+        "MODEL_SERVICES": "privacy__MODEL_SERVICES",
+        "isQuiet": "privacy__isQuiet",
+        "quieted": "privacy__quieted",
+        "readPrivacy": "privacy__readPrivacy",
+        "restorePrivacy": "privacy__restorePrivacy",
+        "setPrivacy": "privacy__setPrivacy",
+        "unquieted": "privacy__unquieted"
+      },
+      "exportLines": {
+        "isQuiet": 49,
+        "quieted": 57,
+        "unquieted": 81,
+        "readPrivacy": 120,
+        "setPrivacy": 138,
+        "restorePrivacy": 153,
+        "PrivacyState": 14,
+        "ModelService": 23,
+        "MODEL_SERVICES": 27
+      }
+    },
+    "hooks-source/cost/features.ts": {
+      "publicPath": "hooks/cost/features.ts",
+      "group": "hooks/m1-compiled/companion.js",
+      "aliases": {
+        "COST_FEATURES_KEY": "features__COST_FEATURES_KEY",
+        "estimateTokens": "features__estimateTokens",
+        "folderRows": "features__folderRows",
+        "readCostFeatures": "features__readCostFeatures",
+        "recordFolderSpend": "features__recordFolderSpend",
+        "writeCostFeatures": "features__writeCostFeatures"
+      },
+      "exportLines": {
+        "recordFolderSpend": 40,
+        "folderRows": 59,
+        "CostFeatureSettings": 5,
+        "COST_FEATURES_KEY": 13,
+        "CostFeatureStore": 14,
+        "readCostFeatures": 16,
+        "writeCostFeatures": 28,
+        "estimateTokens": 32,
+        "FolderRecord": 39,
+        "FolderRow": 58
+      }
+    },
+    "hooks-source/format.ts": {
+      "publicPath": "hooks/format.ts",
+      "group": "hooks/m1-compiled/companion.js",
+      "aliases": {
+        "productClock": "format__productClock",
+        "productDate": "format__productDate",
+        "productMonth": "format__productMonth"
+      },
+      "exportLines": {
+        "productClock": 10,
+        "productMonth": 26,
+        "productDate": 31,
+        "FormatWord": 6,
+        "MonthStyle": 25
       }
     },
     "hooks-source/presence.ts": {
@@ -3534,13 +3746,13 @@
         "reducePresence": "presence__reducePresence"
       },
       "exportLines": {
-        "cocoSettings": 32,
-        "parseNeighbours": 65,
-        "parsePresence": 101,
-        "parsePresenceRecord": 129,
-        "parseProcessInventory": 157,
-        "presenceSessions": 182,
-        "reducePresence": 189,
+        "cocoSettings": 30,
+        "parseNeighbours": 63,
+        "parsePresence": 99,
+        "parsePresenceRecord": 127,
+        "parseProcessInventory": 154,
+        "presenceSessions": 179,
+        "reducePresence": 186,
         "PresenceEvent": 2,
         "PresenceTouch": 2,
         "PresenceTouchEvent": 2,
@@ -3558,9 +3770,9 @@
         "PresenceClaim": 2,
         "PresenceRecord": 2,
         "ProcessIdentity": 2,
-        "COCO_SETTING_KEYS": 16,
-        "ENGINE_SETTING_KEYS": 24,
-        "SharedPresence": 292
+        "COCO_SETTING_KEYS": 14,
+        "ENGINE_SETTING_KEYS": 22,
+        "SharedPresence": 287
       }
     },
     "hooks-source/lines.ts": {
@@ -3684,26 +3896,28 @@
         "nowFit": "companion_book__nowFit"
       },
       "exportLines": {
-        "nowFit": 11,
-        "companionState": 42,
-        "companionSection": 99,
-        "CompanionState": 16,
-        "CompanionInfo": 17,
-        "CompanionSnapshot": 24,
-        "CompanionBookData": 27,
-        "CompanionAction": 37,
-        "COMPANION_APP": 38,
-        "COMPANION_PLIST": 39,
-        "COMPANION_OPEN": 40,
-        "companionCommand": 53,
-        "CompanionRun": 54,
-        "CompanionBook": 55
+        "nowFit": 12,
+        "companionState": 43,
+        "companionSection": 100,
+        "CompanionState": 17,
+        "CompanionInfo": 18,
+        "CompanionSnapshot": 25,
+        "CompanionBookData": 28,
+        "CompanionAction": 38,
+        "COMPANION_APP": 39,
+        "COMPANION_PLIST": 40,
+        "COMPANION_OPEN": 41,
+        "companionCommand": 54,
+        "CompanionRun": 55,
+        "CompanionBook": 56
       }
     },
     "hooks-source/checkup.ts": {
       "publicPath": "hooks/checkup.ts",
       "group": "hooks/m1-compiled/presence.js",
       "aliases": {
+        "COMPANION_MIN_VERSION": "checkup__COMPANION_MIN_VERSION",
+        "atLeastVersion": "checkup__atLeastVersion",
         "checkFolder": "checkup__checkFolder",
         "checkup": "checkup__checkup",
         "olderVersion": "checkup__olderVersion",
@@ -3711,11 +3925,12 @@
         "readCheckSessions": "checkup__readCheckSessions"
       },
       "exportLines": {
-        "olderVersion": 20,
-        "checkFolder": 39,
-        "checkup": 51,
-        "readCheckCompanion": 87,
-        "readCheckSessions": 101,
+        "atLeastVersion": 10,
+        "olderVersion": 28,
+        "checkFolder": 46,
+        "checkup": 58,
+        "readCheckCompanion": 94,
+        "readCheckSessions": 108,
         "CheckWords": 2,
         "CheckCompanion": 2,
         "CheckHealth": 2,
@@ -3724,7 +3939,8 @@
         "CheckId": 2,
         "CheckFix": 2,
         "CheckRow": 2,
-        "CheckResult": 2
+        "CheckResult": 2,
+        "COMPANION_MIN_VERSION": 7
       }
     },
     "hooks-source/book-band-words.ts": {
@@ -3758,14 +3974,14 @@
         "MorePayerRows": 42,
         "MoreEntry": 100,
         "MoreRow": 107,
-        "moreRowDrawn": 197,
-        "MorePage": 198,
-        "MoreTalk": 211,
-        "MoreExplanation": 227,
-        "MoreLook": 231,
+        "moreRowDrawn": 220,
+        "MorePage": 221,
+        "MoreTalk": 234,
+        "MoreExplanation": 253,
+        "MoreLook": 257,
         "MoreKeyPlace": 12,
         "MoreBookData": 13,
-        "MoreExchange": 210
+        "MoreExchange": 233
       }
     },
     "hooks-source/mod-gaps-art.ts": {
@@ -3853,39 +4069,39 @@
         "moreValues": "more_state__moreValues"
       },
       "exportLines": {
-        "morePayer": 36,
-        "moreRowAuthored": 45,
-        "moreValues": 49,
-        "moreDay": 58,
-        "moreRowSupported": 65,
-        "moreRows": 66,
-        "moreOn": 67,
-        "capChoices": 70,
-        "moreCountText": 74,
-        "MORE_IDS": 4,
-        "MoreId": 5,
-        "MoreValues": 6,
-        "MoreCount": 8,
-        "MoreToday": 9,
-        "MorePayerChoice": 11,
-        "MoreKey": 12,
-        "MoreKeyToday": 13,
-        "MoreKeyView": 14,
-        "MoreModelChoice": 17,
-        "MoreModelRow": 18,
-        "MoreModels": 19,
-        "MoreLines": 23,
-        "MoreDm": 26,
-        "MoreSnapshot": 27,
-        "MORE_GROUPS": 29,
-        "MorePayer": 35,
-        "MORE_ASK": 37,
-        "MORE_SERVICE_ROWS": 38,
-        "MORE_SERVICE_SLOT": 39,
-        "MORE_TALK_PERSONA": 40,
-        "MORE_LOOK_PROMPT": 41,
-        "MORE_LINE_PROMPTS": 42,
-        "CAP_DOLLARS": 69
+        "morePayer": 37,
+        "moreRowAuthored": 46,
+        "moreValues": 50,
+        "moreDay": 59,
+        "moreRowSupported": 66,
+        "moreRows": 67,
+        "moreOn": 68,
+        "capChoices": 71,
+        "moreCountText": 75,
+        "MORE_IDS": 5,
+        "MoreId": 6,
+        "MoreValues": 7,
+        "MoreCount": 9,
+        "MoreToday": 10,
+        "MorePayerChoice": 12,
+        "MoreKey": 13,
+        "MoreKeyToday": 14,
+        "MoreKeyView": 15,
+        "MoreModelChoice": 18,
+        "MoreModelRow": 19,
+        "MoreModels": 20,
+        "MoreLines": 24,
+        "MoreDm": 27,
+        "MoreSnapshot": 28,
+        "MORE_GROUPS": 30,
+        "MorePayer": 36,
+        "MORE_ASK": 38,
+        "MORE_SERVICE_ROWS": 39,
+        "MORE_SERVICE_SLOT": 40,
+        "MORE_TALK_PERSONA": 41,
+        "MORE_LOOK_PROMPT": 42,
+        "MORE_LINE_PROMPTS": 43,
+        "CAP_DOLLARS": 70
       }
     },
     "hooks-source/more-models.ts": {
@@ -3895,17 +4111,21 @@
         "MORE_MODEL_FAMILIES": "more_models__MORE_MODEL_FAMILIES",
         "moreModelChoices": "more_models__moreModelChoices",
         "moreModelFor": "more_models__moreModelFor",
+        "moreModelIsClaude": "more_models__moreModelIsClaude",
         "moreModels": "more_models__moreModels",
-        "moreModelsDirect": "more_models__moreModelsDirect"
+        "moreModelsDirect": "more_models__moreModelsDirect",
+        "moreWorkerName": "more_models__moreWorkerName"
       },
       "exportLines": {
-        "moreModelsDirect": 28,
-        "moreModelChoices": 45,
-        "moreModels": 71,
-        "moreModelFor": 77,
-        "MORE_MODEL_FAMILIES": 8,
-        "MoreModelFamily": 9,
-        "MoreModelEnv": 15
+        "moreModelsDirect": 32,
+        "moreModelIsClaude": 39,
+        "moreModelChoices": 90,
+        "moreModels": 92,
+        "moreModelFor": 99,
+        "moreWorkerName": 107,
+        "MORE_MODEL_FAMILIES": 9,
+        "MoreModelFamily": 10,
+        "MoreModelEnv": 16
       }
     },
     "hooks-source/more-secrets.ts": {
@@ -4187,43 +4407,43 @@
         "withVisit": "visitors__withVisit"
       },
       "exportLines": {
-        "inSeason": 28,
-        "toolCountKey": 46,
-        "isVisitorKind": 59,
-        "visitDay": 75,
-        "daysBetween": 82,
-        "lateMs": 88,
-        "hash32": 101,
-        "visitingDay": 108,
-        "totalCounts": 112,
-        "qualifying": 118,
-        "visitorFor": 123,
-        "decideDue": 133,
-        "validDue": 146,
-        "parseVisitState": 153,
-        "newerDue": 173,
-        "visitAtSleep": 180,
-        "visitAtWake": 191,
-        "readVisits": 200,
-        "withVisit": 210,
-        "visitorsOn": 215,
-        "visitSitting": 218,
-        "mergeVisitState": 236,
-        "rememberVisit": 317,
-        "VISITOR_KINDS": 6,
-        "VisitorKind": 7,
-        "VisitCounts": 11,
-        "VisitCountKey": 12,
-        "VISITOR_BARS": 16,
-        "VISIT_SLOW_MS": 34,
-        "VISIT_REST_DAYS": 35,
-        "VISIT_DAY_SHARE": 36,
-        "Visit": 51,
-        "VisitDue": 52,
-        "VisitState": 54,
-        "visitorKey": 57,
-        "DueInput": 131,
-        "VisitCounter": 243
+        "inSeason": 25,
+        "toolCountKey": 42,
+        "isVisitorKind": 53,
+        "visitDay": 68,
+        "daysBetween": 75,
+        "lateMs": 80,
+        "hash32": 92,
+        "visitingDay": 98,
+        "totalCounts": 101,
+        "qualifying": 107,
+        "visitorFor": 112,
+        "decideDue": 122,
+        "validDue": 135,
+        "parseVisitState": 141,
+        "newerDue": 161,
+        "visitAtSleep": 167,
+        "visitAtWake": 177,
+        "readVisits": 186,
+        "withVisit": 195,
+        "visitorsOn": 199,
+        "visitSitting": 202,
+        "mergeVisitState": 218,
+        "rememberVisit": 295,
+        "VISITOR_KINDS": 5,
+        "VisitorKind": 6,
+        "VisitCounts": 9,
+        "VisitCountKey": 10,
+        "VISITOR_BARS": 13,
+        "VISIT_SLOW_MS": 31,
+        "VISIT_REST_DAYS": 32,
+        "VISIT_DAY_SHARE": 33,
+        "Visit": 47,
+        "VisitDue": 48,
+        "VisitState": 49,
+        "visitorKey": 51,
+        "DueInput": 120,
+        "VisitCounter": 225
       }
     },
     "hooks-source/visitors-art.ts": {
@@ -4248,22 +4468,22 @@
         "visitorWordsReady": "visitors_art__visitorWordsReady"
       },
       "exportLines": {
-        "loadVisitorWords": 31,
-        "loadVisitorData": 39,
-        "forgetVisitorData": 45,
-        "visitorArtReady": 46,
-        "visitorWordsReady": 47,
-        "visitorWord": 50,
-        "visitorHasWord": 55,
-        "visitorNarrowDirection": 63,
-        "visitPhase": 174,
-        "visitorPictureKey": 179,
-        "visitorPicture": 187,
-        "visitorHeadPicture": 213,
-        "visitorCellOverlay": 225,
-        "visitorPortrait": 240,
-        "guestBookReading": 269,
-        "guestBook": 274
+        "loadVisitorWords": 29,
+        "loadVisitorData": 37,
+        "forgetVisitorData": 43,
+        "visitorArtReady": 44,
+        "visitorWordsReady": 45,
+        "visitorWord": 48,
+        "visitorHasWord": 53,
+        "visitorNarrowDirection": 60,
+        "visitPhase": 170,
+        "visitorPictureKey": 175,
+        "visitorPicture": 182,
+        "visitorHeadPicture": 208,
+        "visitorCellOverlay": 220,
+        "visitorPortrait": 234,
+        "guestBookReading": 262,
+        "guestBook": 266
       }
     },
     "hooks-source/notice.ts": {
@@ -4278,9 +4498,9 @@
         "shelfNames": "notice__shelfNames"
       },
       "exportLines": {
-        "relativeTo": 93,
-        "shelfNames": 114,
-        "createNotice": 130,
+        "relativeTo": 92,
+        "shelfNames": 111,
+        "createNotice": 127,
         "NoticeLine": 9,
         "Place": 10,
         "Costume": 11,
@@ -4292,9 +4512,9 @@
         "NoteRow": 51,
         "ShelfView": 52,
         "ZH_LONG_FORM": 56,
-        "Notice": 572,
-        "setNotice": 576,
-        "currentNotice": 577
+        "Notice": 567,
+        "setNotice": 570,
+        "currentNotice": 571
       }
     },
     "hooks-source/notice-art.ts": {
@@ -4440,6 +4660,7 @@
     "hooks/algo/lexer.ts",
     "hooks/algo/pace.ts",
     "hooks/algo/runs.ts",
+    "hooks/api-lines.ts",
     "hooks/art.ts",
     "hooks/bag-mv-glyphs.ts",
     "hooks/bag-mv.ts",
@@ -4491,10 +4712,13 @@
     "hooks/cards/state.ts",
     "hooks/cards/usage.ts",
     "hooks/channel.ts",
+    "hooks/characters-data.ts",
+    "hooks/characters.ts",
     "hooks/checkup-types.ts",
     "hooks/checkup.ts",
     "hooks/chinese-number-data.ts",
     "hooks/claudie.ts",
+    "hooks/coco-commands.ts",
     "hooks/coco-motion.ts",
     "hooks/coco-pixel-play.ts",
     "hooks/coco-pixel.ts",
@@ -4505,6 +4729,7 @@
     "hooks/config-words.ts",
     "hooks/cost/core/index.ts",
     "hooks/cost/cup.ts",
+    "hooks/cost/features.ts",
     "hooks/cost/prices-page.tsx",
     "hooks/cost/prices/changes.ts",
     "hooks/cost/prices/ids.ts",
@@ -4567,6 +4792,7 @@
     "hooks/display-slots.ts",
     "hooks/dm.ts",
     "hooks/door-words.ts",
+    "hooks/format.ts",
     "hooks/head-art.ts",
     "hooks/high-contrast.ts",
     "hooks/history-key.ts",
@@ -4577,16 +4803,16 @@
     "hooks/line-types.ts",
     "hooks/lines.ts",
     "hooks/m1-always.ts",
-    "hooks/m1-compiled/chunk-6dxd2qfy.js",
-    "hooks/m1-compiled/chunk-77ye58zq.js",
-    "hooks/m1-compiled/chunk-98geg7q2.js",
-    "hooks/m1-compiled/chunk-d863xdtm.js",
-    "hooks/m1-compiled/chunk-grp1ryrs.js",
+    "hooks/m1-compiled/chunk-1dsb8xxa.js",
+    "hooks/m1-compiled/chunk-32tsyzp1.js",
+    "hooks/m1-compiled/chunk-48q9c423.js",
+    "hooks/m1-compiled/chunk-5r0mxn57.js",
+    "hooks/m1-compiled/chunk-c7vpkqt0.js",
+    "hooks/m1-compiled/chunk-cg5yx1cs.js",
+    "hooks/m1-compiled/chunk-dwyyns4q.js",
     "hooks/m1-compiled/chunk-jahhamrc.js",
-    "hooks/m1-compiled/chunk-makgx7hq.js",
-    "hooks/m1-compiled/chunk-vyxtapf2.js",
-    "hooks/m1-compiled/chunk-wjathm2m.js",
-    "hooks/m1-compiled/chunk-ymmmxg0p.js",
+    "hooks/m1-compiled/chunk-rqeze64w.js",
+    "hooks/m1-compiled/chunk-vzx9rn8k.js",
     "hooks/m1-compiled/companion.d.ts",
     "hooks/m1-compiled/companion.js",
     "hooks/m1-compiled/manifest.json",
@@ -4637,6 +4863,7 @@
     "hooks/plugin-version.ts",
     "hooks/presence-types.ts",
     "hooks/presence.ts",
+    "hooks/privacy.ts",
     "hooks/quota-trail.ts",
     "hooks/quota.ts",
     "hooks/register.tsx",
@@ -4667,23 +4894,24 @@
     "hooks/week-days.ts",
     "hooks/week-words.ts",
     "hooks/window-notes.tsx",
-    "hooks/words.ts"
+    "hooks/words.ts",
+    "hooks/worker-name.ts"
   ],
   "chunkBytes": {
-    "chunk-6dxd2qfy.js": 220583,
-    "chunk-77ye58zq.js": 62115,
-    "chunk-98geg7q2.js": 208527,
-    "chunk-d863xdtm.js": 46697,
-    "chunk-grp1ryrs.js": 358909,
+    "chunk-1dsb8xxa.js": 20977,
+    "chunk-32tsyzp1.js": 204739,
+    "chunk-48q9c423.js": 46697,
+    "chunk-5r0mxn57.js": 363590,
+    "chunk-c7vpkqt0.js": 221684,
+    "chunk-cg5yx1cs.js": 74483,
+    "chunk-dwyyns4q.js": 102618,
     "chunk-jahhamrc.js": 63116,
-    "chunk-makgx7hq.js": 199344,
-    "chunk-vyxtapf2.js": 93882,
-    "chunk-wjathm2m.js": 20980,
-    "chunk-ymmmxg0p.js": 10209,
-    "companion.js": 110980,
-    "motion_stills.js": 213563,
-    "pages.js": 67095,
-    "presence.js": 13394,
-    "register.js": 224548
+    "chunk-rqeze64w.js": 10209,
+    "chunk-vzx9rn8k.js": 224654,
+    "companion.js": 113161,
+    "motion_stills.js": 213970,
+    "pages.js": 70195,
+    "presence.js": 13655,
+    "register.js": 230681
   }
 }

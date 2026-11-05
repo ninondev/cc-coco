@@ -23,7 +23,6 @@ export const CONFIG_WORDS: Record<Lang, ConfigWords> = {
 }
 
 export function describeCocoConfig(lang: Lang, input: ConfigDescribeInput): ConfigDescribeResult {
- if (input.key === 'coco.resolvedLanguage') return { label: input.label, description: input.description, isHidden: true }
  const field = input.key === 'coco.band' ? 'band' : input.key === 'coco.language' ? 'language' : undefined
  const words = field ? CONFIG_WORDS[lang][field] : undefined
  return words ? { ...words, isHidden: input.isHidden } : { label: input.label, description: input.description, isHidden: input.isHidden }

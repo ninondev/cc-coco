@@ -56,14 +56,14 @@ test('M1 O2 actual late activation explains the answer retained while its row wa
  await gapBegin($,f.w);await $.turn.start({turnId:'o2-off-answer',text:'a question'});await $.turn.complete({turnId:'o2-off-answer',answer:target,reason:'answer',durationMs:1000,isAborted:false})
  expect(f.models).toEqual([]);expect(seen.history).toEqual([]);const pane=await o2Enable($,f);expect(seen.history).toEqual([])
  const row=await $.ui.mount({surface:'terminal',...bandRow(200)});expect(await row.find({type:'Button',key:'coco:more:explain'})).toBeDefined();await row.press({key:'coco:more:explain'})
- expect(seen.requests).toEqual([{model:'haiku',maxTokens:400,targetMatches:true}]);expect(seen.history).toEqual([]);expect(f.models).toEqual(['model']);await row.unmount();await pane.unmount()
+ expect(seen.requests).toEqual([{model:'test-model',maxTokens:400,targetMatches:true}]);expect(seen.history).toEqual([]);expect(f.models).toEqual(['model']);await row.unmount();await pane.unmount()
 })
 test('M1 O2 actual restored transcript reads only current-main history on the explain press',async($,on)=>{
  const target='Latest main assistant answer restored with this session.',seen=o2PressObservation(on,target),f=gapFixture(on,{},'terminal',false,async()=>O2_FIXTURE_REPLY)
  f.messages.push({role:'assistant',text:'Older assistant text.',toolUses:[]},{role:'user',text:'Main user question.',toolUses:[]},{role:'assistant',text:target,toolUses:[]},{role:'assistant',text:'',toolUses:[]})
  await gapBegin($,f.w);expect(seen.history).toEqual([]);expect(f.models).toEqual([]);const pane=await o2Enable($,f);expect(seen.history).toEqual([])
  const row=await $.ui.mount({surface:'terminal',...bandRow(100)});expect(await row.find({type:'Button',key:'coco:more:explain'})).toBeDefined();await row.press({key:'coco:more:explain'})
- expect(seen.history).toEqual([{agentId:undefined,as:undefined}]);expect(seen.requests).toEqual([{model:'haiku',maxTokens:400,targetMatches:true}]);expect(f.models).toEqual(['model']);await row.unmount();await pane.unmount()
+ expect(seen.history).toEqual([{agentId:undefined,as:undefined}]);expect(seen.requests).toEqual([{model:'test-model',maxTokens:400,targetMatches:true}]);expect(f.models).toEqual(['model']);await row.unmount();await pane.unmount()
 })
 test('M1 O2 actual selection without a retained answer uses the selected text without history',async($,on)=>{
  const target='Exact selected text from the current visible session.',seen=o2PressObservation(on,target)
@@ -71,7 +71,7 @@ test('M1 O2 actual selection without a retained answer uses the selected text wi
  const f=gapFixture(on,{},'vscode',false,async()=>O2_FIXTURE_REPLY,undefined,'The main answer is still streaming.');await gapBegin($,f.w,'vscode');const pane=await o2Enable($,f)
  await $.turn.start({turnId:'o2-selection',text:'a question'});for await(const _ of $.turn.step({turnId:'o2-selection',index:0,model:'test',messageCount:1})){}
  const row=await $.ui.mount({surface:'vscode',plugin:'coco',component:'AssistantMessage',requestId:'o2-streaming-head',props:{text:'The main answer is still streaming.',isFirstOfReply:true},viewport:{columns:100,rows:50}})
- expect(await row.find({type:'Button',key:'coco:more:explain'})).toBeDefined();await row.press({key:'coco:more:explain'});expect(seen.requests).toEqual([{model:'haiku',maxTokens:400,targetMatches:true}]);expect(seen.history).toEqual([]);expect(f.models).toEqual(['model']);await row.unmount();await pane.unmount()
+ expect(await row.find({type:'Button',key:'coco:more:explain'})).toBeDefined();await row.press({key:'coco:more:explain'});expect(seen.requests).toEqual([{model:'test-model',maxTokens:400,targetMatches:true}]);expect(seen.history).toEqual([]);expect(f.models).toEqual(['model']);await row.unmount();await pane.unmount()
 })
 test('M1 O2 actual held history read cannot dispatch or repaint after Explain off then on',async($,on)=>{
  let entered!:()=>void,release!:()=>void;const ready=new Promise<void>(resolve=>{entered=resolve}),held=new Promise<void>(resolve=>{release=resolve})

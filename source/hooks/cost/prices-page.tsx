@@ -3,6 +3,7 @@
 // Pure rendering of the accepted Prices layout; fetching is exclusively a press action.
 import type { Elements, RenderElement } from 'claude-code'
 import { arrangeRows } from './units.js'
+import { productClock, productDate } from '../format'
 import type { PriceRow } from './prices/page'
 import type { OtherMaker } from './prices/others'
 import type { PricesViewState } from './prices/runtime'
@@ -15,6 +16,10 @@ export interface PricesPageOptions {
   onBack: () => void
   onOlder: () => void
   onOthers: () => void
+  /** later-11: shows the dropped price details under the about line. Optional: older callers none. */
+  onAbout?: () => void
+  /** The other-models button, pressed by its key (pages.tsx coco:care). */
+  modelsLabel?: string
 }
 type PriceUI = Elements['desktop'] | Elements['terminal'] | Elements['vscode'] | Elements['mobile']
 export function pricesPage(ui: PriceUI, state: PricesViewState, o: PricesPageOptions): RenderElement {
@@ -22,17 +27,26 @@ export function pricesPage(ui: PriceUI, state: PricesViewState, o: PricesPageOpt
   const word = (key: string, values?: Record<string, string | number>) => o.word(o.lang, key, values)
   const locale = o.lang === 'zh' ? 'zh-CN' : o.lang === 'zh-Hant' ? 'zh-TW' : o.lang
   const dollars = (n: number | null) => n === null ? '—' : new Intl.NumberFormat(locale, { maximumFractionDigits: 4, minimumFractionDigits: 0 }).format(n)
-  const date = (at: number, dayOnly = false) => new Intl.DateTimeFormat(locale, { year: 'numeric', month: 'short', day: 'numeric', ...(dayOnly ? { timeZone: 'UTC' } : {}) }).format(new Date(at))
-  const time = (at: number) => new Intl.DateTimeFormat(locale, { hour: '2-digit', minute: '2-digit' }).format(new Date(at))
+  // later-03: the month and the clock come from the product's own per-language table, not the
+  // engine's locale formatting (a Latin "am" once showed inside Hindi).
+  const say = (lang: string, key: string, values?: Record<string, string | number>) => word(key, values)
+  const date = (at: number, dayOnly = false) => productDate(at, o.lang, dayOnly ? 'UTC' : undefined, 'short', say)
+  const time = (at: number) => productClock(at, o.lang, undefined, say)
   const source = state.table.from === 'fetched' && state.table.at !== null
     ? word('prices.source.fetched', { time: time(state.table.at) })
     : word('prices.source.shipped', { date: state.shippedAsOf ? date(Date.parse(state.shippedAsOf), true) : '—' })
   const narrow = o.surface === 'vscode' || o.surface === 'mobile' || o.columns < 76
   const arranged = arrangeRows(state.table.rows, { chatModel: state.chatModel, usedRecently: state.usedRecently })
   const rows = [...arranged.main, ...(state.olderOpen ? arranged.older.map(row => ({ ...row, thisChat: false })) : [])]
+  // later-24: a small mark, never a number, on models cheaper to read than this chat's own.
+  const chatRead = rows.find(row => row.thisChat)?.read ?? null
+  const mark = word('prices.savesQuota.mark')
+  const saver = (row: PriceRow): boolean => chatRead !== null && row.read < chatRead
+  // The legend only names a mark that is on the table.
+  const anyMarked = rows.some(row => !row.thisChat && saver(row))
   const heading = (key: string) => <Text bold wrap="wrap">{word(key)}</Text>
   const cell = (content: string, width: number, bold = false) => <Box width={width} flexShrink={1} minWidth={0}><Text bold={bold} wrap="wrap">{content}</Text></Box>
-  const modelName = (row: PriceRow & { thisChat: boolean }) => row.thisChat ? `${row.name} (${word('prices.thisChat')})` : row.name
+  const modelName = (row: PriceRow & { thisChat: boolean }) => row.thisChat ? `${row.name} (${word('prices.thisChat')})` : saver(row) ? `${mark}${row.name}` : row.name
   // A model priced in two tiers by prompt length (Haiku 5.5) gets a second line with its own label and prices.
   const tierWord = word('prices.tier.haiku')
   const stacked = (price: Pick<PriceRow, 'input' | 'output' | 'read' | 'write5m' | 'write1h'>) => [
@@ -77,11 +91,14 @@ export function pricesPage(ui: PriceUI, state: PricesViewState, o: PricesPageOpt
     {state.checking ? <Text wrap="wrap">{word('prices.checking')}</Text> : state.why ? <Text wrap="wrap">{word(`prices.why.${state.why}`)}</Text> : null}
     <Text wrap="wrap">{word('prices.unit')}</Text>
     {claudeRows()}
+    {anyMarked ? <Text wrap="wrap">{word('prices.savesQuota.legend')}</Text> : null}
     {arranged.older.length ? <Button key="coco:prices:older" label={word('prices.older', { n: arranged.older.length })} onPress={o.onOlder} /> : null}
     {state.changes.map(change => <Text wrap="wrap">{word('prices.changed', {
       model: change.name, what: word(`prices.col.${change.field}`), old: dollars(change.old), new: dollars(change.new), date: date(change.since),
     })}</Text>)}
     <Text wrap="wrap">{word('prices.about')}</Text>
+    {o.onAbout ? <Button key="coco:prices:about" label={word('prices.aboutShow')} onPress={o.onAbout} /> : null}
+    {state.aboutOpen ? <Text wrap="wrap">{word('prices.aboutDetail')}</Text> : null}
     <Button key="coco:prices:others" label={word('prices.others')} onPress={o.onOthers} />
     {state.othersOpen ? <Box flexDirection="column" rowGap={1}>
       {state.checkingOthers ? <Text wrap="wrap">{word('prices.checking')}</Text> : null}
@@ -91,5 +108,6 @@ export function pricesPage(ui: PriceUI, state: PricesViewState, o: PricesPageOpt
       {state.others?.why ? <Text wrap="wrap">{word(`prices.why.${state.others.why}`)}</Text> : null}
       {state.others?.makers.map(makerRows)}
     </Box> : null}
+    {o.modelsLabel ? <Button key="coco:care:models" label={o.modelsLabel} onPress={() => {}} /> : null}
   </Box>
 }

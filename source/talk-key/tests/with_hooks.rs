@@ -804,6 +804,34 @@ fn a_refused_key_at_a_gateway_is_not_kept_and_redirects_are_never_followed() {
 }
 
 #[test]
+fn an_openai_format_address_gets_a_bearer_token_and_its_own_paths() {
+    let b = Bench::new("openai", true);
+    let gw = serve_plain(status(200, &[], r#"{"data":[]}"#));
+    let base = format!("http://127.0.0.1:{}/v1", gw.addr.port());
+    b.tick();
+    let r = run_tty(&["add", "--base", &base, "--model", "local-1"], &b.env(), GW_KEY);
+    assert_eq!(kind(&r), "works", "{} {}", r.stdout, r.stderr);
+    let check = gw.seen().remove(0);
+    let bearer = format!("Bearer {GW_KEY}");
+    assert_eq!((check.path.as_str(), check.header("authorization")), ("/v1/models", Some(bearer.as_str())));
+    assert_eq!((check.header("x-api-key"), check.header("anthropic-version")), (None, None));
+    gw.set(status(200, &[], r#"{"choices":[{"message":{"content":"hi there"}}],"usage":{"prompt_tokens":5,"completion_tokens":2}}"#));
+    b.tick();
+    let r = run(&["send"], &b.env(), Some(&send_input("hello")));
+    assert_eq!((kind(&r), r.json["text"].as_str(), r.json["usage"]["output_tokens"].as_u64()), ("ok", Some("hi there"), Some(2)), "{}", r.stdout);
+    let sent = gw.seen().pop().unwrap();
+    assert_eq!((sent.path.as_str(), sent.header("authorization")), ("/v1/chat/completions", Some(bearer.as_str())));
+    assert_eq!(sent.json()["model"], "local-1");
+}
+
+#[test]
+fn only_anthropics_address_assumes_a_model() {
+    let b = Bench::new("no-model", true);
+    let r = run(&["add", "--base", "https://gateway.example.com"], &b.env(), None);
+    assert_eq!((kind(&r), r.json["detail"].as_str()), ("address", Some("model")));
+}
+
+#[test]
 fn an_https_gateway_is_verified_by_its_own_name_and_http_is_never_proxied() {
     let b = Bench::new("gw-tls", true);
     let ca = ca_for("gateway.test");

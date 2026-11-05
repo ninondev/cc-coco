@@ -1,6 +1,6 @@
-// What a visit looks like: the pixel visitors on his band picture, the terminal's half blocks, the guest
-// book's portrait, and the words. Everything is read from visitor-art.json and visitors-text.json the first
-// time a visit is drawn; nothing here runs at startup.
+// What a visit looks like: the pixel visitors on his band picture, the terminal's half blocks, the guest book's portrait,
+// and the words. Everything is read from visitor-art.json and visitors-text.json the first time a visit is drawn;
+// nothing here runs at startup.
 import { isVisitorKind, visitorKey } from './visitors'
 import type { CellOverlay } from './pictures-lazy'
 import type { GuestBook } from './book'
@@ -16,7 +16,6 @@ type KindArt = {
   lit?: { x: number; y: number; w: number; h: number; 1: string; 2: string }
   bandGlow?: { r: number; png: string }
   pixelGlow?: { r: number; png: string }
-  /** Where the light's centre sits on the sprite, in art pixels from its top left. */
   glowCentre?: [number, number]
 }
 type Art = { v: 1; kinds: Record<VisitorKind, KindArt> }
@@ -27,7 +26,6 @@ let text: Table | undefined
 let loadingArt: Promise<void> | undefined
 let loadingText: Promise<void> | undefined
 
-/** The words alone, for the Settings row and the guest book; a missing or malformed file leaves them unsaid. */
 export function loadVisitorWords(read: (path: string) => Promise<string>): Promise<void> {
   if (text) return Promise.resolve()
   return loadingText ??= read('hooks/visitors-text.json').catch(() => '').then(raw => {
@@ -35,7 +33,7 @@ export function loadVisitorWords(read: (path: string) => Promise<string>): Promi
     text ??= {}
   }).finally(() => { loadingText = undefined })
 }
-/** The art and the words, read once. A missing or malformed art file leaves the visit undrawn, never an error. */
+/** A missing or malformed art file leaves the visit undrawn, never an error. */
 export function loadVisitorData(read: (path: string) => Promise<string>): Promise<void> {
   const pictures = art ? Promise.resolve() : loadingArt ??= read('hooks/visitor-art.json').catch(() => '').then(raw => {
     try { const value = JSON.parse(raw) as Art; if (value?.v === 1 && value.kinds && typeof value.kinds === 'object') art = value } catch { /* undrawn */ }
@@ -46,7 +44,7 @@ export function forgetVisitorData(): void { art = undefined; text = undefined; l
 export function visitorArtReady(): boolean { return art !== undefined }
 export function visitorWordsReady(): boolean { return text !== undefined }
 
-/** One word or sentence in a language, English when that is missing, empty when neither exists. Slots are `{name}`. */
+/** English when the language is missing, empty when neither exists. Slots are `{name}`. */
 export function visitorWord(lang: string, key: string, values: Record<string, string | number> = {}): string {
   const entry = text?.[key]
   const own = entry?.[lang] ?? entry?.en
@@ -55,10 +53,9 @@ export function visitorWord(lang: string, key: string, values: Record<string, st
 export function visitorHasWord(lang: string, key: string): boolean { return visitorWord(lang, key) !== '' }
 
 /**
- * The stage direction in the two narrow places, 24 columns and a desktop band under 480 px: the short name leads it, so a cut
- * at its end never takes the name. The words give the direction whole, with the creature's name in its opening, so the opening
- * name (or the short name inside it, past an article) is made the short name; a direction that does not open with either
- * becomes the short name alone.
+ * The stage direction in the two narrow places (24 columns, a desktop band under 480 px): the short name leads it, so a
+ * cut at its end never takes the name. A direction that opens with neither the creature's name nor the short name
+ * inside it (past an article) becomes the short name alone.
  */
 export function visitorNarrowDirection(lang: string, kind: VisitorKind): string | undefined {
   const direction = visitorWord(lang, visitorKey('aside.visitor', kind)), short = visitorWord(lang, visitorKey('visitor.short', kind))
@@ -73,11 +70,10 @@ export function visitorNarrowDirection(lang: string, kind: VisitorKind): string 
   return open + short + close
 }
 
-// ---------------------------------------------------------------- the band picture
+// ---- the band picture
 
 const MS = { glideFrom: 1400, glide: 640, squashIn: 60, settle: 240, crouch: 80, flyOff: 420, fade: 160 } as const
 const f = (n: number): string => String(Number(n.toFixed(3)))
-// The ones that fly in on a glide; the rest hop, slide, or drift down.
 const GLIDERS = new Set<VisitorKind>(['plane', 'note'])
 const STYLE = '.vl{display:inline}.vd{display:none}@media(prefers-color-scheme:dark){.vl{display:none}.vd{display:inline}}'
 const STAGE_MS = MS.glideFrom + MS.glide + MS.squashIn + MS.settle
@@ -94,12 +90,12 @@ function bezier(p1x: number, p1y: number, p2x: number, p2y: number): (x: number)
   const at = (t: number, a: number, b: number): number => 3 * a * t * (1 - t) ** 2 + 3 * b * t * t * (1 - t) + t ** 3
   return x => { let lo = 0, hi = 1; for (let i = 0; i < 30; i++) { const mid = (lo + hi) / 2; if (at(mid, p1x, p2x) < x) lo = mid; else hi = mid } return at((lo + hi) / 2, p1y, p2y) }
 }
-const OUT = bezier(0.16, 1, 0.3, 1) // a confident arrival
-const IN = bezier(0.4, 0, 1, 1) // an accelerating exit
+const OUT = bezier(0.16, 1, 0.3, 1)
+const IN = bezier(0.4, 0, 1, 1)
 const DIP = bezier(0, 0, 0.2, 1)
 
 type Pose = { x: number; y: number; o: number; sy: number }
-/** Keyframes from a pose function sampled every 16 ms, positions in frame px; `total` ms long. */
+/** Sampled every 16 ms, positions in frame px. */
 function track(name: string, total: number, pose: (t: number) => Pose): string {
   const rows: string[] = []
   const last = Math.ceil(total / 16)
@@ -115,11 +111,11 @@ function landing(t: number): number { return t < MS.squashIn ? 1 - 0.12 * DIP(t 
 type Arrive = { ms: number; at: (t: number) => Pose }
 function arrival(kind: VisitorKind): Arrive {
   if (GLIDERS.has(kind)) return { ms: MS.glide, at: t => { const e = OUT(t / MS.glide); return { x: -34 * (1 - e), y: -30 * (1 - e), o: Math.min(1, t / 120), sy: 1 } } }
-  if (kind === 'keycap') return { ms: 480, at: t => { const local = t < 240 ? t / 240 : (t - 240) / 240; return { x: -60 * (1 - t / 480), y: -10 * 4 * local * (1 - local), o: 1, sy: 1 } } } // two hops of 240 ms, each an arc 10 px high
-  if (kind === 'cursor') return { ms: 300, at: t => ({ x: -60 * (1 - OUT(t / 300)), y: 0, o: 1, sy: 1 }) } // the arrow slides in, straight
-  if (kind === 'leaf') return { ms: 800, at: t => ({ x: 3 * Math.sin(t / 800 * Math.PI * 2), y: -10 * (1 - t / 800), o: Math.min(1, t / 200), sy: 1 }) } // the leaf sways down
+  if (kind === 'keycap') return { ms: 480, at: t => { const local = t < 240 ? t / 240 : (t - 240) / 240; return { x: -60 * (1 - t / 480), y: -10 * 4 * local * (1 - local), o: 1, sy: 1 } } }
+  if (kind === 'cursor') return { ms: 300, at: t => ({ x: -60 * (1 - OUT(t / 300)), y: 0, o: 1, sy: 1 }) }
+  if (kind === 'leaf') return { ms: 800, at: t => ({ x: 3 * Math.sin(t / 800 * Math.PI * 2), y: -10 * (1 - t / 800), o: Math.min(1, t / 200), sy: 1 }) }
   if (kind === 'snowman') return { ms: 600, at: t => ({ x: 0, y: 0, o: t / 600, sy: 1 }) }
-  return { ms: 800, at: t => ({ x: 0, y: -6 * (1 - t / 800), o: t / 800, sy: 1 }) } // the bulb, the ghost and the USB light drift down, the light rising
+  return { ms: 800, at: t => ({ x: 0, y: -6 * (1 - t / 800), o: t / 800, sy: 1 }) }
 }
 type Depart = { ms: number; fade: number; at: (t: number) => Pose }
 function departure(kind: VisitorKind): Depart {
@@ -130,12 +126,12 @@ function departure(kind: VisitorKind): Depart {
   return { ms: 400, fade: 400, at: t => ({ x: 0, y: -8 * t / 400, o: 1 - t / 400, sy: 1 }) }
 }
 
-/** Arrival keyframes `name`: time 0 is the moment he is drawn asleep plus 1.4 s. */
+/** Arrival: time 0 is the moment he is drawn asleep plus 1.4 s. */
 function arriveCss(kind: VisitorKind, name: string): { css: string; total: number } {
   const m = arrival(kind), total = m.ms + MS.squashIn + MS.settle
   return { total, css: track(name, total, t => t < m.ms ? m.at(t) : { x: 0, y: 0, o: 1, sy: landing(t - m.ms) }) }
 }
-/** Taking-off keyframes: an 80 ms crouch, then away, faster than the arrival. */
+/** Taking off: an 80 ms crouch, then away, faster than the arrival. */
 function leaveCss(kind: VisitorKind, name: string): { css: string; total: number } {
   const d = departure(kind), total = MS.crouch + d.ms
   return { total, css: track(name, total, t => t < MS.crouch ? { x: 0, y: 0, o: 1, sy: 1 - 0.1 * DIP(t / MS.crouch) } : d.at(t - MS.crouch)) }
@@ -170,19 +166,18 @@ function glowImage(k: KindArt, pixel: boolean): string {
   return `<image href="data:image/png;base64,${glow.png}" x="${x + cx * scale - r}" y="${y + cy * scale - r}" width="${2 * r + 1}" height="${2 * r + 1}"/>`
 }
 
-/** Where the visit is in its story at `now`. Pixel contexts only cut: there, a visit is sitting or gone. */
+/** Pixel contexts only cut: there, a visit is sitting or gone. */
 export function visitPhase(visit: Visit, now: number, pixel: boolean): 'arriving' | 'sitting' | 'leaving' | 'gone' {
   if (visit.leftAt !== undefined) return pixel || now >= visit.leftAt + MS.crouch + departure(visit.kind).ms ? 'gone' : 'leaving'
   return pixel || now >= visit.at + STAGE_MS ? 'sitting' : 'arriving'
 }
-/** What the cached picture depends on besides the frame: the visit and its phase (a quarter second at a time while it arrives). */
+/** Besides the frame: the visit and its phase (a quarter second at a time while it arrives). */
 export function visitorPictureKey(visit: Visit | undefined, now: number, pixel: boolean): string {
   if (!visit) return ''
   const phase = visitPhase(visit, now, pixel)
   return `${visit.id}:${phase}${phase === 'arriving' ? Math.floor((now - visit.at) / 250) : phase === 'leaving' ? Math.floor((now - visit.leftAt!) / 250) : ''}`
 }
 
-/** The band's picture with the visitor on him: arriving, sitting, or taking off. Unchanged when it has nothing to add. */
 // place: a transform from the old painted band's perches onto another picture's canvas (Coco's, A lane 10-14)
 export function visitorPicture(source: string, visit: Visit, o: { pixel: boolean; reduced: boolean; now: number; place?: string }): string {
   const k = isVisitorKind(visit.kind) ? art?.kinds[visit.kind] : undefined
@@ -209,7 +204,7 @@ export function visitorPicture(source: string, visit: Visit, o: { pixel: boolean
   return insertBranches(source, moving, fadeOut())
 }
 
-/** The first reply's head after a visit: the visitor on his small picture, top left, whatever the kind. It stays with that head. */
+/** The visitor on his small picture, top left, whatever the kind; it stays with that head. */
 export function visitorHeadPicture(source: string, kind: string): string {
   const k = isVisitorKind(kind) ? art?.kinds[kind] : undefined
   if (!k) return source
@@ -217,11 +212,11 @@ export function visitorHeadPicture(source: string, kind: string): string {
   return insertBranches(source, fragment, fragment)
 }
 
-// ---------------------------------------------------------------- the terminal
+// ---- the terminal
 
 const CUBE = [0, 95, 135, 175, 215, 255]
 const near = (v: number): number => CUBE.reduce((a, b) => Math.abs(a - v) <= Math.abs(b - v) ? a : b)
-/** The sprite as half-block pixels in his 35 x 18 sleep crop. Its edge follows the host theme, as the ribbon does. */
+/** In his 35 x 18 sleep crop; its edge follows the host theme, as the ribbon does. */
 export function visitorCellOverlay(kind: string, colors: 'truecolor' | '256', darkGround: boolean): CellOverlay | undefined {
   if (!isVisitorKind(kind)) return undefined
   const k = art?.kinds[kind]
@@ -234,9 +229,8 @@ export function visitorCellOverlay(kind: string, colors: 'truecolor' | '256', da
   return { key: `${kind}:${colors}:${darkGround ? 'd' : 'l'}`, x: k.term[0], y: k.term[1], rows: grid.rows, rgb }
 }
 
-// ---------------------------------------------------------------- the guest book
+// ---- the guest book
 
-/** A portrait: the sprite at two CSS px per art pixel, centred on a 44 px square of his paper, night paper after dark. */
 export function visitorPortrait(kind: string, night: boolean): string {
   const k = isVisitorKind(kind) ? art?.kinds[kind] : undefined
   if (!k) return ''
@@ -247,9 +241,9 @@ export function visitorPortrait(kind: string, night: boolean): string {
   return `<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 44 44" width="44" height="44" style="forced-color-adjust:none"><style>.p{fill:${paper};stroke:${edge}}@media(prefers-contrast:more){.p{stroke:#8E8481}}</style><rect class="p" x=".5" y=".5" width="43" height="43" rx="3"/>${glow}<image href="data:image/png;base64,${k.sit.light}" x="${x}" y="${y}" width="${w}" height="${h}" style="image-rendering:pixelated"/></svg>`
 }
 
-// ---------------------------------------------------------------- the guest book page's data
-// His visitors, newest first, one month at a time: a portrait, when it came, and who it was. No counts of kinds or visits, no
-// blank slots, nothing about the work.
+// ---- the guest book page's data
+// His visitors, newest first, one month at a time: a portrait, when it came, and who it was. No counts of kinds or
+// visits, no blank slots, nothing about the work.
 
 function parts(at: number, tz: string | undefined): { y: number; m: number; hour: number } {
   let list: Intl.DateTimeFormatPart[]
@@ -265,12 +259,10 @@ function format(lang: string, options: Intl.DateTimeFormatOptions, at: number, t
 const monthName = (lang: string, y: number, m: number): string => format(lang, { month: 'long' }, Date.UTC(y, m - 1, 15, 12), 'UTC')
 const sameLanguage = (lang: string): string => lang === 'zh-Hant' ? 'zh-TW' : lang
 
-/** The page while his notes are being read, the first time it opens in a session. */
 export function guestBookReading(lang: string, fallbackTitle: string, backLabel: string): GuestBook {
   return { title: visitorWord(lang, 'visitors.title') || fallbackTitle, direction: visitorWord(lang, 'visitors.direction'), back: backLabel, rows: [], state: 'reading', text: visitorWord(lang, 'visitors.reading') }
 }
 
-/** `index` counts months back from the newest month that holds a visit. */
 export function guestBook(visits: readonly Visit[] | undefined, index: number, lang: string, tz: string | undefined, fallbackTitle: string, backLabel: string): GuestBook {
   const locale = sameLanguage(lang)
   const base = { title: visitorWord(lang, 'visitors.title') || fallbackTitle, direction: visitorWord(lang, 'visitors.direction'), back: backLabel, rows: [] }

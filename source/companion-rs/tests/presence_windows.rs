@@ -78,7 +78,10 @@ struct Follower {
     pid: u32,
 }
 fn follower(folder: &str, owner: &str) -> Follower {
-    let (marker, deadline) = (protocol::follow_marker(folder, owner), protocol::deadline_file(folder, owner));
+    let (marker, deadline) = (
+        protocol::follow_marker(folder, owner),
+        protocol::deadline_file(folder, owner),
+    );
     let lines = Lines::start(helper(&[folder, "follow", owner, "", "", &marker, &deadline]));
     let first = lines.next();
     let pid = first
@@ -110,7 +113,10 @@ struct Transaction {
 }
 impl Transaction {
     fn begin(folder: &str, token: &str, leaving: &str) -> Self {
-        Self::read(Lines::start(helper(&[folder, "transaction", token, "", leaving])), folder)
+        Self::read(
+            Lines::start(helper(&[folder, "transaction", token, "", leaving])),
+            folder,
+        )
     }
     fn read(lines: Lines, folder: &str) -> Self {
         let header = lines.next();
@@ -290,6 +296,11 @@ fn deadlines_arrive_on_time_and_leaving_takes_the_followers_files() {
     tx.inventory("");
     tx.commit("-");
     assert!(files.iter().all(|file| !Path::new(file).exists()));
+    assert_eq!(run(&[&folder, "deadline-write", "leaver", "2\t0\n"]), 0);
+    assert!(
+        files.iter().all(|file| !Path::new(file).exists()),
+        "late writer recreated a file"
+    );
     // A transaction may only remove its own owner.
     assert_eq!(run(&[&folder, "transaction", "other-t1", "", "leaver"]), 64);
 }
@@ -301,6 +312,7 @@ fn host_process() {
         return;
     };
     let follower = follower(&folder, "gone");
+    assert_eq!(run(&[&folder, "deadline-write", "gone", "1\t0\n"]), 0);
     let tx = Transaction::begin(&folder, "gone-t1", "");
     println!("FOLLOWER {}", follower.pid);
     println!("TX {}", tx.lines.child.id());
@@ -310,6 +322,9 @@ fn host_process() {
 #[test]
 fn helpers_end_with_the_program_that_started_them_and_free_the_lock() {
     let folder = folder("host");
+    let bystander = follower(&folder, "bystander");
+    assert_eq!(run(&[&folder, "deadline-write", "bystander", "1\t0\n"]), 0);
+    let before = session_files(&folder, "bystander").map(|p| std::fs::read(p).unwrap());
     let mut host = Command::new(std::env::current_exe().unwrap())
         .args(["host_process", "--exact", "--nocapture", "--test-threads=1"])
         .env("COCO_PRESENCE_HOST", &folder)
@@ -332,6 +347,140 @@ fn helpers_end_with_the_program_that_started_them_and_free_the_lock() {
         assert!(ended(pid, Duration::from_secs(10)), "helper {pid} ended with its host");
     }
     assert!(acquire_presence_lock(Path::new(&folder)).unwrap().is_some());
+    assert!(session_files(&folder, "gone").iter().all(|path| !path.exists()));
+    assert_eq!(session_files(&folder, "bystander").map(|p| std::fs::read(p).unwrap()), before);
+    stop(bystander);
+}
+
+fn session_files(folder: &str, token: &str) -> [std::path::PathBuf; 3] {
+    [
+        protocol::registration_file(folder, token).into(),
+        protocol::follow_marker(folder, token).into(),
+        protocol::deadline_file(folder, token).into(),
+    ]
+}
+
+fn stop(mut follower: Follower) {
+    follower.lines.child.kill().unwrap();
+    follower.lines.child.wait().unwrap();
+}
+
+#[test]
+fn a_start_sweeps_a_killed_follower_and_preserves_a_live_one() {
+    let folder = folder("sweep-start");
+    let dead = follower(&folder, "dead");
+    let live = follower(&folder, "live");
+    for token in ["dead", "live"] {
+        assert_eq!(run(&[&folder, "deadline-write", token, "1\t0\n"]), 0);
+    }
+    let live_before = session_files(&folder, "live").map(|p| std::fs::read(p).unwrap());
+    stop(dead);
+    assert!(session_files(&folder, "dead").iter().all(|p| p.exists()));
+    let fresh = follower(&folder, "fresh");
+    assert!(session_files(&folder, "dead").iter().all(|p| !p.exists()));
+    assert_eq!(
+        session_files(&folder, "live").map(|p| std::fs::read(p).unwrap()),
+        live_before
+    );
+    // Exclusive creation must not let a duplicate follower clean up the original's files.
+    assert_eq!(run(&[&folder, "follow", "live"]), 69);
+    assert_eq!(
+        session_files(&folder, "live").map(|p| std::fs::read(p).unwrap()),
+        live_before
+    );
+    stop(fresh);
+    stop(live);
+}
+
+#[test]
+fn leave_sweeps_stale_receipts_and_old_orphans_but_preserves_unsafe_files() {
+    let folder = folder("sweep-leave");
+    let live = follower(&folder, "live");
+    let receipt = std::fs::read_to_string(protocol::registration_file(&folder, "live")).unwrap();
+    let mut fields: Vec<_> = receipt.trim_end().split('\t').map(str::to_string).collect();
+    fields[2] = "windows:1".into();
+    fields[5] = "reused".into();
+    std::fs::write(
+        protocol::registration_file(&folder, "reused"),
+        format!("{}\n", fields.join("\t")),
+    )
+    .unwrap();
+    std::fs::write(protocol::follow_marker(&folder, "reused"), "old").unwrap();
+    let old = std::time::SystemTime::now() - Duration::from_secs(120);
+    for token in ["old", "recent", "unknown", "linked"] {
+        let marker = protocol::follow_marker(&folder, token);
+        std::fs::write(&marker, "keep unless old orphan").unwrap();
+        if token != "recent" {
+            std::fs::OpenOptions::new()
+                .write(true)
+                .open(&marker)
+                .unwrap()
+                .set_times(std::fs::FileTimes::new().set_modified(old))
+                .unwrap();
+        }
+    }
+    std::fs::write(protocol::registration_file(&folder, "unknown"), "unreadable receipt\n").unwrap();
+    let old_deadline = protocol::deadline_file(&folder, "old");
+    std::fs::write(&old_deadline, "1\t0\n").unwrap();
+    std::fs::OpenOptions::new()
+        .write(true)
+        .open(&old_deadline)
+        .unwrap()
+        .set_times(std::fs::FileTimes::new().set_modified(old))
+        .unwrap();
+    let unrelated = Path::new(&folder).join("unrelated.txt");
+    std::fs::hard_link(protocol::follow_marker(&folder, "linked"), &unrelated).unwrap();
+    let tx = Transaction::begin(&folder, "live-t1", "live");
+    tx.inventory("");
+    tx.commit("-");
+    assert!(session_files(&folder, "reused").iter().all(|p| !p.exists()));
+    assert!(!Path::new(&protocol::follow_marker(&folder, "old")).exists());
+    assert!(!Path::new(&old_deadline).exists());
+    for token in ["recent", "unknown", "linked"] {
+        assert!(
+            Path::new(&protocol::follow_marker(&folder, token)).exists(),
+            "removed {token}"
+        );
+    }
+    assert_eq!(std::fs::read_to_string(unrelated).unwrap(), "keep unless old orphan");
+    stop(live);
+}
+
+#[test]
+fn restarting_a_killed_token_works_and_failed_marker_creation_keeps_existing_files() {
+    let folder = folder("reuse-token");
+    let dead = follower(&folder, "again");
+    stop(dead);
+    let again = follower(&folder, "again");
+    let occupied = protocol::follow_marker(&folder, "occupied");
+    std::fs::write(&occupied, "pre-existing marker").unwrap();
+    assert_eq!(run(&[&folder, "follow", "occupied"]), 69);
+    assert!(!Path::new(&protocol::registration_file(&folder, "occupied")).exists());
+    assert_eq!(std::fs::read_to_string(&occupied).unwrap(), "pre-existing marker");
+    assert!(Path::new(&protocol::registration_file(&folder, "again")).exists());
+    stop(again);
+}
+
+#[test]
+fn writers_racing_leave_cannot_resurrect_a_deadline() {
+    let folder = folder("leave-race");
+    let live = follower(&folder, "racing");
+    let tx = Transaction::begin(&folder, "racing-t1", "racing");
+    tx.inventory("");
+    let mut writers: Vec<_> = (0..8)
+        .map(|n| {
+            helper(&[&folder, "deadline-write", "racing", &format!("{n}\t0\n")])
+                .spawn()
+                .unwrap()
+        })
+        .collect();
+    tx.commit("-");
+    for writer in &mut writers {
+        assert!(writer.wait().unwrap().success());
+    }
+    assert_eq!(run(&[&folder, "deadline-write", "racing", "9\t0\n"]), 0);
+    assert!(session_files(&folder, "racing").iter().all(|p| !p.exists()));
+    stop(live);
 }
 
 #[test]

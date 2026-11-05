@@ -12,6 +12,18 @@ old behavior back.
 
 ## [Unreleased]
 
+## [1.1.4514] - 2026-11-05
+
+Coco 1.1.4514 adds a Mac installer and text-file imports for band lines.
+
+- The Mac installer and Coco Pet are signed and notarized. Both support Intel and Apple silicon Macs running macOS 13 or later. The pet comes with the plugin; you do not need Xcode or a local build.
+- When DMs have no available model, Coco opens API setup. After you save the API key and confirm the cost, the DM opens.
+- Import your own band lines from the blank template, preview the result and confirm it. Rejected lines show a reason. Imported lines stay on your computer and use no tokens.
+- The pet's version check now accepts newer versions instead of offering an update to an older version.
+- Windows session records are removed on exit. A late status update cannot bring an ended session back.
+
+Windows and Linux desktop pets still need testing on real machines.
+
 ## [1.0.1] - 2026-10-31
 
 ### Fixed

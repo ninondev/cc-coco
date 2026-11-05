@@ -93,6 +93,16 @@ def left_out(rel):
     return False
 TIMEOUT = 900
 
+# The nine tests repaired on 10-22 (acad1c68) that no stage tuple named. tools/gate_stages.py owns
+# the tuples; these run beside them through the same dispatch so the registry keeps them green.
+# card-art and the art-intake checks read private art inputs; the public tree's assembly lists
+# them in tools/public-tree.json leftOut, where left_out() reports them as skipped.
+REGISTRY_PYTHON = ('art-intake-fit-pixel.test.py', 'art-intake-overlay.test.py', 'art-intake-turn-frames.test.py',
+                   'art-intake-visitors.test.py', 'card-art.test.py', 'k1-bundles.test.py')
+# Swift-compiling capability checks; companion-d1 would write evidence/ into the repository by
+# default, so the registry points MOE_D1_COMPANION_OUT at a scratch folder before running it.
+REGISTRY_SWIFT = ('companion-security.py', 'companion-settings-security.py', 'companion-d1.py')
+
 
 def d1_fixture_access(copy, counters=False):
     manifest = Path(copy)/'hooks/hooks.json'
@@ -459,7 +469,7 @@ def isolated_env(home):
                'UV_THREADPOOL_SIZE', 'GOMAXPROCS',
                'BUN_FEATURE_FLAG_DISABLE_IO_POOL',
                'COCO_TEST_SERIAL_FILES', 'COCO_TEST_FILE_WORKERS',
-               'COCO_TYPESCRIPT', 'PLAYWRIGHT_BROWSERS_PATH',
+               'COCO_TYPESCRIPT', 'PLAYWRIGHT_DIR', 'PLAYWRIGHT_BROWSERS_PATH',
                # Windows' own system settings: Bun refuses to start without SystemRoot, and programs
                # find the shell and executables through these. None of them holds a credential.
                'SYSTEMROOT', 'WINDIR', 'COMSPEC', 'PATHEXT', 'SYSTEMDRIVE', 'PROGRAMFILES', 'PROGRAMDATA')
@@ -677,10 +687,24 @@ def required_program(program):
     return path
 
 
-def python_check(path, *arguments):
+def python_check(path, *arguments, env_extra=None):
     with TemporaryDirectory(prefix='p1-python-home-') as folder:
+        env = dict(isolated_env(folder), CARGO_HOME=os.environ.get('CARGO_HOME', str(Path.home()/'.cargo')), RUSTUP_HOME=os.environ.get('RUSTUP_HOME', str(Path.home()/'.rustup')))
+        if env_extra:
+            env.update(env_extra)
         return observed_run([sys.executable, str(Path(ROOT)/'tools/cpu_stage.py'), str(Path(ROOT)/path), *arguments],
-                       env=dict(isolated_env(folder), CARGO_HOME=os.environ.get('CARGO_HOME', str(Path.home()/'.cargo')), RUSTUP_HOME=os.environ.get('RUSTUP_HOME', str(Path.home()/'.rustup'))), cwd=ROOT, cpu_limit=TIMEOUT).returncode
+                       env=env, cwd=ROOT, cpu_limit=TIMEOUT).returncode
+
+
+def registry_swift_check(name):
+    """The registry's Swift capability checks; companion-d1 writes its receipts to scratch, never the repository."""
+    if name == 'companion-d1.py':
+        # The driver's HOME sits under this folder and its SecureDirectory refuses path components that are
+        # symlinks, so the redirect must be the resolved physical path (/var and /tmp are symlinks on macOS).
+        with TemporaryDirectory(prefix='g1-d1-evidence-', dir=str(Path(tempfile.gettempdir()).resolve())) as evidence:
+            return python_check('tools/tests/' + name,
+                                env_extra={'MOE_D1_COMPANION_OUT': str(Path(evidence).resolve()/'d1-native')})
+    return python_check('tools/tests/' + name)
 
 
 def d1_python_preflight(check):
@@ -804,6 +828,14 @@ def run_stage(stage, args, claude):
                 status = 1
                 continue
             status = merge_status(status, python_check('tools/tests/' + name))
+        for name in REGISTRY_PYTHON:
+            if left_out('tools/tests/' + name):
+                continue
+            if not (Path(ROOT)/'tools/tests'/name).is_file():
+                print('missing registry Python check: ' + name)
+                status = 1
+                continue
+            status = merge_status(status, python_check('tools/tests/' + name))
         if not left_out('tools/release/tests/rename-kit.test.py'):
             status = merge_status(status, python_check('tools/release/tests/rename-kit.test.py'))
         if not left_out('tools/generate-voice-sizes.py'):
@@ -816,8 +848,14 @@ def run_stage(stage, args, claude):
         required_program('swiftc')
         status = 0
         for name in (*SWIFT, 'promises-native.py'):
+            if left_out('tools/tests/' + name):
+                continue
             arguments = ('--functional-only',) if name == 'companion-pointer-cost.py' else ()
             status = merge_status(status, python_check('tools/tests/' + name, *arguments))
+        for name in REGISTRY_SWIFT:
+            if left_out('tools/tests/' + name):
+                continue
+            status = merge_status(status, registry_swift_check(name))
         return status
     if stage == 'rust':
         cargo = required_program('cargo')
@@ -843,7 +881,8 @@ def run_stage(stage, args, claude):
             result = observed_run([cargo, 'test', '--offline', '--locked', '-j', '4', '--manifest-path',
                             str(Path(ROOT)/'plugin/companion-rs/Cargo.toml'), *extra], env=env, cwd=ROOT, cpu_limit=TIMEOUT)
             if result.returncode and ('no matching package named' in result.stderr or 'failed to download' in result.stderr):
-                raise StageSkipped('offline Cargo dependency unavailable: ' + result.stderr.splitlines()[0])
+                raise StageSkipped('rust stage needs the offline crate cache, which this machine does not have: '
+                                   + result.stderr.splitlines()[0].strip())
             if result.returncode == 0 and sys.platform not in ('darwin', 'linux'):
                 raise StageSkipped('RSS not measured: headless RSS fixture is unsupported on ' + sys.platform + '; other Rust tests dispatched')
             if result.returncode == 0 and missing_rss:
@@ -948,7 +987,11 @@ def main():
     args.d1_python_checks = d1_python_checks
     if args.stage == ['d1-native']:
         if sys.platform != 'darwin': return 3
-        return subprocess.run([sys.executable, os.path.join(ROOT, 'tools', 'tests', 'companion-d1.py')], cwd=ROOT, timeout=180).returncode
+        # The driver writes receipts and its isolated HOME under MOE_D1_COMPANION_OUT; without it
+        # they land in evidence/ inside the repository, which the registry never allows.
+        with TemporaryDirectory(prefix='g1-d1-native-', dir=str(Path(tempfile.gettempdir()).resolve())) as evidence:
+            return subprocess.run([sys.executable, os.path.join(ROOT, 'tools', 'tests', 'companion-d1.py')], cwd=ROOT, timeout=180,
+                                  env=dict(os.environ, MOE_D1_COMPANION_OUT=str(Path(evidence).resolve()/'d1-native'))).returncode
     if args.stage == ['d1-load']:
         if not args.d1_load_before or not args.d1_load_out: parser.error('d1-load requires --d1-load-before and --d1-load-out')
         return subprocess.run([sys.executable, os.path.join(ROOT, 'tools', 'measure-hooks-load.py'), '--before', args.d1_load_before, '--runs', '21', '--out', args.d1_load_out], cwd=ROOT).returncode

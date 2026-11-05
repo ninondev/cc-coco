@@ -3,6 +3,14 @@ export type { CheckWords, CheckCompanion, CheckHealth, CheckSession, CheckInput,
 // Settings draws / Fix completions request these reads. No timers, writes or app inspection.
 import { joinPath, samePath, windowsPath } from './d1-paths.js'
 
+// Raise this when the shipped pet's code or art changes, independently of plugin-only releases.
+export const COMPANION_MIN_VERSION = '1.1.4514'
+const parseVersion = (v: string | undefined) => v?.match(/^v?(\d+)\.(\d+)\.(\d+)(?:-([0-9A-Za-z.-]+))?(?:\+[0-9A-Za-z.-]+)?$/)
+
+export function atLeastVersion(found: string | undefined, required: string | undefined): boolean {
+  return Boolean(parseVersion(found) && parseVersion(required) && !olderVersion(found, required!))
+}
+
 
 
 
@@ -18,8 +26,7 @@ import { joinPath, samePath, windowsPath } from './d1-paths.js'
 // Numeric semver comparison prevents 0.10 being treated as older than 0.2. Unknown
 // versions produce no update claim; prereleases precede a release with the same core.
 export function olderVersion(found: string | undefined, current: string): boolean {
-  const parse = (v: string | undefined) => v?.match(/^v?(\d+)\.(\d+)\.(\d+)(?:-([0-9A-Za-z.-]+))?(?:\+[0-9A-Za-z.-]+)?$/)
-  const a = parse(found), b = parse(current)
+  const a = parseVersion(found), b = parseVersion(current)
   if (!a || !b) return false
   for (let i = 1; i <= 3; i++) {
     const left = Number(a[i]), right = Number(b[i])
@@ -54,7 +61,7 @@ export function checkup(input: CheckInput, words: CheckWords): CheckResult {
   if (mac && input.installed && !running) rows.push({ id: 'companion', subject: c.label, state: c.stopped, fix: 'summon' })
   if (mac && running && (input.health.accessibility ?? input.companion.accessibility) === false)
     rows.push({ id: 'follow', subject: c.label, state: c.corner, fix: 'follow' })
-  if (mac && input.installed && olderVersion(input.companion.version ?? input.health.version, input.version))
+  if (mac && input.installed && olderVersion(input.companion.version ?? input.health.version, COMPANION_MIN_VERSION))
     rows.push({ id: 'update', subject: c.label, state: c.update, fix: 'updateButton' })
   if ((input.surface === 'terminal' || input.surface === 'desktop') && input.band === 'off')
     rows.push({ id: 'band', subject: words.settings.band.label, state: words.settings.now.replace('{value}', words.settings.band.off), fix: 'bandOn' })

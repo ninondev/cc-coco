@@ -62,7 +62,7 @@ for(const sr of [false,true])test('M1 first hello fresh terminal '+(sr?'screen r
  const f=fixture(on,{sr});await begin($,f)
  const row=await $.ui.mount({surface:'terminal',...band(100)});await settleLegacyStart($,f.w);await row.redraw()
  const line=f.w.view().line!;expect(line.key).toBe('first.hello');expect(LINES.en.first_meet).toContain(line.text);expect(line.class).toBe(2);expect(line.expiresAt).toBe(MORNING+300000)
- expect((line as {button?:unknown}).button).toBeUndefined();expect(f.claims.length).toBe(1);expect(f.writes.get('welcome')).toEqual({at:MORNING});expect(f.w.toasts).toEqual([])
+ expect((line as {button?:unknown}).button).toBeUndefined();expect(f.claims.length).toBe(1);expect(f.writes.get('welcome')).toEqual({at:MORNING});expect(quiet(f.w.toasts)).toEqual([])
  expect(f.calls).toEqual([]);await row.unmount()
 })
 for(const surface of ['vscode','mobile','desktop'] as const)test('M1 first hello '+surface+' uses one existing head book button and clears its first flag once',{options:{band:surface==='desktop'?'off':'on'}},async($,on)=>{
@@ -72,11 +72,13 @@ for(const surface of ['vscode','mobile','desktop'] as const)test('M1 first hello
  const tree=await row.drawn();expect(text(tree)).toContain(LINES.en.first_meet[0]!);expect(text(tree)).toContain(gapCharacterName('en'));expect(nodes(tree,'Button').filter(node=>node.props.key==='coco:book:open').length).toBe(1);expect(nodes(tree,'Button').filter(node=>node.props.key?.includes('first')).length).toBe(0)
  const pictures=nodes(tree,'Svg');expect(pictures[0]?.props.source).toContain('svg');expect(f.w.cell('head:first-head')?.value.first).toBe(true)
  const note=nodes(tree,'Box').find(box=>box.children?.length===2&&box.children[0]?.props.width===35&&text(box.children[1])===LINES.en.first_meet[0]!);expect(note).toBeDefined();expect(note.children[1].props.marginLeft).toBe(1)
- expect(f.w.toasts).toEqual([])
- await $.turn.complete({turnId:'first',answer:'First reply.',reason:'answer',isAborted:false,durationMs:1000});expect(f.w.toasts).toEqual([]);const before=headWrites.length
+ expect(quiet(f.w.toasts)).toEqual([])
+ await $.turn.complete({turnId:'first',answer:'First reply.',reason:'answer',isAborted:false,durationMs:1000});expect(quiet(f.w.toasts)).toEqual([]);const before=headWrites.length
  await $.turn.start({turnId:'second',text:'again'});expect(headWrites.slice(before).filter(row=>row.id==='first-head'&&row.value.first===false).length).toBe(1);await row.redraw();expect(anyHello(text(await row.drawn()))).toBe(false)
- expect(f.claims.length).toBe(1);expect(f.w.toasts).toEqual([]);expect(f.calls).toEqual([]);await row.unmount()
+ expect(f.claims.length).toBe(1);expect(quiet(f.w.toasts)).toEqual([]);expect(f.calls).toEqual([]);await row.unmount()
 })
+// The first session's one note about other models may stand beside the hello; nothing else may.
+const quiet=(toasts:readonly string[])=>toasts.filter(text=>!text.includes('/coco models'))
 test('M1 first hello native claim refusal fails closed before greeting content',async($,on)=>{
  const f=fixture(on,{claim:false});await begin($,f);const row=await $.ui.mount({surface:'terminal',...band(100)});await settleLegacyStart($,f.w);await row.redraw();expect(f.claims.length).toBe(1);expect(f.writes.has('welcome')).toBe(false);expect(anyHello(text(await row.drawn()))).toBe(false);expect(f.w.view().line?.key==='first.hello').toBe(false);await row.unmount()
 })

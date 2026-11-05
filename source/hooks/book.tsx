@@ -12,6 +12,7 @@ import { cacheBookLines, costBookLines, costDollars, makerSessionUSD, voiceCache
 import type { CostSurfaceSnapshot } from './cost/surfaces'
 import { cupSvg } from './cost/cup'
 import { costWord } from './cost/words'
+import { c3Word } from './c3-words'
 import type { PresenceNeighbours } from './presence'
 import { gapWord, gapFill } from './mod-gaps-words'
 import { moreWord, moreFill } from './more-words'
@@ -20,6 +21,8 @@ import { MoreEntry, MoreRow, moreRowDrawn } from './more-book'
 import { moreOn, moreRowAuthored } from './more-state'
 import type { MoreId } from './more-state'
 import type { MoreBookData } from './more-book'
+import { MODEL_SERVICES } from './privacy'
+import type { PrivacyState } from './privacy'
 import type { D1Snapshot, Helper } from './d1-runtime'
 import type { RoomState } from './d1-room'
 import { d1Word } from './d1-state.js'
@@ -64,6 +67,7 @@ import type { QuotaTrend } from './quota'
 import { quotaTrailFrom } from './quota-trail'
 import { commitCount, commitLineHeight, commitLineSvg, commitLineText, commitLineWidth } from './play-commits'
 import type { Lang } from './words'
+import { workerText } from './worker-name'
 import { STRINGS as CARD_WORDS, langOf as cardLang } from './cards/i18n'
 
 
@@ -77,6 +81,8 @@ type Own = (typeof WORDS)['en']
 // figures, the store values the page shows, the time, a few settings, and the band's own small
 // words in this language (his name, the about lines, the pictures' alt text).
 export type BookData = {
+  // The privacy and other-models list open on the settings page; `state` is missing when settings.json cannot be read.
+  care?: { first: 'privacy' | 'models'; state?: PrivacyState }
   cost?: CostSurfaceSnapshot
   // Every open session on this computer, read when their page opens (E1-2); self is the one this book is in.
   windows?: { rows: readonly BookWindow[]; self: string; home?: string }
@@ -89,6 +95,7 @@ export type BookData = {
   d1NotifyAvailable?: boolean
   pace?: readonly { kind: string; exhaustionAt: number }[]
   bookmark?: { where: string; at: number }
+  todoPileThreshold?: number
   spark?: { file: string; line: number; quote?: string } // the comment he liked last, this session only
   shelf?: { names: string[] } | 'empty' | 'error' // the files Claude opened most in this folder
   neighbours?: PresenceNeighbours
@@ -120,6 +127,7 @@ export type BookData = {
   visitors?: GuestBook
   visitorsButton?: string
   cards?: number // the skill cards the deck holds once dealt (cards/state.ts dealtCards), beside the button at the bag's top
+  uninstallAsked?: boolean // /coco uninstall's button was pressed once; the next press confirms (review D-4)
   week?: WeekBookData
   socks?: string // the pair from their drawer they wear (bag.ts SOCK_PAIRS); absent: their own
   drawer?: { mode: SockMode; open: readonly string[] } // how their drawer fills and the pairs they can put on (bag.ts socksOpen)
@@ -263,7 +271,7 @@ function bagStyleBlocks(d: BookData, w: BookWords, lang: string): Block[] {
 }
 function pageLead(page: Page, body: readonly Block[], d: BookData, w: BookWords): string | undefined {
   const lang = d.view?.lang ?? 'en', template = bagWords(lang)?.lead?.[page]
-  if (!template) return undefined
+  if (!template || (page === 'settings' && d.care)) return undefined
   if (page === 'settings') { const states = switchStates(body); return bagFill(template, { total: states.length, on: states.filter(Boolean).length }) }
   if (page === 'socks') return bagFill(template, { total: SOCK_PAIRS.length, have: (d.drawer?.open ?? SOCK_PAIRS).length })
   if (page === 'library') return bagFill(template, { notes: d.bookmark ? 1 : 0 })
@@ -330,6 +338,7 @@ function vibeGroupBlocks(d: BookData, w: BookWords, lang: string): Block[] {
 }
 function pageBody(page: Page, w: BookWords, d: BookData, surface: 'desktop' | 'terminal' | 'vscode' | 'mobile'): Block[] {
   const lang = d.view?.lang ?? 'en'
+  if (page === 'settings' && d.care) return careBlocks(d.care, w, lang)
   if (page === 'him' && d.visitors) {
     const g = d.visitors
     return g.state === 'list'
@@ -459,9 +468,10 @@ function pageBody(page: Page, w: BookWords, d: BookData, surface: 'desktop' | 't
       if(heading)cache.push({t:'heading',text:heading})
       if(cost)cache.push(...cacheBookLines(cost,lang,d.now,d.timeZone))
       else if(heading)cache.push({t:'para',text:costWord(lang,'offerings.cacheNone')})
-      const how=costWord(lang,d.costHow?'offerings.howHide':'offerings.howShow')
+      // How Claude's cache is priced and how long it lasts: another maker's rules are not these.
+      const how=cost?.billing.otherMaker?'':costWord(lang,d.costHow?'offerings.howHide':'offerings.howShow')
       if(how)cache.push({t:'button',key:'coco:cache:how',label:how})
-      if(d.costHow)cache.push({t:'para',text:costWord(lang,'offerings.how')})
+      if(how&&d.costHow)cache.push({t:'para',text:costWord(lang,'offerings.how')})
       // The More focus path is connected in K1b.
     }
     // A figure that is not known yet leaves its line out; with none known, one note says so (BOOK F3).
@@ -561,7 +571,8 @@ function pageBody(page: Page, w: BookWords, d: BookData, surface: 'desktop' | 't
     const noLock = cost.warmNoLock ? costWord(lang, 'more.warm.helpNoLock') : ''
     const help = [costWord(lang, 'more.warm.cost'), noLock, cost.warmEnabled ? warmTodayLine(cost, lang) : warmHeldOffLine(cost, lang)].filter(Boolean).join('\n')
     if (cost.warmAsking) return [choice(label, 'warm', 'on', { no: moreWord('ask.no', lang), on: moreWord('ask.yes', lang) }, warmAskLine(cost, lang) ? [warmAskLine(cost, lang), noLock].filter(Boolean).join('\n') : help, undefined, switches.off)]
-    return [choice(label, 'warm', cost.warmEnabled ? 'on' : 'off', cost.warmEnabled || cost.warmAsked ? switches : { ask: switches.on, off: switches.off }, help)]
+    return [choice(label, 'warm', cost.warmEnabled ? 'on' : 'off', cost.warmEnabled || cost.warmAsked ? switches : { ask: switches.on, off: switches.off }, help),
+      ...(cost.warmEnabled || (cost.warmOthersOn ?? 0) > 0 ? [{t:'button' as const,key:'coco:warm:alloff',label:moreWord('warm.allOff',lang)}] : [])]
   }
   const picked = LANGS.find(l => l.code === d.store.lang)?.code
   // The applied view first: choices publish their reaction before waiting on persistence.
@@ -599,6 +610,7 @@ function pageBody(page: Page, w: BookWords, d: BookData, surface: 'desktop' | 't
     bookmark: [choice(s.bookmark.label, 'bookmark', reminders.bookmark ? 'on' : 'off', switches, s.bookmark.help)],
     week: weekWord(lang,'week.setting') ? [choice(weekWord(lang,'week.setting'), 'week', reminders.week ? 'on' : 'off', switches, weekWord(lang,'week.setting.help'))] : [],
     notes: [choice(s.notes.label, 'notes', reminders.notes ? 'on' : 'off', switches, s.notes.help)],
+    todoPile: [{t:'choice',label:c3Word(lang,'settings.todoPile.label'),current:d.todoPileThreshold?String(d.todoPileThreshold):'off',now:fill(s.now,{value:d.todoPileThreshold?numberText(d.todoPileThreshold,lang):switches.off}),options:[0,5,10,20].map(n=>({value:n?String(n):'off',label:n?numberText(n,lang):switches.off,key:`coco:todo:pile:${n||'off'}`})),help:c3Word(lang,'settings.todoPile.help')}],
     budget: (d.usage?.rateLimits ?? []).some(limit => hasNumber(limit.percentUsed)) ? [{ ...choice(s.budget.label, 'budget', String(reminders.budget), { off: s.budget.off, 50: percentText(50, lang), 80: percentText(80, lang), 90: percentText(90, lang) }), ...tag(['off']) } as Block] : [],
     // Keeping the cache warm (lane C, 10-14): it re-reads the chat while you are away and uses your plan, so it says so.
     warm: warmChoice(d.cost ?? d.view?.cost).map(b => ({ ...b, ...tag(['tokens', 'off', 'new']) }) as Block),
@@ -607,7 +619,7 @@ function pageBody(page: Page, w: BookWords, d: BookData, surface: 'desktop' | 't
       choice(d1Word(lang,'settings.longTask.label'), 'longtask', surface==='mobile' && reminders.longTask!=='off' ? 'band' : reminders.longTask === 'notify' && !d.d1NotifyAvailable ? 'band' : reminders.longTask, surface === 'mobile' ? {off:switches.off,band:switches.on} : {off:switches.off,band:d1Word(lang,'settings.longTask.band'),...(d.d1NotifyAvailable ? {notify:d1Word(lang,'settings.longTask.notify')} : {})}, d1Word(lang,'settings.longTask.help')),
       ...(d.d1NotificationDenied && d.d1NotifyAvailable && surface!=='mobile' && reminders.longTask!=='off' ? [{t:'para' as const,text:d1Word(lang,'settings.longTask.denied')},{t:'button' as const,key:'coco:longtask:settings',label:d1Word(lang,'settings.longTask.openSettings')}] : []),
     ],
-    trim: [{ ...choice(d1Word(lang,'settings.trim.label'),'trim',reminders.trim ? 'on' : 'off',switches,d1Word(lang,'settings.trim.help')), ...tag(['off']) } as Block],
+    trim: [{ ...choice(d1Word(lang,'settings.trim.label'),'trim',reminders.trim ? 'on' : 'off',switches,workerText('settings.trim.help',d1Word(lang,'settings.trim.help'))), ...tag(['off']) } as Block],
     // their desktop companion stands here until their page has lane B's group for it
     companion: surface !== 'mobile' && d.companion && !bagWords(lang)?.himGroups ? [{ t: 'companion' as const, data: d.companion }] : [],
     neighbours: surface !== 'mobile' && d.platform === 'darwin' ? [{ ...choice(s.neighbours.label, 'neighbours', reminders.neighbours ? 'on' : 'off', switches, s.neighbours.help), ...tag(['mac', 'off']) } as Block] : [],
@@ -619,11 +631,13 @@ function pageBody(page: Page, w: BookWords, d: BookData, surface: 'desktop' | 't
   const groups = bag?.groups
   if (!groups) return [
     ...top,
+    ...careEntry(d),
     ...row.voice, ...row.affection, ...row.band, ...row.marks, ...row.visitors, ...row.lang, ...row.motion, ...row.breathe,
     { t: 'heading', text: s.reminders, marginTop: 1 },
-    ...row.guard, ...row.bookmark, ...row.week, ...row.notes, ...row.budget, ...row.warm, ...row.waitSound, ...row.longTask,
+    ...row.guard, ...row.bookmark, ...row.week, ...row.notes, ...row.todoPile, ...row.budget, ...row.warm, ...row.waitSound, ...row.longTask,
     {t:'heading' as const,text:d1Word(lang,'settings.saving'),marginTop:1},
     ...row.trim, ...row.companion, ...row.neighbours, ...row.icon, ...row.more,
+    ...careButtons(d),
     ...end,
   ]
   // A group's badge says what kind of switch it holds; a group with nothing on this surface is left out.
@@ -633,12 +647,14 @@ function pageBody(page: Page, w: BookWords, d: BookData, surface: 'desktop' | 't
   const more = (id: MoreId, kinds: readonly BagTag[]): Block[] => d.more && moreRowDrawn(id, d.more) ? [{ t: 'moreRow', id, data: d.more, ...tag(kinds), ...(id === 'talk' ? { payer: true as const } : {}) }] : []
   return [
     ...top,
+    ...careEntry(d),
     ...group('voice', { on: true, face: '#3A86C8' }, [...row.voice, ...row.affection, ...more('plain', ['tokens', 'off']), ...more('explain', ['tokens', 'off']), ...more('look', ['tokens', 'off', 'new']), ...more('lines', ['tokens', 'off', 'new']), ...more('talk', ['tokens', 'off'])]),
     ...group('band', { on: true, face: '#3A86C8' }, [...row.band, ...row.marks, ...row.visitors, ...row.motion, ...row.breathe, ...more('lively', ['off'])]),
-    ...group('reminders', { on: true, face: '#D97757' }, [...row.guard, ...row.notes, ...row.budget, ...row.longTask, ...row.waitSound, ...more('paste', ['off'])]),
+    ...group('reminders', { on: true, face: '#D97757' }, [...row.guard, ...row.notes, ...row.todoPile, ...row.budget, ...row.longTask, ...row.waitSound, ...more('paste', ['off'])]),
     ...group('cost', { on: true, face: '#D97757', mark: 'level' }, [...more('cap', ['off']), ...row.warm]),
     ...group('records', { on: true, face: '#B9B2AC', mark: 'note' }, [...row.bookmark, ...row.week, ...row.trim]),
     ...group('neighbours', { on: true, face: '#B9B2AC' }, [...row.neighbours, ...row.icon]),
+    ...careButtons(d),
     ...group('language', { on: true, face: '#D97757' }, row.lang),
     ...row.companion,
     ...end,
@@ -648,6 +664,54 @@ function pageBody(page: Page, w: BookWords, d: BookData, surface: 'desktop' | 't
 // Token counts: grouped digits below ten thousand (1,102), compact above (12K), as the other pages write them.
 function compactGrouped(n: number, lang: string): string {
   return n < 10_000 ? numberText(n, lang, false, true) : new Intl.NumberFormat(numberLocale(lang), { notation: 'compact', maximumFractionDigits: 1 }).format(n)
+}
+
+// Care at the bottom of the settings page (review D-4): the doctor's report and the
+// uninstaller, plain system buttons; uninstall asks once before it runs.
+function careButtons(d: BookData): Block[] {
+  const lang = d.view?.lang ?? 'en'
+  const doctor = gapWord(lang, 'doctor.button'), uninstall = gapWord(lang, 'uninstall.button'), confirm = gapWord(lang, 'uninstall.confirm')
+  if (!doctor && !uninstall) return []
+  const buttons: Block[] = []
+  if (doctor) buttons.push({ t: 'button', key: 'coco:doctor:run', label: doctor })
+  if (uninstall) buttons.push(d.uninstallAsked && confirm ? { t: 'button', key: 'coco:uninstall:confirm', label: confirm } : { t: 'button', key: 'coco:uninstall:run', label: uninstall })
+  return buttons
+}
+
+// The settings page's first row, with the tab row's other-models button on every page (owner 11-04).
+function careEntry(d: BookData): Block[] {
+  const label = gapWord(d.view?.lang ?? 'en', 'privacy.button')
+  return label ? [{ t: 'button', key: 'coco:care:open', label }] : []
+}
+
+// What can be turned off and how another model gets connected (owner 11-04): facts only, the person
+// presses, and every service is named with where the code goes. Claude's own account setting and the
+// desktop app are out of the plugin's reach, so they get a path and no switch.
+function careBlocks(care: NonNullable<BookData['care']>, w: BookWords, lang: string): Block[] {
+  const word = (key: string): string => gapWord(lang, key), on = word('privacy.state.on'), off = word('privacy.state.off'), state = care.state
+  const privacy: Block[] = [
+    { t: 'heading', text: word('privacy.heading') },
+    state ? {
+      t: 'choice', label: word('privacy.label'), current: state.quiet ? 'off' : 'on',
+      now: fill(w.settings.now, { value: state.quiet ? off : on }),
+      options: [{ value: 'on', label: on, key: 'coco:care:plain' }, { value: 'off', label: off, key: 'coco:care:quiet' }],
+      help: state.other ? `${word('privacy.help')} ${word('privacy.other')}` : word('privacy.help'),
+    } : { t: 'para', text: word('privacy.failed') },
+    { t: 'fact', label: word('privacy.account'), text: word('privacy.accountHow') },
+    { t: 'link', href: 'https://claude.ai/settings/data-privacy-controls', text: word('privacy.accountLink') },
+    { t: 'link', href: 'https://claude.com/docs/third-party/claude-desktop/telemetry', text: word('privacy.desktopHow') },
+  ]
+  const models: Block[] = [
+    { t: 'heading', text: word('models.heading') },
+    { t: 'para', text: word('models.help') },
+    { t: 'fact', label: word('models.desktop'), text: word('models.desktopHow') },
+    { t: 'fact', label: 'Claude Code', text: word('models.codeHow') },
+    ...MODEL_SERVICES.map((s): Block => ({ t: 'row', label: s.mainland ? `${s.name} (${word('models.mainland')})` : s.name, help: s.where ? `${s.url}\n${word(`models.where.${s.where}`)}` : s.url })),
+  ]
+  return [
+    { t: 'button', key: 'coco:care:back', label: `‹ ${w.tabs.settings}` },
+    ...(care.first === 'models' ? [...models, ...privacy] : [...privacy, ...models]),
+  ]
 }
 
 // One stick on the first page: lit by a press, or by `/coco focus`.
@@ -1043,6 +1107,7 @@ export function desktopBook(
           </Box>
 
   const art = bagHead(w, d, page, surface, Math.max(160, Math.min(560, Math.floor(measure * COLUMN_PX) - 4)))
+  const otherModels = gapWord(lang, 'models.heading')
   return (
     <Box flexDirection="column">
       {cardsOpen(ui, lang, d.cards, false)}
@@ -1057,6 +1122,7 @@ export function desktopBook(
             onPress={() => press.go(p)}
           />, ...(p==='him'&&d.talkEnabled?[<Button key="coco:talk:open" label={d.talkTab??''} onPress={noop}/>]:[])]
         ))}
+        {otherModels ? <Button key="coco:care:models" label={otherModels} onPress={noop} /> : null}
       </Box>
       {picture}
       <Box flexDirection="column" marginTop={1} width={measure}>
@@ -1203,6 +1269,7 @@ export function terminalBook(ui: Elements['terminal'], w: BookWords, book: CocoB
   const tab = (p: Page) => bagPageName(lang, p) ?? w.tabs[p] ?? ''
   // Their itabag on the terminal (lane C, 10-14): the coral frame with the page's number and name, its badges and quota.
   const numbered = (p: Page) => `${numberText(PAGES.indexOf(p) + 1, lang)}${lang === 'zh' || lang === 'zh-Hant' || lang === 'ja' ? '' : ' '}${tab(p)}`
+  const otherModels = gapWord(lang, 'models.heading')
   const bagRows = bagWords(lang) ? bagTerminalHead(Math.min(columns, 80), numbered(page), bagSwitches(w, d, 'terminal'), bagQuota(d), cells) : []
   return (
     <Box flexDirection="column">
@@ -1212,6 +1279,7 @@ export function terminalBook(ui: Elements['terminal'], w: BookWords, book: CocoB
         {PAGES.flatMap((p, i) => (
           [<Button key={`coco:book:tab:${p}`} label={narrowTabs ? tab(p) : numbered(p)} hotkey={String(i + 1)} {...(narrowTabs ? { plain: true as const } : p === page ? { variant: 'primary' as const } : {})} onPress={() => press.go(p)} />, ...(p==='him'&&d.talkEnabled?[<Button key="coco:talk:open" label={d.talkTab??''} onPress={noop}/>]:[])]
         ))}
+        {otherModels ? <Button key="coco:care:models" label={otherModels} {...(narrowTabs ? { plain: true as const } : {})} onPress={noop} /> : null}
       </Box>
       {d.visitors ? <Box marginTop={1}><Button key="coco:visitors:back" label={`‹ ${tab('him')}`} onPress={noop} /></Box> : null}
       <Box flexDirection="row" alignItems="flex-end" marginTop={1}>

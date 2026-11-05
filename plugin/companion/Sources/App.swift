@@ -212,6 +212,8 @@ final class Companion: NSObject, NSApplicationDelegate {
     private var tuning: TuningStore?
     private var frames: Frames?
     private var neighbours: Neighbours?
+    private var agents: AgentWatch?
+    private var ownFeed: OwnFeed?
     private var health: HealthWriter?
     private lazy var requestExpiry = OneShot { [weak self] in self?.expireRequests() }
     private var activity: Activity?
@@ -261,6 +263,8 @@ final class Companion: NSObject, NSApplicationDelegate {
             ?? options.folder.appendingPathComponent("frames", isDirectory: true)
         let pixelFolder = frameFolder.deletingLastPathComponent().appendingPathComponent("pixel", isDirectory: true)
         let assetRoot = frameFolder.deletingLastPathComponent()
+        Voice.root = assetRoot
+        Voice.folder = options.folder
         let loadedFrames = Frames(folder: frameFolder,pixelFolder: pixelFolder)
         frames = loadedFrames
         tuning = TuningStore(assetRoot.appendingPathComponent("companion-tuning.json"))
@@ -296,7 +300,7 @@ final class Companion: NSObject, NSApplicationDelegate {
         }
         d1Notifications.start()
         feed.changed = { [unowned self] record in
-            pet.show(record); neighbours?.setEnabled(record.neighbours); syncDock(record); writeHealth()
+            pet.show(record); neighbours?.setEnabled(record.neighbours); agents?.setEnabled(record.neighbours); syncDock(record); writeHealth()
         }
         feed.woke = { [unowned self] presence in pet.woke(presence) }
         feed.targetChanged = { [unowned self] app in claude.setTarget(app); pet.targetBundleID = claude.targetBundleID; frontmostMoved(); writeHealth() }
@@ -304,6 +308,7 @@ final class Companion: NSObject, NSApplicationDelegate {
         claude.changed = { [unowned self] reorder in
             store.trusted = claude.trusted
             pet.targetBundleID = claude.targetBundleID
+            feed.appName = claude.targetName
             pet.follow(claude.sighting, reorder: reorder)
             writeHealth()
         }
@@ -358,6 +363,7 @@ final class Companion: NSObject, NSApplicationDelegate {
             }
         }
         claude.quit = { [unowned self] in feed.forget() }
+        claude.gone = { [unowned self] bundle in agents?.ended(app: bundle) }
         claude.trustMoved = { [unowned self] in
             store.trusted = claude.trusted
             pet.trustChanged()
@@ -366,6 +372,12 @@ final class Companion: NSObject, NSApplicationDelegate {
 
         feed.start()
         pet.show(feed.shown)
+        let own = OwnFeed(lines: Lines(root: assetRoot, home: home))
+        own.publish = { [unowned self] object in feed.own(object) }
+        let watch = AgentWatch(home: home)
+        watch.changed = { [unowned own] state in own.set(state) }
+        ownFeed = own; agents = watch
+        own.start(); watch.setEnabled(feed.shown.neighbours)
         comeBack(.launch(login: options.login), summon: feed.latestSummon)
         feed.summoned = { [unowned self] summon in comeBack(.feed, summon: summon) }
         claude.start(askForAccessibility: false)
@@ -417,6 +429,7 @@ final class Companion: NSObject, NSApplicationDelegate {
 
     func applicationWillTerminate(_ notification: Notification) {
         requestExpiry.cancel()
+        agents?.stop(); ownFeed?.stop()
         pet?.stop(); frames?.stop(); tuning?.stop(); neighbours?.stop()
         claude?.stop()
         feed?.stop()
@@ -439,7 +452,7 @@ final class Companion: NSObject, NSApplicationDelegate {
     }
 
     @objc private func frontmostMoved() {
-        feed?.setClaudeFrontmost(NSWorkspace.shared.frontmostApplication?.bundleIdentifier == claude?.targetBundleID)
+        feed?.setClaudeFrontmost(NSWorkspace.shared.frontmostApplication?.bundleIdentifier == claude?.hostBundleID)
     }
 
     private let d1Notifications = D1Notifications()

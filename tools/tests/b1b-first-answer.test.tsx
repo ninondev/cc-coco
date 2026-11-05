@@ -11,7 +11,7 @@ import { desktopPicture } from './world'
 const NOW=Date.UTC(2026,9,4,10,0)
 const START={cwd:'/tmp/b1b-first-answer',surface:'desktop' as const,isInteractive:true}
 const REQUEST={plugin:'coco',component:'AbovePrompt' as const,surface:'desktop' as const,props:{hasSurvey:false,isWorking:false,maxRows:30,bodyColumns:100,scroll:{offset:0,bodyRows:30},view:{}},viewport:{columns:100,rows:48}}
-type Options={hang?:string;throwAt?:string;initial?:unknown;settingsNull?:boolean;nextTree?:unknown;storeRecord?:unknown;label?:string;pictureGate?:Promise<void>;gateBook?:boolean;reduced?:boolean;bookFiles?:boolean}
+type Options={hang?:string;throwAt?:string;initial?:unknown;settingsNull?:boolean;nextTree?:unknown;storeRecord?:unknown;label?:string;pictureGate?:Promise<void>;gateBook?:boolean;reduced?:boolean;bookFiles?:boolean;engineSettings?:Record<string,unknown>}
 function fixture(on:On,option:Options={}){
  const storeWrites:{key:string;value:unknown}[]=[]
  const calls:string[]=[],spans:{step:string;ms:number}[]=[]
@@ -24,7 +24,7 @@ function fixture(on:On,option:Options={}){
  on('state.set',async($,e,next)=>{const result=await step('state.set',()=>{const version=(cells.get(e.key)?.version??0)+1;cells.set(e.key,{value:e.value,version});return{value:{isSet:true,version}}});await next(e);return result})
  on('store.get',($,e)=>step('store.get:'+e.key,()=>({value:e.key==='bandSettings'?option.storeRecord:e.key==='lastActive'?NOW-60000:undefined})))
  on('store.set',($,e)=>{storeWrites.push({key:e.key,value:e.value});return{value:undefined}})
- on('settings.read',()=>step('settings.read',()=>({value:option.settingsNull?null:{timeZone:'UTC',prefersReducedMotion:option.reduced}}) as never))
+ on('settings.read',()=>step('settings.read',()=>({value:option.settingsNull?null:{timeZone:'UTC',prefersReducedMotion:option.reduced,...(option.engineSettings??{})}}) as never))
  on('env.get',($,e)=>step('env.get:'+e.name,()=>({value:e.name==='LANG'?'en_US.UTF-8':undefined})))
  on('session.id',()=>step('session.id',()=>({value:'b1b-kit-session'})))
  on('session.root',()=>step('session.root',()=>({value:START.cwd})))
@@ -67,11 +67,13 @@ describe('B1b synchronous desktop first answer',()=>{
  for(const {code} of LANGS)test('cold options select '+code+' before pending settings',{options:{band:'on',language:code},timeoutMs:10000},async($,on)=>{
   fixture(on,{hang:'settings.read'});const ui=await $.ui.mount(REQUEST);expect(await ui.find({type:'Text',text:WORDS[code].name})).toBeDefined()
  })
- test('auto uses synchronously supplied resolvedLanguage',{options:{band:'on',language:'auto',resolvedLanguage:'ja'},timeoutMs:10000},async($,on)=>{fixture(on,{hang:'settings.read'});const ui=await $.ui.mount(REQUEST);expect(await ui.find({type:'Text',text:WORDS.ja.name})).toBeDefined()})
- test('resolvedLanguage config row can be hidden while remaining addressable',async($,on)=>{
-  fixture(on);const result=await $.config.describe({key:'coco.resolvedLanguage',label:'TODO-WORDS',description:'TODO-WORDS',isHidden:false,provider:{plugin:'coco',tier:'user'}})
-  expect(result.isHidden).toBe(true)
+ test('auto language speaks the record language while the settings read hangs (fast start gate; the record also keeps an existing user\'s language through the resolvedLanguage migration)',{options:{band:'on',language:'auto'},timeoutMs:10000},async($,on)=>{
+  fixture(on,{hang:'settings.read',storeRecord:{language:'ja'}})
+  await $.session.start(START)
+  const ui=await $.ui.mount(REQUEST)
+  expect(await ui.find({type:'Text',text:WORDS.ja.name})).toBeDefined()
  })
+
 
  test('healthy cold first answer',async($,on)=>{const f=fixture(on),r=await visible($);metric(f,{firstAnswerMs:r.ms})})
  for(const hang of ['state.get:view','settings.read','store','next.render','session.id'])test('pending '+hang+' cannot delay cold desktop',{timeoutMs:10000},async($,on)=>{const f=fixture(on,{hang});await visible($);metric(f,{pending:hang})})

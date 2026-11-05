@@ -1,8 +1,8 @@
-// The notices: his spark beside a comment he liked, the margin note under a good commit message,
-// Shiori's place in a task list, his shelf, the notes when Claude seems stuck, and a few costume reactions.
-// Zero tokens: every piece rides a tool result the plugin already receives; the reading itself runs
-// in notice-worker.mjs, never in a hook's path. What was read is never stored: no comment, quote,
-// commit message or function name leaves session memory, and the shelf keeps only relative file names.
+// The notices: his spark beside a comment he liked, the margin note under a good commit message, Shiori's place in a
+// task list, his shelf, the notes when Claude seems stuck, and a few costume reactions.
+// Zero tokens: every piece rides a tool result the plugin already receives; the reading itself runs in
+// notice-worker.mjs, never in a hook's path. What was read is never stored: no comment, quote, commit message or
+// function name leaves session memory, and the shelf keeps only relative file names.
 import { c3Word, loadC3Words } from './c3-words'
 import { fill } from './mood'
 
@@ -23,12 +23,12 @@ export type NoticeCap = {
   root: () => Promise<string | undefined>
   screenReader?: () => Promise<boolean>
   workerPath: string
-  readWords: () => Promise<string> // hooks/c3-text.json, where his notice words live
+  readWords: () => Promise<string>
   changed: () => void
   emit?: (line: NoticeLine) => 'shown' | 'queued' | 'dropped'
   dismiss?: (key: string) => void
   react?: (kind: 'praise' | 'praise-long' | 'stuck' | 'hair') => void
-  committed?: () => void // a commit landed this session (their vibe check counts them)
+  committed?: () => void
   place?: (place: Place | undefined) => void
   costume?: (costume: Costume) => void
   after?: (ms: number, run: () => void) => { cancel: () => void }
@@ -51,8 +51,8 @@ export type Cause = 'circle' | 'long'
 export type NoteRow = { cause: Cause; text: string }
 export type ShelfView = { names: string[] } | 'empty' | 'error'
 
-// Chinese has three forms for the long, explained message (写得认真, 说得详细, 交代清楚) in words-0.2.i18n.json,
-// in the writer's order. Until he picks, the first ships; this index is the one place to change it.
+// Chinese has three forms for the long, explained message (写得认真, 说得详细, 交代清楚) in words-0.2.i18n.json, in the
+// writer's order. Until he picks, the first ships; this index is the one place to change it.
 export const ZH_LONG_FORM = 0
 
 const ROWS = 64
@@ -89,7 +89,6 @@ function hash(value: string): number {
   return h >>> 0
 }
 
-// The path inside the folder's root, with forward slashes; nothing outside it.
 export function relativeTo(path: string, root: string | undefined): string | undefined {
   if (!root) return undefined
   const a = path.replaceAll('\\', '/'), b = root.replaceAll('\\', '/').replace(/\/+$/, '')
@@ -100,7 +99,6 @@ export function relativeTo(path: string, root: string | undefined): string | und
   return rel && !rel.split('/').includes('..') ? rel : undefined
 }
 
-// A name too long for a line is cut in the middle and keeps its extension: token-r…test.ts.
 const SHELF_NAME = 36
 function cutName(name: string): string {
   const chars = [...name]
@@ -110,7 +108,6 @@ function cutName(name: string): string {
   return chars.slice(0, front).join('') + '…' + chars.slice(chars.length - extension - back).join('')
 }
 
-// Two names alike get their nearest parent: api/index.ts and web/index.ts.
 export function shelfNames(paths: string[]): string[] {
   const names = paths.map(base)
   return paths.map((path, i) => {
@@ -204,7 +201,7 @@ export function createNotice(cap: NoticeCap) {
     return undefined
   }
 
-  // ------------------------------------------------------------ the spark
+  // ---- the spark
 
   type Candidate = { abs: string; request: Record<string, unknown> }
   function sparkCandidate(input: Pick<ToolResultInput, 'tool' | 'result'>): Candidate | undefined {
@@ -249,7 +246,7 @@ export function createNotice(cap: NoticeCap) {
     cap.changed()
   }
 
-  // ------------------------------------------------------------ the commit he marks
+  // ---- the commit he marks
 
   // The engine says a commit was made; older engines say it in the first line of the output.
   function committed(result: Record<string, unknown>): boolean {
@@ -292,8 +289,8 @@ export function createNotice(cap: NoticeCap) {
     save('commitUwu', uwu)
   }
 
-  // Their LGTM: once a session and once a folder a day; a long, explained message may speak a second time that day; five a
-  // repository in all. A message Claude wrote gets their line about Claude where lane B has written one.
+  // Their LGTM: once a session and once a folder a day; a long, explained message may speak a second time that day; five
+  // a repository in all. A message Claude wrote gets their line about Claude where lane B has written one.
   function speak(where: string, verdict: { quality: 'why' | 'long'; quote?: string | null }, claude = false): void {
     if (voicedSession || !cap.settings().notes || !cap.emit || !lgtmLeft(where)) return
     const day = cap.localDay(cap.now()), held = voice[where]
@@ -310,12 +307,12 @@ export function createNotice(cap: NoticeCap) {
     cap.react?.(verdict.quality === 'long' ? 'praise-long' : 'praise')
   }
 
-  // ------------------------------------------------------------ Shiori keeps the place
+  // ---- Shiori keeps the place
 
   function setPlace(items: { subject: string; status: string }[]): void {
     const open = items.filter(item => item.status !== 'completed')
     const before = placeNow
-    if (items.length < 2 || !open.length) placeNow = undefined // the last task is done: they go in and stay in
+    if (items.length < 2 || !open.length) placeNow = undefined
     else {
       const done = items.length - open.length, current = items.find(item => item.status === 'in_progress') ?? open[0]!
       placeNow = { i: Math.min(done + 1, items.length), n: items.length, subject: current.subject.slice(0, 40), dip: before && done >= before.i ? ++dips : dips }
@@ -346,7 +343,7 @@ export function createNotice(cap: NoticeCap) {
     }
   }
 
-  // ------------------------------------------------------------ his shelf
+  // ---- his shelf
 
   // Reads per local day over the last 30 days, 16 files a folder, 64 folders; secret-looking names never.
   function shelfRead(rel: string, at: number): void {
@@ -354,7 +351,7 @@ export function createNotice(cap: NoticeCap) {
     turnReads.add(rel)
     const day = cap.localDay(at), oldest = cap.localDay(at - (SHELF_DAYS - 1) * DAY_MS)
     const folder = shelf[rootNow] ?? { files: [] }
-    delete shelf[rootNow]; shelf[rootNow] = folder // the least recently used leaves first
+    delete shelf[rootNow]; shelf[rootNow] = folder
     for (const f of folder.files) f[1] = f[1].filter(([d]) => d >= oldest)
     folder.files = folder.files.filter(f => f[1].length)
     let file = folder.files.find(f => f[0] === rel)
@@ -383,7 +380,7 @@ export function createNotice(cap: NoticeCap) {
     } catch { return 'error' }
   }
 
-  // ------------------------------------------------------------ notes when Claude seems stuck
+  // ---- notes when Claude seems stuck
 
   function say(cause: Cause, id: string, slots: Record<string, string | number>, hint?: string): void {
     if (!cap.settings().notes || notesOff.has(cause) || spoken.has(cause)) return
@@ -436,7 +433,7 @@ export function createNotice(cap: NoticeCap) {
     say('long', input.id, { function: found.name, file: base(rel), n: found.lines })
   }
 
-  // ------------------------------------------------------------ small costume reactions
+  // ---- small costume reactions
 
   function dress(next: Costume): void {
     if (JSON.stringify(next) === JSON.stringify(costume)) return
@@ -451,7 +448,7 @@ export function createNotice(cap: NoticeCap) {
     dress(next)
   }
 
-  // ------------------------------------------------------------ events
+  // ---- events
 
   async function toolResult(input: ToolResultInput): Promise<void> {
     if (!live) return
@@ -536,7 +533,6 @@ export function createNotice(cap: NoticeCap) {
 
   return {
     toolResult, toolStart, prompted, turnStart, turnComplete, sessionStart, settingsChanged, stuckOff, words, word,
-    // A compaction ends the record of what Claude has read.
     compacted: (): void => ranges.clear(),
     spark: (id: string): SparkRow | undefined => rows.get(id),
     commit: (id: string): CommitRow | undefined => commits.get(id),
@@ -544,7 +540,6 @@ export function createNotice(cap: NoticeCap) {
     place: (): Place | undefined => placeNow,
     shelf: shelfOf,
     costume: (): Costume => costume,
-    // Rows kept across a resume come back from the store before the first row is drawn.
     ready: (): Promise<void> => ensure().catch(() => diagnose('notice.store')),
     // A mark kept across a resume has no quote yet; read it again from the row's own result.
     async quoteOf(id: string, tool: string, output: unknown): Promise<string | undefined> {
@@ -571,7 +566,6 @@ export function createNotice(cap: NoticeCap) {
 
 export type Notice = ReturnType<typeof createNotice>
 
-// The rows in transcript.tsx draw from the one runtime the register module made.
 let current: Notice | undefined
 export const setNotice = (value: Notice | undefined): void => { current = value }
 export const currentNotice = (): Notice | undefined => current

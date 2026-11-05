@@ -23,7 +23,7 @@ fn shared_inventory_matches_generated_records_in_order() {
 #[test]
 fn native_names_and_unknown_locale_fallback_use_language_metadata() {
     assert_eq!(languages::locale("zh-Hant"), "zh-TW");
-    assert_eq!(languages::native_name("zh-Hant"), "國語");
+    assert_eq!(languages::native_name("zh-Hant"), "繁體中文");
     assert_eq!(languages::english_name("zh-Hant"), "Chinese (Traditional)");
     assert_eq!(languages::native_name("ja"), "日本語");
     assert!(!languages::is_supported("future-Latn"));

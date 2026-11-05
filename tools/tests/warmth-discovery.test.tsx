@@ -33,7 +33,7 @@ describe('warmth command discovery', () => {
     expect(registrations.find(command => command.name === 'coco')).toEqual({
       name: 'coco',
       description: gapWord('en','cmd.coco'),
-      argumentHint: '[voice|warmth|band|lang|vibe|dm|focus|about|companion|icon|more|say|cards] [value]',
+      argumentHint: '[models|privacy|voice|warmth|band|lang|vibe|dm|focus|about|companion|icon|more|say|cards] [value]',
     })
 
     await $.command.run({ command: 'coco', args: 'help', origin: PERSON, presentation: P })
