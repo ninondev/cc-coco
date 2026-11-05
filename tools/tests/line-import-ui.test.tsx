@@ -2,6 +2,7 @@ import {test,expect} from 'claude-code/testing'
 import {world,RECENT,MORNING,P,PERSON,settleLegacyStart} from './world'
 import {M1_MORE_TEXT,installM1Words} from './m1-more-data-fixture'
 import {moreWord} from '../hooks/more-words'
+import {samePath} from './file-paths'
 installM1Words()
 const START={cwd:'/tmp/line-import-project',surface:'terminal' as const,isInteractive:true}
 const PANE={plugin:'coco',component:'Pane' as const,requestId:'coco-book',props:{title:'Coco',isFocused:true,bodyColumns:64,placement:'dock' as const,scroll:{offset:0,bodyRows:40},view:{}}}
@@ -11,8 +12,8 @@ for(const surface of ['desktop','terminal','vscode','mobile'] as const)test(`Lin
  const path='/tmp/coco-import-fixture.txt',source='[start]\n开工啦\n'+imported.join('\n')+'\n'+('很'.repeat(25))+'\n[done]\n搞定啦'
  let modelCalls=0
  on('model.complete',()=>{modelCalls++;return{deny:'file imports must not send requests'}})
- on('fs.stat',($,e,next)=>e.path===path?{value:{kind:'file',size:new TextEncoder().encode(source).byteLength,mtimeMs:MORNING,isLink:false}}:next(e))
- const w=world(on,{observeStore:true,moreText:M1_MORE_TEXT,store:{...RECENT},env:{HOME:'/tmp/line-import-home',LANG:'zh_CN.UTF-8',TERM:'xterm-256color'},readText:p=>p===path?source:undefined})
+ on('fs.stat',($,e,next)=>samePath(e.path,path)?{value:{kind:'file',size:new TextEncoder().encode(source).byteLength,mtimeMs:MORNING,isLink:false}}:next(e))
+ const w=world(on,{observeStore:true,moreText:M1_MORE_TEXT,store:{...RECENT},env:{HOME:'/tmp/line-import-home',LANG:'zh_CN.UTF-8',TERM:'xterm-256color'},readText:p=>samePath(p,path)?source:undefined})
  await $.session.start(START);await settleLegacyStart($,w)
  await $.command.run({command:'coco',args:`lines import ${path}`,origin:PERSON,presentation:P})
  const ui=await $.ui.mount({surface,...PANE})

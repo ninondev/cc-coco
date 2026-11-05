@@ -6,13 +6,15 @@ installM1Words()
 const START={cwd:'/tmp/talk-api-setup',surface:'terminal' as const,isInteractive:true}
 const PANE={plugin:'coco',component:'Pane' as const,requestId:'coco-book',props:{title:'Coco',isFocused:true,bodyColumns:80,placement:'dock' as const,scroll:{offset:0,bodyRows:60},view:{}}}
 const OLD_KEY={last4:'old1',state:'works' as const,store:'keychain' as const,host:'api.example.invalid',model:'test-chat'}
+const KEY_PROGRAM=/[\\/]libexec[\\/]talk-key(?:-windows-(?:x86_64|aarch64)\.exe|-linux-(?:x86_64|aarch64))?$/
 function fixture(on:Parameters<typeof world>[0],cancel=false,wait?:Promise<void>,options:{existing?:boolean;agreed?:boolean;failure?:boolean;reject?:boolean;enabled?:boolean;storeFailure?:boolean}={}){
  let models=0,adds=0
  on('session.model',()=>({value:'default'}))
  on('model.complete',()=>{models++;return{deny:'setup must not send to a model'}})
- on('fs.exists',{path:/SystemVersion\.plist$|\/libexec\/talk-key$/},()=>({value:true}))
+ on('fs.exists',{path:/SystemVersion\.plist$/},()=>({value:true}))
+ on('fs.exists',{path:KEY_PROGRAM},()=>({value:true}))
  on('process.run',async($,e,next)=>{
-  if(!e.argv.some(v=>v.endsWith('/libexec/talk-key')))return next(e)
+  if(!e.argv.some(v=>KEY_PROGRAM.test(v)))return next(e)
   if(e.argv.includes('add')){adds++;await wait;if(options.reject)throw Error('fixture helper failed')}
   const reply=e.argv.includes('add')?(options.failure?{kind:'offline'}:cancel?{kind:'cancelled'}:{kind:'saved',last4:'test',store:'keychain',host:'api.example.invalid',model:'test-chat'}):options.existing?{...OLD_KEY,kind:'works'}:{kind:'cancelled'}
   return{value:{exitCode:0,stdout:JSON.stringify(reply),stderr:'',isStdoutTruncated:false,isStderrTruncated:false}}
