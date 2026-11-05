@@ -62,7 +62,7 @@ HOOK_SUFFIXES = {'.ts', '.tsx', '.json', '.mjs', '.js'}
 # Asset folders (and the folders below them) with the kinds of file each holds.
 PET_ASSET = {'.png', '.ico', '.svg', '.json'}
 ASSET_KINDS = {
-    'assets/desktop': {'.png'}, 'assets/pixel': {'.png'}, 'assets/card': {'.png'}, 'assets/patches': {'.png'},
+    'assets/card': {'.png'},
     'assets/stamps': {'.png'}, 'assets/icon': {'.png'}, 'assets/coco-room': {'.png'}, 'assets/claudie': {'.png'},
     'assets/shed': {'.png'}, 'assets/visitors': {'.png'}, 'assets/coco': {'.png', '.json'},
     'assets/zine': {'.jpg'}, 'assets/sound': {'.wav'},
@@ -137,8 +137,7 @@ def plugin_allowed(name):
         if resource.as_posix() in {'AppIcon.icns', 'build.txt', 'build-receipt.json',
                                   'frame-manifest.json', 'companion-tuning.json', 'neighbours.json'}:
             return True
-        kinds = {'frames': {'.png'}, 'pixel': {'.png'}, 'patches': {'.png', '.json'},
-                 'shed': {'.png', '.json'}, 'visitors': {'.png', '.json'},
+        kinds = {'shed': {'.png', '.json'}, 'visitors': {'.png', '.json'},
                  'coco': {'.bin', '.json'}, 'words': {'.json'}, 'claudie': {'.png'}}
         return len(resource.parts) > 1 and resource.suffix in kinds.get(resource.parts[0], ())
     p = Path(name)

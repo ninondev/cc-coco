@@ -2,41 +2,8 @@ import AppKit
 import QuartzCore
 import CoreText
 
-// Him, by Claude's window, and the line he says. Where he goes is Place.swift; how he reacts when
-// you touch him is Reactions.swift; this file shows both.
-//
-// He is 96 points tall by default. In his right-click menu, Extra small and Small are the pixel
-// heads at whole device pixels per art pixel, at most 48 and 72 points (48 and 64 points on a
-// Retina screen with the current sheet). Medium 96 and Large 128 points use the painted frames.
-// On his own he stays clear of Claude's window (it has no spot inside that stays empty at that
-// size: a 48 point title bar, the account and project rows at the bottom of the sidebar, buttons
-// and the composer in the corners). You can carry him anywhere, in every situation: put him down
-// near the window and he follows it; farther away and he stays where you left him; while the window
-// fills the screen he keeps a spot of his own there. "Put him back" in his menu returns him to the
-// automatic places.
-//
-// Touching him: a click is a head pat, quick clicks fluster him, an Option-click brings out Shiori,
-// picking him up startles him, putting him down he smooths his robe, a long press and he hugs his
-// book; each with a short line in his voice (from the feed, in the session's language). A press or a
-// drag on him goes only to him, never through to Claude: his click target is his own pixels, and the
-// panel that takes the press keeps the whole drag.
-//
-// Three borderless, non-activating panels that never become key, so Claude keeps the focus:
-//   hit     his current frame drawn at alpha 1/255, invisible. The window server tests clicks against
-//           the alpha of drawn content, so only his own pixels catch a click and the clear ones
-//           around him let it through. His picture and his line are its child windows: they move
-//           and stack with it, so a drag moves one window and a click cannot split them.
-//   look    his picture, with the loop, the pat, the sway; ignores the mouse.
-//   speech  his line; ignores the mouse.
-// On the ledge he is ordered just behind Claude's window (its edge hides the bottom of his frame);
-// beside it, below it or in the corner, just above it; where you put him, floating while Claude is
-// in front (so Claude raising its own window cannot bury him), otherwise just above it.
-//
-// Motion: two-frame turn loops and an occasional idle blink run in the window server, only while
-// he is on screen and not covered, with Reduce Motion off. The idle blink adds no timer to this
-// process: a three-minute randomized contents sequence. Reactions replace it.
-// The pat squash, the flustered shake and the sway also stop with Reduce Motion. Timers are reusable
-// one-shots for live lines and reactions; the blink never arms one.
+// Coco's panels, input and placement. CocoPlayer supplies the artwork and reactions;
+// Place and CompanionPhysics keep the pet attached to its host window.
 
 /// Whether screenshots, recordings and shared screens show him: on by default; off keeps every window of his out
 /// (the public WindowServer exclusion; modern capture clients may override it). Owner 10-20: a switch, on by default.
@@ -86,7 +53,7 @@ enum Size: String, CaseIterable {
     /// Settings and requests from before 10-18 may still name «tiny» or «small»; Medium is the smallest size now.
     init?(name: String) { self.init(rawValue: name == "tiny" || name == "small" ? "medium" : name) }
 
-    /// No size draws the pixel heads any more; their paths leave with the old frames.
+    /// All supported sizes use the same smooth Coco artwork.
     var pixelArt: Bool { false }
 
     var height: CGFloat {
@@ -107,34 +74,8 @@ enum Size: String, CaseIterable {
 }
 
 /// The idle animation's whole schedule and eligibility, independent of windows and clocks.
-enum IdleBlink {
-    static func wanted(mood: String, frame: String, hasLoop: Bool, reacting: Bool,
-                       visible: Bool, unoccluded: Bool, reduceMotion: Bool) -> Bool {
-        mood == "idle" && frame == "idle-reading" && !hasLoop && !reacting
-            && visible && unoccluded && !reduceMotion
-    }
-
-    static func animation(open: CGImage, shut: CGImage) -> CAKeyframeAnimation {
-        MotionModel.standard.idle(open: open, shut: shut, gaze: false)
-    }
-}
 
 /// Reconcile the cache with the actual layer, even when an input already invalidated the cache.
-enum FrameLoop {
-    static func prepare(on picture: CALayer, wanted: String?, cached: inout String?) -> Bool {
-        guard let wanted else {
-            picture.removeAnimation(forKey: "loop")
-            picture.removeAnimation(forKey: "tool-patch-loop")
-            cached = nil
-            return false
-        }
-        if wanted == cached, picture.animation(forKey: "loop") != nil { return false }
-        picture.removeAnimation(forKey: "loop")
-        picture.removeAnimation(forKey: "tool-patch-loop")
-        cached = nil
-        return true
-    }
-}
 
 struct CompanionScreenGeometry {
     var frame: CGRect
@@ -185,7 +126,6 @@ final class Pet: NSObject {
     private let d1Visitor = D1VisitorOverlay()
     private lazy var d1FrameEnd = OneShot { [weak self] in
         guard let self else {return}
-        if let shed=self.record.shed,shed.phase == "end",self.now-shed.at >= 1600,!self.reduceMotion,!self.store.size.pixelArt {self.poseDip(y:0.975,x:1.0075,delayMs:0,key:"d1-shed-back")}
         self.draw();self.place(reorder:false)
     }
     private let bubble = Panel(clickable: false, shadow: true)
@@ -222,8 +162,6 @@ final class Pet: NSObject {
     private var mode: Place.Mode?
     private var orderedTo: CGWindowID?
     private var scale: CGFloat = 2
-    private var loopKey: String?
-    private var gazeBlink = true
     private var recheckAt: Double?
     private var lastShown: NSRect?
     private var reactor = Reactor()
@@ -234,11 +172,9 @@ final class Pet: NSObject {
     private var nap: Nap?
     private let stickLayer = CALayer()
     private var tuning = CompanionTuning.standard
-    private var preparedKey = ""
     private let allowsWindowPresentation: Bool
     private let screens: @MainActor () -> CompanionScreens
     private let nowMilliseconds: @MainActor () -> Double
-    private var touchPreparationID = 0
     private var activeTouch: (sequence: TouchSequence, base: String, began: Double, timeline: [CompanionTuning.Step], rate: Double)?
     private var localTouchAt = 0.0
     private var gestureAt = 0.0
@@ -258,21 +194,16 @@ final class Pet: NSObject {
     private var pendingPlacement: Place.Target?
     private var placementSerial = 0
     private var clingSerial = 0
-    private var faceSerial = 0
     private var squeezeAxis = Place.Contact.Axis.none
     private var squeezeFace = false
     private var squeezeSerial = 0
     private lazy var squeezeFaceEnd = OneShot { [weak self] in
         guard let self else { return }
         self.squeezeFace = false
-        self.lookView.picture.removeAnimation(forKey: "window-face"); self.preparedKey = ""; self.prepareFrames(); self.draw()
+        self.draw()
         if let geometryAt = self.geometryAt { self.applyCling(at: max(geometryAt, CACurrentMediaTime()), released: !self.windowGestureLive) }
     }
     private var squeezePush = 0.0
-    private var clingFaceOnAt: Double?
-    private var clingFaceOpenAt: Double?
-    private var clingFaceStopAt: Double?
-    private var clingFacePredictedStopAt: Double?
     private var explicitSummonFallback = false
     private var rides = 0
     private var lastRide = -Double.infinity
@@ -282,7 +213,6 @@ final class Pet: NSObject {
     private var deliberatePointer = false
     private var pointerSample: (point: CGPoint, at: Double)?
     private var pointerSpeed = 0.0
-    private var glanceFace: String?
     private var speechFade = CompanionPointerFade()
     private var bubbleFade = CompanionPointerFade()
     private let speechMotion = CompanionPanelMotion()
@@ -291,9 +221,7 @@ final class Pet: NSObject {
     private lazy var speechRestore = OneShot { [weak self] in self?.restorePointerLine() }
     private lazy var bubbleRestore = OneShot { [weak self] in self?.restorePointerPill() }
     private lazy var hoverDeadline = OneShot { [weak self] in self?.advanceHover() }
-    private lazy var relaxPointer = OneShot { [weak self] in self?.relaxPerk() }
     private lazy var entryLine = OneShot { [weak self] in self?.restoreEntryLine() }
-    private lazy var entryBlink = OneShot { [weak self] in self?.blinkAfterEntry() }
     private lazy var rideLineTimer = OneShot { [weak self] in self?.showRideLine() }
     private var pendingRideLine: Reactor.RideLine?
     private var pendingRideReactor: Reactor?
@@ -312,7 +240,6 @@ final class Pet: NSObject {
     var shownMood: String { record.mood }
     var shownReactionKey: String? { reactor.lastKey }
     var touchFrame: String? { reaction?.frame }
-    var pressAnimationDuration: Double? { lookView.picture.animation(forKey: "press")?.duration }
     var wakeDeadline: Double { wakeUntil }
     var hasPlacement: Bool { target() != nil }
     var summonFallbackActive: Bool {
@@ -339,14 +266,11 @@ final class Pet: NSObject {
     private lazy var wakeEnd = OneShot { [unowned self] in
         wakeUntil = 0
         if let queuedReaction { self.queuedReaction = nil; showReaction(queuedReaction,afterWake: true) }
-        else { reaction = nil; activeTouch = nil; preparedKey = ""; prepareFrames(); draw(); place(reorder: false) }
+        else { reaction = nil; activeTouch = nil; draw(); place(reorder: false) }
     }
     private var reaction: (frame: String, until: Double)?
     /// What the reaction above answers (pat, hold, flustered, drag, drop, spin, wake, wave), for Coco's player.
     private var touchKey: String? { didSet { cocoEvent() } }
-    // Coco's player (CocoModel.swift, CocoRender.swift). When their clips load from assets/coco they are drawn on their
-    // own layer, a frame every 33 ms while they move, as companion-rs draws them; the painted frames stay under it,
-    // hidden, until the second batch of the old figure's removal.
     private var coco: CocoPlayer?
     private let cocoPaint = CocoPaint()
     private var cocoFlips = 0
@@ -365,8 +289,7 @@ final class Pet: NSObject {
         draw()
     }
     private lazy var reactionEnd: OneShot = OneShot { [unowned self] in
-        if record.mood == "idle" { gazeBlink = true; loopKey = nil }
-        if !touchActive { activeTouch = nil; preparedKey = ""; prepareFrames() }
+        if !touchActive { activeTouch = nil }
         draw()
         place(reorder: false)
         armReactionEnd()
@@ -403,8 +326,11 @@ final class Pet: NSObject {
         hitView.pet = self
         d1Shed.folder = frames.assetRoot.appendingPathComponent("shed")
         d1Visitor.folder = frames.assetRoot.appendingPathComponent("visitors")
-        coco = try? CocoPlayer(folder: frames.assetRoot.appendingPathComponent("coco", isDirectory: true))
-        if coco != nil { trace.say("pet: coco's clips loaded") }
+        do {
+            coco = try CocoPlayer(folder: frames.assetRoot.appendingPathComponent("coco", isDirectory: true))
+        } catch {
+            trace.say("pet: required Coco assets are unreadable")
+        }
 
         let center = NotificationCenter.default
         center.addObserver(self, selector: #selector(occlusionMoved), name: NSWindow.didChangeOcclusionStateNotification, object: look)
@@ -419,8 +345,7 @@ final class Pet: NSObject {
     private var snoozed: Bool { store.hiddenUntil > Date().timeIntervalSince1970 }
     private var now: Double { nowMilliseconds() }
     private var height: CGFloat { store.size.height }
-    /// The painted pixel frames move in whole art pixels; Coco is drawn smooth at every size (companion-rs smooth_art).
-    private var pixelSteps: Bool { store.size.pixelArt && coco == nil }
+    private var pixelSteps: Bool { false }
 
     // ------------------------------------------------------------ inputs
 
@@ -448,7 +373,7 @@ final class Pet: NSObject {
         d1Helpers.show(record.ended ? []:record.helpers,sprite:helperSprite,speech:speech.isVisible ? speech.frame:nil,parent:hit,
             size:store.size,artPoint:CGFloat(artPixelPoints),reduced:reduceMotion,present:present,label:record.helpersAlt,now:now)
         let activeShed=record.ended ? nil:record.shed
-        d1Shed.show(coco == nil ? activeShed:nil,picture:lookView.picture,target:target,size:store.size,scale:scale,now:now,
+        d1Shed.show(nil,picture:lookView.coco,target:target,size:store.size,scale:scale,now:now,
             reduced:reduceMotion,present:present,parent:hit)
         d1Visitor.show(record.ended ? nil:record.visitor,asleep:record.mood == "sleep",picture:artLayer,size:store.size,scale:scale,
             dark:hit.effectiveAppearance.bestMatch(from:[.aqua,.darkAqua]) == .darkAqua,now:now,reduced:reduceMotion,present:present,coco:coco != nil)
@@ -462,23 +387,14 @@ final class Pet: NSObject {
 
     func show(_ record: Record) {
         cocoEventAt = now
-        let shedChanged=record.shed != self.record.shed
-        let poseChanged = record.pose?.at != self.record.pose?.at || record.pose?.name != self.record.pose?.name
-        if record.motion != self.record.motion || record.mood == "idle" && (self.record.mood != "idle" || record.said != self.record.said) { loopKey = nil; gazeBlink = true }
         self.fed = record
         self.record = playing(TouchAwake.applying(record, after: localTouchAt))
-        if record.mood == "sleep" || Reactor.urgent.contains(record.mood) { clearWindowFace(); clearPerk() }
-        prepareFrames()
+        if record.mood == "sleep" || Reactor.urgent.contains(record.mood) { clearPerk() }
+
         updateActions()
         draw()
         place(reorder: false)
-        if shedChanged,let shed=record.shed,["begin","skip"].contains(shed.phase),!reduceMotion,!store.size.pixelArt {
-            poseDip(y:0.975,x:1.0075,delayMs:0,key:"d1-shed-entry")
-        }
-        if poseChanged && record.pose != nil && record.pose?.name != "cheer" && !reduceMotion {
-            poseDip(y:0.975,x:1.0075,delayMs:0,key:"c3-entry")
-            if let pose=record.pose, pose.name == "run" || pose.name == "helper" {poseDip(y:0.975,x:1.0075,delayMs:pose.name == "run" ? 420:900,key:"c3-handoff")}
-        }
+
     }
 
     /// His hello changes only the frame: no new line, and the hour's hide is cleared on disk too.
@@ -492,7 +408,7 @@ final class Pet: NSObject {
         explicitSummonFallback = false
         explicitSummonFallback = target() == nil
         if !wasVisible, target() != nil {
-            returnGreeting = true; preparedKey = ""; prepareFrames(); draw(); place(reorder: true); store.save(); return
+            returnGreeting = true; draw(); place(reorder: true); store.save(); return
         }
         if sleeping {
             queuedReaction = Reactor.Reaction(key: "wave",frame: "wave",hold: tuning.touch.greetingMs / 1000,line: nil,lineHold: tuning.touch.lineHoldMs / 1000)
@@ -500,8 +416,8 @@ final class Pet: NSObject {
         } else {
             showReaction(Reactor.Reaction(key: "wave",frame: "wave",hold: tuning.touch.greetingMs / 1000,line: nil,lineHold: tuning.touch.lineHoldMs / 1000))
         }
-        lookView.picture.removeAnimation(forKey: "loop")
-        loopKey = nil
+
+
         draw()
         place(reorder: true)
         armReactionEnd()
@@ -525,7 +441,7 @@ final class Pet: NSObject {
             _ = squeeze.update(at: presentationTime, roomOverSize: Place.contact(for: target, motion: tuning.motion).rawScale)
         }
         tuning = value; reactor.tuning = value.touch; cling.tuning = value.motion; squeeze.tuning = value.motion
-        preparedKey = ""; prepareFrames()
+
         draw(); place(reorder: false)
         if let target = retainedTarget, logicalVisible, !relocating { applySqueeze(target, at: presentationTime) }
         if geometryAt != nil { applyCling(at: presentationTime, released: !windowGestureLive) }
@@ -535,27 +451,11 @@ final class Pet: NSObject {
         }
     }
     func assetsChanged() {
-        faceSerial += 1; lookView.picture.removeAnimation(forKey: "window-face")
-        preparedKey = ""; prepareFrames(); draw(); place(reorder: false)
+
+        draw(); place(reorder: false)
         if geometryAt != nil { applyCling(at: CACurrentMediaTime(), released: !windowGestureLive) }
     }
-    private func prepareFrames() {
-        let current = lookView.picture.presentation()?.contents.map { $0 as! CGImage } ?? lookView.picture.contents.map { $0 as! CGImage }
-        let displayed = touchActive ? current.flatMap { frames.baseName(of: $0) } : nil
-        let requested = [record.frame] + (record.shed != nil ? ["snake","shed-a","shed-b","shed-c"]:[]) + (record.pose != nil ? ToolPoseTimeline.frames : []) + (record.loop ?? []) + (displayed.map { [$0] } ?? [])
-            + (touchActive ? activeTouch.map { [$0.base] } ?? [] : [])
-            + (touchActive ? reaction.map { [$0.frame] } ?? [] : []) + (record.mood == "sleep" ? ["idle-reading"] : [])
-            + (record.mood == "idle" && record.frame == "idle-reading" && record.loop == nil && !reduceMotion ? ["idle-blink"] : [])
-        let names = Array(Set(requested.compactMap { frames.resolveName($0,size: store.size) })).sorted()
-        let firstFace = reduceMotion ? "blink" : tuning.touch.patFaces.first?.frame ?? "open"
-        let key = "\(frames.generation)|\(names)|\(store.size)|\(scale)|\(firstFace)"
-        guard key != preparedKey else { return }
-        frames.prepareRest(names,size: store.size,scale: scale,firstFace: firstFace,aliases: tuning.touch.faceAliases,
-                           timeline: tuning.touch.patFaces,curve: tuning.touch.leanCurve,rate: tuning.touch.faceSwapHz)
-        frames.prepareMotionFaces(names,size: store.size,scale: scale)
-        preparedKey = key
-        if touchActive, activeTouch != nil { requestTouchPreparation() }
-    }
+
     /// The selected window's input timestamp uses the same monotonic time base as Core Animation.
     func windowGestureBegan(at seconds: Double) {
         guard press == nil, let target = target() else { return }
@@ -605,18 +505,16 @@ final class Pet: NSObject {
                 return value
             }
             if pixelSteps, let first = values.first { pixelShift = Int((first.m41 / artPixelPoints).rounded()) }
-            lookView.setFiltering(pixel: store.size.pixelArt, transformed: true, motion: tuning.motion)
             CompanionAnimation.transforms(on: lookView.cling, key: "cling", values: values,
                                           times: bake.map(\.time), at: seconds, discrete: pixelSteps) { [weak self] in
                 guard let self, self.clingSerial == serial else { return }
-                self.pixelShift = 0; self.refreshRigFiltering()
+                self.pixelShift = 0;
             }
         }
-        applyClingFace(at: seconds, bake: bake)
         scheduleRideLine(at: seconds, bake: bake)
     }
     private var artPixelPoints: Double {
-        let canvas = frames.artPixelHeight ?? 1
+        let canvas = 1
         return Double(spriteSize(scale: scale).height) / Double(max(1, canvas))
     }
     private func applySqueeze(_ target: Place.Target, at seconds: Double) {
@@ -628,7 +526,7 @@ final class Pet: NSObject {
         guard contact.axis != .none else {
             squeezeFace = false; squeeze.reset(); lookView.place.removeAnimation(forKey: "squeeze")
             lookView.place.transform = CATransform3DIdentity
-            if wasSqueezed { lookView.picture.removeAnimation(forKey: "window-face"); draw() }
+            if wasSqueezed { draw() }
             return
         }
         let sample = squeeze.update(at: seconds, roomOverSize: contact.rawScale)
@@ -650,100 +548,27 @@ final class Pet: NSObject {
             }
             return value
         }
-        lookView.setFiltering(pixel: store.size.pixelArt, transformed: true, motion: tuning.motion)
         CompanionAnimation.transforms(on: lookView.place, key: "squeeze", values: values, times: bake.map(\.time), at: seconds) { [weak self] in
-            guard let self, self.squeezeSerial == token else { return }; self.refreshRigFiltering()
+            guard let self, self.squeezeSerial == token else { return };
         }
         if squeezeFace {
-            applyStaticWindowFace("squeeze")
             if let off = bake.first(where: { $0.sample.scale >= tuning.motion.number("squeeze.faceOff") }) {
                 squeezeFaceEnd.fire(after: off.time)
             }
-        } else if wasSqueezed { lookView.picture.removeAnimation(forKey: "window-face"); draw() }
+        } else if wasSqueezed { draw() }
     }
-    private func refreshRigFiltering() {
-        lookView.setFiltering(pixel: store.size.pixelArt,
-                              transformed: lookView.cling.animation(forKey: "cling") != nil || lookView.place.animation(forKey: "place-motion") != nil
-                                || lookView.place.animation(forKey: "squeeze") != nil || !CATransform3DIsIdentity(lookView.place.transform), motion: tuning.motion)
-    }
-    private func clearWindowFace() {
-        faceSerial += 1; clingFaceOnAt = nil; clingFaceOpenAt = nil
-        clingFaceStopAt = nil; clingFacePredictedStopAt = nil
-        lookView.picture.removeAnimation(forKey: "window-face")
-    }
+
     private func clearWindowMotion() {
         squeezeSerial += 1; squeezeFaceEnd.cancel()
         clingSerial += 1; cling.reset(); squeeze.reset(); geometryAt = nil; pixelShift = 0
-        squeezeFace = false; squeezePush = 0; clearWindowFace()
+        squeezeFace = false; squeezePush = 0;
         lookView.cling.removeAllAnimations(); lookView.place.removeAllAnimations()
         lookView.cling.transform = CATransform3DIdentity; lookView.place.transform = CATransform3DIdentity
-        refreshRigFiltering(); rideLineTimer.cancel(); pendingRideLine = nil
+        rideLineTimer.cancel(); pendingRideLine = nil
     }
     private var windowFaceAllowed: Bool { record.mood != "sleep" && !Reactor.urgent.contains(record.mood) && !touchActive }
-    private var displayedBase: String {
-        let image = lookView.picture.presentation()?.contents.map { $0 as! CGImage } ?? lookView.picture.contents.map { $0 as! CGImage }
-        return image.flatMap { frames.baseName(of: $0) } ?? record.frame
-    }
-    private func applyStaticWindowFace(_ face: String?) {
-        guard windowFaceAllowed else { return }
-        let base = displayedBase
-        guard let face, frames.hasFace(face, on: base, size: store.size),
-              let image = frames.cachedMotionFace(face, on: base, size: store.size, scale: scale) else { return }
-        lookView.picture.removeAnimation(forKey: "loop"); lookView.picture.removeAnimation(forKey: "tool-patch-loop"); loopKey = nil
-        lookView.show(image, scale: scale)
-    }
-    private func applyClingFace(at seconds: Double, bake: [CompanionClingKeyframe]) {
-        guard windowFaceAllowed else { clearWindowFace(); return }
-        if let opened = clingFaceOpenAt, seconds >= opened {
-            clingFaceOnAt = nil; clingFaceOpenAt = nil; clingFaceStopAt = nil; clingFacePredictedStopAt = nil
-        }
-        if clingFaceOnAt == nil, let start = bake.first(where: { $0.sample.speed >= tuning.motion.number("cling.faceOnPtPerS") }) {
-            clingFaceOnAt = seconds + start.time
-        }
-        guard let on = clingFaceOnAt else { return }
-        let base = displayedBase
-        let face = squeezeFace ? "squeeze" : rides >= Int(tuning.motion.number("cling.ridesSmileFrom")) ? "smile" : "squeeze"
-        guard frames.hasFace(face, on: base, size: store.size),
-              let held = frames.cachedMotionFace(face, on: base, size: store.size, scale: scale),
-              let open = frames.cached(base, size: store.size, scale: scale) else { return }
-        let threshold = tuning.motion.number("cling.faceStopPtPerS")
-        if let current = bake.first, current.sample.speed < threshold {
-            if clingFaceStopAt == nil { clingFaceStopAt = min(seconds, clingFacePredictedStopAt ?? seconds) }
-        } else { clingFaceStopAt = nil }
-        let stop = bake.first { $0.sample.speed < threshold }.map { seconds + $0.time }
-        clingFacePredictedStopAt = clingFaceStopAt ?? stop
-        let opening = (clingFaceStopAt ?? stop).map { max($0 + tuning.motion.number("cling.faceOpenAfterStopMs") / 1000,
-                                     on + tuning.motion.number("cling.faceMinOnMs") / 1000) }
-        clingFaceOpenAt = opening
-        var values = [open, held], times = [0.0, max(0, on - seconds)]
-        var end = bake.last?.time ?? 1.6
-        if let opening {
-            let offset = max(0, opening - seconds)
-            values.append(open); times.append(offset)
-            if !squeezeFace, frames.hasFace("blink", on: base, size: store.size),
-               let blink = frames.cachedMotionFace("blink", on: base, size: store.size, scale: scale) {
-                let blinkAt = offset + tuning.motion.number("cling.faceBlinkAfterMs") / 1000
-                values += [blink, open]; times += [blinkAt, blinkAt + tuning.motion.number("cling.faceBlinkMs") / 1000]
-            }
-            end = max(end, times.last ?? offset)
-        }
-        if squeezeFace { values = [held, held]; times = [0, end] }
-        if (times.last ?? 0) < end { values.append(values.last ?? open); times.append(end) }
-        guard end > 0 else { return }
-        faceSerial += 1; let token = faceSerial
-        let animation = CAKeyframeAnimation(keyPath: "contents")
-        animation.values = values; animation.keyTimes = times.map { NSNumber(value: $0 / end) }
-        animation.calculationMode = .discrete; animation.duration = end
-        animation.beginTime = lookView.picture.convertTime(seconds, from: nil)
-        animation.delegate = CompanionAnimationEnd { [weak self] in
-            guard let self, self.faceSerial == token else { return }
-            self.clingFaceOnAt = nil; self.clingFaceOpenAt = nil
-            self.clingFaceStopAt = nil; self.clingFacePredictedStopAt = nil
-            self.preparedKey = ""; self.prepareFrames(); self.draw()
-        }
-        lookView.picture.removeAnimation(forKey: "loop"); lookView.picture.removeAnimation(forKey: "tool-patch-loop"); loopKey = nil
-        lookView.show(values.last ?? open, scale: scale); lookView.picture.add(animation, forKey: "window-face")
-    }
+    private var displayedBase: String { record.frame }
+
     private func scheduleRideLine(at seconds: Double, bake: [CompanionClingKeyframe]) {
         rideLineTimer.cancel(); pendingRideLine = nil; pendingRideReactor = nil
         guard let stop = bake.first(where: { $0.sample.speed < ridePeak * tuning.motion.number("cling.lineStopFraction") }) else { return }
@@ -831,9 +656,9 @@ final class Pet: NSObject {
     }
     func stop() {
         lanterns.stop();d1Helpers.stop();d1Shed.clear();d1Visitor.clear();d1FrameEnd.cancel();d1RibbonPanel.orderOut(nil)
-        touchPreparationID += 1; activeTouch = nil
+        activeTouch = nil
         stopPointerMonitor(); recheck.cancel(); reactionEnd.cancel(); longPress.cancel(); snoozeEnd.cancel(); wakeEnd.cancel(); wakeLineTimer.cancel(); hourWaveEnd.cancel(); spinLine.cancel(); spinEnd.cancel(); napWake.cancel(); stickTick.cancel()
-        clearWindowMotion(); cancelEntry(); hoverDeadline.cancel(); relaxPointer.cancel(); speechRestore.cancel(); bubbleRestore.cancel(); greetingAfterPop.cancel()
+        clearWindowMotion(); cancelEntry(); hoverDeadline.cancel(); speechRestore.cancel(); bubbleRestore.cancel(); greetingAfterPop.cancel()
     }
 
     // ------------------------------------------------------------ where
@@ -880,8 +705,7 @@ final class Pet: NSObject {
         let newScale = scaleOf(target.screen)
         if newScale != scale {
             scale = newScale
-            prepareFrames()
-            loopKey = nil
+
             draw()
         }
         target.frame = aligned(target.frame)
@@ -933,7 +757,7 @@ final class Pet: NSObject {
         placementSerial += 1; let token = placementSerial
         relocating = true; pendingPlacement = destination
         placementChanged(nil, true)
-        hideExtras(); clearWindowFace()
+        hideExtras();
         let hidden = old.mode == .ledge ? max(0, 1 - max(0, old.frame.maxY - old.window.maxY - squeezePush * old.frame.height) / old.frame.height) : squeezePush
         if hidden >= tuning.motion.number("relocate.skipDuckHiddenFraction") {
             finishRelocation(token: token); return
@@ -963,43 +787,31 @@ final class Pet: NSObject {
             values.append(value); opacity.append(NSNumber(value: sample.alpha)); times.append(ms / 1000)
         }
         if entering { values[values.count - 1] = CATransform3DIdentity; opacity[opacity.count - 1] = 1 }
-        lookView.setFiltering(pixel: store.size.pixelArt, transformed: !reduced, motion: tuning.motion)
         let alpha = CAKeyframeAnimation(keyPath: "opacity"); alpha.values = opacity
         alpha.keyTimes = times.map { NSNumber(value: $0 / (total / 1000)) }; alpha.duration = total / 1000; alpha.calculationMode = .linear
         lookView.place.opacity = entering ? 1 : 0; lookView.place.add(alpha, forKey: "place-opacity")
         CompanionAnimation.transforms(on: lookView.place, key: "place-motion", values: values, times: times, discrete: pixelSteps) { [weak self] in
-            self?.refreshRigFiltering(); done?()
+            done?()
         }
     }
     private func pop(at target: Place.Target) {
         cancelEntry(); entryLineHidden = true; speech.orderOut(nil); stopPointerMonitor()
         animatePlace(entering: true, target: target)
         entryLine.fire(after: tuning.motion.number("pop.lineAfterMs") / 1000)
-        entryBlink.fire(after: tuning.motion.number("pop.blinkAfterMs") / 1000)
         if returnGreeting {
             let duration = reduceMotion ? tuning.motion.number("leave.reduceFadeInMs") : CompanionPhysics.popTotalMs(ledge: target.mode == .ledge, tuning: tuning.motion)
             greetingAfterPop.fire(after: duration / 1000)
         }
     }
     private func cancelEntry() {
-        entryLine.cancel(); entryBlink.cancel(); entryLineHidden = false
+        entryLine.cancel(); entryLineHidden = false
     }
     private func restoreEntryLine() {
         entryLineHidden = false
         guard logicalVisible, let target = target() else { return }
         placeSpeech(speechTarget(target), reorder: true, forceIn: true); installPointerMonitor()
     }
-    private func blinkAfterEntry() {
-        guard logicalVisible, windowFaceAllowed else { return }
-        let base = displayedBase
-        guard frames.hasFace("blink", on: base, size: store.size),
-              let blink = frames.cachedMotionFace("blink", on: base, size: store.size, scale: scale),
-              let open = frames.cached(base, size: store.size, scale: scale) else { return }
-        let animation = CAKeyframeAnimation(keyPath: "contents")
-        animation.values = [blink, open]; animation.keyTimes = [0, 1]; animation.calculationMode = .discrete
-        animation.duration = tuning.motion.number("cling.faceBlinkMs") / 1000
-        lookView.picture.add(animation, forKey: "entry-blink")
-    }
+
     private func hideExtras() {
         lanterns.hide();d1Helpers.hide();d1Shed.clear();d1Visitor.clear();d1FrameEnd.cancel();d1RibbonPanel.orderOut(nil)
         speech.orderOut(nil); bubble.orderOut(nil); badge?.orderOut(nil); card?.panel.orderOut(nil); hideHoverRow()
@@ -1034,15 +846,13 @@ final class Pet: NSObject {
             placementSerial += 1; relocating = false; pendingPlacement = nil; windowGestureLive = false
             clearWindowMotion(); cancelEntry(); clearPerk()
             if touchActive || activeTouch != nil {
-                touchPreparationID += 1; activeTouch = nil; reaction = nil; reactionLine = nil; queuedReaction = nil
+                activeTouch = nil; reaction = nil; reactionLine = nil; queuedReaction = nil
                 wakeEnd.cancel(); wakeLineTimer.cancel(); wakeUntil = 0
                 reactionEnd.cancel()
-                lookView.picture.removeAnimation(forKey: "touch")
+
             }
             if press != nil { press = nil; dragOrigin = nil; longPress.cancel() }
-            lookView.picture.removeAllAnimations(); loopKey = nil
-            CATransaction.begin(); CATransaction.setDisableActions(true)
-            lookView.picture.transform = CATransform3DIdentity; CATransaction.commit()
+
         }
         logicalVisible = false
         placementChanged(nil, false)
@@ -1058,7 +868,7 @@ final class Pet: NSObject {
         orderedTo = nil
         mode = nil
         updateLoop()
-        if wasVisible { preparedKey = ""; prepareFrames(); draw() }
+        if wasVisible { draw() }
     }
 
     /// Whether Claude's window fills the screen now (his drop then sets the full-screen spot).
@@ -1118,46 +928,24 @@ final class Pet: NSObject {
     // ------------------------------------------------------------ what he looks like
 
     private func draw() {
-        // Whatever still needs a later look (a live line, a running loop) arms it again below.
-        recheck.cancel()
-        recheckAt = nil
-        if drawCoco() {
-            hitView.setAccessibilityLabel(spokenLabel)
-            if let target = target(), hit.isVisible, press?.moved != true { placeSpeech(speechTarget(target), reorder: false) }
-            return
-        }
-        let reacting = reaction.map { $0.until > now } ?? false
-        let requested = reacting ? reaction!.frame : record.shed?.frame(at:now,pixel:store.size.pixelArt,reduced:reduceMotion) ?? record.frame
-        guard let name = frames.resolveName(requested,size: store.size),
-              let still = frames.cached(name, size: store.size, scale: scale) else {
-            lookView.picture.removeAnimation(forKey: "loop"); lookView.picture.removeAnimation(forKey: "touch")
-            clearWindowFace(); lookView.picture.removeAnimation(forKey: "entry-blink")
-            CATransaction.begin(); CATransaction.setDisableActions(true); lookView.picture.contents = nil; CATransaction.commit()
-            hitView.silhouette = nil; loopKey = nil
-            return
-        }
-        if name != requested { lookView.picture.removeAnimation(forKey: "touch") }
-        if lookView.picture.animation(forKey: "touch") == nil || !reacting { lookView.picture.removeAnimation(forKey: "touch"); lookView.show(still, scale: scale) }
-        hitView.silhouette = still
-        updateLoop()
+        recheck.cancel(); recheckAt = nil
+        _ = drawCoco()
         hitView.setAccessibilityLabel(spokenLabel)
-        if let target = target(), hit.isVisible, press?.moved != true { placeSpeech(speechTarget(target), reorder: false) }
-        if windowFaceAllowed {
-            if squeezeFace { applyStaticWindowFace("squeeze") }
-            else if let glanceFace { applyStaticWindowFace(glanceFace) }
+        if let target = target(), hit.isVisible, press?.moved != true {
+            placeSpeech(speechTarget(target), reorder: false)
         }
     }
 
     // ------------------------------------------------------------ Coco's player
 
-    /// His size in points: Coco's canvas at this size when their player is there, else the painted frames'.
+    /// Coco's canvas at the selected point size.
     private func spriteSize(scale: CGFloat) -> NSSize {
-        guard let coco else { return frames.size(store.size, scale: scale) }
+        guard let coco else { return .zero }
         let (width, height) = coco.dimensions(Int((store.size.height * scale).rounded()))
         return NSSize(width: CGFloat(width) / scale, height: CGFloat(height) / scale)
     }
-    /// The layer his visitors and stick sit on: Coco's when they are drawn, else the painted picture.
-    private var artLayer: CALayer { coco != nil ? lookView.coco : lookView.picture }
+    /// The current artwork layer also carries visitors and the focus stick.
+    private var artLayer: CALayer { lookView.coco }
     /// Something happened: Coco moves for the next minute (companion-rs SettleRule).
     private func cocoEvent() {
         cocoEventAt = max(cocoEventAt, now)
@@ -1259,63 +1047,7 @@ final class Pet: NSObject {
 
     var patHint: String { record.words.pat }
 
-    private func updateLoop() {
-        // Coco's frames have their own clock; a change of sight or placement only wakes it
-        if coco != nil { _ = drawCoco(); return }
-        if record.shed?.frame(at:now,pixel:store.size.pixelArt,reduced:reduceMotion) != nil {
-            lookView.picture.removeAnimation(forKey:"loop");lookView.picture.removeAnimation(forKey:"tool-patch-loop");loopKey=nil;return
-        }
-        if windowFaceAllowed && (squeezeFace || glanceFace != nil || lookView.picture.animation(forKey: "window-face") != nil) {
-            lookView.picture.removeAnimation(forKey: "loop"); lookView.picture.removeAnimation(forKey: "tool-patch-loop"); loopKey = nil
-            return
-        }
-        var want: String?
-        if let pose=record.pose, pose.name != "work", !touchActive, !reduceMotion, hit.isVisible,
-           !Reactor.urgent.contains(record.mood), record.mood != "sleep" {
-            let key="c3:\(pose.name):\(pose.at):\(store.size):\(scale)"
-            if FrameLoop.prepare(on:lookView.picture,wanted:key,cached:&loopKey),let animation=ToolPoseTimeline.animation(pose,frames:frames,size:store.size,scale:scale,now:now,current:lookView.picture.presentation()?.contents.map {$0 as! CGImage} ?? lookView.picture.contents.map {$0 as! CGImage}) {
-                lookView.picture.add(animation,forKey:"loop");loopKey=key
-                if let tail=ToolPoseTimeline.repeatingTail(animation,pose:pose,now:now) {lookView.picture.add(tail,forKey:"tool-patch-loop")}
-                if pose.name == "cheer" {
-                    lookView.picture.add(ToolPoseTimeline.celebration(pose,now:now),forKey:"c3-cheer")
-                    ToolPoseTimeline.burst(on:lookView.picture,pose:pose,now:now)
-                    poseDip(y:0.975,x:1.0075,delayMs:(pose.celebration ?? 0)>=3 ? 2900:1900,key:"c3-smile")
-                }
-            }
-            return
-        }
-        lookView.picture.removeAnimation(forKey:"c3-cheer")
-        lookView.picture.sublayers?.filter {$0.name == "c3-burst"}.forEach {$0.removeFromSuperlayer()}
-        let reacting = reaction.map { $0.until > now } ?? false
-        let blink = IdleBlink.wanted(mood: record.mood, frame: record.frame, hasLoop: record.loop != nil,
-                                    reacting: reacting, visible: hit.isVisible && !Self.offscreen,
-                                    unoccluded: look.occlusionState.contains(.visible), reduceMotion: reduceMotion)
-        if let loop = record.loop, let every = record.every, now - record.at < 10 * 60_000, !reacting, !reduceMotion,
-           hit.isVisible, look.occlusionState.contains(.visible) || Self.offscreen {
-            want = "\(loop[0])|\(loop[1])|\(every)|\(height)|\(scale)"
-            // A turn that stopped writing for ten minutes keeps its face but stops moving.
-            scheduleRecheck(at: record.at + 10 * 60_000)
-        } else if blink {
-            want = "idle-blink|\(store.size.rawValue)|\(height)|\(scale)"
-        }
-        let picture = lookView.picture
-        guard FrameLoop.prepare(on: picture, wanted: want, cached: &loopKey), let want else { return }
-        let animation: CAKeyframeAnimation
-        if blink {
-            guard let open = frames.image("idle-reading", size: store.size, scale: scale),
-                  let shut = frames.image("idle-blink", size: store.size, scale: scale) else { return }
-            animation = record.motion.idle(open: open, shut: shut, gaze: gazeBlink)
-            gazeBlink = false
-        } else {
-            guard let loop = record.loop,
-                  let first = frames.image(loop[0], size: store.size, scale: scale),
-                  let second = frames.image(loop[1], size: store.size, scale: scale) else { return }
-            animation = record.motion.loop(first: first, second: second, kind: record.mood)
-        }
-        picture.add(animation, forKey: "loop")
-        loopKey = want
-        trace.say("pet: loop \(want)")
-    }
+    private func updateLoop() { _ = drawCoco() }
 
     // One pending look-again, at the earliest moment something shown goes stale: a line left by a
     // session that went away (60 s), a loop whose turn stopped writing (10 min).
@@ -1333,8 +1065,7 @@ final class Pet: NSObject {
         let current = look.backingScaleFactor
         guard current != scale else { return }
         scale = current
-        prepareFrames()
-        loopKey = nil
+
         draw()
         place(reorder: false)
         if let target = retainedTarget, logicalVisible, !relocating { applySqueeze(target, at: CACurrentMediaTime()) }
@@ -1363,8 +1094,7 @@ final class Pet: NSObject {
         refreshDisplayStyle()
         guard changedMotion else { return }
         if reduceMotion { clearWindowMotion(); clearPerk() }
-        preparedKey = ""; prepareFrames()
-        loopKey = nil
+
         draw()
         place(reorder: false)
         if let target = retainedTarget, logicalVisible, !relocating { applySqueeze(target, at: CACurrentMediaTime()) }
@@ -1394,7 +1124,7 @@ final class Pet: NSObject {
                 showReaction(Reactor.Reaction(key: "thanks",frame: "happy",hold: tuning.touch.greetingMs / 1000,line: record.words.thanks,lineHold: tuning.touch.thanksLineMs / 1000))
             }
             if !sleeping { reactionLine = (record.words.thanks,now + tuning.touch.thanksLineMs) }
-            loopKey = nil
+
             draw()
             armReactionEnd()
         }
@@ -1495,7 +1225,6 @@ final class Pet: NSObject {
         let onSprite = surface == .sprite ? inside : hit.isVisible && hit.frame.contains(point)
         let onPill = surface == .pill ? inside : hoverPanel?.isVisible == true && hoverPanel!.frame.contains(point)
         if surface == .sprite && !inside {
-            relaxPointer.fire(after: tuning.motion.number("near.perkGraceMs") / 1000)
         }
         hover.pointer(.sprite, inside: onSprite, at: now / 1000, deliberate: deliberatePointer, tuning: tuning.motion)
         hover.pointer(.pill, inside: onPill, at: now / 1000, tuning: tuning.motion)
@@ -1504,7 +1233,7 @@ final class Pet: NSObject {
     }
     func pointerEntered(at seconds: Double, position: CGPoint) {
         pointerSample = (position, seconds); pointerSpeed = 0; deliberatePointer = false
-        relaxPointer.cancel(); pointer(.sprite, inside: true)
+        pointer(.sprite, inside: true)
         fadeForPointer(position: position, at: seconds, tracking: true)
         cocoEvent()
     }
@@ -1527,9 +1256,9 @@ final class Pet: NSObject {
         else if pointerSpeed < tuning.motion.number("near.withSpeedPtPerS") { deliberatePointer = true }
         fadeForPointer(position: position, at: seconds, speechFrame: speechFrame, pillFrame: pillFrame, tracking: true)
         if deliberatePointer {
-            relaxPointer.cancel()
+
             hover.pointer(.sprite, inside: true, at: now / 1000, deliberate: true, tuning: tuning.motion)
-            armHoverDeadline(); perkPointer(position: position)
+            armHoverDeadline()
         } else {
             hover.pointer(.sprite, inside: true, at: now / 1000, deliberate: false, tuning: tuning.motion)
             armHoverDeadline()
@@ -1543,40 +1272,10 @@ final class Pet: NSObject {
         hover.advance(at: now / 1000, carried: press?.moved == true, card: card?.panel.isVisible == true || activityPresented)
         place(reorder: false); armHoverDeadline()
     }
-    private func perkPointer(position: CGPoint) {
-        guard let target = target(), windowFaceAllowed else { return }
-        let fraction = (position.x - target.frame.midX) / target.frame.width
-        let requested: String? = fraction < -tuning.motion.number("near.glanceSideFraction") ? "glance" : fraction > tuning.motion.number("near.glanceSideFraction") ? "glance-right" : nil
-        let wanted = requested.flatMap { frames.hasFace($0, on: displayedBase, size: store.size) ? $0 : nil }
-        if wanted != glanceFace { glanceFace = wanted; if let wanted { applyStaticWindowFace(wanted) } else { draw() } }
-        guard !reduceMotion, lookView.picture.animation(forKey: "perk") == nil,
-              lookView.picture.transform.m22 == 1 else { return }
-        let perk = tuning.motion.number("near.perk")
-        let value = CATransform3DMakeScale(1 - perk / 4, 1 + perk, 1)
-        let animation = CABasicAnimation(keyPath: "transform")
-        animation.fromValue = lookView.picture.presentation()?.transform ?? lookView.picture.transform
-        animation.toValue = value; animation.duration = tuning.motion.number("near.perkMs") / 1000
-        animation.timingFunction = CompanionAnimation.timing(tuning.motion.curve("near.perkCurve"))
-        lookView.picture.transform = value; lookView.picture.add(animation, forKey: "perk")
-    }
-    private func relaxPerk() {
-        glanceFace = nil
-        guard !touchActive else { return }
-        let layer = lookView.picture, from = layer.presentation()?.transform ?? layer.transform
-        layer.removeAnimation(forKey: "perk"); layer.transform = CATransform3DIdentity
-        if !reduceMotion {
-            let spring = CASpringAnimation(keyPath: "transform")
-            spring.fromValue = from; spring.toValue = CATransform3DIdentity
-            spring.mass = tuning.motion.number("near.relaxMass"); spring.stiffness = tuning.motion.number("near.relaxStiffness"); spring.damping = tuning.motion.number("near.relaxDamping")
-            spring.duration = spring.settlingDuration; layer.add(spring, forKey: "pointer-relax")
-        }
-        draw()
-    }
+
     private func clearPerk() {
-        deliberatePointer = false; glanceFace = nil; pointerSample = nil; pointerSpeed = 0
-        relaxPointer.cancel(); hoverDeadline.cancel()
-        lookView.picture.removeAnimation(forKey: "perk"); lookView.picture.removeAnimation(forKey: "pointer-relax")
-        if !touchActive { lookView.picture.transform = CATransform3DIdentity }
+        deliberatePointer = false; pointerSample = nil; pointerSpeed = 0
+        hoverDeadline.cancel()
     }
     private func attach(_ panel: Panel, at frame: NSRect) {
         var frame = aligned(frame)
@@ -1682,18 +1381,16 @@ final class Pet: NSObject {
     // ------------------------------------------------------------ touch
 
     func pressed(option: Bool) {
-        clearWindowFace(); rideLineTimer.cancel(); pendingRideLine = nil; pendingRideReactor = nil
-        // pressIn reads the presented perk transform before taking ownership of the picture layer.
-        relaxPointer.cancel(); lookView.picture.removeAnimation(forKey: "pointer-relax")
+        rideLineTimer.cancel(); pendingRideLine = nil; pendingRideReactor = nil
+
         gestureAt = now.rounded(.down)
         let sleeping = record.mood == "sleep"
         awakenLocally()
         heldWakePress = sleeping && !reduceMotion
-        if wakeUntil > now { repeatTouchImpulse() }
-        else {
+        if wakeUntil <= now {
             patStartedAt = sleeping ? nil : gestureAt
             reaction = (frames.resolveName(record.frame,size: store.size) ?? record.frame,now + tuning.touch.patMs); touchKey = "pat"
-            pressIn(durationMs: sleeping ? tuning.touch.heldWakeMs : nil)
+            pressIn()
         }
         if sleeping { startWake(held: true) }
         touched("pat", gestureAt)
@@ -1739,7 +1436,6 @@ final class Pet: NSObject {
             play(TouchSequence(entries: [.init(ms: 0,pose: "idle-reading",face: "half-lid"),.init(ms: t.heldOpenMs,pose: "idle-reading",face: "open")],durationMs: 2 * t.heldOpenMs,lineMs: nil),base: "idle-reading")
             reaction?.until = wakeUntil; wakeLineAt = now; wakeLineTimer.fire(after: 0); wakeEnd.fire(after: 2 * t.heldOpenMs / 1000)
         }
-        if wakeUntil <= now || opensHeldWake { releasePress() }
         shake.reset()
         if current.moved {
             cancelSpin()
@@ -1781,7 +1477,7 @@ final class Pet: NSObject {
         }
         guard presence.at > localTouchAt, now - presence.at < tuning.touch.wakeMs else { return }
         localTouchAt = presence.at; record = TouchAwake.applying(record,after: localTouchAt)
-        guard logicalVisible else { preparedKey = ""; prepareFrames(); draw(); return }
+        guard logicalVisible else { draw(); return }
         startWake(held: false); wakeLine = presence.said ?? record.wakeLines.first
     }
     private func startWake(held: Bool) {
@@ -1796,23 +1492,7 @@ final class Pet: NSObject {
         } else {
             play(TouchSequence(entries: [.init(ms: 0,pose: "sleep",face: nil),.init(ms: t.hugMs,pose: base,face: "half-lid"),.init(ms: t.hugMs + t.heldOpenMs,pose: base,face: "open")],durationMs: t.hugMs + 2 * t.heldOpenMs,lineMs: t.wakeLineMs),base: base)
         }
-        if !reduceMotion && !held {
-            let jolt = CABasicAnimation(keyPath: "transform.scale.y")
-            jolt.fromValue = lookView.picture.presentation()?.value(forKeyPath: "transform.scale.y") ?? 1
-            jolt.toValue = t.pressY; jolt.duration = t.wakeJoltMs / 1000
-            jolt.timingFunction = CAMediaTimingFunction(controlPoints: Float(t.pressCurve[0]),Float(t.pressCurve[1]),Float(t.pressCurve[2]),Float(t.pressCurve[3]))
-            let rise = CASpringAnimation(keyPath: "transform.scale.y"); rise.fromValue = t.pressY; rise.toValue = 1
-            rise.mass = t.wake.mass; rise.stiffness = t.wake.stiffness; rise.damping = t.wake.damping
-            rise.beginTime = t.wakeJoltMs / 1000; rise.duration = max(0,(t.wakeMs-t.wakeJoltMs) / 1000)
-            let group = CAAnimationGroup(); group.animations = [jolt,rise]; group.duration = t.wakeMs / 1000
-            let widen = CABasicAnimation(keyPath: "transform.scale.x"); widen.fromValue = lookView.picture.presentation()?.value(forKeyPath: "transform.scale.x") ?? 1
-            widen.toValue = t.pressX; widen.duration = jolt.duration; widen.timingFunction = jolt.timingFunction
-            let settleX = CASpringAnimation(keyPath: "transform.scale.x"); settleX.fromValue = t.pressX; settleX.toValue = 1
-            settleX.mass = t.wake.mass; settleX.stiffness = t.wake.stiffness; settleX.damping = t.wake.damping
-            settleX.beginTime = rise.beginTime; settleX.duration = rise.duration
-            group.animations = [jolt,rise,widen,settleX]
-            lookView.picture.add(group,forKey: "wake")
-        }
+
         wakeLineAt = now + (held && !reduceMotion ? t.hugMs : t.wakeLineMs)
         wakeLineTimer.fire(after: max(0,(wakeLineAt-now)/1000))
         wakeEnd.fire(after: max(0,(wakeUntil - now) / 1000))
@@ -1835,8 +1515,7 @@ final class Pet: NSObject {
         showReaction(chosen)
     }
     private func showReaction(_ chosen: Reactor.Reaction, afterWake: Bool = false) {
-        let current = lookView.picture.presentation()?.contents.map { $0 as! CGImage } ?? lookView.picture.contents.map { $0 as! CGImage }
-        let requested = current.flatMap { frames.baseName(of: $0) } ?? record.frame
+        let requested = record.frame
         guard let base = frames.resolveName(requested,size: store.size) else { return }
         let continuingPat = !afterWake && patStartedAt == gestureAt
         let reactionAt = continuingPat ? gestureAt : now
@@ -1844,7 +1523,7 @@ final class Pet: NSObject {
         reaction = (chosen.key == "wave" && available.contains("wave") ? "wave" : base,chosen.key == "drag" ? Double.infinity : chosen.key == "pat" ? reactionAt + tuning.touch.patMs : now + chosen.hold * 1000)
         touchKey = chosen.key
         if let line = chosen.line { reactionLine = (line,now + chosen.lineHold * 1000) }
-        loopKey = nil; lookView.picture.removeAnimation(forKey: "loop")
+
         var sequence = TouchSequence.make(chosen.key,base: base,tuning: tuning.touch,available: available,reduceMotion: reduceMotion)
         if chosen.key == "pat" {
             let elapsed = continuingPat ? max(0,now - gestureAt) : 0
@@ -1853,7 +1532,6 @@ final class Pet: NSObject {
         }
         play(sequence,base: base)
         patStartedAt = nil
-        if !reduceMotion { animate(chosen.key,startedAt: reactionAt) }
         armReactionEnd(); place(reorder: false)
     }
     private func play(_ sequence: TouchSequence, base: String) {
@@ -1864,110 +1542,16 @@ final class Pet: NSObject {
             if let pose = entry.pose { entry.pose = frames.resolveName(pose,size: store.size) ?? base }
             return entry
         }
-        touchPreparationID += 1
+
         activeTouch = (sequence,base,now,tuning.touch.patFaces,tuning.touch.faceSwapHz)
         touchVisualUpdates += 1; touchPlan = sequence
-        paint(sequence,base: base,elapsed: 0)
-        requestTouchPreparation()
+        _ = drawCoco()
     }
-    private func requestTouchPreparation() {
-        guard let activeTouch else { return }
-        let sequence = activeTouch.sequence, base = activeTouch.base, began = activeTouch.began, id = touchPreparationID
-        let poses = sequence.entries.compactMap(\.pose).compactMap { frames.resolveName($0,size: store.size) }
-        let bases = Set(([base] + sequence.entries.filter { $0.face != nil }.compactMap(\.pose)).compactMap { frames.resolveName($0,size: store.size) })
-        let names = (tuning.touch.preload + [base] + poses).compactMap { frames.resolveName($0,size: store.size) }
-        frames.prepareTouch(names,on: Array(bases),size: store.size,scale: scale,
-                            aliases: tuning.touch.faceAliases,timeline: activeTouch.timeline,curve: tuning.touch.leanCurve,rate: activeTouch.rate) { [weak self] in
-            guard let self, self.touchPreparationID == id else { return }
-            self.paint(sequence,base: base,elapsed: max(0,self.now - began))
-        }
-    }
-    private func paint(_ sequence: TouchSequence, base: String, elapsed: Double) {
-        let picture = lookView.picture
-        func resolved(_ entry: TouchSequence.Entry) -> CGImage? {
-            guard let pose = frames.resolveName(entry.pose ?? base,size: store.size) else { return nil }
-            return entry.face.flatMap { frames.cachedFace($0,on: pose,size: store.size,scale: scale) } ?? frames.cached(pose,size: store.size,scale: scale)
-        }
-        let caughtUp = elapsed > 0 ? sequence.entries.last(where: { $0.ms <= elapsed && ($0.pose != nil || $0.face != nil) }).flatMap(resolved) : nil
-        let initial = caughtUp ?? (picture.presentation()?.contents.map { $0 as! CGImage }) ?? (picture.contents.map { $0 as! CGImage }) ?? frames.cached(base,size: store.size,scale: scale)
-        guard let initial else { return }
-        picture.removeAnimation(forKey: "loop"); picture.removeAnimation(forKey: "touch")
-        if elapsed >= sequence.durationMs { lookView.show(initial,scale: scale); return }
-        var values: [CGImage] = [initial], times = [0.0]
-        let remaining = max(Double.leastNonzeroMagnitude,sequence.durationMs - elapsed)
-        for entry in sequence.entries where entry.ms >= elapsed {
-            if entry.pose == nil && entry.face == nil { continue }
-            let image = resolved(entry)
-            guard let image else { continue }
-            values.append(image); times.append(min(1,(entry.ms - elapsed) / remaining))
-        }
-        if times.last! < 1 { values.append(values.last!); times.append(1) }
-        let animation = CAKeyframeAnimation(keyPath: "contents")
-        animation.values = values; animation.keyTimes = times.map(NSNumber.init(value:)); animation.calculationMode = .discrete
-        animation.duration = remaining / 1000; animation.isRemovedOnCompletion = false; animation.fillMode = .forwards
-        lookView.show(values.last!,scale: scale); picture.add(animation,forKey: "touch")
-    }
-    private func spring(_ path: String, from: Double, spec: CompanionTuning.Spring, key: String, duration: Double? = nil) {
-        let spring = CASpringAnimation(keyPath: path); spring.fromValue = from; spring.toValue = 1
-        spring.mass = spec.mass; spring.stiffness = spec.stiffness; spring.damping = spec.damping
-        spring.duration = duration ?? spring.settlingDuration; lookView.picture.add(spring,forKey: key)
-    }
-    private func pressIn(durationMs: Double? = nil) {
-        func currentBase() -> String {
-            let current = lookView.picture.presentation()?.contents.map { $0 as! CGImage } ?? lookView.picture.contents.map { $0 as! CGImage }
-            let requested = current.flatMap { frames.baseName(of: $0) } ?? record.frame
-            return frames.resolveName(requested,size: store.size) ?? record.frame
-        }
-        if reduceMotion {
-            let base = currentBase()
-            play(TouchSequence.make("pat",base: base,tuning: tuning.touch,available: Set(frames.names(size: store.size)),reduceMotion: true),base: base)
-            return
-        }
-        let picture = lookView.picture, t = tuning.touch
-        let from = picture.presentation()?.transform ?? picture.transform
-        for key in ["press","release","pat-y","pat-x","stroke","shake","hug","startle","land-y","land-x","perk"] { picture.removeAnimation(forKey: key) }
-        var first = from; first = CATransform3DScale(first,1,t.pressFirstY,1)
-        if lookView.picture.animation(forKey: "touch") != nil { first.m22 += CGFloat(t.repeatImpulseY) }
-        CATransaction.begin(); CATransaction.setDisableActions(true); picture.transform = first; CATransaction.commit()
-        var to = CATransform3DScale(CATransform3DIdentity,t.pressX,t.pressY,1); to.m21 = tan(t.leanRadians)
-        let pressMs = durationMs ?? t.pressMs, duration = max(pressMs,t.leanMs)
-        let count = max(1,Int(ceil(duration * t.faceSwapHz / 1000)))
-        var values: [NSValue] = [], times: [NSNumber] = []
-        let components: [WritableKeyPath<CATransform3D,CGFloat>] = [\.m11,\.m12,\.m13,\.m14,\.m21,\.m22,\.m23,\.m24,\.m31,\.m32,\.m33,\.m34,\.m41,\.m42,\.m43,\.m44]
-        for i in 0...count {
-            let ms = duration * Double(i) / Double(count)
-            let press = CGFloat(Frames.curve(min(1,ms / pressMs),points: t.pressCurve))
-            let lean = CGFloat(Frames.curve(min(1,ms / t.leanMs),points: t.leanCurve))
-            var value = first
-            for component in components {
-                let progress = component == \.m21 ? lean : press
-                value[keyPath: component] = first[keyPath: component] + (to[keyPath: component] - first[keyPath: component]) * progress
-            }
-            values.append(NSValue(caTransform3D: value)); times.append(NSNumber(value: Double(i) / Double(count)))
-        }
-        let animation = CAKeyframeAnimation(keyPath: "transform"); animation.values = values; animation.keyTimes = times
-        animation.calculationMode = .linear; animation.duration = duration / 1000
-        picture.transform = to; picture.add(animation,forKey: "press")
-        let base = currentBase()
-        play(TouchSequence.make("pat",base: base,tuning: t,available: Set(frames.names(size: store.size)),reduceMotion: false),base: base)
-    }
-    private func releasePress() {
-        let picture = lookView.picture
-        let transform = picture.presentation()?.transform ?? picture.transform
-        picture.removeAnimation(forKey: "press"); picture.transform = CATransform3DIdentity
-        guard !reduceMotion else { return }
-        let animation = CASpringAnimation(keyPath: "transform"); animation.fromValue = transform; animation.toValue = CATransform3DIdentity
-        animation.mass = tuning.touch.release.mass; animation.stiffness = tuning.touch.release.stiffness; animation.damping = tuning.touch.release.damping
-        animation.duration = animation.settlingDuration; picture.add(animation,forKey: "release")
-    }
-    private func repeatTouchImpulse() {
-        guard !reduceMotion else { return }
-        let picture = lookView.picture, t = tuning.touch
-        let current = picture.presentation()?.value(forKeyPath: "transform.scale.y") as? Double ?? 1
-        let impulse = CASpringAnimation(keyPath: "transform.scale.y")
-        impulse.fromValue = current + t.repeatImpulseY; impulse.toValue = current
-        impulse.mass = t.poke.mass; impulse.stiffness = t.poke.stiffness; impulse.damping = t.poke.damping
-        impulse.duration = impulse.settlingDuration; picture.add(impulse,forKey: "repeat-touch")
+
+    private func pressIn() {
+        let base = frames.resolveName(record.frame, size: store.size) ?? record.frame
+        play(TouchSequence.make("pat", base: base, tuning: tuning.touch,
+                                available: Set(frames.names), reduceMotion: reduceMotion), base: base)
     }
 
     // The next moment a reaction's face or line runs out.
@@ -1988,9 +1572,9 @@ final class Pet: NSObject {
         let before = record
         record = playing(TouchAwake.applying(fed, after: localTouchAt))
         guard record != before else { return }
-        loopKey = nil; gazeBlink = true
-        if record.mood == "sleep" || Reactor.urgent.contains(record.mood) { clearWindowFace(); clearPerk() }
-        preparedKey = ""; prepareFrames(); draw(); place(reorder: false)
+
+        if record.mood == "sleep" || Reactor.urgent.contains(record.mood) { clearPerk() }
+        draw(); place(reorder: false)
     }
 
     /// The shake. The first: he spins (four half-turns, his face front and back), then he is dizzy and says a
@@ -2003,8 +1587,7 @@ final class Pet: NSObject {
             return
         }
         lastSpinAt = now
-        let current = lookView.picture.presentation()?.contents.map { $0 as! CGImage } ?? lookView.picture.contents.map { $0 as! CGImage }
-        let requested = current.flatMap { frames.baseName(of: $0) } ?? record.frame
+        let requested = record.frame
         guard let base = frames.resolveName(requested,size: store.size) else { return }
         // Until the back and the dizzy face are drawn he turns on his flustered face.
         let names = Set(frames.names(size: store.size))
@@ -2022,44 +1605,27 @@ final class Pet: NSObject {
         }
         reaction = (front,now + total); touchKey = "spin"
         reactionLine = nil
-        loopKey = nil; lookView.picture.removeAnimation(forKey: "loop")
+
         play(TouchSequence(entries: entries,durationMs: total,lineMs: nil),base: base)
-        if !reduceMotion { animateSpin() }
         spinLine.fire(after: (reduceMotion ? 0 : Spin.spinMs) / 1000)
         spinEnd.fire(after: total / 1000)
         armReactionEnd(); place(reorder: false)
     }
-    private func animateSpin() {
-        let picture = lookView.picture
-        let starts = Spin.starts, total = Spin.spinMs
-        var values: [Double] = [1], times: [NSNumber] = [0], timings: [CAMediaTimingFunction] = []
-        for (index, edge) in Spin.edges.enumerated() {
-            values.append(Spin.narrowest); times.append(NSNumber(value: edge / total)); timings.append(CAMediaTimingFunction(name: .easeIn))
-            values.append(1); times.append(NSNumber(value: starts[index + 1] / total)); timings.append(CAMediaTimingFunction(name: .easeOut))
-        }
-        let turn = CAKeyframeAnimation(keyPath: "transform.scale.x")
-        turn.values = values; turn.keyTimes = times; turn.timingFunctions = timings; turn.duration = total / 1000
-        picture.add(turn,forKey: "spin")
-        let sway = CAKeyframeAnimation(keyPath: "transform")
-        sway.values = Spin.swaySamples.map { value -> NSValue in var m = CATransform3DIdentity; m.m21 = CGFloat(value); return NSValue(caTransform3D: m) }
-        sway.duration = Spin.dizzyMs / 1000; sway.beginTime = CACurrentMediaTime() + Spin.spinMs / 1000
-        sway.isAdditive = true
-        picture.add(sway,forKey: "sway")
-    }
+
     private func saySpinLine() {
         guard let line = reactor.pick("shaken",at: now / 1000,lines: record.reactions,random: Double.random(in: 0..<1)) else { return }
         reactionLine = (line,now + tuning.touch.lineHoldMs)
         place(reorder: false); armReactionEnd()
     }
     private func spinFinished() {
-        lookView.picture.removeAnimation(forKey: "spin"); lookView.picture.removeAnimation(forKey: "sway")
+
         // Still held: back to the carry's own face.
         guard press?.moved == true else { return }
         showReaction(Reactor.Reaction(key: "drag",frame: "error",hold: 600,line: nil,lineHold: 0))
     }
     private func cancelSpin() {
         spinLine.cancel(); spinEnd.cancel()
-        lookView.picture.removeAnimation(forKey: "spin"); lookView.picture.removeAnimation(forKey: "sway")
+
     }
 
     /// The lid: the system is going to sleep, so he naps at once; nothing of his is scheduled meanwhile.
@@ -2095,8 +1661,8 @@ final class Pet: NSObject {
         awakenLocally()
         record = playing(TouchAwake.applying(fed,after: localTouchAt))
         startWake(held: false)
-        lookView.picture.removeAnimation(forKey: "loop")
-        loopKey = nil; preparedKey = ""; prepareFrames()
+
+
         draw(); place(reorder: false); armReactionEnd()
     }
 
@@ -2136,42 +1702,6 @@ final class Pet: NSObject {
             return
         }
         reactionEnd.fire(after: (next - now) / 1000)
-    }
-
-    private func animate(_ key: String, startedAt: Double) {
-        let t = tuning.touch
-        switch key {
-        case "drop": spring("transform.scale.y",from: t.landY,spec: t.poke,key: "land-y"); spring("transform.scale.x",from: t.landX,spec: t.poke,key: "land-x")
-        case "drag": spring("transform.scale.y",from: t.pressY,spec: t.poke,key: "startle")
-        case "hold": poseDip(y: t.dipY,x: t.dipX,delayMs: 0,key: "hug")
-        case "pat":
-            if press == nil && lookView.picture.animation(forKey: "release") == nil { spring("transform.scale.y",from: t.pressY,spec: t.release,key: "pat-y") }
-            let stroke = CAKeyframeAnimation(keyPath: "transform.scale.y"); stroke.values = [1,t.strokeY / t.pressY,1]; stroke.duration = t.strokeMs / 1000
-            stroke.beginTime = CACurrentMediaTime() + max(0,t.strokeStartMs - (now - startedAt)) / 1000; stroke.isAdditive = false; lookView.picture.add(stroke,forKey: "stroke")
-        case "flustered":
-            poseDip(y: t.burstY,x: t.burstX,delayMs: 0,key: "burst")
-            let shake = CAKeyframeAnimation(keyPath: "transform"); shake.values = t.shake.map { value in var m = CATransform3DIdentity; m.m21 = CGFloat(tan(value)); return NSValue(caTransform3D: m) }
-            shake.duration = t.shakeMs / 1000; shake.isAdditive = true; lookView.picture.add(shake,forKey: "shake")
-            for delay in [t.shioriInMs - t.poseCutMs,t.shioriOutMs - t.poseCutMs] {
-                poseDip(y: t.dipY,x: t.dipX,delayMs: delay,key: "shiori-dip-\(delay)")
-            }
-        default: break
-        }
-    }
-    private func poseDip(y: Double, x: Double, delayMs: Double, key: String) {
-        let t = tuning.touch, picture = lookView.picture
-        var tracks: [CAAnimation] = [], duration = 0.0
-        for (path,to) in [("transform.scale.y",y),("transform.scale.x",x)] {
-            let down = CABasicAnimation(keyPath: path); down.fromValue = delayMs == 0 ? picture.presentation()?.value(forKeyPath: path) ?? 1 : 1
-            down.toValue = to; down.duration = t.dipMs / 1000
-            down.timingFunction = CAMediaTimingFunction(controlPoints: Float(t.pressCurve[0]),Float(t.pressCurve[1]),Float(t.pressCurve[2]),Float(t.pressCurve[3]))
-            let rise = CASpringAnimation(keyPath: path); rise.fromValue = to; rise.toValue = 1
-            rise.mass = t.dip.mass; rise.stiffness = t.dip.stiffness; rise.damping = t.dip.damping
-            rise.beginTime = down.duration; rise.duration = rise.settlingDuration
-            tracks += [down,rise]; duration = max(duration,down.duration + rise.duration)
-        }
-        let group = CAAnimationGroup(); group.animations = tracks; group.duration = duration
-        group.beginTime = CACurrentMediaTime() + delayMs / 1000; picture.add(group,forKey: key)
     }
 
     /// Five groups, the same order as the Windows and Linux pets: what Claude is doing, playing with it, how it looks,
@@ -2277,7 +1807,7 @@ final class Pet: NSObject {
         let base = displayedBase
         let wave = TouchSequence.make("wave", base: base, tuning: tuning.touch, available: Set(frames.names(size: store.size)), reduceMotion: reduceMotion)
         reaction = (base, now + wave.durationMs); touchKey = "wave"
-        loopKey = nil; lookView.picture.removeAnimation(forKey: "loop")
+
         play(wave, base: base)
         armReactionEnd(); place(reorder: false)
     }
@@ -2305,9 +1835,7 @@ final class Pet: NSObject {
     func setSize(_ size: Size, at: Double) {
         store.sizeAt = at
         store.size = size
-        frames.keep(size, scale: scale) // the other sizes' pictures are not needed now
-        preparedKey = ""; prepareFrames()
-        loopKey = nil
+
         draw()
         place(reorder: true)
         store.save()
@@ -2331,7 +1859,6 @@ final class Pet: NSObject {
         wave.durationMs = (wave.entries.first?.ms ?? 0) + tuning.motion.number("hideHour.waveMs")
         reaction = (base, now + wave.durationMs); touchKey = "wave"
         play(wave, base: base)
-        if !reduceMotion { poseDip(y: tuning.touch.dipY, x: tuning.touch.dipX, delayMs: 0, key: "hour-wave-dip") }
         hourWaveEnd.fire(after: wave.durationMs / 1000)
     }
     private func finishHourWave() {
@@ -2372,26 +1899,21 @@ final class Pet: NSObject {
 final class LookView: NSView {
     let place = CALayer()
     let cling = CALayer()
-    let picture = CALayer()
-    /// Coco's frames (Pet.drawCoco), over the painted picture, which is hidden once they are shown.
     let coco = CALayer()
 
     override init(frame: NSRect) {
         super.init(frame: frame)
         wantsLayer = true
         layer?.masksToBounds = false
-        for item in [place, cling, picture, coco] {
+        for item in [place, cling, coco] {
             item.anchorPoint = CGPoint(x: 0.5, y: 0)
             item.masksToBounds = false
         }
-        picture.contentsGravity = .resize
-        picture.magnificationFilter = .nearest
-        picture.minificationFilter = .nearest
         coco.contentsGravity = .resize
         coco.magnificationFilter = .linear
         coco.minificationFilter = .linear
         coco.isHidden = true
-        layer?.addSublayer(place); place.addSublayer(cling); cling.addSublayer(picture); cling.addSublayer(coco)
+        layer?.addSublayer(place); place.addSublayer(cling); cling.addSublayer(coco)
         setAccessibilityElement(false)
     }
 
@@ -2400,21 +1922,12 @@ final class LookView: NSView {
     @available(*, unavailable)
     required init?(coder: NSCoder) { fatalError("not used") }
 
-    func show(_ still: CGImage, scale: CGFloat) {
-        CATransaction.begin()
-        CATransaction.setDisableActions(true)
-        picture.contentsScale = scale
-        picture.contents = still
-        CATransaction.commit()
-    }
-
     func showCoco(_ image: CGImage, scale: CGFloat) {
         CATransaction.begin()
         CATransaction.setDisableActions(true)
         coco.contentsScale = scale
         coco.contents = image
         coco.isHidden = false
-        picture.isHidden = true
         CATransaction.commit()
     }
 
@@ -2425,10 +1938,9 @@ final class LookView: NSView {
         CATransaction.begin()
         CATransaction.setDisableActions(true)
         frame.size = wanted
-        for item in [place, cling, picture, coco] { item.bounds = CGRect(origin: .zero, size: size) }
+        for item in [place, cling, coco] { item.bounds = CGRect(origin: .zero, size: size) }
         place.position = CGPoint(x: margin + size.width / 2, y: bottom)
         cling.position = CGPoint(x: size.width / 2, y: 0)
-        picture.position = CGPoint(x: size.width / 2, y: 0)
         coco.position = CGPoint(x: size.width / 2, y: 0)
         CATransaction.commit()
     }
@@ -2441,16 +1953,10 @@ final class LookView: NSView {
     }
     func register(sprite: CGRect, panel: CGRect) {
         CATransaction.begin(); CATransaction.setDisableActions(true)
-        place.position = CGPoint(x: sprite.minX - panel.minX + picture.bounds.width / 2, y: sprite.minY - panel.minY)
+        place.position = CGPoint(x: sprite.minX - panel.minX + coco.bounds.width / 2, y: sprite.minY - panel.minY)
         CATransaction.commit()
     }
-    func setFiltering(pixel: Bool, transformed: Bool, motion: CompanionMotionTuning = .standard) {
-        let named = motion.text(transformed ? "rig.filterTransformed" : "rig.filterAtRest")
-        let filter: CALayerContentsFilter = pixel || named == "nearest" ? .nearest : .linear
-        CATransaction.begin(); CATransaction.setDisableActions(true)
-        picture.magnificationFilter = filter; picture.minificationFilter = filter
-        CATransaction.commit()
-    }
+
 }
 
 // The click target: his current frame drawn at alpha 1/255 into the window (no layer of its own),

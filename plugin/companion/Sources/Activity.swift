@@ -1,12 +1,12 @@
 import AppKit
 
-/// The only key panel. Ordinary pet panels retain their non-activating style.
+/// Accept keyboard input without deactivating the host and hiding the untrusted companion.
 final class ActivityPanel: NSPanel {
     var escape: () -> Void = {}
     override var canBecomeKey: Bool { true }
     override var canBecomeMain: Bool { false }
     init() {
-        super.init(contentRect: .zero, styleMask: [.borderless], backing: .buffered, defer: true)
+        super.init(contentRect: .zero, styleMask: [.borderless, .nonactivatingPanel], backing: .buffered, defer: true)
         isOpaque = false; backgroundColor = .clear; hasShadow = true
         hidesOnDeactivate = false; isReleasedWhenClosed = false; isRestorable = false
         animationBehavior = .none; level = .floating
@@ -530,7 +530,7 @@ final class Activity: NSObject, NSWindowDelegate {
         presentationRequested = true
         guard allowsWindowPresentation else { return }
         previous = NSWorkspace.shared.frontmostApplication
-        NSApp.activate(ignoringOtherApps: true); panel.makeKeyAndOrderFront(nil)
+        panel.makeKeyAndOrderFront(nil)
         panel.makeFirstResponder(chosen.channel ? view.field : view.close)
         NSAccessibility.post(element: view, notification: .layoutChanged)
     }

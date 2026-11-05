@@ -90,10 +90,7 @@ PLUGIN=$(cd "$HERE/.." && pwd -P)
 CONTROL=$HERE/companion-control
 PACKAGED="$HERE/$NAME.app"
 SRC=$PLUGIN/companion
-FRAMES=$PLUGIN/assets/desktop
-PIXELS=$PLUGIN/assets/pixel
-# Coco's clips (the pet's own set, the one companion-rs draws) and Claudie's cells; the app draws Coco from these
-# when they are there and falls back to the painted frames above when they are not.
+# Coco's animation clips and Claudie's current cells.
 COCO=$PLUGIN/companion-rs/assets/coco
 # The quota foot's words, the Rust pet's own table (QuotaPixels.swift reads them from Resources/words).
 QUOTA_WORDS=$PLUGIN/companion-rs/assets/words
@@ -196,10 +193,10 @@ to_trash() {
 source_hash() {
   {
     printf '%s\n' "$VERSION"
-    for _f in "$SRC/Info.plist" "$SRC"/Sources/*.swift "$FRAMES"/*.png "$PIXELS"/*.png "$ICON" "$PLUGIN/assets/icon/coco-16.png" "$PLUGIN/assets/icon/coco-32.png" "$PLUGIN/assets/icon/build-icns.sh" "$HERE/$PROG"; do
+    for _f in "$SRC/Info.plist" "$SRC"/Sources/*.swift "$ICON" "$PLUGIN/assets/icon/coco-16.png" "$PLUGIN/assets/icon/coco-32.png" "$PLUGIN/assets/icon/build-icns.sh" "$HERE/$PROG"; do
       /usr/bin/shasum -a 256 "$_f" | /usr/bin/cut -d ' ' -f 1
     done
-    for _f in "$PLUGIN/assets/frame-manifest.json" "$PLUGIN/assets/companion-tuning.json" "$PLUGIN/assets/neighbours.json" "$PLUGIN/assets/patches"/*/*.png "$PLUGIN/assets/shed"/*.png "$PLUGIN/assets/shed/shed.json" "$PLUGIN/assets/visitors"/*.png "$PLUGIN/assets/visitors/visitors.json" "$COCO"/*.json "$COCO"/*.bin "$CLAUDIE"/*/*.png "$QUOTA_WORDS/quota.json" "$QUOTA_WORDS/languages.json"; do
+    for _f in "$PLUGIN/assets/frame-manifest.json" "$PLUGIN/assets/companion-tuning.json" "$PLUGIN/assets/neighbours.json" "$PLUGIN/assets/shed"/*.png "$PLUGIN/assets/shed/shed.json" "$PLUGIN/assets/visitors"/*.png "$PLUGIN/assets/visitors/visitors.json" "$COCO"/*.json "$COCO"/*.bin "$CLAUDIE"/*/*.png "$QUOTA_WORDS/quota.json" "$QUOTA_WORDS/languages.json"; do
       if [ -f "$_f" ]; then /usr/bin/shasum -a 256 "$_f" | /usr/bin/cut -d ' ' -f 1; fi
     done
   } | /usr/bin/shasum -a 256 | /usr/bin/cut -c 1-16
@@ -212,10 +209,20 @@ bundle_hash() (
   printf '%s\n' "$_files" | /usr/bin/shasum -a 256 | /usr/bin/cut -d ' ' -f 1
 )
 
+require_coco_assets() {
+  for _coco_file in "$1/band-A.json" "$1/band-A.bin" "$1/band-B.json" "$1/band-B.bin"; do
+    [ -s "$_coco_file" ] || die "missing required Coco asset: $_coco_file"
+  done
+  for _coco_json in "$1"/*.json; do
+    [ -s "${_coco_json%.json}.bin" ] || die "missing Coco image data for $_coco_json"
+  done
+}
+
 validate_package() {
   [ -d "$1" ] && [ ! -L "$1" ] || die "missing bundled app at $1; install the complete macOS package"
   [ -z "$(/usr/bin/find "$1" -type l -print)" ] || die "the bundled app contains a symbolic link; download the macOS package again"
   [ -x "$1/Contents/MacOS/$EXE" ] && [ -s "$1/Contents/Resources/build.txt" ] || die "the bundled app is incomplete; download the macOS package again"
+  require_coco_assets "$1/Contents/Resources/coco"
   _id=$(/usr/bin/plutil -extract CFBundleIdentifier raw -o - "$1/Contents/Info.plist") || die "cannot read the bundled app's Info.plist"
   _exe=$(/usr/bin/plutil -extract CFBundleExecutable raw -o - "$1/Contents/Info.plist") || die "cannot read the bundled app's executable name"
   _version=$(/usr/bin/plutil -extract CFBundleVersion raw -o - "$1/Contents/Info.plist") || die "cannot read the bundled app's version"
@@ -258,17 +265,15 @@ preflight() {
 }
 
 build() {
-  for _f in "$SRC/Info.plist" "$FRAMES/01-idle-reading.png" "$PIXELS/01-idle-reading.png"; do
+  for _f in "$SRC/Info.plist"; do
     [ -f "$_f" ] || die "missing $_f; is the plugin complete?"
   done
+  require_coco_assets "$COCO"
   preflight
   NEW="$STAGE/$NAME.app"
-  /bin/mkdir -p "$NEW/Contents/MacOS" "$NEW/Contents/Resources/frames" "$NEW/Contents/Resources/pixel"
+  /bin/mkdir -p "$NEW/Contents/MacOS" "$NEW/Contents/Resources"
   /usr/bin/sed "s/@VERSION@/$VERSION/g" "$SRC/Info.plist" >"$NEW/Contents/Info.plist"
-  /bin/cp "$FRAMES"/*.png "$NEW/Contents/Resources/frames/"
   /bin/cp "$PLUGIN/assets/frame-manifest.json" "$PLUGIN/assets/companion-tuning.json" "$PLUGIN/assets/neighbours.json" "$NEW/Contents/Resources/"
-  /bin/cp -R "$PLUGIN/assets/patches" "$NEW/Contents/Resources/"
-  /bin/cp "$PIXELS"/*.png "$NEW/Contents/Resources/pixel/"
   if [ -d "$PLUGIN/assets/shed" ]; then
     /bin/mkdir -p "$NEW/Contents/Resources/shed"
     /bin/cp "$PLUGIN/assets/shed"/*.png "$PLUGIN/assets/shed"/shed.json "$NEW/Contents/Resources/shed/"
@@ -277,10 +282,8 @@ build() {
     /bin/mkdir -p "$NEW/Contents/Resources/visitors"
     /bin/cp "$PLUGIN/assets/visitors"/*.png "$PLUGIN/assets/visitors"/visitors.json "$NEW/Contents/Resources/visitors/"
   fi
-  if [ -f "$COCO/band-A.json" ] && [ -f "$COCO/band-B.json" ]; then
-    /bin/mkdir -p "$NEW/Contents/Resources/coco"
-    /bin/cp "$COCO"/*.json "$COCO"/*.bin "$NEW/Contents/Resources/coco/"  # pictures: X.bin beside X.json
-  fi
+  /bin/mkdir -p "$NEW/Contents/Resources/coco"
+  /bin/cp "$COCO"/*.json "$COCO"/*.bin "$NEW/Contents/Resources/coco/"
   if [ -f "$QUOTA_WORDS/quota.json" ] && [ -f "$QUOTA_WORDS/languages.json" ]; then
     /bin/mkdir -p "$NEW/Contents/Resources/words"
     /bin/cp "$QUOTA_WORDS/quota.json" "$QUOTA_WORDS/languages.json" "$NEW/Contents/Resources/words/"

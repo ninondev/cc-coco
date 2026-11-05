@@ -1,5 +1,5 @@
 #!/usr/bin/env python3
-"""Measure shipping mouse-down up to its first committed transform; no screen/input use."""
+"""Measure shipping mouse-down up to its first committed Coco image; no screen/input use."""
 import argparse
 import os
 from pathlib import Path
@@ -9,6 +9,8 @@ import tempfile
 import sys
 sys.path.insert(0, str(Path(__file__).resolve().parents[1]))
 from scratch import TemporaryDirectory
+import runpy
+fixture_helpers = runpy.run_path(str(Path(__file__).resolve().parent / 'companion-fixture.py'))
 
 ROOT = Path(__file__).resolve().parents[2]
 parser = argparse.ArgumentParser()
@@ -17,6 +19,7 @@ parser.add_argument('--appearance', choices=('light', 'dark', 'both'), default='
 args = parser.parse_args()
 with TemporaryDirectory(prefix='b3-touch-latency-') as directory:
     work = Path(directory)
+    assets = fixture_helpers['stage_assets'](ROOT, work)
     env = dict(os.environ, HOME=directory, CLAUDE_CONFIG_DIR=str(work / 'config'))
     sources = work / 'Sources'
     sources.mkdir()
@@ -28,12 +31,13 @@ with TemporaryDirectory(prefix='b3-touch-latency-') as directory:
     path = sources / 'Pet.swift'
     source = path.read_text()
     property_anchor = '    var pointerPosition: () -> NSPoint = { NSEvent.mouseLocation }'
-    commit_anchor = 'CATransaction.begin(); CATransaction.setDisableActions(true); picture.transform = first; CATransaction.commit()'
+    commit_anchor = 'lookView.showCoco(image, scale: scale)'
     if source.count(property_anchor) != 1 or source.count(commit_anchor) != 1:
         raise SystemExit('Shipping first-frame measurement seam changed')
     source = source.replace(property_anchor, property_anchor + '\n    var fixtureFirstFrame: () -> Void = {}')
     source = source.replace(commit_anchor, commit_anchor + '; fixtureFirstFrame()')
     path.write_text(source)
+    fixture_helpers['expose_pet'](path)
     shutil.copy2(ROOT / 'tools/tests/companion-touch-latency/main.swift', work / 'main.swift')
     binary = work / 'fixture'
     command = ['swiftc', '-O', '-swift-version', '5', '-module-cache-path', str(work / 'cache')]
@@ -43,6 +47,6 @@ with TemporaryDirectory(prefix='b3-touch-latency-') as directory:
     failures = 0
     for appearance in (('light', 'dark') if args.appearance == 'both' else (args.appearance,)):
         print('Appearance:', appearance, flush=True)
-        result = subprocess.run([str(binary), str(ROOT / 'plugin/assets'), str(work)], env=dict(env, COMPANION_TEST_APPEARANCE=appearance), cwd=work)
+        result = subprocess.run([str(binary), str(assets), str(work)], env=dict(env, COMPANION_TEST_APPEARANCE=appearance), cwd=work)
         failures = failures or result.returncode
     raise SystemExit(failures)

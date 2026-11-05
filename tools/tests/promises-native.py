@@ -5,6 +5,8 @@ sys.path.insert(0,str(Path(__file__).resolve().parents[1]))
 from scratch import TemporaryDirectory
 from native_budget import check_rss
 ROOT=Path(__file__).resolve().parents[2]
+import runpy
+fixture_helpers=runpy.run_path(str(ROOT/'tools/tests/companion-fixture.py'))
 BUDGET=ROOT/'tools/budgets/companion-rss.json'
 p=argparse.ArgumentParser();p.add_argument('--record-baseline',action='store_true');p.add_argument('--prove',action='store_true');p.add_argument('--hc-only',action='store_true');p.add_argument('--source',type=Path,default=ROOT/'plugin/companion/Sources');p.add_argument('--budget',type=Path,default=BUDGET);p.add_argument('--evidence',type=Path);args=p.parse_args()
 if sys.platform!='darwin' or not shutil.which('swiftc'):
@@ -13,10 +15,11 @@ hc_catalog = [
  {'fixture':'2.4.1 PaperPill, SpeechView, BubbleView, HoverView, ButtonLabelView, CardView, ActivityView edge bitmaps','status':'PENDING'},
  *[{'fixture':'2.4.'+str(number),'status':'PENDING'} for number in range(2,8)],
 ]
-receipt={'scope':'47 checks; seven concrete offscreen Swift views (PaperPill, SpeechView, BubbleView, HoverView, ButtonLabelView, CardView, ActivityView), including font and field infrastructure; no production entry point or window presentation; maximum of sampled idle/work/views RSS','host':platform.platform(),'checks':{}}
-if args.hc_only:receipt['scope']='HC2.4.2-7 only; original47check/RSS process not run; no budget sample or acceptance claim'
+receipt={'scope':'Current Coco clock/render checks; seven concrete offscreen Swift views (PaperPill, SpeechView, BubbleView, HoverView, ButtonLabelView, CardView, ActivityView), including font and field infrastructure; no production entry point or window presentation; maximum of sampled idle/work/views RSS','host':platform.platform(),'checks':{}}
+if args.hc_only:receipt['scope']='HC2.4.2-7 only; Coco/P1/RSS process not run; no budget sample or acceptance claim'
 
 def run(scratch,broken=False):
+ assets=fixture_helpers['stage_assets'](ROOT,scratch)
  sources=scratch/'Sources';sources.mkdir()
  for f in args.source.glob('*.swift'):
   if f.name!='main.swift':shutil.copy2(f,sources/f.name)
@@ -36,7 +39,13 @@ def run(scratch,broken=False):
    ],
    'Feed.swift':[('guard record.at.isFinite, record.at >= (newest[record.session] ?? -.infinity) else { return false }','guard record.at.isFinite else { return false }')],
   }
-  edits=edge_edits if broken == 'edges' else normal_edits if broken == 'normal-edges' else independent_edits if broken == 'independent' else {'Pet.swift':[('&& visible && unoccluded && !reduceMotion','&& true'),('mood == "idle" && frame == "idle-reading"','frame == "idle-reading"'),('picture.removeAnimation(forKey: "loop")','picture.removeAnimation(forKey: "broken-loop")'),('picture.removeAnimation(forKey: "tool-patch-loop")','picture.removeAnimation(forKey: "broken-tool-patch-loop")')],
+  edits=edge_edits if broken == 'edges' else normal_edits if broken == 'normal-edges' else independent_edits if broken == 'independent' else {'Pet.swift':[(
+   'return !reduceMotion && !carried && visible && record.mood != "sleep"\n            && (held || at + Double(CocoChoice.frameMs) < cocoEventAt + 60_000)', 'return true')],
+  'CocoModel.swift':[
+   ('runs ? elapsed(play, now) : play.finiteSeconds', 'elapsed(play, now)'),
+   ('if reduced {', 'if false {'),
+   ('input.night ? "night" : "nap"', '"idle"'),
+  ],
   'Card.swift':[('ink = color(0x231B19)', 'ink = color(0xAAAAAA)')],
   'Feed.swift':[('if record.ended || now - record.at >= Self.lifetime {','if now - record.at >= Self.lifetime {')],
   'RequestChannel.swift':[('try redactOffsets(for: id)','// broken redaction')],
@@ -47,16 +56,32 @@ def run(scratch,broken=False):
     if a not in text:raise RuntimeError('Mutation anchor absent: '+name+': '+a)
     text=text.replace(a,b)
    f.write_text(text)
+ # Copy the exact shipping clock predicate, substituting only fixture visibility.
+ pet=(sources/'Pet.swift').read_text()
+ start=pet.index('    private var cocoRuns: Bool {')
+ end=pet.index('\n    }',start)
+ body=pet[pet.index('{',start)+1:end]
+ visible='        let visible = hit.isVisible && (look.occlusionState.contains(.visible) || Self.offscreen)'
+ if body.count(visible)!=1:raise RuntimeError('Coco visibility seam changed')
+ body=body.replace(visible,'')
+ (sources/'CocoEligibilityFixture.swift').write_text('import AppKit\n'+"""
+@MainActor func p1CocoRuns(visible: Bool, reduced: Bool, mood: String, carried inputCarried: Bool, held inputHeld: Bool, elapsed: Double) -> Bool {
+    let now = 100_000.0, reduceMotion = reduced, touchActive = inputCarried
+    let touchKey: String? = inputCarried ? "drag" : nil, press: Int? = nil
+    let cocoEventAt = now - elapsed
+    var record = Record.resting; record.mood = mood; record.rest = !inputHeld
+"""+body+'\n}\n')
  shutil.copy2(ROOT/'tools/tests/companion-p1/main.swift',scratch/'main.swift')
  env=dict(os.environ,HOME=str(scratch),CLAUDE_CONFIG_DIR=str(scratch/'config'),TMPDIR=str(scratch))
  command=['swiftc','-j','4','-O','-swift-version','5','-module-cache-path',str(scratch/'cache'),*map(str,sorted(sources.glob('*.swift'))),str(scratch/'main.swift'),'-o',str(scratch/'fixture')]
  result=subprocess.run(command,env=env,capture_output=True,text=True)
  print(result.stdout+result.stderr,end='');result.check_returncode()
- receipt.setdefault('builds',[]).append({'scope':'original47-RSS','mutation':broken,'argv':list(result.args),'executableSha256':hashlib.sha256((scratch/'fixture').read_bytes()).hexdigest(),'executableBytes':(scratch/'fixture').stat().st_size,'mainSha256':hashlib.sha256((scratch/'main.swift').read_bytes()).hexdigest(),'sourceFingerprint':hashlib.sha256('\n'.join(str(f.name)+':'+hashlib.sha256(f.read_bytes()).hexdigest() for f in sorted(sources.glob('*.swift'))).encode()).hexdigest()})
- result=subprocess.run([str(scratch/'fixture'),str(ROOT/'plugin/assets'),str(scratch)],env=env,cwd=scratch,capture_output=True,text=True)
+ receipt.setdefault('builds',[]).append({'scope':'Coco-P1-RSS','mutation':broken,'argv':list(result.args),'executableSha256':hashlib.sha256((scratch/'fixture').read_bytes()).hexdigest(),'executableBytes':(scratch/'fixture').stat().st_size,'mainSha256':hashlib.sha256((scratch/'main.swift').read_bytes()).hexdigest(),'sourceFingerprint':hashlib.sha256('\n'.join(str(f.name)+':'+hashlib.sha256(f.read_bytes()).hexdigest() for f in sorted(sources.glob('*.swift'))).encode()).hexdigest()})
+ result=subprocess.run([str(scratch/'fixture'),str(assets),str(scratch)],env=env,cwd=scratch,capture_output=True,text=True)
  print(result.stdout+result.stderr,end='')
  return result
 def run_hc(scratch, mutation=None):
+ assets=fixture_helpers['stage_assets'](ROOT,scratch)
  sources=scratch/'Sources';sources.mkdir()
  for f in args.source.glob('*.swift'):
   if f.name!='main.swift':shutil.copy2(f,sources/f.name)
@@ -109,7 +134,7 @@ extension Pet {
  print(result.stdout+result.stderr,end='');result.check_returncode()
  receipt.setdefault('builds',[]).append({'scope':'HC-only separate process','mutation':mutation,'argv':list(result.args),'executableSha256':hashlib.sha256((scratch/'fixture').read_bytes()).hexdigest(),'executableBytes':(scratch/'fixture').stat().st_size,'mainSha256':hashlib.sha256((scratch/'main.swift').read_bytes()).hexdigest(),'sourceFingerprint':hashlib.sha256('\n'.join(str(f.name)+':'+hashlib.sha256(f.read_bytes()).hexdigest() for f in sorted(sources.glob('*.swift'))).encode()).hexdigest()})
  bitmaps=scratch/'bitmaps'
- result=subprocess.run([str(scratch/'fixture'),str(ROOT/'plugin/assets'),str(scratch),str(bitmaps)],env=env,cwd=scratch,capture_output=True,text=True)
+ result=subprocess.run([str(scratch/'fixture'),str(assets),str(scratch),str(bitmaps)],env=env,cwd=scratch,capture_output=True,text=True)
  print(result.stdout+result.stderr,end='')
  if args.evidence and mutation is None and bitmaps.is_dir():
   destination=args.evidence.parent/(args.evidence.stem+'-bitmaps')
@@ -124,10 +149,12 @@ with TemporaryDirectory(prefix='p1-native-') as folder:
  if not args.hc_only:
   if args.prove:
    red=scratch/'red';red.mkdir();result=run(red,True)
-   required=['C3/D6 ineligible','C3/D6 removes','B5 ended','B5 acknowledgement scrubs','D4 every hover','D5 companion ink','HC 2.4 paper edge']
+   required=['C3/D6 Coco eligibility parks','C3/D6 Coco holds actual art','B5 ended','B5 acknowledgement scrubs','D4 every hover','D5 companion ink','HC 2.4 paper edge']
    if result.returncode!=1 or not all('FAIL '+name in result.stdout for name in required):raise SystemExit('FAIL native mutation did not expose every check')
-   required=[f'FAIL {family}: {condition}' for family in ['C3/D6 ineligible idle has no animation','C3/D6 removes both compositor loops'] for condition in ['hidden','covered','reduceMotion','asleep']]
-   if not all(name in result.stdout.splitlines() for name in required):raise SystemExit('FAIL native mutation did not expose all eight ineligible/removal assertions')
+   required=[f'FAIL C3/D6 Coco eligibility parks: {condition}' for condition in ['hidden','covered','reduceMotion','asleep','carried','expired']]
+   required += [f'FAIL C3/D6 Coco holds actual art: {condition}' for condition in ['hidden','covered','reduceMotion']]
+   required += ['FAIL C3/D6 sleeping Coco selects nap']
+   if not all(name in result.stdout.splitlines() for name in required):raise SystemExit('FAIL Coco clock/render mutations did not expose every regression')
    receipt['checks']['nativeRed']={'exit':result.returncode,'output':result.stdout}
    edge_red=scratch/'edge-red';edge_red.mkdir();result=run(edge_red,'edges')
    views=['PaperPill','SpeechView','BubbleView','HoverView','ButtonLabelView','CardView','ActivityView']
@@ -142,7 +169,7 @@ with TemporaryDirectory(prefix='p1-native-') as folder:
    required=['D5 companion cream on dark paper exceeds 7 to one','D4 VoiceOver invokes the action','D4 badge has VoiceOver count words','B5 buffered older record cannot revive excerpt']
    if result.returncode!=1 or not all('FAIL '+name in result.stdout.splitlines() for name in required):raise SystemExit('FAIL independent mutations did not expose all four behavioural assertions')
    receipt['checks']['independentRed']={'exit':result.returncode,'output':result.stdout,'requiredFailures':required}
-   receipt['behaviouralRedScope']={'assertionInstances':44,'totalFixtureAssertions':47,'excludedFixturePreconditions':['B5 accepts reply record','B5 fixture first has an excerpt','B5 request acknowledgement accepted']}
+   receipt['behaviouralRedScope']={'scope':'Coco eligibility/render plus privacy, accessibility and contrast mutations','excludedFixturePreconditions':['B5 accepts reply record','B5 fixture first has an excerpt','B5 request acknowledgement accepted']}
   green=scratch/'green';green.mkdir();result=run(green);result.check_returncode()
   values=json.loads(next(line[7:] for line in result.stdout.splitlines() if line.startswith('P1_RSS ')))
   if not values or min(values.values())<=0:raise SystemExit('RSS unavailable')

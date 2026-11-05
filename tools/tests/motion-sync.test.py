@@ -29,10 +29,12 @@ class MotionSourceChecks(unittest.TestCase):
         app = (source / 'App.swift').read_text()
         callback = app[app.index('        feed.received ='):app.index('        for name in [NSWorkspace.didActivate')]
         self.assertLess(callback.index('activity?.receive(record)'), callback.index('channel?.acknowledge(ack)'))
-        frames = (source / 'Frames.swift').read_text()
-        image = frames[frames.index('    func image('):frames.index('    /// His size in points')]
+        render = (source / 'CocoRender.swift').read_text()
+        image = render[render.index('    func image(_ frame:'):render.index('    func image(claudie')]
         self.assertNotIn('CreateWithURL', image)
         self.assertNotIn('contentsOf:', image)
+        frames = (source / 'Frames.swift').read_text()
+        self.assertIn('static func curve(', frames)
         pet = (source / 'Pet.swift').read_text()
         follow_start = pet.index('    func follow(')
         follow = pet[follow_start:pet.index('    func configure(', follow_start)]

@@ -4,8 +4,11 @@ ROOT=pathlib.Path(__file__).resolve().parents[2]
 # .resolve(): the fixture's SecureDirectory walks the path with O_NOFOLLOW and refuses symlinked
 # components, and /var and /tmp (the usual TMPDIR prefixes) are symlinks on macOS.
 OUT=pathlib.Path(os.environ.get('MOE_D1_COMPANION_OUT', str(ROOT/'evidence/d1-native'))).resolve(); OUT.mkdir(parents=True, exist_ok=True)
-ENV=dict(os.environ,HOME=str(OUT/'home'),CLAUDE_CONFIG_DIR=str(OUT/'config'))
+ENV=dict(os.environ,HOME=str(OUT/'home'),CLAUDE_CONFIG_DIR=str(OUT/'config'),MOE_D1_COMPANION_OUT=str(OUT))
 (OUT/'home').mkdir(exist_ok=True)
+import runpy, tempfile
+asset_work = tempfile.TemporaryDirectory(prefix='d1-assets-', dir=OUT)
+ENV['COMPANION_FIXTURE_ASSETS'] = str(runpy.run_path(str(ROOT/'tools/tests/companion-fixture.py'))['stage_assets'](ROOT, pathlib.Path(asset_work.name)))
 def receipt(name,value):
     (OUT/name).write_text(json.dumps(value,indent=2)); print(json.dumps(value),flush=True)
 def symbols(folder):
@@ -246,12 +249,12 @@ if '--render' in sys.argv:
         images[0].save(renders/(name+'.gif'),save_all=True,append_images=images[1:],duration=durations,loop=0,disposal=2)
     sheets={}
     for kind in ['helpers','ribbon-placement','ribbons','shed']:
-        sheet=Image.new('RGBA',(420*4,230*4),(250,238,233,255))
-        for row,size in enumerate(['tiny','small','medium','large']):
+        sheet=Image.new('RGBA',(420*4,230*3),(250,238,233,255))
+        for row,size in enumerate(['medium','large','larger']):
             for col,(theme,scale) in enumerate([('light',1),('light',2),('dark',1),('dark',2)]):
                 name=f'{kind}-{size}-{theme}-{scale}x'
                 if kind=='helpers':name+='-5'
-                if kind=='shed':name+='-motion-620'+('-front-seam' if size in ['medium','large'] else '')
+                if kind=='shed':name+='-motion-620'
                 path=renders/(name+'.png')
                 with Image.open(path) as picture:
                     picture=picture.convert('RGBA')

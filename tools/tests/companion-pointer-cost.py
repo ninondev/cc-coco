@@ -9,6 +9,8 @@ import tempfile
 import sys
 sys.path.insert(0, str(Path(__file__).resolve().parents[1]))
 from scratch import TemporaryDirectory
+import runpy
+fixture_helpers = runpy.run_path(str(Path(__file__).resolve().parent / 'companion-fixture.py'))
 
 ROOT = Path(__file__).resolve().parents[2]
 parser = argparse.ArgumentParser()
@@ -29,6 +31,7 @@ if any(value in fade for value in ['Timer(', 'DispatchSource.makeTimerSource', '
 print('static event proof: fade owns no timer/poll/display link; OneShot has no repeating interval', flush=True)
 with TemporaryDirectory(prefix='b3c-pointer-', dir=os.environ.get('TMPDIR')) as work:
     scratch = Path(work).resolve()  # SecureDirectory walks the real path (/var is a link on macOS)
+    assets = fixture_helpers['stage_assets'](ROOT, scratch)
     env = dict(os.environ, HOME=str(scratch), CLAUDE_CONFIG_DIR=str(scratch / 'config'))
     snapshot = scratch / 'Sources'; snapshot.mkdir()
     if args.pure_only:
@@ -63,4 +66,4 @@ extension Pet {
         for form in ['reduced', 'full']:
             folder = scratch / (appearance + '-' + form); folder.mkdir()
             extra = ['--functional-only'] if args.functional_only else []
-            subprocess.run([str(binary), appearance, str(folder), str(ROOT / 'plugin/assets'), form, *extra], env=env, cwd=folder, check=True)
+            subprocess.run([str(binary), appearance, str(folder), str(assets), form, *extra], env=env, cwd=folder, check=True)

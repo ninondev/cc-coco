@@ -9,6 +9,8 @@ import tempfile
 import sys
 sys.path.insert(0, str(Path(__file__).resolve().parents[1]))
 from scratch import TemporaryDirectory
+import runpy
+fixture_helpers = runpy.run_path(str(Path(__file__).resolve().parent / 'companion-fixture.py'))
 
 ROOT = Path(__file__).resolve().parents[2]
 parser = argparse.ArgumentParser()
@@ -18,6 +20,7 @@ args = parser.parse_args()
 with TemporaryDirectory(prefix='companion-b3c-', dir=os.environ.get('TMPDIR', '/private/tmp')) as name:
     # SecureDirectory walks the real path: on macOS TMPDIR sits under /var, a link to /private/var.
     scratch = Path(name).resolve()
+    assets = fixture_helpers['stage_assets'](ROOT, scratch)
     env = dict(os.environ, HOME=str(scratch), CLAUDE_CONFIG_DIR=str(scratch / 'config'))
     snapshot = scratch / 'Sources'
     snapshot.mkdir()
@@ -48,5 +51,5 @@ with TemporaryDirectory(prefix='companion-b3c-', dir=os.environ.get('TMPDIR', '/
     for appearance in appearances:
         folder = scratch / appearance
         folder.mkdir()
-        subprocess.run([str(binary), str(ROOT / 'plugin/assets'), str(folder), appearance],
+        subprocess.run([str(binary), str(assets), str(folder), appearance],
                        env=dict(env, TMPDIR=str(folder)), cwd=folder, check=True)

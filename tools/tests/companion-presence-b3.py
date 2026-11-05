@@ -24,7 +24,7 @@ with TemporaryDirectory(prefix='b3-presence-') as work:
         shutil.copy2(folder / name, sources / name)
     app = (folder / 'App.swift').read_text()
     pet = (folder / 'Pet.swift').read_text()
-    dependencies = app[:app.index('struct Options {')] + '\n' + pet[pet.index('enum Size:'):pet.index('enum IdleBlink {')]
+    dependencies = app[:app.index('struct Options {')] + '\n' + pet[pet.index('enum Size:'):pet.index('struct CompanionScreenGeometry {')]
     # Feed payload model declarations are copied verbatim; omit D1 UI/services.
     d1 = (folder / 'D1.swift').read_text()
     dependencies += '\n' + d1[:d1.index('enum D1Away {')]

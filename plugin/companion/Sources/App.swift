@@ -261,11 +261,10 @@ final class Companion: NSObject, NSApplicationDelegate {
         Capture.shown = store.capture
         let frameFolder = options.frames ?? Bundle.main.resourceURL?.appendingPathComponent("frames", isDirectory: true)
             ?? options.folder.appendingPathComponent("frames", isDirectory: true)
-        let pixelFolder = frameFolder.deletingLastPathComponent().appendingPathComponent("pixel", isDirectory: true)
         let assetRoot = frameFolder.deletingLastPathComponent()
         Voice.root = assetRoot
         Voice.folder = options.folder
-        let loadedFrames = Frames(folder: frameFolder,pixelFolder: pixelFolder)
+        let loadedFrames = Frames(assetRoot: assetRoot)
         frames = loadedFrames
         tuning = TuningStore(assetRoot.appendingPathComponent("companion-tuning.json"))
         neighbours = Neighbours(configURL: assetRoot.appendingPathComponent("neighbours.json"),outputURL: options.folder.appendingPathComponent("neighbours.json"),home: home)

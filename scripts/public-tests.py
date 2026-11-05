@@ -15,7 +15,7 @@ PUBLIC_TOOL_FILES = (
     'native_hook_cpu.py', 'swift_cpu_fixtures.py', 'hooks_source.py',
     'engine_preflight_contract.py', 'fixture_cpu.py', 'startup_batches.py', 'native_budget.py',
     'build-d1-runtime.py', 'd1-runtime-canonical.json', 'd1-runtime-entry.ts', 'cost-units-entry.ts',
-    'build-hooks-graph.py', 'build-companion-macos.py',
+    'build-hooks-graph.py', 'build-companion-macos.py', 'tests/companion-fixture.py',
 )
 # Folders copied whole (the assembly's TOOLS_DIRS), with the kinds of file each holds.
 PUBLIC_TOOL_DIRS = {
@@ -27,7 +27,7 @@ PUBLIC_TOOL_DIRS = {
 # tools/tests: its own files and these folders. The native harness folders (companion-*, presence-before) stay private.
 PUBLIC_TEST_DIRS = ('algo', 'cc-cost', 'cc-prices', 'cc-warm', 'cost-native', 'fixtures', 'native-clear-protocol')
 TEST_SUFFIXES = {'.ts', '.tsx', '.py', '.json', '.txt', '.md', '.swift', '.c', '.sh'}
-TEST_DATA = {'tests/algo/fixtures/binary-junk.bin'}
+TEST_DATA = {'tests/algo/fixtures/binary-junk.bin', 'tests/companion-activity-focus/main.swift'}
 EXCLUDED_TESTS = ('book-files.ts', 'claude-ai-skin*')
 # A test that reads private sources stays private (the assembly's PRIVATE_SOURCE_MARKERS).
 PRIVATE_SOURCE_MARKERS = (b'handoffs/', b'art/ref', b'tools/evidence', b"'persona/", b"'persona'", b'research/')

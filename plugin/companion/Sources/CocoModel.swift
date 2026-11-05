@@ -313,7 +313,7 @@ private func picture(_ value: Any?, _ sidecar: Data) -> Data? {
     guard parts.count == 2, let offset = Int(parts[0]), let length = Int(parts[1]), offset >= 0, length >= 0,
           offset <= sidecar.count - length else { return nil }
     let start = sidecar.startIndex + offset
-    return sidecar.subdata(in: start..<start + length)
+    return sidecar[start..<start + length]
 }
 /// The sidecar of a band or sock file, empty when there is none.
 private func sidecar(_ json: URL) throws -> Data {
@@ -321,7 +321,7 @@ private func sidecar(_ json: URL) throws -> Data {
     guard FileManager.default.fileExists(atPath: url.path) else { return Data() }
     let size = (try FileManager.default.attributesOfItem(atPath: url.path)[.size] as? NSNumber)?.intValue ?? 0
     if size > 16 * 1024 * 1024 { throw CocoError.data("coco pictures exceed 16 MiB") }
-    return try Data(contentsOf: url)
+    return try Data(contentsOf: url, options: .mappedIfSafe)
 }
 private func readBand(_ url: URL, outfit: CocoOutfit, bank: CocoBank) throws -> CocoBand {
     let raw = try readJSON(url)
@@ -588,8 +588,13 @@ final class CocoPlayer {
     /// `folder` holds band-A.json and band-B.json (and the sock files).
     init(folder: URL) throws {
         let bank = CocoBank()
+        #if canImport(ObjectiveC)
+        let a = try autoreleasepool { try readBand(folder.appendingPathComponent("band-A.json"), outfit: .a, bank: bank) }
+        let b = try autoreleasepool { try readBand(folder.appendingPathComponent("band-B.json"), outfit: .b, bank: bank) }
+        #else
         let a = try readBand(folder.appendingPathComponent("band-A.json"), outfit: .a, bank: bank)
         let b = try readBand(folder.appendingPathComponent("band-B.json"), outfit: .b, bank: bank)
+        #endif
         self.bands = [a, b]
         self.bank = bank
         self.folder = folder

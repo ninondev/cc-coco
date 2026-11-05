@@ -14,6 +14,8 @@ import sys
 sys.path.insert(0, str(Path(__file__).resolve().parents[1]))
 from hooks_source import hook_source
 from scratch import TemporaryDirectory
+import runpy
+fixture_helpers = runpy.run_path(str(Path(__file__).resolve().parent / 'companion-fixture.py'))
 from languages import LANGUAGE_CODES
 
 ROOT = Path(__file__).resolve().parents[2]
@@ -69,6 +71,7 @@ def run(scratch, options):
     xml = re.search(r'^xml_text\(\) \{[^\n]+\}', script, re.M).group()
     agent = re.search(r'^agent_text\(\) \{.*?^\}', script, re.M | re.S).group()
     executable = str(scratch / 'Test & < > " x')
+    assets = fixture_helpers['stage_assets'](ROOT, scratch)
     env = dict(os.environ, HOME=str(scratch), CLAUDE_CONFIG_DIR=str(scratch / 'config'), BIN=executable,
                LABEL='io.github.ninondev.coco-companion')
     # Only these pure text helpers are evaluated, never the management script.
@@ -132,7 +135,7 @@ def run(scratch, options):
         appearance_words = appearance_scratch / words_file.name
         shutil.copy2(words_file, appearance_words)
         appearance_env = dict(env, TMPDIR=str(appearance_scratch))
-        result = subprocess.run([str(binary), str(ROOT / 'plugin/assets'), str(plist), executable,
+        result = subprocess.run([str(binary), str(assets), str(plist), executable,
                                  str(appearance_words), '--appearance', appearance],
                                 env=appearance_env, cwd=appearance_scratch)
         print(f'Native {appearance} check exit code:', result.returncode, flush=True)

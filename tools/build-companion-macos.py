@@ -37,6 +37,14 @@ def sha(path: Path) -> str:
         return hashlib.file_digest(stream, 'sha256').hexdigest()
 
 
+def require_coco_assets(folder: Path) -> None:
+    required = {folder / f'band-{outfit}.{suffix}' for outfit in ('A', 'B') for suffix in ('json', 'bin')}
+    required.update(path.with_suffix('.bin') for path in folder.glob('*.json'))
+    missing = sorted(path.name for path in required if not path.is_file() or path.stat().st_size == 0)
+    if missing:
+        raise ValueError('missing required Coco assets: ' + ', '.join(missing))
+
+
 def build(output: Path) -> Path:
     if not output.is_absolute():
         raise ValueError('--output must be an absolute, new scratch directory')
@@ -44,6 +52,7 @@ def build(output: Path) -> Path:
         raise ValueError('--output already exists; choose a new scratch directory')
     if sys.platform != 'darwin':
         raise ValueError('this builder needs macOS and the Xcode Command Line Tools')
+    require_coco_assets(ROOT / 'plugin/companion-rs/assets/coco')
     output.mkdir(mode=0o700, parents=False)
     output = output.resolve()
     work = output / 'build'
@@ -87,24 +96,16 @@ def build(output: Path) -> Path:
         raise ValueError('no companion Swift sources')
     for source in sources:
         remember(source)
-    for folder, target in [('desktop', 'frames'), ('pixel', 'pixel')]:
-        if not (plugin / 'assets' / folder / '01-idle-reading.png').is_file():
-            raise ValueError(f'missing {folder} frames')
-        group(plugin / 'assets' / folder, '*.png', target)
     for name in ('frame-manifest.json', 'companion-tuning.json', 'neighbours.json'):
         copy(plugin / 'assets' / name, resources / name)
-    for path in sorted((plugin / 'assets/patches').rglob('*')):
-        if path.is_file():
-            copy(path, resources / 'patches' / path.relative_to(plugin / 'assets/patches'))
     for name in ('shed', 'visitors'):
         folder = plugin / 'assets' / name
         if folder.is_dir():
             group(folder, '*.png', name)
             copy(folder / (name + '.json'), resources / name / (name + '.json'))
     coco = plugin / 'companion-rs/assets/coco'
-    if (coco / 'band-A.json').is_file() and (coco / 'band-B.json').is_file():
-        for pattern in ('*.json', '*.bin'):
-            group(coco, pattern, 'coco')
+    for pattern in ('*.json', '*.bin'):
+        group(coco, pattern, 'coco')
     words = plugin / 'companion-rs/assets/words'
     if all((words / name).is_file() for name in ('quota.json', 'languages.json')):
         for name in ('quota.json', 'languages.json'):

@@ -9,6 +9,8 @@ import tempfile
 import sys
 sys.path.insert(0, str(Path(__file__).resolve().parents[1]))
 from scratch import TemporaryDirectory
+import runpy
+fixture_helpers = runpy.run_path(str(Path(__file__).resolve().parent / 'companion-fixture.py'))
 
 ROOT = Path(__file__).resolve().parents[2]
 parser = argparse.ArgumentParser()
@@ -20,6 +22,7 @@ source = args.baseline or ROOT / 'plugin/companion'
 source = source / 'Sources' if (source / 'Sources').is_dir() else source
 with TemporaryDirectory(prefix='b3-awake-common-') as work:
     scratch = Path(work)
+    assets = fixture_helpers['stage_assets'](ROOT, scratch)
     env = dict(os.environ, HOME=work, CLAUDE_CONFIG_DIR=str(scratch / 'config'))
     frozen = scratch / 'Sources'
     frozen.mkdir()
@@ -44,7 +47,7 @@ with TemporaryDirectory(prefix='b3-awake-common-') as work:
     failures = 0
     for appearance in (('light', 'dark') if args.appearance == 'both' else (args.appearance,)):
         print('Appearance:', appearance, flush=True)
-        result = subprocess.run([str(binary), str(ROOT / 'plugin/assets'), work], env=dict(env, COMPANION_TEST_APPEARANCE=appearance), cwd=work)
+        result = subprocess.run([str(binary), str(assets), work], env=dict(env, COMPANION_TEST_APPEARANCE=appearance), cwd=work)
         print('Console check exit:', result.returncode, flush=True)
         failures = failures or result.returncode
     raise SystemExit(failures)

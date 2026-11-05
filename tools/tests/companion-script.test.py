@@ -123,8 +123,6 @@ class ScriptChecks(unittest.TestCase):
         for name, text in {
             'companion/Info.plist': (ROOT / 'plugin/companion/Info.plist').read_text(),
             'companion/Sources/main.swift': '// fake source',
-            'assets/desktop/01-idle-reading.png': 'fake painted frame',
-            'assets/pixel/01-idle-reading.png': 'fake pixel frame',
             'assets/icon/coco-1024.png': 'fake icon',
             'assets/icon/coco-16.png': 'fake small icon',
             'assets/icon/coco-32.png': 'fake small retina icon',
@@ -132,7 +130,10 @@ class ScriptChecks(unittest.TestCase):
             'assets/frame-manifest.json': '{}\n',
             'assets/companion-tuning.json': '{}\n',
             'assets/neighbours.json': '{}\n',
-            'assets/patches/fixture/00.png': 'fake patch',
+            'companion-rs/assets/coco/band-A.json': '{}\n',
+            'companion-rs/assets/coco/band-A.bin': 'fake band A',
+            'companion-rs/assets/coco/band-B.json': '{}\n',
+            'companion-rs/assets/coco/band-B.bin': 'fake band B',
             '.claude-plugin/plugin.json': '{"version": "0.1.0"}',
         }.items():
             path = self.plugin / name
@@ -190,6 +191,11 @@ class ScriptChecks(unittest.TestCase):
             CFBundleVersion='0.1.0', CFBundleShortVersionString='0.1.0')))
         (contents / 'Resources/build.txt').write_text('a' * 64 + '\n')
         (contents / 'Resources/frame.bin').write_bytes(b'packaged picture')
+        coco = contents / 'Resources/coco'
+        coco.mkdir(exist_ok=True)
+        for outfit in ('A', 'B'):
+            (coco / f'band-{outfit}.json').write_text('{}\n')
+            (coco / f'band-{outfit}.bin').write_bytes(b'fake band pictures')
 
     def tearDown(self):
         self.scratch.cleanup()
@@ -228,6 +234,22 @@ class ScriptChecks(unittest.TestCase):
         result = self.run_script('install', '--report')
         self.assert_report(result, 'failed', 2)
         self.assertIn('complete macOS package', result.stderr)
+        self.assertFalse(self.app.exists())
+        self.assert_no_build_or_keychain()
+
+    def test_empty_coco_band_rejects_package(self):
+        (self.packaged / 'Contents/Resources/coco/band-B.bin').write_bytes(b'')
+        result = self.run_script('install', '--report')
+        self.assertNotEqual(result.returncode, 0)
+        self.assertIn('missing required Coco asset', result.stderr)
+        self.assertFalse(self.app.exists())
+        self.assert_no_build_or_keychain()
+
+    def test_coco_json_requires_nonempty_sidecar(self):
+        (self.packaged / 'Contents/Resources/coco/socks-A-fixture.json').write_text('{}\n')
+        result = self.run_script('install', '--report')
+        self.assertNotEqual(result.returncode, 0)
+        self.assertIn('missing Coco image data', result.stderr)
         self.assertFalse(self.app.exists())
         self.assert_no_build_or_keychain()
 
@@ -557,10 +579,17 @@ class BuildOnlyChecks(unittest.TestCase):
             self.assertEqual(receipts[0], receipts[1])
             self.assertNotIn(str(directory).encode(), receipts[0])
             self.assertEqual((first / 'Contents/Resources/build.txt').read_text().strip(), hashlib.sha256(receipts[0]).hexdigest())
-            for source, target in [('assets/desktop/01-idle-reading.png', 'frames/01-idle-reading.png'),
+            for source, target in [('companion-rs/assets/coco/band-A.json', 'coco/band-A.json'),
+                                   ('companion-rs/assets/coco/band-A.bin', 'coco/band-A.bin'),
+                                   ('companion-rs/assets/coco/band-B.json', 'coco/band-B.json'),
+                                   ('companion-rs/assets/coco/band-B.bin', 'coco/band-B.bin'),
+                                   ('assets/claudie/dake/01.png', 'claudie/dake/01.png'),
+                                   ('assets/claudie/maid/01.png', 'claudie/maid/01.png'),
                                    ('assets/frame-manifest.json', 'frame-manifest.json'),
                                    ('companion-rs/assets/words/quota.json', 'words/quota.json')]:
                 self.assertEqual((ROOT / 'plugin' / source).read_bytes(), (first / 'Contents/Resources' / target).read_bytes())
+            for retired in ('frames', 'desktop', 'pixel', 'patches'):
+                self.assertFalse((first / 'Contents/Resources' / retired).exists())
             compiles = [args for args in calls if 'swiftc' in args and '-o' in args]
             self.assertEqual([args[args.index('-target') + 1] for args in compiles], ['arm64-apple-macos13.0', 'x86_64-apple-macos13.0'] * 2)
             self.assertTrue(all('-file-prefix-map' in args for args in compiles))
