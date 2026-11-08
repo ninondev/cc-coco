@@ -17,7 +17,7 @@ function words(lang: keyof typeof C1_NUMBER_WORDS.durations): CheckWords {
 
 describe('0.2 9.2 the five check-up rows', () => {
   test('plugin-only updates keep an unchanged pet current', () => {
-    const result = checkup({ ...good, version: '9.0.0', companion: { ...good.companion, version: '1.1.4514' } }, words('en'))
+    const result = checkup({ ...good, version: '9.0.0', companion: { ...good.companion, version: COMPANION_MIN_VERSION } }, words('en'))
     expect(result.rows.some(row => row.id === 'update')).toBe(false)
   })
   test('all good belongs at the end; absent companion makes no running claim', () => {
@@ -65,6 +65,31 @@ describe('0.2 9.2 the five check-up rows', () => {
     expect(atLeastVersion(undefined, '1.1.4514')).toBe(false)
     expect(checkFolder('C:\\Users\\Owner\\Work', 'c:\\users\\owner')).toBe('~/Work')
     expect(checkFolder('/tmp/homely/project', '/tmp/home')).toBe('/tmp/homely/project')
+  })
+
+  test('four-part releases sort numerically before any prerelease tie-break', () => {
+    for (const [earlier, later] of [
+      ['1.1.4514', '1.1.4514.1-alpha'], ['1.1.4514.1', '1.1.4514.2'],
+      ['1.1.4514.2', '1.1.4514.10'], ['1.1.4514.9007199254740992', '1.1.4514.9007199254740993'], ['1.1.4514.10', '1.1.4515'],
+      ['1.1.4514.2-beta.2', '1.1.4514.2-beta.11'],
+      ['1.1.4514.2-2', '1.1.4514.2-beta'], ['1.1.4514.2-rc', '1.1.4514.2'],
+    ]) {
+      expect(olderVersion(earlier, later)).toBe(true)
+      expect(atLeastVersion(earlier, later)).toBe(false)
+      expect(atLeastVersion(later, earlier)).toBe(true)
+    }
+    expect(atLeastVersion('v1.1.4514', '1.1.4514.0')).toBe(true)
+    expect(atLeastVersion('1.1.4514.0', 'v1.1.4514')).toBe(true)
+    expect(atLeastVersion('1.1.4514.2+build.5', '1.1.4514.2')).toBe(true)
+    expect(atLeastVersion('1.1.4514.2.1', '1.1.4514.2')).toBe(false)
+  })
+
+  test('the settings check offers the previous patch an update and accepts the completed one', () => {
+    const before = { ...good, version: '1.1.4514.2', companion: { ...good.companion, version: '1.1.4514.1' },
+      sessions: [{ session: 'before-update', version: '1.1.4514.1', cwd: '/tmp/project', open: true }] }
+    expect(checkup(before, words('en')).rows.map(row => row.fix)).toEqual(['updateButton', 'reloadPlugins'])
+    expect(checkup({ ...before, companion: { ...good.companion, version: COMPANION_MIN_VERSION },
+      sessions: [{ ...before.sessions[0], version: before.version }] }, words('en')).rows).toEqual([])
   })
 
   test('small reads use only caller-named own files; closed, link, oversized, malformed fields ignored', async () => {

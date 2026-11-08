@@ -4,45 +4,52 @@ export type { CheckWords, CheckCompanion, CheckHealth, CheckSession, CheckInput,
 import { joinPath, samePath, windowsPath } from './d1-paths.js'
 
 // Raise this when the shipped pet's code or art changes, independently of plugin-only releases.
-export const COMPANION_MIN_VERSION = '1.1.4514'
-const parseVersion = (v: string | undefined) => v?.match(/^v?(\d+)\.(\d+)\.(\d+)(?:-([0-9A-Za-z.-]+))?(?:\+[0-9A-Za-z.-]+)?$/)
+export const COMPANION_MIN_VERSION = '1.1.4514.2'
+const parseVersion = (v: string | undefined) => v?.match(/^v?(\d+)\.(\d+)\.(\d+)(?:\.(\d+))?(?:-([0-9A-Za-z-]+(?:\.[0-9A-Za-z-]+)*))?(?:\+[0-9A-Za-z-]+(?:\.[0-9A-Za-z-]+)*)?$/)
 
-export function atLeastVersion(found: string | undefined, required: string | undefined): boolean {
-  return Boolean(parseVersion(found) && parseVersion(required) && !olderVersion(found, required!))
+function numericOrder(left: string, right: string): number {
+  // Version components can be longer than the exact integer range of a JS number.
+  left = left.replace(/^0+(?=\d)/, '')
+  right = right.replace(/^0+(?=\d)/, '')
+  if (left.length !== right.length) return left.length < right.length ? -1 : 1
+  return left === right ? 0 : left < right ? -1 : 1
 }
 
-
-
-
-// Liveness is supplied by the presence owner, not guessed from a record's age.
-// Existing PresenceClaim lacks cwd/version: the next round adds those to its writer.
-
-
-
-
-
-
-
-// Numeric semver comparison prevents 0.10 being treated as older than 0.2. Unknown
-// versions produce no update claim; prereleases precede a release with the same core.
-export function olderVersion(found: string | undefined, current: string): boolean {
-  const a = parseVersion(found), b = parseVersion(current)
-  if (!a || !b) return false
-  for (let i = 1; i <= 3; i++) {
-    const left = Number(a[i]), right = Number(b[i])
-    if (left !== right) return left < right
+// Coco reserves a fourth number for small fixes. A three-part release has patch revision zero.
+function compareVersion(found: string | undefined, required: string | undefined): number | undefined {
+  const a = parseVersion(found), b = parseVersion(required)
+  if (!a || !b) return undefined
+  for (let i = 1; i <= 4; i++) {
+    const order = numericOrder(a[i] ?? '0', b[i] ?? '0')
+    if (order) return order
   }
-  if (!a[4] || !b[4]) return Boolean(a[4] && !b[4])
-  const left = a[4].split('.'), right = b[4].split('.')
+  if (!a[5] || !b[5]) return a[5] ? -1 : b[5] ? 1 : 0
+  const left = a[5].split('.'), right = b[5].split('.')
   for (let i = 0; i < Math.max(left.length, right.length); i++) {
     const x = left[i], y = right[i]
     if (x === y) continue
-    if (x === undefined || y === undefined) return x === undefined
+    if (x === undefined || y === undefined) return x === undefined ? -1 : 1
     const xn = /^\d+$/.test(x), yn = /^\d+$/.test(y)
-    return xn && yn ? Number(x) < Number(y) : xn !== yn ? xn : x < y
+    if (xn && yn) {
+      const order = numericOrder(x, y)
+      if (order) return order
+      continue
+    }
+    if (xn !== yn) return xn ? -1 : 1
+    return x < y ? -1 : 1
   }
-  return false
+  return 0
 }
+
+export function olderVersion(found: string | undefined, current: string): boolean {
+  return compareVersion(found, current) === -1
+}
+
+export function atLeastVersion(found: string | undefined, required: string | undefined): boolean {
+  const order = compareVersion(found, required)
+  return order !== undefined && order >= 0
+}
+
 export function checkFolder(cwd: string, home?: string): string {
   if (!home) return cwd
   if (samePath(cwd, home)) return '~'

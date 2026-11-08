@@ -173,14 +173,14 @@ describe('the companion section on both book surfaces', () => {
       expect(await ui.find({ type: 'Text', text: 'Update ready' })).toBeUndefined()
       expect(await ui.find({ type: 'Button', text: 'Update Coco' })).toBeUndefined()
     })
-    for (const version of [PLUGIN_VERSION, '9.0.0']) test(`${surface}: a current or newer pet (${version}) has no update row`, async ($, on) => {
+    for (const version of [PLUGIN_VERSION, '9.0.0.1']) test(`${surface}: a current or newer pet (${version}) has no update row`, async ($, on) => {
       const f = fixture(on, { info: { running: true, accessibility: true, version } }); const ui = await settings($, surface, f.w)
       expect(await ui.find({ type: 'Text', text: 'Beside your window' })).toBeDefined()
       expect(await ui.find({ type: 'Text', text: 'Update ready' })).toBeUndefined()
       expect(await ui.find({ type: 'Button', text: 'Update Coco' })).toBeUndefined()
     })
     test(`${surface}: update, size and login use the record and plist`, async ($, on) => {
-      const f = fixture(on, { login: true, info: { running: true, accessibility: true, size: 'larger', version: '0.0.1' } }); const ui = await settings($, surface, f.w)
+      const f = fixture(on, { login: true, info: { running: true, accessibility: true, size: 'larger', version: '1.1.4514.1' } }); const ui = await settings($, surface, f.w)
       expect(await ui.find({ type: 'Button', text: 'Update Coco' })).toBeDefined()
       expect(await ui.find({ type: 'Text', text: 'Update ready' })).toBeDefined()
       const text = (await ui.findAll({ type: 'Text' })).map(t => t.text).join('\n')
@@ -231,14 +231,21 @@ describe('the companion section on both book surfaces', () => {
       let release: (() => void) | undefined, began: (() => void) | undefined
       const waiting = new Promise<void>(resolve => { release = resolve })
       const started = new Promise<void>(resolve => { began = resolve })
-      const f = fixture(on, { hold: () => { began?.(); return waiting }, ...(action === 'install' ? { info: { running: true, accessibility: true, size: 'medium', version: '0.0.1' } } : {}) }); const ui = await settings($, surface, f.w)
+      const f = fixture(on, { hold: () => { began?.(); return waiting }, ...(action === 'install' ? { info: { running: true, accessibility: true, size: 'medium', version: '1.1.4514.1' } } : {}) }); const ui = await settings($, surface, f.w)
       if (action === 'trash') { await ui.press({ key: 'coco:companion:remove' }); await f.w.clock.advance(0); await ui.redraw() }
       // Install is supplied by the update row while he is present.
       const pressed = ui.press({ key: `coco:companion:${action === 'install' ? 'updateButton' : 'trash'}` })
       await started; await ui.redraw()
       expect(await ui.find({ type: 'Text', text: action === 'install' ? 'Building Coco…' : 'Moving Coco to the Trash…' })).toBeDefined()
       expect((await ui.findAll({ type: 'Button' })).filter(b => b.key?.startsWith('coco:companion:'))).toEqual([])
+      if (action === 'install') f.state.info.version = PLUGIN_VERSION
       release?.(); await pressed
+      if (action === 'install') {
+        await f.w.clock.advance(0); await ui.redraw()
+        expect(await ui.find({ type: 'Text', text: 'Building Coco…' })).toBeUndefined()
+        expect(await ui.find({ type: 'Button', text: 'Update Coco' })).toBeUndefined()
+        expect(await ui.find({ type: 'Button', text: 'Remove from this Mac…' })).toBeDefined()
+      }
     })
     test(`${surface}: follow shows waiting, and remove offers Keep before trash`, async ($, on) => {
       const f = fixture(on, { info: { running: true, accessibility: false, version: PLUGIN_VERSION } }); const ui = await settings($, surface, f.w)

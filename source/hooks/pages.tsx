@@ -1251,6 +1251,7 @@ export async function pressCompanion($: Engine, c: CompanionBook, action: Compan
   if (action === 'remove' || action === 'keep') { c.confirmed = action === 'remove'; redraw(); return }
   companionEvent = undefined
   c.stop() // a new press owns the one chain and any delayed summon
+  const generation = c.generation
   c.busy.add(group)
   if (group === 'install' || action === 'trash') c.progress = group as 'install' | 'trash'
   redraw() // the press is visible before optional status validation or program/file work
@@ -1272,9 +1273,9 @@ export async function pressCompanion($: Engine, c: CompanionBook, action: Compan
         const report = c.pet ? r.exitCode === 0 ? 'ok' : 'failed' : /^result: (ok|no-tools|old-tools|failed|not-mac)$/.exec(lines[lines.length - 1] ?? '')?.[1]
         if (report === 'ok' && r.exitCode === 0) {
           c.issue = undefined; c.afterTools = false
-          c.snapshot = undefined; c.warmGeneration = -1
-          if (action === 'trash') { c.removed = true; c.confirmed = false; goal = s => !s.folder || !s.app }
-          else { c.removed = false; await writeCompanionRequest($, c, latest.view ?? view, {}); goal = s => s.folder && s.app && s.info.running === true && atLeastVersion(s.info.version, s.version) }
+          if (action === 'trash') { c.removed = true; c.confirmed = false }
+          else { c.removed = false; await writeCompanionRequest($, c, latest.view ?? view, {}) }
+          if (c.generation === generation) await companionSnapshot($, c)
         } else {
           c.issue = report === 'no-tools' ? 'tools' : report === 'old-tools' ? 'oldTools' : 'failed'
           c.afterTools = false

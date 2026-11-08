@@ -12,6 +12,10 @@ old behavior back.
 
 ## [Unreleased]
 
+## [1.1.4514.2] - 2026-11-08
+
+Coco now recognizes four-part patch versions when it checks the Mac pet and open sessions for updates. After an update finishes, the open pet page refreshes its controls.
+
 ## [1.1.4514.1] - 2026-11-08
 
 The Mac desktop pet now records that it has stopped when you quit it.

@@ -5,7 +5,7 @@
   ],
   "compiler": "Apple Swift version 6.4.2 (swiftlang-6.4.2.1.9 clang-2100.4.1.1)\nTarget: arm64-apple-macosx27.0.0",
   "inputs": {
-    "plugin/.claude-plugin/plugin.json": "cf70efeb04d443b4f54278d0fa612aa26d106c7216bacc43c4ba5866dc96ff9d",
+    "plugin/.claude-plugin/plugin.json": "0b7f2d1c58c74fb49d96b3763a1cfaab34a62d881d0208b9c5f722b7e0faaae6",
     "plugin/assets/claudie/dake/01.png": "a607dac2f33fb5ee800bcbe630eea1b06545665d0392561f6d5652f7ee0f70af",
     "plugin/assets/claudie/dake/02.png": "b6ebe8df37074b37b62aab84ef2adb872aefc4b157544ddbfd63dcd9fc5631c6",
     "plugin/assets/claudie/dake/03.png": "a6835c85bd1c9d07c23260604ca4dd3bc5c62a9cd32d363e2760164ad8899c5f",
@@ -176,5 +176,5 @@
   "minimumMacOS": "13.0",
   "schema": 1,
   "sdk": "27.2",
-  "version": "1.1.4514.1"
+  "version": "1.1.4514.2"
 }

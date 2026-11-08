@@ -55,7 +55,7 @@ if (!WINDOWS_ROOTS) for (const deniedCopy of [false, true]) test(`C2 old live se
   const copied: string[] = []
   on('ui.copy', ($, e) => { copied.push(e.text); return { value: { isCopied: !deniedCopy } } })
   const f = presenceWorld(on,snapshot(),{withNativePresence:true, remoteBusy: true })
-  Object.assign(f.current.claims.remote, { session: 'old-c2', cwd: '/tmp/presence-kit-user/old-project', version: '0.0.1' })
+  Object.assign(f.current.claims.remote, { session: 'old-c2', cwd: '/tmp/presence-kit-user/old-project', version: '1.1.4514.1' })
   await $.session.start({ ...START, surface: 'desktop' })
   await f.clock.advance(0)
   for (let i=0;i<80;i++) await $.command.run({ command:'b1b-host-boundary', args:'', origin:PERSON, presentation:P })

@@ -1,4 +1,5 @@
 import { expect, test } from 'claude-code/testing'
+import { COMPANION_MIN_VERSION } from '../hooks/checkup'
 import { world, settleLegacyStart } from './world'
 import { M1_GAPS_TEXT } from './m1-more-data-fixture'
 import { installGapWords } from '../hooks/mod-gaps-words'
@@ -107,7 +108,7 @@ test('D doctor names a DeepSeek key that does not start with sk-',async()=>{
 test('D doctor keeps an unchanged pet current after a plugin-only update',async()=>{
   const lines=await doctorLines(fakeDoctor$({
     env:{HOME:'/tmp/d-api-home-not-there'},
-    files:{'/tmp/d-api-home-not-there/Library/Application Support/Coco/companion.json':'{"running":true,"version":"1.1.4514"}'},
+    files:{'/tmp/d-api-home-not-there/Library/Application Support/Coco/companion.json':JSON.stringify({running:true,version:COMPANION_MIN_VERSION})},
   }),{pluginVersion:'9.0.0',engineVersion:'2.1.304',lang:'en',companionInstalled:true})
   expect(lines.some(line=>line.includes('/coco companion install'))).toBe(false)
 })

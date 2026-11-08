@@ -184,7 +184,7 @@
     },
     "hooks-source/book-text.ts": {
       "bytes": 217784,
-      "sha256": "5ea8cea6ea4952972eeec5822af1eaa6ba1c0669a39a7d8d097b263639009b78"
+      "sha256": "0f47b23174688d714d5a1d1473b29c3de30525e79502e94d27b709400d1fc7b8"
     },
     "hooks-source/line-slot.ts": {
       "bytes": 5835,
@@ -232,7 +232,7 @@
     },
     "hooks-source/plugin-version.ts": {
       "bytes": 110,
-      "sha256": "e30fd5696fbbce88c2627ab7dec056352ffe1cadb731ff5aead00238546612b9"
+      "sha256": "e163c7820507f6ce159f986a0e63eabd124b5d094d1d98e60bd76d53a291749f"
     },
     "hooks-source/high-contrast.ts": {
       "bytes": 1024,
@@ -259,8 +259,8 @@
       "sha256": "b7f26a14914751025151e5be54348861420d08c710c63a26ab36fef6cd7925e0"
     },
     "hooks-source/pages.tsx": {
-      "bytes": 125858,
-      "sha256": "109aa7e2663b080bb5ad0ce601197c1c9e786af6032681ea05e94247cf3118e8"
+      "bytes": 125773,
+      "sha256": "7f00345b2dc5a336f2ee5ef54b244d3e0e1830fb5b57bfbd05351d099dd29d70"
     },
     "hooks-source/words.ts": {
       "bytes": 58924,
@@ -607,8 +607,8 @@
       "sha256": "e9b3ab9e547835a6464ed3f2a6cfd1dd46061f7ffc5b3af9f0a4ed1752c3828a"
     },
     "hooks-source/checkup.ts": {
-      "bytes": 6997,
-      "sha256": "e8433d881f07595283a4ec818c8eb021209842ca25ef3d887ce2a5c329b83acd"
+      "bytes": 7408,
+      "sha256": "6899f027208d5f3fcb06c2802555c24699efcd9c02ab4a07bc635150b1c9ec45"
     },
     "hooks-source/book-band-words.ts": {
       "bytes": 2861,
@@ -1767,8 +1767,8 @@
         "companionRun": 1221,
         "writeCompanionRequest": 1231,
         "pressCompanion": 1247,
-        "completeBookClose": 1489,
-        "registerBook": 1504,
+        "completeBookClose": 1490,
+        "registerBook": 1505,
         "BOOK_PANE": 123,
         "C3BookSnapshot": 820
       }
@@ -3925,12 +3925,12 @@
         "readCheckSessions": "checkup__readCheckSessions"
       },
       "exportLines": {
-        "atLeastVersion": 10,
-        "olderVersion": 28,
-        "checkFolder": 46,
-        "checkup": 58,
-        "readCheckCompanion": 94,
-        "readCheckSessions": 108,
+        "olderVersion": 44,
+        "atLeastVersion": 48,
+        "checkFolder": 53,
+        "checkup": 65,
+        "readCheckCompanion": 101,
+        "readCheckSessions": 115,
         "CheckWords": 2,
         "CheckCompanion": 2,
         "CheckHealth": 2,
@@ -4803,16 +4803,16 @@
     "hooks/line-types.ts",
     "hooks/lines.ts",
     "hooks/m1-always.ts",
-    "hooks/m1-compiled/chunk-48q9c423.js",
     "hooks/m1-compiled/chunk-5r0mxn57.js",
-    "hooks/m1-compiled/chunk-9vmq1sa2.js",
-    "hooks/m1-compiled/chunk-c7vpkqt0.js",
-    "hooks/m1-compiled/chunk-cg5yx1cs.js",
-    "hooks/m1-compiled/chunk-dwyyns4q.js",
-    "hooks/m1-compiled/chunk-hc9xaamy.js",
+    "hooks/m1-compiled/chunk-dj0z1m9v.js",
+    "hooks/m1-compiled/chunk-fctww6gs.js",
     "hooks/m1-compiled/chunk-jahhamrc.js",
+    "hooks/m1-compiled/chunk-jmrbvvv7.js",
     "hooks/m1-compiled/chunk-rqeze64w.js",
-    "hooks/m1-compiled/chunk-vzx9rn8k.js",
+    "hooks/m1-compiled/chunk-sc1rv5hn.js",
+    "hooks/m1-compiled/chunk-ypey5wr6.js",
+    "hooks/m1-compiled/chunk-yxnjmc2m.js",
+    "hooks/m1-compiled/chunk-zmdhhtvx.js",
     "hooks/m1-compiled/companion.d.ts",
     "hooks/m1-compiled/companion.js",
     "hooks/m1-compiled/manifest.json",
@@ -4898,16 +4898,16 @@
     "hooks/worker-name.ts"
   ],
   "chunkBytes": {
-    "chunk-48q9c423.js": 46688,
-    "chunk-5r0mxn57.js": 363570,
-    "chunk-9vmq1sa2.js": 204754,
-    "chunk-c7vpkqt0.js": 221684,
-    "chunk-cg5yx1cs.js": 74483,
-    "chunk-dwyyns4q.js": 102618,
-    "chunk-hc9xaamy.js": 20985,
+    "chunk-5r0mxn57.js": 363564,
+    "chunk-dj0z1m9v.js": 20985,
+    "chunk-fctww6gs.js": 74483,
     "chunk-jahhamrc.js": 63116,
+    "chunk-jmrbvvv7.js": 102618,
     "chunk-rqeze64w.js": 10209,
-    "chunk-vzx9rn8k.js": 224654,
+    "chunk-sc1rv5hn.js": 225032,
+    "chunk-ypey5wr6.js": 221684,
+    "chunk-yxnjmc2m.js": 204682,
+    "chunk-zmdhhtvx.js": 46697,
     "companion.js": 113161,
     "motion_stills.js": 213972,
     "pages.js": 70195,
