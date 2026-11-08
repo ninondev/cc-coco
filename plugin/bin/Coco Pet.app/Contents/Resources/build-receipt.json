@@ -5,7 +5,7 @@
   ],
   "compiler": "Apple Swift version 6.4.2 (swiftlang-6.4.2.1.9 clang-2100.4.1.1)\nTarget: arm64-apple-macosx27.0.0",
   "inputs": {
-    "plugin/.claude-plugin/plugin.json": "2f4d3e411793ca1e3c57d2e30bba1f2b38974846e459acba6d9201539465f8f6",
+    "plugin/.claude-plugin/plugin.json": "cf70efeb04d443b4f54278d0fa612aa26d106c7216bacc43c4ba5866dc96ff9d",
     "plugin/assets/claudie/dake/01.png": "a607dac2f33fb5ee800bcbe630eea1b06545665d0392561f6d5652f7ee0f70af",
     "plugin/assets/claudie/dake/02.png": "b6ebe8df37074b37b62aab84ef2adb872aefc4b157544ddbfd63dcd9fc5631c6",
     "plugin/assets/claudie/dake/03.png": "a6835c85bd1c9d07c23260604ca4dd3bc5c62a9cd32d363e2760164ad8899c5f",
@@ -134,7 +134,7 @@
     "plugin/companion-rs/assets/coco/socks-B-whitehat.json": "9e033eb8ec286d5d653bb52a81e9203b057ed3acf0ec3ba2941c8e66176b7b2c",
     "plugin/companion-rs/assets/words/languages.json": "cbf85ac8ea87a8e5bb6d3d5da3b700363c64820be7a3ddcfb4ed40a89d6a1f02",
     "plugin/companion-rs/assets/words/quota.json": "541d10c1f6e0e5a80493c20dc21e2dfd77bf7c33059c3423dc65131b963d9756",
-    "plugin/companion/Info.plist": "82be3574184c6f9d2fef820de5d176ad4d08c30e0a64fe6375f80993da4332f1",
+    "plugin/companion/Info.plist": "45e2c70d1074b74e2bb587fc381b6f532877db7dc680fa4f832a9456c931a15f",
     "plugin/companion/Sources/Activity.swift": "8b1d621b9578cc544cd135a814a780451ad8df3b610f62e86d2685e5a953f10d",
     "plugin/companion/Sources/Agents.swift": "a220265fdfc3c9d4e74ef43791e55d4ac86054b98c92bbaa2b82b13046761a49",
     "plugin/companion/Sources/App.swift": "d5bef48780addb2abd8239f599f8921d55897239de8f85b42cad7ba38babaac4",
@@ -171,10 +171,10 @@
     "plugin/companion/Sources/Tuning.swift": "8655d34bd94742870a56242648d2365f705463db4b9b88ce52396c84c222b7bf",
     "plugin/companion/Sources/WindowManners.swift": "ef27e10be5809d14b40bff23e5223758a10227b27a901753086bd6526ccd6227",
     "plugin/companion/Sources/main.swift": "c6834590f50aaf793140e15e842c1c77ab33b8765e53edf7df499a1c715483ba",
-    "tools/build-companion-macos.py": "79b77c5c208be485052bb74c5b708f667f2a68d89589a65ff1263cc3299e3abb"
+    "tools/build-companion-macos.py": "b066121ea607e760dda2a601e20f94caf0b409e9267da3d858b7124274c8d4b2"
   },
   "minimumMacOS": "13.0",
   "schema": 1,
   "sdk": "27.2",
-  "version": "1.1.4514"
+  "version": "1.1.4514.1"
 }

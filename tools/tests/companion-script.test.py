@@ -335,6 +335,10 @@ class ScriptChecks(unittest.TestCase):
         self.assertEqual(self.calls('security'), [])
         self.assertTrue(all(call[call.index('--sign') + 1] == '-' for call in self.calls('codesign')))
 
+    def test_app_uses_graceful_termination_to_save_its_stopped_state(self):
+        with (ROOT / 'plugin/companion/Info.plist').open('rb') as plist:
+            self.assertFalse(plistlib.load(plist).get('NSSupportsSuddenTermination', False))
+
     def test_missing_tools(self):
         result = self.run_script('install', '--developer-build', '--report', FAKE_NO_TOOLS='1')
         self.assert_report(result, 'no-tools', 3)

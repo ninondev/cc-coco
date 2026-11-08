@@ -12,6 +12,10 @@ old behavior back.
 
 ## [Unreleased]
 
+## [1.1.4514.1] - 2026-11-08
+
+The Mac desktop pet now records that it has stopped when you quit it.
+
 ## [1.1.4514] - 2026-11-05
 
 Coco 1.1.4514 adds a Mac installer and text-file imports for band lines.

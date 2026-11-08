@@ -183,8 +183,8 @@
       "sha256": "4da72c6767af6ec42f4479649db429da6545b6dfd4d779c6cf8c9da7af13e715"
     },
     "hooks-source/book-text.ts": {
-      "bytes": 217782,
-      "sha256": "a96b518a90f2e0a54b80c47ab90a710f1d2eb0e1e0eaf4b90c80e448d8afb111"
+      "bytes": 217784,
+      "sha256": "5ea8cea6ea4952972eeec5822af1eaa6ba1c0669a39a7d8d097b263639009b78"
     },
     "hooks-source/line-slot.ts": {
       "bytes": 5835,
@@ -231,8 +231,8 @@
       "sha256": "68f8227505ccb2706c860e733647cb901cc39a62e2b74eaae61bccf9dd00277f"
     },
     "hooks-source/plugin-version.ts": {
-      "bytes": 108,
-      "sha256": "45526fa71cc388d774e33ab1520532b959107e0d040b85816b6da628deb13740"
+      "bytes": 110,
+      "sha256": "e30fd5696fbbce88c2627ab7dec056352ffe1cadb731ff5aead00238546612b9"
     },
     "hooks-source/high-contrast.ts": {
       "bytes": 1024,
@@ -4803,13 +4803,13 @@
     "hooks/line-types.ts",
     "hooks/lines.ts",
     "hooks/m1-always.ts",
-    "hooks/m1-compiled/chunk-1dsb8xxa.js",
-    "hooks/m1-compiled/chunk-32tsyzp1.js",
     "hooks/m1-compiled/chunk-48q9c423.js",
     "hooks/m1-compiled/chunk-5r0mxn57.js",
+    "hooks/m1-compiled/chunk-9vmq1sa2.js",
     "hooks/m1-compiled/chunk-c7vpkqt0.js",
     "hooks/m1-compiled/chunk-cg5yx1cs.js",
     "hooks/m1-compiled/chunk-dwyyns4q.js",
+    "hooks/m1-compiled/chunk-hc9xaamy.js",
     "hooks/m1-compiled/chunk-jahhamrc.js",
     "hooks/m1-compiled/chunk-rqeze64w.js",
     "hooks/m1-compiled/chunk-vzx9rn8k.js",
@@ -4898,18 +4898,18 @@
     "hooks/worker-name.ts"
   ],
   "chunkBytes": {
-    "chunk-1dsb8xxa.js": 20977,
-    "chunk-32tsyzp1.js": 204739,
-    "chunk-48q9c423.js": 46697,
-    "chunk-5r0mxn57.js": 363590,
+    "chunk-48q9c423.js": 46688,
+    "chunk-5r0mxn57.js": 363570,
+    "chunk-9vmq1sa2.js": 204754,
     "chunk-c7vpkqt0.js": 221684,
     "chunk-cg5yx1cs.js": 74483,
     "chunk-dwyyns4q.js": 102618,
+    "chunk-hc9xaamy.js": 20985,
     "chunk-jahhamrc.js": 63116,
     "chunk-rqeze64w.js": 10209,
     "chunk-vzx9rn8k.js": 224654,
     "companion.js": 113161,
-    "motion_stills.js": 213970,
+    "motion_stills.js": 213972,
     "pages.js": 70195,
     "presence.js": 13655,
     "register.js": 230681

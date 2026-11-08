@@ -27,7 +27,7 @@
 	<key>NSSupportsAutomaticTermination</key>
 	<false/>
 	<key>NSSupportsSuddenTermination</key>
-	<true/>
+	<false/>
 	<key>NSHumanReadableCopyright</key>
 	<string>Coco, an unofficial fan skin (MIT; art CC BY-NC 4.0). Claude is a trademark of Anthropic.</string>
 </dict>

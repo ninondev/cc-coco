@@ -16,7 +16,7 @@
 
 ## 安装
 
-Mac 可以下载「[Coco 安装器](https://github.com/ninondev/cc-coco/releases/download/v1.1.4514/Coco-Installer-1.1.4514-macos.zip)」，解压后双击打开，再点「安装」。
+Mac 可以下载「[Coco 安装器](https://github.com/ninondev/cc-coco/releases/download/v1.1.4514.1/Coco-Installer-1.1.4514.1-macos.zip)」，解压后双击打开，再点「安装」。
 
 安装器和桌宠支持 macOS 13 或更高版本，Intel 和 Apple 芯片的 Mac 都能用。
 
