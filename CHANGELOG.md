@@ -12,6 +12,16 @@ old behavior back.
 
 ## [Unreleased]
 
+## [1.1.4514.3] - 2026-11-14
+
+This update publishes the plugin and source changes. The bundled Mac pet and downloadable installers remain at 1.1.4514.2; the new Mac pet build will ship after notarization.
+
+### Persona changes
+
+- Added 12 Chinese lines each for Coco, Claudie and DeepSeek-chan, grouped by starting work, thinking, working and resting. Existing custom libraries and the option to use only custom lines remain unchanged. Claudie and DeepSeek-chan remain silent until their line library is enabled.
+- The Mac pet source now keeps the selected character's effective line library when following Codex or ZCode, instead of reading Coco's lines for every character. Character switches and disabled libraries carry through to the pet. The existing switch for following other agents is unchanged.
+- Text-file imports now accept an `idle` section. DeepSeek-chan imports have their own slot and do not trigger model generation.
+
 ## [1.1.4514.2] - 2026-11-08
 
 Coco now recognizes four-part patch versions when it checks the Mac pet and open sessions for updates. After an update finishes, the open pet page refreshes its controls.

@@ -111,13 +111,24 @@ static int replace_bytes(int fd, const char *name, const char *data, size_t coun
     int result = 1;
     struct stat staged;
     if (fstat(file, &staged) != 0 || !regular(&staged)) { close(file); return 1; }
-    size_t total = 0;
-    while (total < count) {
-        ssize_t n = write(file, data + total, count - total);
-        if (n < 0 && errno == EINTR) continue;
-        if (n <= 0) goto done;
-        total += (size_t)n;
-    }
+    /* The separate line-book command streams without allocating a whole editable library. */
+    char buffer[8192];
+    do {
+        if (!data) {
+            ssize_t n = read(STDIN_FILENO, buffer, sizeof buffer);
+            if (n < 0 && errno == EINTR) continue;
+            if (n < 0) goto done;
+            if (!n) break;
+            count = (size_t)n;
+        }
+        size_t total = 0;
+        while (total < count) {
+            ssize_t n = write(file, (data ? data : buffer) + total, count - total);
+            if (n < 0 && errno == EINTR) continue;
+            if (n <= 0) goto done;
+            total += (size_t)n;
+        }
+    } while (!data);
     if (fsync(file) != 0 || fstat(file, &current) != 0 || !regular(&current) ||
         leaf(fd, temporary, &current) != 1 || current.st_dev != staged.st_dev || current.st_ino != staged.st_ino) goto done;
     int now = leaf(fd, name, &current);
@@ -332,6 +343,15 @@ int main(int argc, char **argv) {
         int lock = n < 0 ? -1 : writer_lock(fd, ".shared-view-lock");
         int r = lock < 0 ? 1 : replace_bytes(fd, argv[3], data, (size_t)n);
         if (lock >= 0) close(lock); free(data); close(fd); return r;
+    }
+    if (argc == 4 && !strcmp(argv[1], "write-lines")) {
+        const char *name = argv[3];
+        if (strlen(name) != 75 || strncmp(name, "lines-", 6) || strcmp(name + 70, ".json")) return 1;
+        for (unsigned i = 6; i < 70; i++) if (!strchr("0123456789abcdef", name[i])) return 1;
+        int fd = directory(argv[2], 0); if (fd < 0 || !owned_dir(fd, 1)) { if (fd >= 0) close(fd); return 1; }
+        int lock = writer_lock(fd, ".shared-lines-lock");
+        int r = lock < 0 ? 1 : replace_bytes(fd, name, NULL, 0);
+        if (lock >= 0) close(lock); close(fd); return r;
     }
     if (argc == 3 && !strcmp(argv[1], "diagnostic-append")) {
         int fd = directory(argv[2], 0); if (fd < 0) return errno == ENOENT ? 0 : 1;

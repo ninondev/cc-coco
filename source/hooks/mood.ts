@@ -81,7 +81,7 @@ export function initialView(): View {
 // replacing a key where it has one) or as edited, mixed with or replaced by a written set; Claudie and maid Claudie say
 // only a written set of theirs, nothing without one.
 export function linesFor(view: View, key: string): readonly string[] {
-  return libraryLines(view.claudie ?? 'coco', view.lang, key, view.affection === 'clingy')
+  return libraryLines(view.character ?? view.claudie ?? 'coco', view.lang, key, view.affection === 'clingy')
 }
 
 // A shared event always selects the same existing line; sleep and wake do not depend on a band's warmth or recent line history.
@@ -111,7 +111,7 @@ export const PRESENCE_LINES = Object.defineProperties({}, Object.fromEntries(
 
 export function greetingFor(view: View, hour: number): readonly string[] {
   const part = hour >= 5 && hour < 11 ? 'morning' : hour >= 11 && hour < 13 ? 'noon' : hour >= 13 && hour < 17 ? 'afternoon' : hour >= 17 && hour < 22 ? 'evening' : 'night'
-  return libraryLines(view.claudie ?? 'coco', view.lang, `greeting.${part}`, false)
+  return libraryLines(view.character ?? view.claudie ?? 'coco', view.lang, `greeting.${part}`, false)
 }
 
 const lastPick = new Map<string, string>()

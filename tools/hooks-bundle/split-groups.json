@@ -4,6 +4,7 @@
   "hooks/motion-svg.ts",
   "hooks/mood.ts",
   "hooks/line-library.ts",
+  "hooks/line-supplements.ts",
   "hooks/head-art.ts",
   "hooks/window-notes.tsx",
   "hooks/tasks.ts",

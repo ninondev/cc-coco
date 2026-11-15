@@ -26,7 +26,7 @@ import {
   HEARING, PRESENCE_LINES, detectLanguage, detectLanguageNow, typed, initialView, langOf, languageOf, linesFor, localDay, localHour, macSystemLanguage, pick, sharedLineFor,
   NOT_FOUND, PLAN_TOOL, runMoment,
 } from './mood'
-import { COMPANION_DIR, COMPANION_FEED, companionActivity, companionEnded, companionKey, companionSeen, companionSession, companionTask, companionDock, companionDm, companionText, companionRequestText, clearCompanionLongTaskAuthorization } from './companion'
+import { COMPANION_DIR, COMPANION_FEED, companionActivity, companionEnded, companionKey, companionSeen, companionSession, companionTask, companionDock, companionDm, companionText, companionFiles, companionRequestText, clearCompanionLongTaskAuthorization } from './companion'
 import { CompanionChannel } from './channel'
 import { receivedInbox, resetReceivedInbox, receivedNoteKey, receivedNoteId, RECEIVED_MARKER_SLOT } from './window-notes'
 import { SharedPresence, cocoSettings } from './presence'
@@ -310,7 +310,7 @@ async function readMoreModels($:Engine,now?:string):Promise<[ReturnType<typeof m
 function syncLines($:Engine):void{
  const runtime=m1More
  if(!runtime)return
- runtime.setLinesForm(view.claudie)
+ runtime.setLinesForm(view.claudie, view.character)
  const work=runtime.lines(moreEngine($))
  if(work)void background($,'m1.lines',work)
 }
@@ -349,7 +349,7 @@ async function startM1($:Engine):Promise<void>{
   // the line library's files, where the person opens and edits them (his 10-17 cards)
   linesFolder:()=>home?joinPath(home,'.config/coco/lines'):undefined,
   openFile:path=>openInEditor($,path),
-  characterName:character=>bagWords(view.lang)?.look?.[character]??'',
+  characterName:character=>character==='fish'?nameFor(character,view.lang):bagWords(view.lang)?.look?.[character]??'',
   changed:async snapshot=>{storedSettings={...storedSettings,more:snapshot.values};latest.settings={...latest.settings,...storedSettings,m1Always:alwaysSnapshot()};await writeSettingsRecord($);if(presence){await presence.settings({more:snapshot.values});await presence.quietChanged()}await syncM1Presence($);syncM1Lively($);armQuiet($);syncM1Actions();if(receivedInbox().snapshot().length){refreshReceivedLine($);await push($)}$.ui.invalidate('ui.render')},
   openBook:(page,stillCurrent)=>openM1Book(bookEngine($),page,()=>m1More===runtime&&(stillCurrent?.()??true)),
   keyHost:()=>talkKeyHost($),
@@ -494,6 +494,7 @@ let askedAt = 0
 // only while the companion's folder exists, and only when the record changed. A push checks
 // installation too, so it can start or stop the request child even when the picture is unchanged.
 let companionSent = ''
+let companionLinesSent = ''
 let companionWrite: Promise<void> = Promise.resolve()
 // The pet's folder: Application Support on macOS, the system's usual place for the Windows and Linux pet (petFolderOf).
 let companionFolder: string | undefined
@@ -940,7 +941,7 @@ function languageChangeLimit($: Engine): void {
 }
 function offerLine($: Engine, line: LineRequest, shouldPublish = true, rearm = true): 'shown'|'queued'|'dropped' {
   // Claudie and maid Claudie leave Coco's chatter unsaid; reminders still show (owner 10-17, claudie-lines.ts)
-  if(view.claudie&&claudieUnsaid(line))return 'dropped'
+  if((view.claudie||view.character==='fish')&&claudieUnsaid(line))return 'dropped'
   if(!c3Visible()) {
     // Guardians ride notice(), never a toast; every other note has the approved 12-second toast.
     if(line.callId)return 'dropped'
@@ -1886,11 +1887,28 @@ async function feedCompanion($: Engine, text: string | (() => string), stillCurr
       delete record.longTaskAuthorizationRequest
       payload = JSON.stringify(record) + '\n'
     }
+    const files = companionFiles(payload)
+    let complete = true
+    if (companionSupported && files.library) {
+      try {
+        if (companionLinesSent !== files.library.name || !await $.fs.exists(joinPath(companionFolder, files.library.name))) {
+          const written = await $.process.run([joinPath($.plugin.root, 'bin/companion-control'), 'write-lines', companionFolder, files.library.name],
+            { stdin: files.library.text, timeoutMs: 30000 })
+          if (written.exitCode !== 0) throw new Error('shared write failed')
+          companionLinesSent = files.library.name
+        }
+      } catch (error) {
+        complete = false
+        caught($, 'companion.lines', error)
+      }
+    }
+    payload = files.feed
     const written = petPath !== undefined
       ? await $.process.run(petWriteArgv(petPath, companionFolder, 'view.json'), { stdin: payload, timeoutMs: 2000 })
       : await $.process.run(['/bin/sh', '-c', ATOMIC_WRITE, 'coco', companionFolder, 'view.json', joinPath($.plugin.root, 'bin/companion-control'), joinPath($.plugin.root, 'bin/presence.sh')], { stdin: payload, timeoutMs: 2000 })
     if (written.exitCode !== 0) throw new Error('shared write failed')
-    return true
+    // A failed book write must be retried even when the compact state did not change.
+    return complete
   } catch (error) { caught($, 'feed', error); return false }
 }
 

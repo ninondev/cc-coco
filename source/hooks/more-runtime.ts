@@ -194,6 +194,7 @@ export class MoreRuntime {
  // The line library (owner 10-17, his cards): written sets are kept in 'more.lines' as written; the one being written and
  // those that failed this session are written again only on Write again.
  private linesForm?:'dake'|'maid'
+ private linesWho?:LineCharacter
  private linesSets:Record<string,{lines:LineSet;at:number}>={}
  private linesBusy?:string
  private linesFailed=new Set<string>()
@@ -911,8 +912,8 @@ export class MoreRuntime {
  }
  lookAvailable():boolean{return this.isOn('look')&&this.changedPaths.size>0&&!this.lookAgentId&&!this.lookBusy&&this.lookUsageSlots<16}
  edit(path:string,input:string):void{if(!this.isOn('look'))return;this.changedPaths.add(path);const left=60000-this.editInputs.reduce((n,value)=>n+value.length,0);if(input.length>left)this.editsCut=true;if(left>0)this.editInputs.push(input.slice(0,left))}
- setLinesForm(form:'dake'|'maid'|undefined):void{if(this.linesForm===form)return;this.linesForm=form;this.activateLines()}
- private linesCharacter():LineCharacter{return this.linesForm??'coco'}
+ setLinesForm(form:'dake'|'maid'|undefined,character?:LineCharacter):void{if(this.linesForm===form&&this.linesWho===character)return;this.linesForm=form;this.linesWho=character;this.activateLines()}
+ private linesCharacter():LineCharacter{return this.linesWho??this.linesForm??'coco'}
  /** Who answers in Talk: Claudie while one of her forms is worn, else Coco (owner 10-21). */
  get talkSpeaker():TalkWho|undefined{return this.linesForm?'claudie':undefined}
  private talkWho():{who?:TalkWho}{return this.linesForm?{who:'claudie'}:{}}
@@ -931,7 +932,7 @@ export class MoreRuntime {
  }
  private activateLines():void{
    const lang=this.linesLangNow()
-   for(const character of ['coco','dake','maid'] as const){const key=`${character}:${lang}`,imported=this.linesImports[key];installWritten(character,imported?.on?linesFromText(imported.text):this.linesEdits[key]??this.linesSets[key]?.lines)}
+   for(const character of ['coco','dake','maid','fish'] as const){const key=`${character}:${lang}`,imported=this.linesImports[key];installWritten(character,imported?.on?linesFromText(imported.text):this.linesEdits[key]??this.linesSets[key]?.lines,lang)}
    installEdited(this.linesEdits[`shipped:${this.lang}`])
    useWritten(moreOn(this.values,'lines')||this.linesImports[`${this.linesCharacter()}:${lang}`]?.on===true,this.linesMix)
  }
@@ -949,19 +950,19 @@ export class MoreRuntime {
    const data=stored&&typeof stored==='object'?stored as {sets?:unknown;lang?:unknown;mix?:unknown;opened?:unknown;imported?:unknown}:{}
    if(data.imported&&typeof data.imported==='object')for(const [slot,value] of Object.entries(data.imported)){
      const [character,lang]=slot.split(':'),entry=value as {text?:unknown;on?:unknown}|null
-     if(['coco','dake','maid'].includes(character??'')&&LANGS.some(l=>l.code===lang)&&typeof entry?.text==='string'&&entry.text.length<=LINE_IMPORT_BYTES)
+     if(['coco','dake','maid','fish'].includes(character??'')&&LANGS.some(l=>l.code===lang)&&typeof entry?.text==='string'&&entry.text.length<=LINE_IMPORT_BYTES)
        this.linesImports[slot]={text:entry.text,on:entry.on===true}
    }
    if(Array.isArray(data.opened))for(const slot of data.opened){
      const [part,code]=typeof slot==='string'?slot.split(':'):[]
-     if(['shipped','coco','dake','maid'].includes(part??'')&&LANGS.some(l=>l.code===code))this.linesOpened.add(slot as string)
+     if(['shipped','coco','dake','maid','fish'].includes(part??'')&&LANGS.some(l=>l.code===code))this.linesOpened.add(slot as string)
    }
    if(typeof data.lang==='string'&&LANGS.some(l=>l.code===data.lang))this.linesLang=data.lang
    if(data.mix==='only')this.linesMix='only'
    if(data.sets&&typeof data.sets==='object')for(const [key,entry] of Object.entries(data.sets as Record<string,unknown>)){
      const [character,code]=key.split(':') as [string,string|undefined]
      const lines=(entry as {lines?:unknown})?.lines,at=(entry as {at?:unknown})?.at
-     if(!['coco','dake','maid'].includes(character)||!code||!LANGS.some(l=>l.code===code)||!lines||typeof lines!=='object')continue
+     if(!['coco','dake','maid','fish'].includes(character)||!code||!LANGS.some(l=>l.code===code)||!lines||typeof lines!=='object')continue
      const set=writtenLinesFrom(JSON.stringify(Object.fromEntries(LINE_GROUPS.map(group=>[group,(lines as Record<string,unknown>)[group]]))))
      if(set&&Object.keys(set).length)this.linesSets[key]={lines:set,at:typeof at==='number'?at:0}
    }
@@ -974,7 +975,7 @@ export class MoreRuntime {
    const slot=`${this.linesCharacter()}:${this.linesLangNow()}`
    this.linesImport={slot,path,page:0};this.linesImportEpoch++
  }
- private importGroups():string[]{return [...new Set([...LINE_GROUPS,...(this.linesCharacter()==='coco'?Object.keys(shippedLines(this.linesLangNow())):[])])]}
+ private importGroups():string[]{return [...new Set([...LINE_GROUPS,'idle',...(this.linesCharacter()==='coco'?Object.keys(shippedLines(this.linesLangNow())):[])])]}
  async pressLinesImport($:EngineInterface,action:string):Promise<boolean>{
    const slot=`${this.linesCharacter()}:${this.linesLangNow()}`
    if(action==='open'){this.setLinesImportPath('');return true}
@@ -1088,10 +1089,12 @@ export class MoreRuntime {
  }
  lines($:EngineInterface):Promise<void>|undefined{
    const character=this.linesCharacter(),key=`${character}:${this.linesLangNow()}`
+   if(character==='fish')return
    if(!this.isOn('lines')||this.linesImports[key]?.on||this.linesBusy||this.linesSets[key]||this.linesFailed.has(key))return
    return this.writeLines($,character)
  }
  redoLines($:EngineInterface):Promise<boolean>|false{
+   if(this.linesCharacter()==='fish')return false
    if(!this.isOn('lines')||this.linesBusy)return false
    return this.writeLines($,this.linesCharacter()).then(()=>true)
  }

@@ -98,6 +98,7 @@ def build(output: Path) -> Path:
         remember(source)
     for name in ('frame-manifest.json', 'companion-tuning.json', 'neighbours.json'):
         copy(plugin / 'assets' / name, resources / name)
+    group(plugin / 'assets/lines', '*.txt', 'lines')
     for name in ('shed', 'visitors'):
         folder = plugin / 'assets' / name
         if folder.is_dir():

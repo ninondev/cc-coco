@@ -78,14 +78,17 @@ struct PresenceProjection {
         let kind = speech["kind"] as? String ?? ""
         let key = kind == "sleep" || kind == "wake" ? kind : kind == "clingy" && affection == "clingy" ? "idle" : ""
         let language = speech["lang"] as? String ?? object["lang"] as? String ?? "en"
+        let library = Voice.presenceLibrary
+        let choices = library.map { $0[key] ?? [] } ?? (key == "wake"
+            ? (wakeLines[language] ?? (affection == "clingy" ? clingyWake[language] ?? clingyWake["en"] : nil) ?? lines[language]?[key] ?? lines["en"]?[key])
+            : (lines[language]?[key] ?? lines["en"]?[key]))
         if let at = speech["at"] as? Double, now >= at, now < at + 14_000,
            let id = speech["id"] as? String,
-           let choices = key == "wake"
-                ? (wakeLines[language] ?? (affection == "clingy" ? clingyWake[language] ?? clingyWake["en"] : nil) ?? lines[language]?[key] ?? lines["en"]?[key])
-                : (lines[language]?[key] ?? lines["en"]?[key]), !choices.isEmpty {
+           let choices, !choices.isEmpty {
             var hash: UInt32 = 2_166_136_261
             for unit in id.utf16 { hash = (hash ^ UInt32(unit)) &* 16_777_619 }
-            object["said"] = choices[Int(hash) % choices.count]
+            let line = choices[Int(hash) % choices.count]
+            object["said"] = line.utf8.count > 8192 ? FeedLimits.display(line) : line
         }
         return Presence(object)
     }

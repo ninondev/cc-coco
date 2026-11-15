@@ -21,7 +21,7 @@ export type MoreModels = { choices: MoreModelChoice[]; own: boolean; current?: s
 // The line library (owner 10-17): the character worn, the language picked for written lines, Coco's mix, whether the
 // written set for them is there, being written or failed, where the files the person opened are, and which one the
 // editor could not open.
-export type MoreLines = { character: 'coco' | 'dake' | 'maid'; lang: string; mix: 'only' | 'both'; state: 'none' | 'busy' | 'ready' | 'failed'; paths?: { shipped?: string; generated?: string }; editFailed?: 'shipped' | 'generated'; imported?: { on: boolean; count: number }; importView?: { path: string; page: number; preview?: LineImportPreview; error?: 'file' | 'size' } }
+export type MoreLines = { character: 'coco' | 'dake' | 'maid' | 'fish'; lang: string; mix: 'only' | 'both'; state: 'none' | 'busy' | 'ready' | 'failed'; paths?: { shipped?: string; generated?: string }; editFailed?: 'shipped' | 'generated'; imported?: { on: boolean; count: number }; importView?: { path: string; page: number; preview?: LineImportPreview; error?: 'file' | 'size' } }
 // The DM thread's choices (dm.ts): where her first messages come from (the model only once lane B's instruction is
 // there), whether a new message notifies, and how many the person has not seen.
 export type MoreDm = { first: 'lines' | 'model'; notify: boolean; model: boolean; unread: number }

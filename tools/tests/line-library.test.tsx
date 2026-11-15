@@ -5,6 +5,7 @@ import {installModelServiceFixture} from './m1-model-service-fixture'
 import {LINE_GROUPS,writtenLinesFrom,claudieUnsaid,installWritten,installEdited,useWritten,lineCells,linesText,linesFromText,libraryLines,shippedLines,lineImportPreview,emptyLinesTemplate,LINE_IMPORT_BYTES} from '../hooks/line-library'
 import {initialView,linesFor,greetingFor} from '../hooks/mood'
 import {LINES} from '../hooks/lines'
+import {LINE_SUPPLEMENTS} from '../hooks/line-supplements'
 import {desktopBand,terminalBand} from '../hooks/band'
 import {WORDS} from '../hooks/words'
 import {MoreRuntime,LINES_WRITE_TOKENS} from '../hooks/more-runtime'
@@ -21,7 +22,7 @@ const named=(tree:any):boolean=>nodes(tree).some(n=>n.type==='Text'&&text(n)===W
 // a full set as lane B's prompt asks for it: every group, three lines each
 const full=(line:(group:string,i:number)=>string)=>Object.fromEntries(LINE_GROUPS.map(group=>[group,[0,1,2].map(i=>line(group,i))]))
 const PROMPTS={'more.model.lines.coco':'fixture coco instruction','more.model.lines.dake':'fixture dake instruction','more.model.lines.maid':'fixture maid instruction'}
-const reset=()=>{useWritten(false);installEdited(undefined);for(const c of ['coco','dake','maid'] as const)installWritten(c,undefined)}
+const reset=()=>{useWritten(false);installEdited(undefined);for(const c of ['coco','dake','maid','fish'] as const)installWritten(c,undefined)}
 
 test('A written set keeps each group whole or not at all: three lines the band can show, whatever they say',()=>{
  const good=full((group,i)=>`${group} line ${i}`)
@@ -41,7 +42,7 @@ test('The library: Coco says the shipped lines as before; Claudie nothing until 
  reset()
  const coco={...initialView(),lang:'zh' as const},dake={...coco,claudie:'dake' as const}
  // the shipped lines, unchanged: the clingy set where it has one, English where a language has none, the greetings
- expect(linesFor(coco,'start')).toEqual(LINES.zh.start);expect(linesFor({...coco,affection:'clingy'},'start')).toEqual(LINES.zh.clingy.start)
+ expect(linesFor(coco,'start')).toEqual([...LINES.zh.start,...LINE_SUPPLEMENTS.zh.coco.start]);expect(linesFor({...coco,affection:'clingy'},'start')).toEqual([...LINES.zh.clingy.start,...LINE_SUPPLEMENTS.zh.coco.start])
  expect(linesFor({...coco,affection:'clingy'},'pat')).toEqual(LINES.zh.pat);expect(greetingFor(coco,8)).toEqual(LINES.zh.greeting.morning)
  expect(linesFor(dake,'start')).toEqual([])
  installWritten('dake',{start:['d1','d2','d3']});installWritten('coco',{start:['c1','c2','c3']})
@@ -49,7 +50,7 @@ test('The library: Coco says the shipped lines as before; Claudie nothing until 
   expect(linesFor(dake,'start')).toEqual([])
   useWritten(true,'both')
   expect(linesFor(dake,'start')).toEqual(['d1','d2','d3']);expect(linesFor(dake,'wild')).toEqual([])
-  expect(linesFor(coco,'start')).toEqual([...LINES.zh.start,'c1','c2','c3'])
+  expect(linesFor(coco,'start')).toEqual([...shippedLines('zh').start!,'c1','c2','c3'])
   // a written Coco set leaves the occasions it has none of to the shipped lines when mixed, to nothing alone
   expect(linesFor(coco,'wild')).toEqual(LINES.zh.wild)
   useWritten(true,'only')
@@ -174,7 +175,7 @@ test('Edit opens the set\'s file, written from what is said if new; what the per
   expect(opened).toEqual([shippedPath]);expect(linesFromText(f.files[shippedPath]!.text)).toEqual(shippedLines('zh'))
   expect(r.snapshot().lines?.paths).toEqual({shipped:shippedPath})
   // nothing saved yet: what is said stands; saved: said from the next line on, with only a stat when nothing changed
-  await r.refreshLines(f.$);expect(linesFor(coco,'start')).toEqual(LINES.zh.start)
+  await r.refreshLines(f.$);expect(linesFor(coco,'start')).toEqual(shippedLines('zh').start)
   f.save(shippedPath,'# mine\n[start]\n开工开工\n')
   await r.refreshLines(f.$);expect(linesFor(coco,'start')).toEqual(['开工开工']);expect(linesFor(coco,'wild')).toEqual([])
   // the next session looks at the opened file again and reads the saved lines
@@ -185,8 +186,8 @@ test('Edit opens the set\'s file, written from what is said if new; what the per
   await r.refreshLines(f.$);expect(f.calls.filter(call=>call.name==='fs.read').length).toBe(reads)
   // Restore: the shipped lines as we ship them, the file written back
   expect(await r.press(f.$,'coco:more:lines:restore:shipped')).toBe(true)
-  expect(linesFor(coco,'start')).toEqual(LINES.zh.start);expect(linesFromText(f.files[shippedPath]!.text)).toEqual(shippedLines('zh'))
-  await r.refreshLines(f.$);expect(linesFor(coco,'start')).toEqual(LINES.zh.start)
+  expect(linesFor(coco,'start')).toEqual(shippedLines('zh').start);expect(linesFromText(f.files[shippedPath]!.text)).toEqual(shippedLines('zh'))
+  await r.refreshLines(f.$);expect(linesFor(coco,'start')).toEqual(shippedLines('zh').start)
   // a written set: edited, restored to as written, let go
   r.setLinesForm('dake');r.restore({lines:true},['lines'],undefined,AT);await r.lines(f.$)
   const dake={...coco,claudie:'dake' as const},dakePath='/home/fixture/.config/coco/lines/dake-generated-zh.txt'
@@ -269,20 +270,27 @@ test('Import preserves family emoji and Indic joiners while still removing contr
 test('Character changes activate their imported lines with generation off and unchanged forms keep the active set',()=>{
  const r=new MoreRuntime(PROMPTS)
  r.restore({},[],undefined,AT);r.configure('zh')
- r.restoreLines({imported:{'dake:zh':{text:'[start]\n大克导入\n',on:true},'maid:zh':{text:'[start]\n女仆导入\n',on:true}}})
+ r.restoreLines({imported:{'dake:zh':{text:'[start]\n大克导入\n',on:true},'maid:zh':{text:'[start]\n女仆导入\n',on:true},'fish:zh':{text:'[start]\n大肥鱼导入\n[idle]\n大肥鱼休息\n',on:true}}})
  try{
-  expect(libraryLines('coco','zh','start',false)).toEqual(LINES.zh.start)
+  expect(libraryLines('coco','zh','start',false)).toEqual(shippedLines('zh').start)
   r.setLinesForm('dake')
   const active=libraryLines('dake','zh','start',false)
   expect(active).toEqual(['大克导入'])
   for(let i=0;i<10;i++)r.setLinesForm('dake')
   expect(libraryLines('dake','zh','start',false)).toBe(active)
   r.setLinesForm(undefined)
-  expect(libraryLines('coco','zh','start',false)).toEqual(LINES.zh.start)
+  expect(libraryLines('coco','zh','start',false)).toEqual(shippedLines('zh').start)
   r.setLinesForm('maid')
   expect(libraryLines('maid','zh','start',false)).toEqual(['女仆导入'])
   r.setLinesForm('dake')
   expect(libraryLines('dake','zh','start',false)).toEqual(['大克导入'])
+  r.setLinesForm(undefined,'fish')
+  expect(r.snapshot().lines?.character).toBe('fish')
+  expect(linesFor({...initialView(),lang:'zh',character:'fish'},'start')).toEqual(['大肥鱼导入'])
+  expect(libraryLines('fish','zh','idle',false)).toEqual(['大肥鱼休息'])
+  r.setLinesForm(undefined)
+  expect(r.snapshot().lines?.character).toBe('coco')
+  expect(libraryLines('fish','zh','start',false)).toEqual([])
  }finally{reset()}
 })
 
@@ -315,7 +323,7 @@ test('Import only applies the reviewed snapshot, persists independently and neve
   await next.chooseLinesMix(f.$,'only')
   expect(libraryLines('coco','zh','start',false)).toEqual(['我的新台词'])
   await next.pressLinesImport(f.$,'off')
-  expect(libraryLines('coco','zh','start',false)).toEqual(LINES.zh.start)
+  expect(libraryLines('coco','zh','start',false)).toEqual(shippedLines('zh').start)
   next.setLinesImportPath(path);await next.pressLinesImport(f.$,'preview');next.setLinesImportPath('/tmp/another.txt')
   expect(await next.pressLinesImport(f.$,'apply')).toBe(false)
  }finally{reset()}

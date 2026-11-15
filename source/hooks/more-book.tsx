@@ -168,7 +168,7 @@ function MoreLinesState(E: MoreElements, d: MoreBookData, on: boolean): RenderEl
       </Box>:null}
     </Box>:null}
   </Box>)
-  if(on){
+  if(on&&v.character!=='fish'){
     const state=v.state,line=w(state==='ready'?'lines.done':state==='failed'?'lines.failed':state==='busy'?'lines.writing':'')
     rows.push(<Box key="coco:more:lines:generated" flexDirection="column"><Box flexDirection="row" flexWrap="wrap" columnGap={1}>
       {w('lines.generated')?<Text>{w('lines.generated')}</Text>:null}

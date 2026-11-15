@@ -102,7 +102,7 @@ REGISTRY_PYTHON = ('art-intake-fit-pixel.test.py', 'art-intake-overlay.test.py',
 # Swift-compiling capability checks; companion-d1 would write evidence/ into the repository by
 # default, so the registry points MOE_D1_COMPANION_OUT at a scratch folder before running it.
 REGISTRY_SWIFT = ('companion-security.py', 'companion-settings-security.py', 'companion-d1.py',
-                  'companion-activity-focus.py')
+                  'companion-activity-focus.py', 'companion-lines.py')
 
 
 def d1_fixture_access(copy, counters=False):

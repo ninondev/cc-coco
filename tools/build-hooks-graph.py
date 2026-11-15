@@ -17,6 +17,7 @@ import stat
 import subprocess
 import sys
 import tempfile
+from hooks_source import source_folder
 
 ROOT = Path(__file__).resolve().parent.parent
 HELPER = ROOT / "tools/hooks-bundle/split-graph.ts"
@@ -65,7 +66,7 @@ def owned_paths(plugin: Path) -> set[str]:
 
 def main() -> int:
     parser = argparse.ArgumentParser(description=__doc__)
-    parser.add_argument("--source", type=Path, default=ROOT / "plugin/hooks-source")
+    parser.add_argument("--source", type=Path, default=source_folder(ROOT / 'plugin') or ROOT / "plugin/hooks-source")
     parser.add_argument("--output", type=Path, default=ROOT / "plugin")
     cached = os.environ.get("COCO_TYPESCRIPT") or next(iter(sorted(Path.home().glob(".bun/install/cache/typescript@5.*/lib/typescript.js"))), None)
     parser.add_argument("--typescript", type=Path, default=Path(cached) if cached else None, required=cached is None)
@@ -119,7 +120,7 @@ def main() -> int:
     inputs += sorted(name for name in bundled_scripts if name not in inputs) + canonical_mirrors
     identities = {name: digest(source / name.removeprefix("hooks/")) for name in inputs}
     before_owned = owned_paths(output)
-    output_source = output / "hooks-source"
+    output_source = source_folder(output) or output / "hooks-source"
     if not output_source.exists() and output == ROOT / "plugin":
         parser.error("Create the canonical hooks-source before production generation")
     if not output_source.exists() and args.check:

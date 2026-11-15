@@ -18,6 +18,8 @@
 
 Macでは、[Cocoインストーラー](https://github.com/ninondev/cc-coco/releases/download/v1.1.4514.2/Coco-Installer-1.1.4514.2-macos.zip)をダウンロードして解凍し、アプリを開いて「安装」（インストール）を押してください。インストーラーの表示は中国語です。macOS 13以降のIntel MacとAppleシリコンMacに対応しています。
 
+[1.1.4514.3の更新](CHANGELOG.md#1145143---2026-11-14)はプラグインとソースコードに反映されています。Mac版Coco Petの配布は1.1.4514.2のままです。新版はAppleの公証完了後に公開します。
+
 ```bash
 claude plugin marketplace add ninondev/cc-coco
 claude plugin install coco@coco

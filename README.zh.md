@@ -20,6 +20,8 @@ Mac 可以下载「[Coco 安装器](https://github.com/ninondev/cc-coco/releases
 
 安装器和桌宠支持 macOS 13 或更高版本，Intel 和 Apple 芯片的 Mac 都能用。
 
+[1.1.4514.3 更新](CHANGELOG.md#1145143---2026-11-14)已加入插件和源码。Mac 桌宠下载仍为 1.1.4514.2，新版将在苹果公证完成后提供。
+
 ```bash
 claude plugin marketplace add ninondev/cc-coco
 claude plugin install coco@coco

@@ -6,8 +6,9 @@
 // 「只停闲话，提醒照出」). Nothing is filtered for what the lines say (his 10-17: 「对台词生成不要有限制」): only what the
 // band needs to show a written set is checked.
 import { LINES } from './lines'
+import { LINE_SUPPLEMENTS } from './line-supplements'
 
-export type LineCharacter = 'coco' | 'dake' | 'maid'
+export type LineCharacter = 'coco' | 'dake' | 'maid' | 'fish'
 export type LineSet = Record<string, string[]>
 export type LineMix = 'only' | 'both'
 // The occasions a written set covers; Coco's shipped lines have more, which a written Coco set leaves to them.
@@ -19,6 +20,20 @@ export const LINE_GROUPS = [
 export const LINES_PER_GROUP = 3
 // The widest written line, in terminal cells (a CJK character takes two): 24 CJK characters, or 48 others.
 export const LINE_CELLS = 48
+export const LINE_IMPORT_GROUPS = [...LINE_GROUPS, 'idle'] as const
+
+export function supplementalLines(character: LineCharacter, lang: string, key: string): readonly string[] {
+  if (lang !== 'zh' || character === 'maid') return []
+  return (LINE_SUPPLEMENTS.zh[character] as Record<string, readonly string[]>)[key] ?? []
+}
+
+// The language a character's written set was installed under: the selected line language, which is not always the UI
+// language. installWritten without a language clears it, so old direct callers keep the lang argument's behavior.
+const writtenLang: Partial<Record<LineCharacter, string>> = {}
+export function installWritten(character: LineCharacter, set: LineSet | undefined, lang?: string): void {
+  if (set) written[character] = set; else delete written[character]
+  if (lang) writtenLang[character] = lang; else delete writtenLang[character]
+}
 
 // Coco's lines as we ship them, one list per occasion: greeting.<part>, the rest by name, clingy.<occasion>.
 const shippedCache = new Map<string, LineSet>()
@@ -31,6 +46,10 @@ export function shippedLines(lang: string): LineSet {
     else if (value && typeof value === 'object') for (const [inner, list] of Object.entries(value as Record<string, unknown>))
       if (Array.isArray(list)) set[`${key === 'greeting' ? 'greeting' : key}.${inner}`] = [...list as string[]]
   }
+  if (lang === 'zh') for (const [key, lines] of Object.entries(LINE_SUPPLEMENTS.zh.coco)) {
+    set[key] = [...(set[key] ?? []), ...lines]
+    if (set[`clingy.${key}`]) set[`clingy.${key}`] = [...set[`clingy.${key}`]!, ...lines]
+  }
   shippedCache.set(lang, set)
   return set
 }
@@ -40,14 +59,14 @@ const written: Partial<Record<LineCharacter, LineSet>> = {}
 let edited: LineSet | undefined
 let used = false
 let mix: LineMix = 'both'
-export function installWritten(character: LineCharacter, set: LineSet | undefined): void { if (set) written[character] = set; else delete written[character] }
+
 export function installEdited(set: LineSet | undefined): void { edited = set }
 export function useWritten(on: boolean, cocoMix: LineMix = 'both'): void { used = on; mix = cocoMix }
 
 /** The lines a character may say for an occasion right now (mood.ts linesFor). */
 export function libraryLines(character: LineCharacter, lang: string, key: string, clingy: boolean): readonly string[] {
   const own = used ? written[character]?.[key] ?? [] : []
-  if (character !== 'coco') return own
+  if (character !== 'coco') return !used ? [] : written[character] ? own : supplementalLines(character, writtenLang[character] ?? lang, key)
   const base = edited ?? shippedLines(lang), fallback = edited ? undefined : shippedLines('en')
   const shipped = clingy && base[`clingy.${key}`] ? base[`clingy.${key}`]! : base[key] ?? fallback?.[key] ?? []
   return !used ? shipped : mix === 'only' ? own : [...shipped, ...own]
@@ -125,7 +144,7 @@ export type LineImportRow = { line: number; group?: string; text: string; status
 export type LineImportPreview = { lines: LineSet; rows: LineImportRow[]; accepted: number; rejected: number; tooLarge: boolean }
 const IMPORT_CONTROLS = /[\u0000-\u001f\u007f-\u009f\u00ad\u061c\u200b\u200e\u200f\u202a-\u202e\u2060-\u206f\ufeff]/g
 
-export function lineImportPreview(text: string, groups: readonly string[] = LINE_GROUPS): LineImportPreview {
+export function lineImportPreview(text: string, groups: readonly string[] = LINE_IMPORT_GROUPS): LineImportPreview {
   const result: LineImportPreview = { lines: {}, rows: [], accepted: 0, rejected: 0, tooLarge: false }
   let bytes = 0
   for (const ch of text) {

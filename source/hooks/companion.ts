@@ -22,6 +22,7 @@ import { basename, middleCut } from './tasks'
 import { lineParts } from './line-slot'
 import { displaySlots } from './display-slots'
 import { nameFor } from './characters'
+import { sha256 } from './c3-secrets'
 import { workerText } from './worker-name'
 import type { LineValue } from './line-slot'
 import type { TaskDescription } from './tasks'
@@ -1077,6 +1078,8 @@ export type CompanionRecord = CompanionRequest & CompanionActivity & {
   neighbours: boolean
   affection: View['affection']
   wakeLines: readonly string[]
+  character: NonNullable<View['character']>
+  lineLibrary: Record<string, readonly string[]>
   mood: View['mood']
   summon?: number
   visitor?: NonNullable<View['visit']>
@@ -1142,7 +1145,8 @@ const CLINGY_WAKE: Record<View['lang'], readonly string[]> = {
 
 export function companionWakeLines(view: View): readonly string[] {
   const selected = linesFor(view, 'wake')
-  return view.affection === 'clingy' && selected === linesFor({ ...view, affection: 'warm' }, 'wake')
+  const coco = (view.character ?? view.claudie ?? 'coco') === 'coco'
+  return coco && view.affection === 'clingy' && selected === linesFor({ ...view, affection: 'warm' }, 'wake')
     ? CLINGY_WAKE[view.lang] : selected
 }
 
@@ -1160,6 +1164,8 @@ export function companionRecord(view: View): CompanionRecord {
     neighbours: settings.neighbours === true,
     affection: view.affection,
     wakeLines: companionWakeLines(view),
+    character: view.character ?? view.claudie ?? 'coco',
+    lineLibrary: Object.fromEntries(['greeting.morning','greeting.noon','greeting.afternoon','greeting.evening','greeting.night','start','thinking_long','working','idle','wake','sleep','done','done_long','aborted'].map(key => [key, linesFor(view, key)])),
     ...activity,
     task: task === null ? null : TASK_WORDS[view.lang][task.key].replace(/\{(file|cmd|tool)\}/g, (_mark, key: 'file' | 'cmd' | 'tool') => task?.[key] ?? ''),
     ...(task !== null && view.place?.short ? { place: view.place.short } : {}),
@@ -1259,6 +1265,30 @@ export function companionText(key: string, session: string, desktop: boolean, at
   if (surfaces !== undefined) key = JSON.stringify({ ...JSON.parse(key), surfaces })
   const head = `{"v":1,"session":${JSON.stringify(session)},"desktop":${desktop},"at":${Math.round(at)}`
   return key.length > 2 ? `${head},${key.slice(1)}\n` : `${head}}\n`
+}
+
+let lastCompanionBook: { text: string; digest: string; bytes: number } | undefined
+
+/** The full editable book has no feed-size limit. Publish it before its compact state reference. */
+export function companionFiles(text: string): { feed: string; library?: { name: string; text: string } } {
+  const record = JSON.parse(text)
+  if (!record.lineLibrary) return { feed: text }
+  const book = JSON.stringify({ v: 1, session: record.session, character: record.character, lang: record.lang,
+    lines: record.lineLibrary, wakeLines: record.wakeLines })
+  if (lastCompanionBook?.text !== book) {
+    let bytes = 0
+    for (const char of book) { const code = char.codePointAt(0)!; bytes += code <= 0x7f ? 1 : code <= 0x7ff ? 2 : code <= 0xffff ? 3 : 4 }
+    lastCompanionBook = { text: book, digest: sha256(book), bytes }
+  }
+  const { digest, bytes } = lastCompanionBook
+  delete record.lineLibrary
+  record.lineLibraryRef = { sha256: digest, bytes, session: record.session }
+  // Older pets still get their small wake recipe. The complete recipe is always in the book.
+  const wake = JSON.stringify(record.wakeLines)
+  let wakeBytes = 0
+  for (const char of wake ?? '') { const code = char.codePointAt(0)!; wakeBytes += code <= 0x7f ? 1 : code <= 0x7ff ? 2 : code <= 0xffff ? 3 : 4 }
+  if (!Array.isArray(record.wakeLines) || record.wakeLines.length > 128 || wakeBytes > 4096) delete record.wakeLines
+  return { feed: JSON.stringify(record) + '\n', library: { name: `lines-${digest}.json`, text: book } }
 }
 
 export function companionEnded(session: string, at: number): string {

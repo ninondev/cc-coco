@@ -17,6 +17,8 @@ Meet your cutest coding partner. Coco peeks at every bug you hit, and makes sure
 
 On a Mac, download the [Coco installer](https://github.com/ninondev/cc-coco/releases/download/v1.1.4514.2/Coco-Installer-1.1.4514.2-macos.zip), unzip it, open the app and click 安装 (Install). The installer is in Chinese. It supports Intel and Apple silicon Macs running macOS 13 or later.
 
+The [1.1.4514.3 update](CHANGELOG.md#1145143---2026-11-14) is available in the plugin and source. Mac pet downloads remain at 1.1.4514.2 until the new build is notarized.
+
 You can also install the plugin from a terminal:
 
 ```bash

@@ -269,8 +269,9 @@ function writesBinding(target, symbol): boolean {
    const tree=ts.createSourceFile(name,text,ts.ScriptTarget.Latest,true,ts.ScriptKind.JS),edits:any[]=[]
    for(const statement of tree.statements)if(ts.isImportDeclaration(statement)&&statement.moduleSpecifier.text===standalone)edits.push({start:statement.moduleSpecifier.getStart(tree),end:statement.moduleSpecifier.end,text:JSON.stringify('../touch-client.ts')})
    for(const edit of edits.sort((a,b)=>b.start-a.start))text=text.slice(0,edit.start)+edit.text+text.slice(edit.end)
-   normalized.set(name,text)
   }
+  text=text.trimEnd()
+  normalized.set(name,text)
   if(text.includes(placeholder)||text.includes(standalone)||/\b(?:require|eval)\s*\(|\bimport\s*\(/.test(text)||text.includes(here)||text.includes(manifest.sourcePlugin))throw Error('Forbidden runtime construct/path in '+name)
   const checked=ts.createSourceFile(name,text,ts.ScriptTarget.Latest,true,name==='register.js'?ts.ScriptKind.TSX:ts.ScriptKind.JS)
   if(checked.parseDiagnostics.length)throw Error('Normalized chunk parse failed: '+name)

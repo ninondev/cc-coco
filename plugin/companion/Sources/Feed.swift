@@ -1,26 +1,96 @@
 import Foundation
+import CryptoKit
 
 /// His name, language and words from the last session that wrote the feed, kept in his folder for when none is writing.
 /// A copy beside the frames is the fallback. None ships with the plugin: a copy is one person's language.
 enum Voice {
     static var root: URL?
     static var folder: URL?
-    private static let fields: Set<String> = ["affection", "lang", "motion", "name", "neighbours", "outfit", "reactions", "wakeLines", "words"]
+    private static let fields: Set<String> = ["affection", "lang", "motion", "name", "neighbours", "outfit", "reactions", "wakeLines", "words", "character", "claudie", "lineLibrary", "lineLibraryRef"]
     private static var written: Data?
+    private static var writtenFolder: URL?
+    private struct Book: Decodable {
+        let v: Int
+        let session: String
+        let character: String
+        let lang: String
+        let lines: [String: [String]]
+        let wakeLines: [String]
+    }
+    private static var cachedBook: (folder: URL, digest: String, bytes: Int, book: Book)?
+    private static var selected: [String: Any]?
+    private static var selectedKey: Data?
+
+    /// Presence belongs to the shown session; the saved voice remains the most recently received one for OwnFeed.
+    @discardableResult
+    static func select(_ record: [String: Any]?) -> Bool {
+        let voice = record?.filter { ["session", "character", "claudie", "lang", "lineLibraryRef", "lineLibrary"].contains($0.key) }
+        let key = voice.flatMap { try? JSONSerialization.data(withJSONObject: $0, options: .sortedKeys) }
+        guard key != selectedKey else { return false }
+        selected = voice; selectedKey = key
+        return true
+    }
+
+    static var presenceLibrary: [String: [String]]? {
+        guard let voice = selected ?? object else { return nil }
+        if let library = library(voice) { return library }
+        let character = voice["character"] as? String ?? voice["claudie"] as? String ?? "coco"
+        return character == "coco" ? nil : [:]
+    }
 
     static var object: [String: Any]? {
         for url in [folder, root].compactMap({ $0?.appendingPathComponent("voice.json") }) {
-            if let data = try? Data(contentsOf: url) { return (try? JSONSerialization.jsonObject(with: data)) as? [String: Any] }
+            if let directory = try? SecureDirectory(url.deletingLastPathComponent()),
+               let data = try? directory.read(url.lastPathComponent, maxBytes: FeedLimits.maxBytes),
+               let object = (try? JSONSerialization.jsonObject(with: data)) as? [String: Any] { return object }
         }
         return nil
     }
 
-    static func keep(_ record: [String: Any]) {
-        let voice = record.filter { fields.contains($0.key) }
-        guard voice["lang"] != nil, let url = folder?.appendingPathComponent("voice.json"),
-              let data = try? JSONSerialization.data(withJSONObject: voice, options: .sortedKeys), data != written else { return }
+    /// A ref is content-addressed and bound to its session, character and language, never an external path.
+    private static func book(_ record: [String: Any]) throws -> Book {
+        guard let ref = record["lineLibraryRef"] as? [String: Any],
+              let digest = ref["sha256"] as? String, digest.utf8.count == 64,
+              digest.utf8.allSatisfy({ (48...57).contains($0) || (97...102).contains($0) }),
+              let bytes = ref["bytes"] as? Int, bytes > 0, bytes < Int.max,
+              let session = ref["session"] as? String, !session.isEmpty,
+              record["session"] == nil || record["session"] as? String == session,
+              let character = record["character"] as? String, let lang = record["lang"] as? String,
+              let folder else { throw SecureFileError.unsafeFile }
+        let book: Book
+        if let cachedBook, cachedBook.folder == folder, cachedBook.digest == digest, cachedBook.bytes == bytes {
+            book = cachedBook.book
+        } else {
+            let directory = try SecureDirectory(folder)
+            let data = try directory.read("lines-\(digest).json", maxBytes: bytes)
+            guard data.count == bytes,
+                  SHA256.hash(data: data).map({ String(format: "%02x", $0) }).joined() == digest else { throw SecureFileError.unsafeFile }
+            book = try JSONDecoder().decode(Book.self, from: data)
+        }
+        guard book.v == 1, book.session == session, book.character == character, book.lang == lang else { throw SecureFileError.unsafeFile }
+        cachedBook = (folder, digest, bytes, book)
+        return book
+    }
+
+    static func library(_ voice: [String: Any]) -> [String: [String]]? {
+        guard voice["lineLibraryRef"] != nil else { return voice["lineLibrary"] as? [String: [String]] }
+        guard let book = try? book(voice) else { return [:] }
+        return book.lines.merging(["wake": book.wakeLines]) { _, wake in wake }
+    }
+
+    @discardableResult
+    static func keep(_ record: [String: Any]) -> Bool {
+        let validBook = record["lineLibraryRef"] == nil || (try? book(record)) != nil
+        var voice = record.filter { fields.contains($0.key) }
+        if !validBook { voice.removeValue(forKey: "lineLibraryRef"); voice["lineLibrary"] = [String: [String]]() }
+        guard voice["lang"] != nil, let folder,
+              let data = try? JSONSerialization.data(withJSONObject: voice, options: .sortedKeys) else { return false }
+        if data == written, writtenFolder == folder { return validBook }
+        guard let directory = try? SecureDirectory(folder),
+              (try? directory.replace("voice.json", with: data)) != nil else { return false }
         written = data
-        try? data.write(to: url, options: .atomic)
+        writtenFolder = folder
+        return validBook
     }
 }
 
@@ -750,6 +820,7 @@ final class Feed {
 
     private let trace: Trace
     private var activity = ActivitySessions()
+    private var voices: [String: [String: Any]] = [:]
     var activityChanged: () -> Void = {}
     /// Every accepted record, including a session that is not shown, carries acknowledgements.
     var received: (Record) -> Void = { _ in }
@@ -895,7 +966,8 @@ final class Feed {
             if !record.wakeLines.isEmpty {
                 presenceObserver?.recipes(["affection": record.affection, "wakeLines": [record.lang: record.wakeLines]])
             }
-            Voice.keep(object)
+            if !Voice.keep(object) { trace.say("feed: line book or saved voice could not be verified") }
+            voices[record.session] = object
             accepted = record
             summon = record.summon
             requests.merge(record.requests)
@@ -925,6 +997,9 @@ final class Feed {
         guard !starting else { return }
         let target = activity.target(now: now, previous: targetApp)
         if target != targetApp { targetApp = target; targetChanged(target) }
+        voices = voices.filter { activity.records[$0.key] != nil }
+        let selected = activity.shown(now: now, target: targetApp).session
+        if Voice.select(voices[selected]) { presenceObserver?.recipes([:]) }
         let pick = activity.shown(now: now, target: targetApp).namingApp(targetApp == "vscode" ? "VS Code" : appName)
         if pick != shown {
             shown = pick

@@ -7,6 +7,7 @@
       "hooks/motion-svg.ts",
       "hooks/mood.ts",
       "hooks/line-library.ts",
+      "hooks/line-supplements.ts",
       "hooks/head-art.ts",
       "hooks/window-notes.tsx",
       "hooks/tasks.ts",
@@ -159,12 +160,16 @@
       "sha256": "466266f42a3d0e02d748c8e9f72889ceb172c9ce0fba75d693a5453252cceee4"
     },
     "hooks-source/mood.ts": {
-      "bytes": 23639,
-      "sha256": "3ed4d6e4b5b50fd4c370ee9406ca39c30eb73be1947860a74a23f29d4536243a"
+      "bytes": 23675,
+      "sha256": "d91c1414567c88a3aebda679c296d1c2b623ac15931dd72e39948f0a1b0f6a75"
     },
     "hooks-source/line-library.ts": {
-      "bytes": 9629,
-      "sha256": "c8f526d5e7b90c652881f65242fe58dc2b0629f9dd4142647ffba8b4e5065879"
+      "bytes": 10751,
+      "sha256": "b9b63a3dac5ad56ad447ac248c526dbfb5dac1b1dde2521f468941051487cec2"
+    },
+    "hooks-source/line-supplements.ts": {
+      "bytes": 2356,
+      "sha256": "b6a01354a5494131684ee4f30184e2e919480cd7addde8816d0d1ed20e037a78"
     },
     "hooks-source/head-art.ts": {
       "bytes": 12339,
@@ -184,7 +189,7 @@
     },
     "hooks-source/book-text.ts": {
       "bytes": 217784,
-      "sha256": "0f47b23174688d714d5a1d1473b29c3de30525e79502e94d27b709400d1fc7b8"
+      "sha256": "9f239c188883f754e835893b8cc2a00ab6b7663a369a2a191f776e7974571edd"
     },
     "hooks-source/line-slot.ts": {
       "bytes": 5835,
@@ -232,7 +237,7 @@
     },
     "hooks-source/plugin-version.ts": {
       "bytes": 110,
-      "sha256": "e163c7820507f6ce159f986a0e63eabd124b5d094d1d98e60bd76d53a291749f"
+      "sha256": "de1cbc925afb00baacab0c7887f64fc1e19bbb5a3b1d334f5465ee6f87ba59d6"
     },
     "hooks-source/high-contrast.ts": {
       "bytes": 1024,
@@ -407,16 +412,16 @@
       "sha256": "ffcf45082e7e97c0e8eacfebebb28bcd449f61a04a6b7e4a10f40f8d7aea92ab"
     },
     "hooks-source/companion.ts": {
-      "bytes": 71618,
-      "sha256": "d94f27700d64aba315ce80276696a6d08660ffbd78b4a7120f7aa7d78adeffb0"
+      "bytes": 73642,
+      "sha256": "cf2e5db541734a31fbc52aec91cb8acce2c76a58d7e1234c20518c00e52e7b5e"
     },
     "hooks-source/band.tsx": {
       "bytes": 139503,
       "sha256": "21092f50b3c04c3f0aed7725bf8f3123db94c5fad1b3e31ab8915759918995b3"
     },
     "hooks-source/more-runtime.ts": {
-      "bytes": 87361,
-      "sha256": "6967e233cf7740e0580f7c62dd5bdc341ec647211dc4689f097a41e23f43c6c4"
+      "bytes": 87607,
+      "sha256": "2c054ae306d171da69ca60ccd978283d7ca40e68929b1bff2ab04c8334481cd5"
     },
     "hooks-source/talk-parts.ts": {
       "bytes": 7255,
@@ -615,8 +620,8 @@
       "sha256": "d66348c63206983ae22ea814b72179e2d421a78d9271c4c4c15cb8042a7f0933"
     },
     "hooks-source/more-book.tsx": {
-      "bytes": 28802,
-      "sha256": "4c238392c9d110bf2fd491c2ef29ee5727f833c60dc340591b80831529996246"
+      "bytes": 28824,
+      "sha256": "8ece324b1f1ce78f7676d81bbe31344c87b44a5ea73b3c27feef9d26c1a4b8de"
     },
     "hooks-source/mod-gaps-art.ts": {
       "bytes": 4918,
@@ -635,8 +640,8 @@
       "sha256": "1983406631c87173c303a9d783f8bd4455c7d325b461c51f71fe359bdf52f0fe"
     },
     "hooks-source/more-state.ts": {
-      "bytes": 6708,
-      "sha256": "23d8cbeca3052c4d2fb2011bdbb167eaa87d925fcc95a19379c486d77b5f0afc"
+      "bytes": 6717,
+      "sha256": "f0ce423d82003e7ccba354f744c38c5ba35fff0794e0e9e8b9558736acf69b26"
     },
     "hooks-source/more-models.ts": {
       "bytes": 6367,
@@ -703,8 +708,8 @@
       "sha256": "7a7c54b98091c26c776cdf126583846e28e46f3c675d28cc22fe0fb556d8f1aa"
     },
     "hooks-source/register.tsx": {
-      "bytes": 324238,
-      "sha256": "c892bdc3cd5c4f0d6b83258744ea77115d6cc8e3e0c2dd3d89c49d30cbaf5664"
+      "bytes": 325195,
+      "sha256": "4cf14a4084f78542b1eb3afac0da42cbb2d5eebe300c084752379e507cd45a14"
     },
     "hooks-source/touch-client.ts": {
       "bytes": 1190,
@@ -1149,6 +1154,7 @@
         "LINE_CELLS": "line_library__LINE_CELLS",
         "LINE_GROUPS": "line_library__LINE_GROUPS",
         "LINE_IMPORT_BYTES": "line_library__LINE_IMPORT_BYTES",
+        "LINE_IMPORT_GROUPS": "line_library__LINE_IMPORT_GROUPS",
         "LINE_IMPORT_PER_GROUP": "line_library__LINE_IMPORT_PER_GROUP",
         "claudieUnsaid": "line_library__claudieUnsaid",
         "emptyLinesTemplate": "line_library__emptyLinesTemplate",
@@ -1160,32 +1166,45 @@
         "linesFromText": "line_library__linesFromText",
         "linesText": "line_library__linesText",
         "shippedLines": "line_library__shippedLines",
+        "supplementalLines": "line_library__supplementalLines",
         "useWritten": "line_library__useWritten",
         "writtenLinesFrom": "line_library__writtenLinesFrom"
       },
       "exportLines": {
-        "shippedLines": 25,
-        "installWritten": 43,
-        "installEdited": 44,
-        "useWritten": 45,
-        "libraryLines": 48,
-        "claudieUnsaid": 59,
-        "lineCells": 66,
-        "writtenLinesFrom": 83,
-        "linesText": 102,
-        "linesFromText": 109,
-        "lineImportPreview": 128,
-        "emptyLinesTemplate": 157,
-        "LineCharacter": 10,
-        "LineSet": 11,
-        "LineMix": 12,
-        "LINE_GROUPS": 14,
-        "LINES_PER_GROUP": 19,
-        "LINE_CELLS": 21,
-        "LINE_IMPORT_BYTES": 122,
-        "LINE_IMPORT_PER_GROUP": 123,
-        "LineImportRow": 124,
-        "LineImportPreview": 125
+        "supplementalLines": 25,
+        "installWritten": 33,
+        "shippedLines": 40,
+        "installEdited": 63,
+        "useWritten": 64,
+        "libraryLines": 67,
+        "claudieUnsaid": 78,
+        "lineCells": 85,
+        "writtenLinesFrom": 102,
+        "linesText": 121,
+        "linesFromText": 128,
+        "lineImportPreview": 147,
+        "emptyLinesTemplate": 176,
+        "LineCharacter": 11,
+        "LineSet": 12,
+        "LineMix": 13,
+        "LINE_GROUPS": 15,
+        "LINES_PER_GROUP": 20,
+        "LINE_CELLS": 22,
+        "LINE_IMPORT_GROUPS": 23,
+        "LINE_IMPORT_BYTES": 141,
+        "LINE_IMPORT_PER_GROUP": 142,
+        "LineImportRow": 143,
+        "LineImportPreview": 144
+      }
+    },
+    "hooks-source/line-supplements.ts": {
+      "publicPath": "hooks/line-supplements.ts",
+      "group": "hooks/m1-compiled/motion_stills.js",
+      "aliases": {
+        "LINE_SUPPLEMENTS": "line_supplements__LINE_SUPPLEMENTS"
+      },
+      "exportLines": {
+        "LINE_SUPPLEMENTS": 2
       }
     },
     "hooks-source/head-art.ts": {
@@ -2583,6 +2602,7 @@
         "companionDock": "companion__companionDock",
         "companionEnded": "companion__companionEnded",
         "companionFeedContext": "companion__companionFeedContext",
+        "companionFiles": "companion__companionFiles",
         "companionKey": "companion__companionKey",
         "companionPatLabel": "companion__companionPatLabel",
         "companionRecord": "companion__companionRecord",
@@ -2595,36 +2615,37 @@
         "companionWakeLines": "companion__companionWakeLines"
       },
       "exportLines": {
-        "clearCompanionLongTaskAuthorization": 50,
-        "companionSession": 62,
-        "companionActivity": 69,
-        "companionTask": 73,
-        "companionDm": 87,
-        "companionDock": 99,
-        "companionSeen": 103,
-        "companionFeedContext": 112,
-        "companionPatLabel": 1118,
-        "companionWakeLines": 1143,
-        "companionRecord": 1149,
-        "companionKey": 1242,
-        "companionText": 1258,
-        "companionEnded": 1264,
-        "companionSummonText": 1270,
-        "companionRequestText": 1275,
-        "COMPANION_DIR": 31,
-        "COMPANION_FEED": 32,
-        "CompanionRequest": 37,
-        "CompanionDmLine": 79,
-        "CompanionDmWords": 80,
-        "COMPANION_DM_LINES": 81,
-        "COMPANION_DM_CHARS": 82,
-        "CompanionTarget": 109,
-        "CompanionSurface": 110,
-        "CompanionWords": 116,
-        "ReactionKey": 143,
-        "TaskKey": 431,
-        "TASK_WORDS": 434,
-        "CompanionRecord": 1071
+        "clearCompanionLongTaskAuthorization": 51,
+        "companionSession": 63,
+        "companionActivity": 70,
+        "companionTask": 74,
+        "companionDm": 88,
+        "companionDock": 100,
+        "companionSeen": 104,
+        "companionFeedContext": 113,
+        "companionPatLabel": 1121,
+        "companionWakeLines": 1146,
+        "companionRecord": 1153,
+        "companionKey": 1248,
+        "companionText": 1264,
+        "companionFiles": 1273,
+        "companionEnded": 1294,
+        "companionSummonText": 1300,
+        "companionRequestText": 1305,
+        "COMPANION_DIR": 32,
+        "COMPANION_FEED": 33,
+        "CompanionRequest": 38,
+        "CompanionDmLine": 80,
+        "CompanionDmWords": 81,
+        "COMPANION_DM_LINES": 82,
+        "COMPANION_DM_CHARS": 83,
+        "CompanionTarget": 110,
+        "CompanionSurface": 111,
+        "CompanionWords": 117,
+        "ReactionKey": 144,
+        "TaskKey": 432,
+        "TASK_WORDS": 435,
+        "CompanionRecord": 1072
       }
     },
     "hooks-source/band.tsx": {
@@ -4800,19 +4821,20 @@
     "hooks/latest.ts",
     "hooks/line-library.ts",
     "hooks/line-slot.ts",
+    "hooks/line-supplements.ts",
     "hooks/line-types.ts",
     "hooks/lines.ts",
     "hooks/m1-always.ts",
-    "hooks/m1-compiled/chunk-5r0mxn57.js",
-    "hooks/m1-compiled/chunk-dj0z1m9v.js",
-    "hooks/m1-compiled/chunk-fctww6gs.js",
+    "hooks/m1-compiled/chunk-5crsz75e.js",
+    "hooks/m1-compiled/chunk-6fqpm3rk.js",
+    "hooks/m1-compiled/chunk-81pp7h12.js",
+    "hooks/m1-compiled/chunk-85s7q12e.js",
+    "hooks/m1-compiled/chunk-bhjcxs38.js",
+    "hooks/m1-compiled/chunk-d56c5yrv.js",
+    "hooks/m1-compiled/chunk-drc5s1vs.js",
     "hooks/m1-compiled/chunk-jahhamrc.js",
-    "hooks/m1-compiled/chunk-jmrbvvv7.js",
-    "hooks/m1-compiled/chunk-rqeze64w.js",
-    "hooks/m1-compiled/chunk-sc1rv5hn.js",
-    "hooks/m1-compiled/chunk-ypey5wr6.js",
-    "hooks/m1-compiled/chunk-yxnjmc2m.js",
-    "hooks/m1-compiled/chunk-zmdhhtvx.js",
+    "hooks/m1-compiled/chunk-mv67kf16.js",
+    "hooks/m1-compiled/chunk-x9aypjbj.js",
     "hooks/m1-compiled/companion.d.ts",
     "hooks/m1-compiled/companion.js",
     "hooks/m1-compiled/manifest.json",
@@ -4898,20 +4920,20 @@
     "hooks/worker-name.ts"
   ],
   "chunkBytes": {
-    "chunk-5r0mxn57.js": 363564,
-    "chunk-dj0z1m9v.js": 20985,
-    "chunk-fctww6gs.js": 74483,
-    "chunk-jahhamrc.js": 63116,
-    "chunk-jmrbvvv7.js": 102618,
-    "chunk-rqeze64w.js": 10209,
-    "chunk-sc1rv5hn.js": 225032,
-    "chunk-ypey5wr6.js": 221684,
-    "chunk-yxnjmc2m.js": 204682,
-    "chunk-zmdhhtvx.js": 46697,
-    "companion.js": 113161,
-    "motion_stills.js": 213972,
-    "pages.js": 70195,
-    "presence.js": 13655,
-    "register.js": 230681
+    "chunk-5crsz75e.js": 204657,
+    "chunk-6fqpm3rk.js": 20984,
+    "chunk-81pp7h12.js": 46696,
+    "chunk-85s7q12e.js": 221705,
+    "chunk-bhjcxs38.js": 102818,
+    "chunk-d56c5yrv.js": 74482,
+    "chunk-drc5s1vs.js": 366003,
+    "chunk-jahhamrc.js": 63115,
+    "chunk-mv67kf16.js": 10208,
+    "chunk-x9aypjbj.js": 226389,
+    "companion.js": 113219,
+    "motion_stills.js": 214188,
+    "pages.js": 70194,
+    "presence.js": 13654,
+    "register.js": 231368
   }
 }

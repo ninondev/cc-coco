@@ -10,8 +10,12 @@ import Darwin
 /// `[zone]` names the time zone its greetings go by.
 struct Lines {
     private var sections: [String: [String]] = [:]
+    private let root: URL
+    private let home: URL
 
     init(root: URL, home: URL) {
+        self.root = root
+        self.home = home
         let book = "coco-shipped-zh.txt"
         for url in [home.appendingPathComponent(".config/coco/lines/\(book)"), root.appendingPathComponent("lines/\(book)")] {
             guard let text = try? String(contentsOf: url, encoding: .utf8) else { continue }
@@ -28,7 +32,32 @@ struct Lines {
 
     /// A line for this moment, with the clingy set mixed in when he has one for it.
     func pick(_ name: String) -> String? {
-        ((sections[name] ?? []) + (sections["clingy." + name] ?? [])).randomElement()
+        let voice = Voice.object ?? [:]
+        if name != "zone", let library = Voice.library(voice) {
+            return library[name]?.randomElement()
+        }
+        // Older feeds have no character-specific library. Never lend Coco's words to another character.
+        let character = voice["character"] as? String ?? voice["claudie"] as? String ?? "coco"
+        guard character == "coco" || name == "zone" else { return nil }
+        let extra = supplement(character, language: voice["lang"] as? String ?? "zh", group: name)
+        return ((sections[name] ?? []) + (sections["clingy." + name] ?? []) + extra).randomElement()
+    }
+
+    private func supplement(_ character: String, language: String, group: String) -> [String] {
+        guard language == "zh", character == "coco" else { return [] }
+        let file = "\(character)-supplement-\(language).txt"
+        for url in [home.appendingPathComponent(".config/coco/lines/\(file)"), root.appendingPathComponent("lines/\(file)")] {
+            guard let text = try? String(contentsOf: url, encoding: .utf8) else { continue }
+            var current = ""
+            var result: [String] = []
+            for raw in text.split(separator: "\n") {
+                let line = raw.trimmingCharacters(in: .whitespaces)
+                if line.hasPrefix("[") && line.hasSuffix("]") { current = String(line.dropFirst().dropLast()) }
+                else if current == group && !line.isEmpty && !line.hasPrefix("#") { result.append(line) }
+            }
+            return result
+        }
+        return []
     }
 }
 
@@ -315,14 +344,14 @@ final class OwnFeed {
     }
 
     private func pulse() {
-        if let busyLabel { work(busyLabel, said: nil) }
+        if let busyLabel { work(busyLabel, said: lines.pick(Bool.random() ? "working" : "thinking_long")) }
     }
 
     private func idle(said: String? = nil) {
         busySince = nil
         busyLabel = nil
         beat.cancel()
-        send(["mood": "idle", "frame": "idle-reading", "rest": true], said: said)
+        send(["mood": "idle", "frame": "idle-reading", "rest": true], said: said ?? lines.pick("idle"))
         doze.fire(after: Self.dozeSeconds)
     }
 
@@ -336,11 +365,14 @@ final class OwnFeed {
     private func send(_ fields: [String: Any], said: String?) {
         at = max(at + 1, Self.now())
         var object = Voice.object ?? [:]
+        object.removeValue(forKey: "lineLibrary")
+        // The ref binds to its plugin session; an own record carries only the selected line.
+        object.removeValue(forKey: "lineLibraryRef")
         object.merge(fields) { $1 }
         object["session"] = ActivitySessions.own
         object["at"] = at
         object["surfaces"] = ["desktop"]
-        if let said { object["said"] = said }
+        if let said { object["said"] = said.utf8.count > 8192 ? FeedLimits.display(said) : said }
         publish(object)
     }
 }
