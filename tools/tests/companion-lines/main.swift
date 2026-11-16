@@ -45,11 +45,18 @@ import CryptoKit
         let name = fixture["name"] as! String, count = fixture["count"] as! Int
         let raw = try object(name + ".raw.json"), feed = try object(name + ".feed.json")
         let expected = raw["lineLibrary"] as! [String: [String]]
-        expect(FeedLimits.object(raw) == nil, "\(name) reproduces the old whole-record rejection")
+        if fixture["oversized"] as? Bool == true {
+            expect(FeedLimits.object(raw) == nil, "\(name) reproduces the old whole-record rejection")
+        } else {
+            expect(raw["character"] == nil && raw["claudie"] == nil, "default Coco keeps the legacy record free of role fields")
+            let book = try object(name + ".book.json")
+            expect(feed["character"] as? String == "coco" && book["character"] as? String == "coco", "default Coco is bound consistently at the separate-book boundary")
+        }
         expect(FeedLimits.object(feed) != nil && Record(feed) != nil, "\(name) compact feed keeps the existing state limits")
         expect(try Data(contentsOf: root.appendingPathComponent(name + ".feed.json")).count <= FeedLimits.maxBytes, "\(name) state remains below 1 MiB")
         expect(Voice.keep(feed), "\(name) verifies its separate native-written book")
         let voice = Voice.object!, library = Voice.library(voice)!
+        expect(voice["character"] as? String == fixture["character"] as? String, "\(name) native reader preserves its bound character")
         expect(library["start"] == expected["start"] && library["wake"] == raw["wakeLines"] as? [String], "\(name) preserves every start and wake line exactly")
         expect(library["start"]?.count == count, "\(name) keeps all \(count) lines")
         expect(voice["lineLibrary"] == nil && FeedLimits.object(voice) != nil, "\(name) persisted voice stays compact")

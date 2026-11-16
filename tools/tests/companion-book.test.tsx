@@ -3,6 +3,7 @@ import { PLUGIN_VERSION } from '../hooks/book-text'
 // His companion controls, mounted on both surfaces; program/permission/clock behavior also
 // checked with a small injected engine so no test can touch a real Mac or its HOME.
 import { describe, expect, test } from 'claude-code/testing'
+import type { Plugin } from 'claude-code/testing'
 import type { EngineInterface, On } from 'claude-code'
 import { CompanionBook, COMPANION_APP, COMPANION_PLIST, COMPANION_OPEN, companionCommand, companionState } from '../hooks/companion-book'
 import { companionChanged, companionData, pressCompanion } from '../hooks/pages'
@@ -11,7 +12,8 @@ import { companionSizeSvg, companionStageSvg } from '../hooks/companion-art'
 import { companionRecord } from '../hooks/companion'
 import { BOOK_FILES } from './book-files'
 import { settleLegacyStart, MORNING, P, PERSON, RECENT, stubPng, world, band } from './world'
-import { atomicFeed, PROCESS_OK } from './shared-world'
+import { atomicFeed, atomicLineBook, PROCESS_OK } from './shared-world'
+import { TEST_PLUGIN_ROOT } from './test-system'
 import { BAG_TEXT_RAW } from './bag-text-fixture'
 // her desktop companion stands on her page once lane B has named its group there (bag step 2), else on the switches page
 const COMPANION_PAGE = JSON.parse(BAG_TEXT_RAW).en.himGroups ? 'him' : 'settings'
@@ -25,9 +27,10 @@ const normal: CompanionSnapshot = { folder: true, app: true, login: false, info:
 function fixture(on: On, options: { guard?: boolean; mac?: boolean; folder?: boolean; app?: boolean; info?: Record<string, unknown>; missingRecord?: boolean; login?: boolean; report?: string; processThrows?: boolean; hold?: () => Promise<void> } = {}) {
   const state = { folder: options.folder ?? true, app: options.app ?? true, login: options.login ?? false, info: options.info ?? { running: true, accessibility: true, size: 'medium', version: PLUGIN_VERSION }, report: options.report ?? 'ok' }
   const records: Record<string, unknown>[] = [], commands: string[][] = [], reads: string[] = [], guardCommands: string[][] = []
+  const lineBooks = new Map<string, string>()
   let companionScript: string | undefined
   let requestFileExists = false
-  on('fs.exists', ($, e) => ({ value: /[\\/]bin[\\/]coco-state(?:-macos-(?:x86_64|aarch64)|-linux-(?:x86_64|aarch64)|-windows-(?:x86_64|aarch64)\.exe)?$/.test(e.path) ? options.guard !== false : samePath(e.path, '/System/Library/CoreServices/SystemVersion.plist') ? options.mac !== false : samePath(e.path, '/usr/bin/tail') ? true : samePath(e.path, FOLDER) ? state.folder : samePath(e.path, APP) ? state.app : samePath(e.path, PLIST) ? state.login : samePath(e.path, `${FOLDER}/requests.jsonl`) ? requestFileExists : false }))
+  on('fs.exists', ($, e) => ({ value: /[\\/]bin[\\/]coco-state(?:-macos-(?:x86_64|aarch64)|-linux-(?:x86_64|aarch64)|-windows-(?:x86_64|aarch64)\.exe)?$/.test(e.path) ? options.guard !== false : samePath(e.path, '/System/Library/CoreServices/SystemVersion.plist') ? options.mac !== false : samePath(e.path, '/usr/bin/tail') ? true : samePath(e.path, FOLDER) ? state.folder : samePath(e.path, APP) ? state.app : samePath(e.path, PLIST) ? state.login : samePath(e.path, `${FOLDER}/requests.jsonl`) ? requestFileExists : [...lineBooks.keys()].some(path => samePath(e.path, path)) }))
   on('fs.read', { path: pathPattern(INFO) }, ($, e) => { reads.push(e.path); return options.missingRecord ? { deny: 'no companion record yet' } : { value: JSON.stringify(state.info) } })
   on('fs.read', { path: /[\\/]\.claude-plugin[\\/]plugin\.json$/ }, () => ({ value: '{"version":"1"}' }))
   on('fs.write', ($, e) => {
@@ -47,6 +50,8 @@ function fixture(on: On, options: { guard?: boolean; mac?: boolean; folder?: boo
     }
     const feed = atomicFeed(e.argv, e.init?.stdin)
     if (feed) { expect(samePath(feed.path, FEED)).toBe(true); records.push(JSON.parse(feed.text)); return { value: PROCESS_OK } }
+    const book = atomicLineBook(e.argv, e.init?.stdin, TEST_PLUGIN_ROOT, FOLDER)
+    if (book) { lineBooks.set(book.path, book.text); return { value: PROCESS_OK } }
     if (e.argv[0] === '/usr/bin/touch') { requestFileExists = true; return { value: PROCESS_OK } }
     if (slashPath(e.argv[1] ?? '').includes('/bin/icon-')) {
       companionScript = e.argv[1]!.replace(/icon-[^\\/]+\.sh$/, 'companion-macos.sh')
@@ -67,7 +72,7 @@ function fixture(on: On, options: { guard?: boolean; mac?: boolean; folder?: boo
     return { isError: state.report !== 'ok', result: { exitCode: state.report === 'ok' ? 0 : 1, stdout: `build message\nresult: ${state.report}\n`, stderr: '', interrupted: false } }
   })
   const w = world(on, { store: RECENT, env: { LANG: 'en_US.UTF-8', TERM: 'xterm-256color', HOME } })
-  return { w, state, records, commands, reads, guardCommands, get companionScript() { return companionScript } }
+  return { w, state, records, commands, reads, guardCommands, lineBooks, get companionScript() { return companionScript } }
 }
 async function settings($: Parameters<Parameters<typeof test>[1]>[0], surface: 'desktop' | 'terminal', w: ReturnType<typeof world>) {
   await $.session.start(START); await settleLegacyStart($,w);
@@ -128,6 +133,7 @@ describe('the companion section on both book surfaces', () => {
       expect(await ui.find({ type: 'Button', text: 'Install Coco Pet' })).toBeDefined()
       expect(await ui.find({ type: 'Text', text: 'Claude Code will ask first.' })).toBeUndefined()
       expect(f.commands).toEqual([])
+      expect(f.lineBooks.size).toBeGreaterThan(0)
     })
     test(`${surface}: a program action uses one permission-scoped Bash and shows the permission note`, async ($, on) => {
       const tools: string[] = []
@@ -271,6 +277,29 @@ describe('the companion section on both book surfaces', () => {
     expect(companionState(corner, MORNING, { followed: MORNING - 599_999 })).toBe('waiting')
     expect(companionState(corner, MORNING, { followed: MORNING - 600_000 })).toBe('corner')
   })
+})
+
+const processFixture: Plugin = { name: 'companion-process-fixture', register(on) {
+  on('command.run', { command: 'companion-fixture-process' }, async ($, e) => {
+    await $.process.run(JSON.parse(e.args), { stdin: '{}' })
+    return { text: '' }
+  })
+} }
+
+test('the book fixture keeps unknown processes visible beside its exact line writer', { plugins: [processFixture] }, async ($, on) => {
+  const f = fixture(on), helper = `${TEST_PLUGIN_ROOT}/bin/companion-control`, name = `lines-${'a'.repeat(64)}.json`
+  const run = (argv: string[]) => $.command.run({ command: 'companion-fixture-process', args: JSON.stringify(argv), origin: PERSON, presentation: P })
+  await run([helper, 'write-lines', FOLDER, name])
+  expect(f.lineBooks.size).toBe(1)
+  expect(f.commands).toEqual([])
+  const unknown = [
+    [helper, 'install', FOLDER, name], [helper, 'write-lines', '/tmp/other', name],
+    [helper, 'write-lines', FOLDER, '../voice.json'], [helper, 'write-lines', FOLDER, name, '--launch'],
+    [`${TEST_PLUGIN_ROOT}/bin/unexpected`, 'write-lines', FOLDER, name],
+  ]
+  for (const argv of unknown) await run(argv)
+  expect(f.commands).toEqual(unknown)
+  expect(f.lineBooks.size).toBe(1)
 })
 
 describe('companion presses through an injected engine', () => {

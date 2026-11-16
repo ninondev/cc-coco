@@ -1078,7 +1078,7 @@ export type CompanionRecord = CompanionRequest & CompanionActivity & {
   neighbours: boolean
   affection: View['affection']
   wakeLines: readonly string[]
-  character: NonNullable<View['character']>
+  character?: NonNullable<View['character']>
   lineLibrary: Record<string, readonly string[]>
   mood: View['mood']
   summon?: number
@@ -1164,7 +1164,7 @@ export function companionRecord(view: View): CompanionRecord {
     neighbours: settings.neighbours === true,
     affection: view.affection,
     wakeLines: companionWakeLines(view),
-    character: view.character ?? view.claudie ?? 'coco',
+    ...(view.character ? { character: view.character } : {}),
     lineLibrary: Object.fromEntries(['greeting.morning','greeting.noon','greeting.afternoon','greeting.evening','greeting.night','start','thinking_long','working','idle','wake','sleep','done','done_long','aborted'].map(key => [key, linesFor(view, key)])),
     ...activity,
     task: task === null ? null : TASK_WORDS[view.lang][task.key].replace(/\{(file|cmd|tool)\}/g, (_mark, key: 'file' | 'cmd' | 'tool') => task?.[key] ?? ''),
@@ -1273,6 +1273,7 @@ let lastCompanionBook: { text: string; digest: string; bytes: number } | undefin
 export function companionFiles(text: string): { feed: string; library?: { name: string; text: string } } {
   const record = JSON.parse(text)
   if (!record.lineLibrary) return { feed: text }
+  record.character = record.character ?? record.claudie ?? 'coco'
   const book = JSON.stringify({ v: 1, session: record.session, character: record.character, lang: record.lang,
     lines: record.lineLibrary, wakeLines: record.wakeLines })
   if (lastCompanionBook?.text !== book) {
