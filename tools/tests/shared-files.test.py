@@ -1,7 +1,6 @@
 #!/usr/bin/env python3
 """Exercise the actual fixed host scripts against throwaway shared folders only."""
 import base64
-import os
 import concurrent.futures
 import json
 import os

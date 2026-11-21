@@ -7,15 +7,27 @@ const EXTRA_SHAPES:readonly RegExp[]=[
  /\b(?:ASIA[A-Z0-9]{16}|sk-(?:ant-api\d+-)?[A-Za-z0-9_-]{20,}|(?:gh[pousr]_|github_pat_)[A-Za-z0-9_]{20,}|xox[baprs]-[A-Za-z0-9-]{20,}|AIza[A-Za-z0-9_-]{30,}|(?:glpat-|hf_)[A-Za-z0-9_-]{20,}|SG\.[A-Za-z0-9_-]{16,}\.[A-Za-z0-9_-]{16,})(?![A-Za-z0-9_-])/g,
  /\bBearer[ \t]+[A-Za-z0-9._~+\/-]+={0,}/gi,
  /\beyJ[A-Za-z0-9_-]+\.[A-Za-z0-9_-]+\.[A-Za-z0-9_-]*(?![A-Za-z0-9_-])/g,
+ // More provider prefixes, each distinctive enough to stand without a label: npm, PyPI, Slack app and
+ // refresh tokens, Google OAuth, DigitalOcean, xAI, Groq, Stripe test keys and webhook secrets.
+ /\b(?:npm_[A-Za-z0-9]{36}|pypi-AgEIcHlwaS5vcmc[A-Za-z0-9_-]{40,}|xapp-\d-[A-Za-z0-9-]{20,}|xoxe(?:\.xox[bp])?-\d-[A-Za-z0-9-]{20,}|ya29\.[A-Za-z0-9_-]{30,}|do[opr]_v1_[a-f0-9]{64}|xai-[A-Za-z0-9]{40,}|gsk_[A-Za-z0-9]{40,}|[rs]k_test_[A-Za-z0-9]{20,}|whsec_[A-Za-z0-9]{24,})(?![A-Za-z0-9_-])/g,
+ // A Telegram bot token, and the user:password pair of HTTP Basic sign-in.
+ /(?<![0-9])\d{8,10}:AA[A-Za-z0-9_-]{33}(?![A-Za-z0-9_-])/g,
+ /\bBasic[ \t]+(?=[A-Za-z0-9+\/]*[0-9+\/=])[A-Za-z0-9+\/]{16,}={0,2}/g,
 ]
+// The password in a URL (scheme://user:password@host). Only the password is masked; a placeholder
+// (${VAR}, $VAR, {{var}}, <password>, %s, ***, or the words examples use) is left as written.
+const URL_PASSWORD=/\b[a-z][a-z0-9+.-]{1,15}:\/\/[^\s\/:@"'<>]{0,64}:(?![$<{*]|%[sv]@|(?:password|passwd|pass|pwd|secret|changeme|example|x{3,})@)([^\s\/@"'<>]{4,})@(?=[A-Za-z0-9[])/gi
 function credentialRanges(text:string):SecretRange[]{
  const ranges:SecretRange[]=secretHits(text).map(hit=>({start:hit.start,end:hit.end}))
  for(const pattern of EXTRA_SHAPES){pattern.lastIndex=0;let match:RegExpExecArray|null;while((match=pattern.exec(text))!==null)ranges.push({start:match.index,end:match.index+match[0].length})}
+ URL_PASSWORD.lastIndex=0
+ for(let match:RegExpExecArray|null;(match=URL_PASSWORD.exec(text))!==null;){const end=match.index+match[0].length-1;ranges.push({start:end-match[1]!.length,end})}
  return ranges
 }
 
 const secretPattern=()=>/(?:AKIA|ASIA)[A-Z0-9]{16}|-----BEGIN (?:RSA |EC |DSA |OPENSSH |ENCRYPTED )?PRIVATE KEY-----|\bsk-(?:ant-api\d+-)?[A-Za-z0-9_-]{20,}|\b(?:gh[pousr]_|github_pat_)[A-Za-z0-9_]{20,}|\bxox[baprs]-[A-Za-z0-9-]{20,}|\bAIza[A-Za-z0-9_-]{30,}|\b(?:glpat-|hf_)[A-Za-z0-9_-]{20,}|\b(?:SG\.)[A-Za-z0-9_-]{16,}\.[A-Za-z0-9_-]{16,}/
-const assignmentPattern=()=>/\b(?:password|passwd|pwd|api[_-]?key|access[_-]?token|secret)\s*[:=]\s*["']?([A-Za-z0-9_+\/-]{20,})/gi
+// The name may end a longer one joined by _ or - (DB_PASSWORD, aws_secret_access_key), so only a letter or digit before it rules it out.
+const assignmentPattern=()=>/(?<![A-Za-z0-9])(?:password|passwd|pwd|api[_-]?key|access[_-]?key|account[_-]?key|access[_-]?token|auth[_-]?token|refresh[_-]?token|client[_-]?secret|secret[_-]?key|secret)["']?\s*[:=]\s*["']?([A-Za-z0-9_+\/-]{20,})/gi
 const randomSecret=(value:string)=>/[a-z]/.test(value)&&/[A-Z0-9]/.test(value)&&new Set(value).size>=10
 export function redactSecrets(text:string):string{
  // The shared guard shapes (bearer tokens, JWTs, provider keys) are masked first.
@@ -60,7 +72,7 @@ export function scanStagedSecrets(diff:string):{file:string;line:number}|undefin
 // words cannot reliably be identified as passwords by a shape matcher.
 export function redactBookmark(text:string):string {
  const ranges=credentialRanges(text)
- const assignment=/(?:["']?\b(?:password|passwd|pwd|api[_-]?key|api[_-]?secret|access[_-]?token|refresh[_-]?token|client[_-]?secret|secret[_-]?key|secret)["']?\s*[:=]\s*)(?:"((?:\\.|[^"\\\r\n])*)"|'((?:\\.|[^'\\\r\n])*)'|([^\s,;}\]]+))/gi
+ const assignment=/(?:["']?(?<![A-Za-z0-9])(?:password|passwd|pwd|api[_-]?key|api[_-]?secret|access[_-]?key|account[_-]?key|access[_-]?token|auth[_-]?token|refresh[_-]?token|client[_-]?secret|secret[_-]?key|secret)["']?\s*[:=]\s*)(?:"((?:\\.|[^"\\\r\n])*)"|'((?:\\.|[^'\\\r\n])*)'|([^\s,;}\]]+))/gi
  let match:RegExpExecArray|null
  while((match=assignment.exec(text))!==null){
   const value=match[1]??match[2]??match[3];if(!value)continue

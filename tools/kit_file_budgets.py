@@ -144,7 +144,7 @@ def cpu_scale():
     try:
         value = float(raw)
     except ValueError:
-        raise ValueError('COCO_CPU_SCALE must be a number from 1 to 8, got ' + repr(raw))
+        raise ValueError('COCO_CPU_SCALE must be a number from 1 to 8, got ' + repr(raw)) from None
     if not math.isfinite(value) or not 1 <= value <= 8:
         raise ValueError('COCO_CPU_SCALE must be a number from 1 to 8, got ' + repr(raw))
     return value

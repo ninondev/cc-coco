@@ -12,6 +12,28 @@ old behavior back.
 
 ## [Unreleased]
 
+## [1.1.4514.4] - 2026-11-21
+
+This update publishes plugin and source changes. The bundled Mac pet and downloadable installers remain at 1.1.4514.2.
+
+### Added
+
+- Coco recognizes more keys and passwords before saving sticky notes and window notes, and when checking a commit or push: npm, PyPI, Slack app and refresh tokens, Google OAuth, DigitalOcean, xAI, Groq, Telegram bots, Stripe test keys and webhook secrets, and HTTP Basic sign-in.
+- A password inside a URL, such as `postgres://user:password@host`, is masked while the rest of the address stays readable. Placeholders such as `${DB_PASSWORD}` are left as written.
+- Names that end a longer name, such as `DB_PASSWORD`, `MY_API_KEY`, `aws_secret_access_key` and `AccountKey`, are now treated like `password` and `api_key`.
+- `CONTRIBUTING.md`, `SECURITY.md`, a pull request template, and issue forms for bugs and ideas.
+
+### Changed
+
+- Token counts of a million or more on the Quota page read in M (`1.2M`), and in 亿 or 億 for Chinese and Japanese (`1.2亿`), instead of `1,234.5k` and `12,345万`.
+- CI runs a quick `lint` job before the tests: every copy of the version agrees (`scripts/check-version.py`, also part of `scripts/check.sh`), the built hooks match their source, shellcheck finds no errors, every Python and JSON file parses, and every file is on the release list. Dependabot keeps the workflow actions up to date.
+
+### Fixed
+
+- The installer link on the [install page](https://ninondev.github.io/cc-coco/install.html) led to a missing file. It now downloads from GitHub Releases.
+- `scripts/check.sh` failed on a clean checkout because the release list did not know the line supplement files added in 1.1.4514.3.
+- The README lists Claude Code 2.1.317, the version the full test suite runs on.
+
 ## [1.1.4514.3] - 2026-11-14
 
 This update publishes the plugin and source changes. The bundled Mac pet and downloadable installers remain at 1.1.4514.2; the new Mac pet build will ship after notarization.

@@ -1,0 +1,56 @@
+name: Bug report
+description: Something Coco does wrong, or does not do.
+title: "Bug: "
+labels: ["bug"]
+body:
+  - type: markdown
+    attributes:
+      value: |
+        Thank you for telling me. Please do not paste keys, tokens or anything private. For a security problem, see SECURITY.md instead of filing here.
+  - type: textarea
+    id: what
+    attributes:
+      label: What happened
+      description: What you did, what you saw, and what you expected instead. A screenshot helps.
+    validations:
+      required: true
+  - type: dropdown
+    id: where
+    attributes:
+      label: Where
+      multiple: true
+      options:
+        - Terminal
+        - Desktop app (Code tab)
+        - VS Code extension
+        - Coco Pet
+        - Mac installer
+        - The claude.ai skin
+        - The web demo
+    validations:
+      required: true
+  - type: dropdown
+    id: os
+    attributes:
+      label: Operating system
+      options:
+        - macOS
+        - Windows
+        - Linux
+    validations:
+      required: true
+  - type: textarea
+    id: versions
+    attributes:
+      label: Versions
+      description: Type `/coco doctor` and paste what it says. It lists the versions of Claude Code, Coco and Coco Pet and the host your API calls go to (remove the host if it is private). It never prints a key.
+      render: text
+    validations:
+      required: false
+  - type: input
+    id: language
+    attributes:
+      label: Coco's language
+      description: The language Coco speaks in when it happens, for example English or 简体中文.
+    validations:
+      required: false

@@ -189,7 +189,7 @@
     },
     "hooks-source/book-text.ts": {
       "bytes": 217784,
-      "sha256": "9f239c188883f754e835893b8cc2a00ab6b7663a369a2a191f776e7974571edd"
+      "sha256": "8507fb54e21f10b57021cbfe5b957e141849b61b25942a178e98522601c75966"
     },
     "hooks-source/line-slot.ts": {
       "bytes": 5835,
@@ -237,7 +237,7 @@
     },
     "hooks-source/plugin-version.ts": {
       "bytes": 110,
-      "sha256": "de1cbc925afb00baacab0c7887f64fc1e19bbb5a3b1d334f5465ee6f87ba59d6"
+      "sha256": "ec5e926a43e8abe190500fa32d663d1fecf4d4b61aa7cd4ed7a42394947bd26e"
     },
     "hooks-source/high-contrast.ts": {
       "bytes": 1024,
@@ -304,8 +304,8 @@
       "sha256": "bbe515f073f902fc5059436c64582f3b8fbd3e8215b8d860bbf06bb12b631c82"
     },
     "hooks-source/numbers.ts": {
-      "bytes": 8852,
-      "sha256": "9985d7533869dfb1a85f0db47e224c2982e4fe29e0e2db880aab576d00845863"
+      "bytes": 9456,
+      "sha256": "0a87c1f795d80a19eb0e08e420c77496a5cdce6a818346b485e796d8b6cd471b"
     },
     "hooks-source/book-art.ts": {
       "bytes": 3058,
@@ -660,8 +660,8 @@
       "sha256": "dc718237e556cad2c16ad002501245d4324f227b62c677a8f98bde28686a572d"
     },
     "hooks-source/c3-secrets.ts": {
-      "bytes": 7836,
-      "sha256": "66435a1f847bde3bcdb81e00908ee82817ae0855f004dffdf90f0827f8fde77d"
+      "bytes": 9423,
+      "sha256": "5db5c34a05bba6c206b32532515bdc7d8c1a438717cf966d16691bf498b1022a"
     },
     "hooks-source/book-format.ts": {
       "bytes": 92,
@@ -2091,25 +2091,25 @@
       "exportLines": {
         "numberLocale": 15,
         "hasNumber": 16,
-        "numberText": 23,
-        "percentText": 27,
-        "tokenText": 30,
-        "compactTokenText": 33,
-        "costText": 40,
-        "durationText": 47,
-        "clockText": 69,
-        "calendarText": 74,
-        "momentText": 81,
-        "contextAlt": 92,
-        "contextText": 96,
-        "contextTokens": 105,
-        "cacheText": 113,
-        "numberPolicy": 121,
+        "numberText": 26,
+        "percentText": 30,
+        "tokenText": 33,
+        "compactTokenText": 39,
+        "costText": 51,
+        "durationText": 58,
+        "clockText": 80,
+        "calendarText": 85,
+        "momentText": 92,
+        "contextAlt": 103,
+        "contextText": 107,
+        "contextTokens": 116,
+        "cacheText": 124,
+        "numberPolicy": 132,
         "UNKNOWN_NUMBER": 4,
         "NumberReading": 5,
         "NumberWords": 6,
-        "NumberPlace": 117,
-        "NumberPolicy": 118
+        "NumberPlace": 128,
+        "NumberPolicy": 129
       }
     },
     "hooks-source/book-art.ts": {
@@ -4206,12 +4206,12 @@
         "sha256": "c3_secrets__sha256"
       },
       "exportLines": {
-        "redactSecrets": 20,
-        "bookmarkText": 30,
-        "scanStagedSecrets": 41,
-        "redactBookmark": 61,
-        "displaySlot": 80,
-        "sha256": 88
+        "redactSecrets": 32,
+        "bookmarkText": 42,
+        "scanStagedSecrets": 53,
+        "redactBookmark": 73,
+        "displaySlot": 92,
+        "sha256": 100
       }
     },
     "hooks-source/book-format.ts": {
@@ -4825,16 +4825,16 @@
     "hooks/line-types.ts",
     "hooks/lines.ts",
     "hooks/m1-always.ts",
-    "hooks/m1-compiled/chunk-1j0rcxzh.js",
-    "hooks/m1-compiled/chunk-3fkgj913.js",
-    "hooks/m1-compiled/chunk-6fqpm3rk.js",
-    "hooks/m1-compiled/chunk-74vgjkqr.js",
-    "hooks/m1-compiled/chunk-drc5s1vs.js",
+    "hooks/m1-compiled/chunk-11am6j9w.js",
+    "hooks/m1-compiled/chunk-9yw4d3b6.js",
+    "hooks/m1-compiled/chunk-bvg6e1sy.js",
+    "hooks/m1-compiled/chunk-d0jqh68k.js",
+    "hooks/m1-compiled/chunk-dp1pj0nr.js",
     "hooks/m1-compiled/chunk-jahhamrc.js",
-    "hooks/m1-compiled/chunk-me1f449x.js",
-    "hooks/m1-compiled/chunk-mv67kf16.js",
-    "hooks/m1-compiled/chunk-n6d2kfh9.js",
-    "hooks/m1-compiled/chunk-xaf41qac.js",
+    "hooks/m1-compiled/chunk-q9kwv66q.js",
+    "hooks/m1-compiled/chunk-rqwy3kmf.js",
+    "hooks/m1-compiled/chunk-t474evmj.js",
+    "hooks/m1-compiled/chunk-vqwkck5q.js",
     "hooks/m1-compiled/companion.d.ts",
     "hooks/m1-compiled/companion.js",
     "hooks/m1-compiled/manifest.json",
@@ -4920,16 +4920,16 @@
     "hooks/worker-name.ts"
   ],
   "chunkBytes": {
-    "chunk-1j0rcxzh.js": 102793,
-    "chunk-3fkgj913.js": 204677,
-    "chunk-6fqpm3rk.js": 20984,
-    "chunk-74vgjkqr.js": 46696,
-    "chunk-drc5s1vs.js": 366003,
+    "chunk-11am6j9w.js": 226432,
+    "chunk-9yw4d3b6.js": 10208,
+    "chunk-bvg6e1sy.js": 46687,
+    "chunk-d0jqh68k.js": 367185,
+    "chunk-dp1pj0nr.js": 74482,
     "chunk-jahhamrc.js": 63115,
-    "chunk-me1f449x.js": 221705,
-    "chunk-mv67kf16.js": 10208,
-    "chunk-n6d2kfh9.js": 74482,
-    "chunk-xaf41qac.js": 226448,
+    "chunk-q9kwv66q.js": 102818,
+    "chunk-rqwy3kmf.js": 20984,
+    "chunk-t474evmj.js": 204681,
+    "chunk-vqwkck5q.js": 221705,
     "companion.js": 113219,
     "motion_stills.js": 214188,
     "pages.js": 70194,

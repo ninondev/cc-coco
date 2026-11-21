@@ -25,6 +25,23 @@ describe('0.2 9.1 every number-table cell', () => {
     expect(compactTokenText(20000, 'zh-Hant')).toBe(new Intl.NumberFormat('zh-TW', { maximumFractionDigits: 1 }).format(2) + '萬')
     expect(compactTokenText(20000, 'zh')).toBe('2万')
   })
+  // 1.1.4514.4: a million and up reads in M, and in 亿 for Chinese and Japanese, instead of 1,234.5k and 12,345万.
+  test('compact token counts step up a unit instead of growing past a thousand of the smaller one', () => {
+    for (const [value, en, zh, hant, ja] of [
+      [9999, '9,999', '9,999', '9,999', '9,999'], [10_000, '10k', '1万', '1萬', '1万'], [12_345, '12.3k', '1.2万', '1.2萬', '1.2万'],
+      [999_949, '999.9k', '100万', '100萬', '100万'], [999_950, '1M', '100万', '100萬', '100万'], [1_234_567, '1.2M', '123.5万', '123.5萬', '123.5万'],
+      [99_994_999, '100M', '9,999.5万', '9,999.5萬', '9,999.5万'], [99_999_960, '100M', '1亿', '1億', '1億'], [123_456_789, '123.5M', '1.2亿', '1.2億', '1.2億'],
+      [2_500_000_000, '2,500M', '25亿', '25億', '25億'],
+    ] as const) {
+      expect(compactTokenText(value, 'en')).toBe(en)
+      expect(compactTokenText(value, 'zh')).toBe(zh)
+      expect(compactTokenText(value, 'zh-Hant')).toBe(hant)
+      expect(compactTokenText(value, 'ja')).toBe(ja)
+    }
+    expect(compactTokenText(1_234_567, 'de')).toBe('1,2M')
+    expect(compactTokenText(undefined, 'en')).toBe('—')
+    expect(compactTokenText(-1, 'zh')).toBe('—')
+  })
   const unknown: Record<NumberPlace, string | null> = { band: '—', terminal: '▤ —', hover: null, incense: null,
     context: 'No reading yet.', session: '—', window: 'No limit readings yet.', line: null, neighbour: null, dated: null }
   const zero: Record<NumberPlace, string | null> = { band: '0%', terminal: '▤ 0%', hover: '0%', incense: '0%',

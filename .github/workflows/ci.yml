@@ -1,6 +1,7 @@
 name: CI
 
-# Validates the marketplace and the plugin, then runs the mod tests (the kit). Needs no secrets and no
+# Runs the quick checks (versions, the built hooks, shellcheck), validates the marketplace and the plugin,
+# then runs the mod tests (the kit). Needs no secrets and no
 # sign-in: `claude plugin validate` and the kit work offline. The tree has no generator and none of the
 # private checks; tools/public-tree.json lists what it leaves out, and the test runner reports those as skipped.
 on:
@@ -39,6 +40,64 @@ env:
   COCO_CPU_SCALE: "6"
 
 jobs:
+  # The quick checks, a few minutes at most, so a slip shows up long before the kit finishes.
+  lint:
+    name: lint
+    if: github.event_name != 'workflow_dispatch'
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    env:
+      PYTHONDONTWRITEBYTECODE: "1"
+    defaults:
+      run:
+        shell: bash
+    steps:
+      - uses: actions/checkout@v6
+        with:
+          persist-credentials: false
+
+      # Every tracked file is on the release list, and nothing private or local-only is in the tree.
+      - name: The release file list covers the tree
+        run: sh scripts/check.sh --scan-only
+
+      - name: Install Bun and TypeScript
+        run: |
+          curl -fsSL https://bun.sh/install | bash -s "bun-v$BUN_VERSION"
+          echo "$HOME/.bun/bin" >> "$GITHUB_PATH"
+          mkdir -p "$RUNNER_TEMP/typescript"
+          cd "$RUNNER_TEMP/typescript"
+          "$HOME/.bun/bin/bun" add "typescript@$TYPESCRIPT_VERSION"
+          echo "COCO_TYPESCRIPT=$RUNNER_TEMP/typescript/node_modules/typescript/lib/typescript.js" >> "$GITHUB_ENV"
+
+      - name: Every copy of the version agrees
+        run: python3 scripts/check-version.py
+
+      # plugin/hooks is built from source/hooks; this rebuilds it in scratch and compares every byte.
+      - name: The loaded hooks match their source
+        run: python3 tools/build-hooks-graph.py --check --source source/hooks --output plugin --typescript "$COCO_TYPESCRIPT"
+
+      # Errors only. SC2066 is the one-file loop in companion-macos.sh, which runs as written.
+      - name: Shell scripts pass shellcheck
+        run: shellcheck -s sh -S error -e SC2066 plugin/bin/*.sh plugin/assets/icon/*.sh scripts/*.sh
+
+      - name: Python tools and JSON files parse
+        run: |
+          python3 - <<'PY'
+          import ast, json, subprocess, sys, warnings
+          warnings.simplefilter('ignore')
+          bad = 0
+          for name in subprocess.run(['git', 'ls-files', '-z', '*.py', '*.json'], capture_output=True, text=True, check=True).stdout.split('\0'):
+              if not name or name.startswith('tools/tests/fixtures/'):  # some fixtures are broken on purpose
+                  continue
+              try:
+                  text = open(name, encoding='utf-8').read()
+                  ast.parse(text, name) if name.endswith('.py') else json.loads(text)
+              except (SyntaxError, ValueError) as error:
+                  bad += 1
+                  print(f'{name}: {error}')
+          sys.exit(1 if bad else 0)
+          PY
+
   check:
     name: check (${{ matrix.os }})
     if: github.event_name != 'workflow_dispatch'

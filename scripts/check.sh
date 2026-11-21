@@ -13,7 +13,8 @@
 #      of plugin/ with tools/tests/ beside it); falls back to claude plugin test on plugin/ if the
 #      tests sit inside it
 #   3b. maintainer mode only: check the working modules against the private maintainer sources
-#   4. a syntax check of plugin/bin/*.sh and generic checks for local-only files and private keys
+#   4. a syntax check of plugin/bin/*.sh, the version check (scripts/check-version.py: every copy of
+#      the plugin's version agrees with plugin.json) and generic checks for local-only files and private keys
 # Public mode is the default and needs no private files. Maintainers can set
 # COCO_PRIVATE_GUARD or pass --private-guard FILE; a missing, unreadable or empty guard
 # stops the check. Keep that file outside the public tree.
@@ -49,7 +50,7 @@ while [ $# -gt 0 ]; do
       cat <<EOF
 Usage: scripts/check.sh [--strict] [--private-guard FILE] [--scan-only]
 Validates the marketplace (repo root) and plugin/, runs the mod tests if there are any,
-checks bin/*.sh syntax, explicit release includes, the 64 MiB plugin budget, excluded files,
+checks bin/*.sh syntax, that every copy of the version agrees, explicit release includes, the 64 MiB plugin budget, excluded files,
 and byte-level local/private material. Exit 1 if anything fails.
 Public mode needs no private file. --private-guard FILE (or COCO_PRIVATE_GUARD)
 checks the working modules against private sources and adds a required fixed-string scan;
@@ -343,6 +344,13 @@ if [ -d "$ROOT/plugin/bin" ]; then
   if [ "$bad" -eq 0 ]; then pass "plugin/bin/*.sh parse and are executable"; else fail "plugin/bin/*.sh problem (see above)"; fi
 fi
 
-# 4b. generic payload checks and optional private guard
+# 4b. every copy of the version agrees with plugin.json
+if [ -f "$ROOT/scripts/check-version.py" ] && command -v python3 >/dev/null 2>&1; then
+  step "versions agree (scripts/check-version.py)" all python3 "$ROOT/scripts/check-version.py"
+else
+  skip "no scripts/check-version.py or no python3; versions not compared"
+fi
+
+# 4c. generic payload checks and optional private guard
 scan_payload
 finish

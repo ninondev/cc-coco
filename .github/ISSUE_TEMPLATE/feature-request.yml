@@ -1,0 +1,30 @@
+name: Idea or request
+description: Something you would like Coco to do.
+title: "Idea: "
+labels: ["enhancement"]
+body:
+  - type: textarea
+    id: what
+    attributes:
+      label: What you would like
+      description: What it would do, and when you would use it.
+    validations:
+      required: true
+  - type: dropdown
+    id: cost
+    attributes:
+      label: Would it call a model or go online?
+      description: Coco does neither by default. Features that do are switches, off until you turn them on.
+      options:
+        - "No"
+        - "Yes, and a switch is fine"
+        - Not sure
+    validations:
+      required: true
+  - type: textarea
+    id: other
+    attributes:
+      label: Anything else
+      description: Sketches, examples from other tools, how you work around it today.
+    validations:
+      required: false
