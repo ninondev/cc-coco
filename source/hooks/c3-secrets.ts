@@ -64,8 +64,9 @@ export function scanStagedSecrets(diff:string):{file:string;line:number}|undefin
   if(!file||!added||raw.startsWith('\\'))continue
   if(raw.startsWith('-'))continue
   if(raw.startsWith('+')){
-   const text=raw.slice(1),assignment=assignmentPattern().exec(text)
-   const value=assignment?.[1];const random=value&&randomSecret(value)
+   // Every assignment on the line is checked: a placeholder in the first must not hide a key in the next.
+   const text=raw.slice(1);let random=false
+   for(const assignment of text.matchAll(assignmentPattern()))if(randomSecret(assignment[1]!)){random=true;break}
    if(credentialRanges(text).length||secretPattern().test(text)||random)return {file,line}
   }
   line++

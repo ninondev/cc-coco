@@ -132,3 +132,13 @@ test('Basic sign-in is masked in any case of the scheme name, short or all lette
   }
  }
 })
+
+test('a placeholder assignment does not hide a real one later on the same staged line',()=>{
+ const value=mixed(20)
+ for(const text of [
+  'password: "'+'x'.repeat(24)+'", client_secret: "'+value+'"',
+  'DB_PASSWORD=your_password_goes_here_ok API_KEY='+value,
+  'export SECRET=aaaaaaaaaaaaaaaaaaaaaaaa; export AUTH_TOKEN='+value,
+ ])expect(scanStagedSecrets('+++ b/config.yml\n@@ -0,0 +9,1 @@\n+'+text)).toEqual({file:'config.yml',line:9})
+ expect(scanStagedSecrets('+++ b/config.yml\n@@ -0,0 +9,1 @@\n+password: "'+'x'.repeat(24)+'", secret: "'+'y'.repeat(24)+'"')).toBeUndefined()
+})
