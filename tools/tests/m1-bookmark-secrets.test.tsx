@@ -123,7 +123,7 @@ test('the worker bundle that scans staged diffs agrees with the source on every 
 })
 
 test('Basic sign-in is masked in any case of the scheme name, short or all letters',()=>{
- for(const pair of ['user:pass','admin:'+mixed(12),'ci-bot:hunter2']){
+ for(const pair of ['user:pass','admin:'+mixed(12),'ci-bot:hunter2','John Smith:hunter2']){
   for(const scheme of ['Basic','basic','BASIC']){
    const text='authorization: '+scheme+' '+btoa(pair)
    expect(redactSecrets(text)).toBe('authorization: «…»')

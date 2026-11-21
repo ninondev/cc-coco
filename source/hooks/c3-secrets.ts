@@ -16,7 +16,7 @@ const EXTRA_SHAPES:readonly RegExp[]=[
 // HTTP Basic sign-in, in any case of the scheme name. The value counts only when it decodes to a
 // user:password pair in plain ASCII, so a path or a plain word after "basic" stays as written.
 const BASIC=/\bBasic[ \t]+([A-Za-z0-9+\/]{8,}={0,2})(?![A-Za-z0-9+\/=])/gi
-const basicPair=(value:string)=>{try{return /^[\x21-\x39\x3b-\x7e]+:[\x20-\x7e]+$/.test(atob(value))}catch{return false}}
+const basicPair=(value:string)=>{try{return /^[\x20-\x39\x3b-\x7e]+:[\x20-\x7e]+$/.test(atob(value))}catch{return false}}
 // The password in a URL (scheme://user:password@host). Only the password is masked; a placeholder
 // (${VAR}, $VAR, {{var}}, <password>, %s, ***, or the words examples use) is left as written.
 // A ? or # ends the host part, so a port followed by a query or fragment that holds an @ is not a password.
