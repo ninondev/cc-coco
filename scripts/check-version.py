@@ -11,6 +11,7 @@ ROOT = Path(__file__).resolve().parent.parent
 # Three numbers, or four when the last one counts small fixes (CHANGELOG.md).
 VERSION = re.compile(r'\d+\.\d+\.\d+(?:\.\d+)?')
 CONSTANT = re.compile(r'^export const PLUGIN_VERSION = "([^"]*)"$', re.M)
+BUILT = re.compile(r'\b(PLUGIN_VERSION\d*)\s*=\s*"([^"]*)"')
 RELEASE = re.compile(r'^## \[(?!Unreleased\])([^\]]+)\]', re.M)
 
 
@@ -36,8 +37,14 @@ def main():
         return 1
     wrong = [f'{name}: {found!r}' for name, found in copies() if found != version]
     # The loaded hooks are built from source/hooks; a stale build still carries the old number.
-    built = ROOT/'plugin/hooks/m1-compiled'
-    if not any(f'"{version}"' in path.read_text(encoding='utf-8') for path in sorted(built.glob('*.js'))):
+    # The bundler numbers a second copy of the name (PLUGIN_VERSION2), and each copy must agree.
+    found = False
+    for path in sorted((ROOT/'plugin/hooks/m1-compiled').glob('*.js')):
+        for name, built in BUILT.findall(path.read_text(encoding='utf-8')):
+            found = True
+            if built != version:
+                wrong.append(f'plugin/hooks/m1-compiled/{path.name} ({name}): {built!r} (rebuild with tools/build-hooks-graph.py)')
+    if not found:
         wrong.append('plugin/hooks/m1-compiled: no module carries it (rebuild with tools/build-hooks-graph.py)')
     for line in wrong:
         print(f'check-version: expected {version}, {line}', file=sys.stderr)
