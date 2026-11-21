@@ -73,6 +73,8 @@ test('only the password of a URL is masked, and placeholders are left as written
   'postgres://user:password@localhost:5432/app','postgres://app:${DB_PASSWORD}@db/app','mysql://root:$MYSQL_PWD@db','https://user:<password>@example.com',
   'redis://:%s@cache:6379','http://localhost:3000/@scope/pkg','git@github.com:ninondev/cc-coco.git','ssh://git@github.com:22/x.git','see https://example.com/a:b@c',
   'Basic internationalization of the app','Basic usage: run the installer','write to a@b.com at 10:30','1234567890:AAshort',
+  'see Basic src/hooks/register.tsx','a basic Optional type','basic configuration2 files','Basic '+btoa('nocolonhere12'),
+  'http://localhost:8080?email=user@example.com','http://example.com:8080#section@anchor','https://example.com:443?next=a:b@c',
  ]){
   expect(redactSecrets(text)).toBe(text)
   expect(redactBookmark(text)).toBe(text)
@@ -118,4 +120,15 @@ test('the worker bundle that scans staged diffs agrees with the source on every 
  for(const diff of diffs)expect(executeC3Algo({op:'secrets',diff})).toEqual(scanStagedSecrets(diff))
  expect(executeC3Algo({op:'secrets',diff:diffs[0]})).toEqual({file:'.npmrc',line:3})
  expect(executeC3Algo({op:'secrets',diff:diffs[3]})).toBeUndefined()
+})
+
+test('Basic sign-in is masked in any case of the scheme name, short or all letters',()=>{
+ for(const pair of ['user:pass','admin:'+mixed(12),'ci-bot:hunter2']){
+  for(const scheme of ['Basic','basic','BASIC']){
+   const text='authorization: '+scheme+' '+btoa(pair)
+   expect(redactSecrets(text)).toBe('authorization: «…»')
+   expect(redactBookmark(text)).not.toContain(btoa(pair))
+   expect(scanStagedSecrets('+++ b/request.http\n@@ -0,0 +4,1 @@\n+'+text)).toEqual({file:'request.http',line:4})
+  }
+ }
 })
