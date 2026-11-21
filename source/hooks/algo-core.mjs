@@ -36,7 +36,7 @@ var EXTRA_SHAPES = [
 var BASIC = /\bBasic[ \t]+([A-Za-z0-9+\/]{8,}={0,2})(?![A-Za-z0-9+\/=])/gi;
 var basicPair = (value) => {
   try {
-    return /^[\x21-\x39\x3b-\x7e]+:[\x20-\x7e]+$/.test(atob(value));
+    return /^[\x20-\x39\x3b-\x7e]+:[\x20-\x7e]+$/.test(atob(value));
   } catch {
     return false;
   }
