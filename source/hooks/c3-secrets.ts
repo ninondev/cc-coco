@@ -19,7 +19,8 @@ const BASIC=/\bBasic[ \t]+([A-Za-z0-9+\/]{8,}={0,2})(?![A-Za-z0-9+\/=])/gi
 const basicPair=(value:string)=>{try{return /^[\x21-\x39\x3b-\x7e]+:[\x20-\x7e]+$/.test(atob(value))}catch{return false}}
 // The password in a URL (scheme://user:password@host). Only the password is masked; a placeholder
 // (${VAR}, $VAR, {{var}}, <password>, %s, ***, or the words examples use) is left as written.
-const URL_PASSWORD=/\b[a-z][a-z0-9+.-]{1,15}:\/\/[^\s\/:@"'<>]{0,64}:(?![$<{*]|%[sv]@|(?:password|passwd|pass|pwd|secret|changeme|example|x{3,})@)([^\s\/@"'<>]{4,})@(?=[A-Za-z0-9[])/gi
+// A ? or # ends the host part, so a port followed by a query or fragment that holds an @ is not a password.
+const URL_PASSWORD=/\b[a-z][a-z0-9+.-]{1,15}:\/\/[^\s\/:@?#"'<>]{0,64}:(?![$<{*]|%[sv]@|(?:password|passwd|pass|pwd|secret|changeme|example|x{3,})@)([^\s\/@?#"'<>]{4,})@(?=[A-Za-z0-9[])/gi
 function credentialRanges(text:string):SecretRange[]{
  const ranges:SecretRange[]=secretHits(text).map(hit=>({start:hit.start,end:hit.end}))
  for(const pattern of EXTRA_SHAPES){pattern.lastIndex=0;let match:RegExpExecArray|null;while((match=pattern.exec(text))!==null)ranges.push({start:match.index,end:match.index+match[0].length})}
