@@ -20,7 +20,7 @@ Mac 可以下载「[Coco 安装器](https://github.com/ninondev/cc-coco/releases
 
 安装器和桌宠支持 macOS 13 或更高版本，Intel 和 Apple 芯片的 Mac 都能用。
 
-[1.1.4514.3 更新](CHANGELOG.md#1145143---2026-11-14)已加入插件和源码。Mac 桌宠下载仍为 1.1.4514.2，新版将在苹果公证完成后提供。
+[1.1.4514.4 更新](CHANGELOG.md#1145144---2026-11-21)已加入插件和源码。Mac 桌宠下载仍为 1.1.4514.2，新版将在苹果公证完成后提供。
 
 ```bash
 claude plugin marketplace add ninondev/cc-coco
@@ -167,6 +167,10 @@ claude plugin uninstall coco@coco && claude plugin marketplace remove coco
 
 因为我心里觉得它就该是这个样子呀，蛮可爱的。Codex 那边类似的功能都齐了，我就想自己动手也做一个呗。
 
+## 参与贡献
+
+欢迎提 bug、提想法、发 pull request，做法见 [CONTRIBUTING.md](CONTRIBUTING.md)（英文）。安全问题请看 [SECURITY.md](SECURITY.md)。
+
 ## 声明
 
 非官方同人作品，与 Anthropic 无关，也未获其认可。Claude、Claude Code 和 Clawd 是 Anthropic, PBC 的商标。提到这些名字，只是为了说明插件配合哪个工具用、角色在向谁致敬。仓库里不含 Anthropic 的标志文件，也不靠这个赚钱。如果你来自 Anthropic，觉得哪里不妥，请用「Brand or trademark concern」模板提个 issue，我会第一时间处理。
@@ -175,6 +179,6 @@ claude plugin uninstall coco@coco && claude plugin marketplace remove coco
 
 代码采用 MIT 协议。角色画作采用 CC BY-NC 4.0，只有小克房间里大肥鱼的那两张图采用 CC BY-NC-SA 4.0，详见 [ART-LICENSE.md](ART-LICENSE.md)。画是我用图像模型生成的。
 
-实测过的版本：Claude Code 2.1.308（跑完完整测试）和 2.1.299。桌面版和 VS Code 插件最近一次在真机上检验，是 2026 年 10 月 20 日。
+实测过的版本：Claude Code 2.1.317（跑完完整测试）和 2.1.299。桌面版和 VS Code 插件最近一次在真机上检验，是 2026 年 10 月 20 日。
 
 [English](README.md)、[日本語](README.ja.md)

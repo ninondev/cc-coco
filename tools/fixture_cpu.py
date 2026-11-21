@@ -24,7 +24,7 @@ def communicate(child, *, cpu_limit, clock=None):
         except subprocess.TimeoutExpired:
             # This wall interval only wakes the observer; expiry alone is not a failure.
             if clock() - started >= cpu_limit:
-                raise subprocess.TimeoutExpired(child.args, cpu_limit)
+                raise subprocess.TimeoutExpired(child.args, cpu_limit) from None
         else:
             if clock() - started > cpu_limit:
                 raise subprocess.TimeoutExpired(child.args, cpu_limit, output=output[0], stderr=output[1])

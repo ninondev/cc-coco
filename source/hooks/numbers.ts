@@ -19,6 +19,9 @@ export function hasNumber(value: NumberReading): value is number {
 const fill = (template: string, values: Record<string, string>) => template.replace(/\{(\w+)\}/g, (hole, key: string) => values[key] ?? hole)
 const mark = (value: string, estimate: boolean) => estimate && value !== UNKNOWN_NUMBER ? `~${value}` : value
 const CHINESE_TEN_THOUSAND = '万'
+const CHINESE_HUNDRED_MILLION = '亿'
+// The same character in Traditional Chinese and Japanese.
+const HUNDRED_MILLION = '億'
 
 export function numberText(value: NumberReading, lang: string, estimate = false, whole = false): string {
   if (!hasNumber(value)) return UNKNOWN_NUMBER
@@ -30,12 +33,20 @@ export function percentText(value: NumberReading, lang: string, estimate = false
 export function tokenText(value: NumberReading, lang: string, estimate = false): string {
   return numberText(value, lang, estimate, true)
 }
+// One decimal in the largest unit that keeps the number under a thousand of it (ten thousand for the
+// Chinese and Japanese units): 12.3k and 1.2M, 12.3万 and 1.2亿. The unit is chosen after rounding, so
+// 999,960 reads 1M and never 1,000k.
 export function compactTokenText(value: NumberReading, lang: string): string {
   if (!hasNumber(value)) return tokenText(value, lang)
   const n = Math.round(value)
-  if ((lang === 'zh' || lang === 'zh-Hant' || lang === 'ja') && n >= 10_000) return `${numberText(n / 10_000, lang)}${lang === 'zh-Hant' ? TEN_THOUSAND : CHINESE_TEN_THOUSAND}`
-  if (lang !== 'zh' && lang !== 'zh-Hant' && lang !== 'ja' && n >= 10_000) return `${numberText(n / 1000, lang)}k`
-  return tokenText(n, lang)
+  if (n < 10_000) return tokenText(n, lang)
+  const tenths = (size: number) => Math.round(n / size * 10) / 10
+  if (lang === 'zh' || lang === 'zh-Hant' || lang === 'ja') {
+    if (tenths(10_000) >= 10_000) return `${numberText(tenths(100_000_000), lang)}${lang === 'zh' ? CHINESE_HUNDRED_MILLION : HUNDRED_MILLION}`
+    return `${numberText(tenths(10_000), lang)}${lang === 'zh-Hant' ? TEN_THOUSAND : CHINESE_TEN_THOUSAND}`
+  }
+  if (tenths(1000) >= 1000) return `${numberText(tenths(1_000_000), lang)}M`
+  return `${numberText(tenths(1000), lang)}k`
 }
 export function costText(value: NumberReading, lang: string, estimate = false): string {
   if (!hasNumber(value)) return UNKNOWN_NUMBER

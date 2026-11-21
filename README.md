@@ -17,7 +17,7 @@ Meet your cutest coding partner. Coco peeks at every bug you hit, and makes sure
 
 On a Mac, download the [Coco installer](https://github.com/ninondev/cc-coco/releases/download/v1.1.4514.2/Coco-Installer-1.1.4514.2-macos.zip), unzip it, open the app and click 安装 (Install). The installer is in Chinese. It supports Intel and Apple silicon Macs running macOS 13 or later.
 
-The [1.1.4514.3 update](CHANGELOG.md#1145143---2026-11-14) is available in the plugin and source. Mac pet downloads remain at 1.1.4514.2 until the new build is notarized.
+The [1.1.4514.4 update](CHANGELOG.md#1145144---2026-11-21) is available in the plugin and source. Mac pet downloads remain at 1.1.4514.2 until the new build is notarized.
 
 You can also install the plugin from a terminal:
 
@@ -166,6 +166,10 @@ Coco is your coworker. The long version is in [LORE.md](LORE.md).
 
 Because in my head it could look like this, and it's pretty cute. Codex already has features like this, so I thought I'd make one too.
 
+## Contributing
+
+Bug reports, ideas and pull requests are welcome: see [CONTRIBUTING.md](CONTRIBUTING.md). For a security problem, see [SECURITY.md](SECURITY.md).
+
 ## Disclaimer
 
 Unofficial fan project, not affiliated with or endorsed by Anthropic. Claude, Claude Code and Clawd are trademarks of Anthropic, PBC. I use those names only to say what this works with and who the character pays tribute to. There are no Anthropic logo files here, and I make no money from it. If you are with Anthropic and would like anything changed, please open an issue with the **Brand or trademark concern** template and I'll give it priority.
@@ -174,4 +178,4 @@ Claudie's look follows ZipZipPipe's Claude girl, [Claude 拟人立绘·橘白礼
 
 Code: MIT. Character art: CC BY-NC 4.0, except the two DeepSeek-chan files in Coco's room, which are CC BY-NC-SA 4.0; see [ART-LICENSE.md](ART-LICENSE.md). I made the art with an image model.
 
-Tested with Claude Code 2.1.308 (the full test suite) and 2.1.299. The desktop app and the VS Code extension were last checked on a real machine on October 20, 2026.
+Tested with Claude Code 2.1.317 (the full test suite) and 2.1.299. The desktop app and the VS Code extension were last checked on a real machine on October 20, 2026.

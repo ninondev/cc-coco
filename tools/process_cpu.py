@@ -44,7 +44,7 @@ class _MeasuredProcess(subprocess.Popen):
                 if _deadstate is not None:
                     self.returncode = _deadstate
                 else:
-                    raise OSError('wait4 failed; command CPU measurement is unavailable')
+                    raise OSError('wait4 failed; command CPU measurement is unavailable') from None
             finally:
                 self._waitpid_lock.release()
         return self.returncode
@@ -139,7 +139,7 @@ def _command_run(argv, *, cancel_event=None, owned_pid_file=None, wall_limit=Non
                         break
                     except subprocess.TimeoutExpired:
                         if deadline is not None and __import__('time').monotonic() >= deadline:
-                            raise subprocess.TimeoutExpired(argv, wall_limit)
+                            raise subprocess.TimeoutExpired(argv, wall_limit) from None
                         first = False
         except BaseException as error:
             _stop(child, group)

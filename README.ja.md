@@ -18,7 +18,7 @@
 
 Macでは、[Cocoインストーラー](https://github.com/ninondev/cc-coco/releases/download/v1.1.4514.2/Coco-Installer-1.1.4514.2-macos.zip)をダウンロードして解凍し、アプリを開いて「安装」（インストール）を押してください。インストーラーの表示は中国語です。macOS 13以降のIntel MacとAppleシリコンMacに対応しています。
 
-[1.1.4514.3の更新](CHANGELOG.md#1145143---2026-11-14)はプラグインとソースコードに反映されています。Mac版Coco Petの配布は1.1.4514.2のままです。新版はAppleの公証完了後に公開します。
+[1.1.4514.4の更新](CHANGELOG.md#1145144---2026-11-21)はプラグインとソースコードに反映されています。Mac版Coco Petの配布は1.1.4514.2のままです。新版はAppleの公証完了後に公開します。
 
 ```bash
 claude plugin marketplace add ninondev/cc-coco
@@ -165,6 +165,10 @@ Cocoは男の娘で、あなたの同僚です。くわしい設定は[LORE.ja.m
 
 私の中で「こういう姿もありだな、けっこう可愛いじゃん」と思ったからです。Codexのほうでは関連する機能がひと通り揃っていたので、じゃあ自分でも1つ作ってみようかな、と思って作りました。
 
+## コントリビュート
+
+バグ報告、アイデア、プルリクエストを歓迎します。手順は[CONTRIBUTING.md](CONTRIBUTING.md)（英語）をご覧ください。セキュリティ上の問題は[SECURITY.md](SECURITY.md)をご覧ください。
+
 ## 免責事項とライセンス
 
 非公式のファンメイド作品であり、Anthropicとは一切関係なく、公認されたものでもありません。Claude、Claude Code、およびClawdはAnthropic, PBCの商標です。私がこれらの名前を使っているのは、どの製品と組み合わせて使うのか、そしてこのキャラクターが誰に敬意を表しているのかを説明するためだけです。リポジトリにAnthropicのロゴファイルはなく、これで収益を得ることもしていません。Anthropicの方で変えてほしい箇所があれば、「Brand or trademark concern」テンプレートでissueを立ててください。優先して対応します。
@@ -173,6 +177,6 @@ Claudeさまの姿は、ZipZipPipeさんのClaude娘「[Claude 拟人立绘·橘
 
 コードにはMITライセンスを適用しています。キャラクターのイラストにはCC BY-NC 4.0を適用しています。ただし、Cocoの部屋にいるDeepSeekちゃんの2ファイルはCC BY-NC-SA 4.0です（[ART-LICENSE.md](ART-LICENSE.md)を参照）。イラストは私が画像生成モデルを使って作ったものです。
 
-動作確認したバージョン：Claude Code 2.1.308（全テスト）と2.1.299。デスクトップ版とVS Code拡張機能を最後に実機で確認した日：2026年10月20日。
+動作確認したバージョン：Claude Code 2.1.317（全テスト）と2.1.299。デスクトップ版とVS Code拡張機能を最後に実機で確認した日：2026年10月20日。
 
 [English](README.md)、[中文](README.zh.md)

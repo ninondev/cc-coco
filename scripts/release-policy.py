@@ -65,7 +65,7 @@ ASSET_KINDS = {
     'assets/card': {'.png'},
     'assets/stamps': {'.png'}, 'assets/icon': {'.png'}, 'assets/coco-room': {'.png'}, 'assets/claudie': {'.png'},
     'assets/shed': {'.png'}, 'assets/visitors': {'.png'}, 'assets/coco': {'.png', '.json'},
-    'assets/zine': {'.jpg'}, 'assets/sound': {'.wav'},
+    'assets/zine': {'.jpg'}, 'assets/sound': {'.wav'}, 'assets/lines': {'.txt'},
     'companion-rs/assets/icons': PET_ASSET, 'companion-rs/assets/decor': PET_ASSET,
     'companion-rs/assets/pixel': PET_ASSET, 'companion-rs/assets/shed': PET_ASSET,
     'companion-rs/assets/visitors': PET_ASSET, 'companion-rs/assets/coco': {'.bin', '.json'},
@@ -75,7 +75,7 @@ PLUGIN_WORDS = {'languages', 'quota'}
 CRATE_WORDS = {'0.2', '0.3', '0.4', '1.0', 'feed'}
 # source/: what the plugin never loads (the hooks source, the pet's crate, the own-key crate).
 SOURCE_FILES = {
-    'README.md',
+    'README.md', 'line-supplements.json',
     'companion-rs/Cargo.toml', 'companion-rs/Cargo.lock', 'companion-rs/build.rs',
     'companion-rs/tests/generate-motion-fixtures.mjs',
     'companion-rs/tests/check_windows_presence_lifecycle.py',
@@ -99,7 +99,10 @@ ROOT_FILES = {
     'LORE.md', 'LORE.zh.md', 'LORE.ja.md', 'CHANGELOG.md', '.gitignore', '.gitattributes',
     '.claude-plugin/marketplace.json', '.github/workflows/ci.yml', '.github/workflows/prices.yml',
     '.github/ISSUE_TEMPLATE/brand-concern.yml', '.github/ISSUE_TEMPLATE/config.yml',
-    'scripts/assemble.sh', 'scripts/check.sh',
+    '.github/ISSUE_TEMPLATE/bug-report.yml', '.github/ISSUE_TEMPLATE/feature-request.yml',
+    '.github/PULL_REQUEST_TEMPLATE.md', '.github/dependabot.yml',
+    'CONTRIBUTING.md', 'SECURITY.md',
+    'scripts/assemble.sh', 'scripts/check.sh', 'scripts/check-version.py',
     'scripts/release-policy.py', 'scripts/public-tests.py',
     'skins/claude-ai/coco.user.css', 'docs/.nojekyll',
     'media/banner-2x1.png', 'media/demo.gif', 'media/demo.mp4', 'media/demo.png',

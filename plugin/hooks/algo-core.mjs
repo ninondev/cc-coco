@@ -29,8 +29,19 @@ function secretHits(text) {
 var EXTRA_SHAPES = [
   /\b(?:ASIA[A-Z0-9]{16}|sk-(?:ant-api\d+-)?[A-Za-z0-9_-]{20,}|(?:gh[pousr]_|github_pat_)[A-Za-z0-9_]{20,}|xox[baprs]-[A-Za-z0-9-]{20,}|AIza[A-Za-z0-9_-]{30,}|(?:glpat-|hf_)[A-Za-z0-9_-]{20,}|SG\.[A-Za-z0-9_-]{16,}\.[A-Za-z0-9_-]{16,})(?![A-Za-z0-9_-])/g,
   /\bBearer[ \t]+[A-Za-z0-9._~+\/-]+={0,}/gi,
-  /\beyJ[A-Za-z0-9_-]+\.[A-Za-z0-9_-]+\.[A-Za-z0-9_-]*(?![A-Za-z0-9_-])/g
+  /\beyJ[A-Za-z0-9_-]+\.[A-Za-z0-9_-]+\.[A-Za-z0-9_-]*(?![A-Za-z0-9_-])/g,
+  /\b(?:npm_[A-Za-z0-9]{36}|pypi-AgEIcHlwaS5vcmc[A-Za-z0-9_-]{40,}|xapp-\d-[A-Za-z0-9-]{20,}|xoxe(?:\.xox[bp])?-\d-[A-Za-z0-9-]{20,}|ya29\.[A-Za-z0-9_-]{30,}|do[opr]_v1_[a-f0-9]{64}|xai-[A-Za-z0-9]{40,}|gsk_[A-Za-z0-9]{40,}|[rs]k_test_[A-Za-z0-9]{20,}|whsec_[A-Za-z0-9]{24,})(?![A-Za-z0-9_-])/g,
+  /(?<![0-9])\d{8,10}:AA[A-Za-z0-9_-]{33}(?![A-Za-z0-9_-])/g
 ];
+var BASIC = /\bBasic[ \t]+([A-Za-z0-9+\/]{8,}={0,2})(?![A-Za-z0-9+\/=])/gi;
+var basicPair = (value) => {
+  try {
+    return /^[\x20-\x39\x3b-\x7e]+:[\x20-\x7e]+$/.test(atob(value));
+  } catch {
+    return false;
+  }
+};
+var URL_PASSWORD = /\b[a-z][a-z0-9+.-]{1,15}:\/\/[^\s\/:@?#"'<>]{0,64}:(?![$<{*]|%[sv]@|(?:password|passwd|pass|pwd|secret|changeme|example|x{3,})@)([^\s\/@?#"'<>]{4,})@(?=[A-Za-z0-9[])/gi;
 function credentialRanges(text) {
   const ranges = secretHits(text).map((hit) => ({ start: hit.start, end: hit.end }));
   for (const pattern of EXTRA_SHAPES) {
@@ -39,10 +50,19 @@ function credentialRanges(text) {
     while ((match = pattern.exec(text)) !== null)
       ranges.push({ start: match.index, end: match.index + match[0].length });
   }
+  BASIC.lastIndex = 0;
+  for (let match;(match = BASIC.exec(text)) !== null; )
+    if (basicPair(match[1]))
+      ranges.push({ start: match.index, end: match.index + match[0].length });
+  URL_PASSWORD.lastIndex = 0;
+  for (let match;(match = URL_PASSWORD.exec(text)) !== null; ) {
+    const end = match.index + match[0].length - 1;
+    ranges.push({ start: end - match[1].length, end });
+  }
   return ranges;
 }
 var secretPattern = () => /(?:AKIA|ASIA)[A-Z0-9]{16}|-----BEGIN (?:RSA |EC |DSA |OPENSSH |ENCRYPTED )?PRIVATE KEY-----|\bsk-(?:ant-api\d+-)?[A-Za-z0-9_-]{20,}|\b(?:gh[pousr]_|github_pat_)[A-Za-z0-9_]{20,}|\bxox[baprs]-[A-Za-z0-9-]{20,}|\bAIza[A-Za-z0-9_-]{30,}|\b(?:glpat-|hf_)[A-Za-z0-9_-]{20,}|\b(?:SG\.)[A-Za-z0-9_-]{16,}\.[A-Za-z0-9_-]{16,}/;
-var assignmentPattern = () => /\b(?:password|passwd|pwd|api[_-]?key|access[_-]?token|secret)\s*[:=]\s*["']?([A-Za-z0-9_+\/-]{20,})/gi;
+var assignmentPattern = () => /(?<![A-Za-z0-9])(?:password|passwd|pwd|api[_-]?key|access[_-]?key|account[_-]?key|access[_-]?token|auth[_-]?token|refresh[_-]?token|client[_-]?secret|secret[_-]?key|secret)["']?\s*[:=]\s*["']?([A-Za-z0-9_+\/-]{20,})/gi;
 var randomSecret = (value) => /[a-z]/.test(value) && /[A-Z0-9]/.test(value) && new Set(value).size >= 10;
 function scanStagedSecrets(diff) {
   let file, line = 0, added = false;
@@ -65,9 +85,13 @@ function scanStagedSecrets(diff) {
     if (raw.startsWith("-"))
       continue;
     if (raw.startsWith("+")) {
-      const text = raw.slice(1), assignment = assignmentPattern().exec(text);
-      const value = assignment?.[1];
-      const random = value && randomSecret(value);
+      const text = raw.slice(1);
+      let random = false;
+      for (const assignment of text.matchAll(assignmentPattern()))
+        if (randomSecret(assignment[1])) {
+          random = true;
+          break;
+        }
       if (credentialRanges(text).length || secretPattern().test(text) || random)
         return { file, line };
     }
